@@ -1,18 +1,18 @@
 import { Button as ButtonBox } from '@chakra-ui/button';
 import { Box } from '@chakra-ui/react';
 import React from 'react';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function Button({
   children,
   onClick = () => {},
   isLoading = false,
-  link = false,
+  link = false, 
   isSubmit = false,
   size = 'md',
   disabled = false,
   full = false,
-  background = 'blue.blue400',
+  background = 'greenn.greenn400',
   color = '#fff',
   hColor = "black",
   border,
@@ -39,11 +39,11 @@ export default function Button({
       border={border}
       transition= "0.5s"
       _hover={{
-        bg: "blue.blue400",
+        bg: "greenn.greenn400",
         color: hColor
       }}
       _active={{
-        bg: "blue.blue400",
+        bg: "greenn.greenn400",
         color: "black"
       }}
       rounded="8px"
