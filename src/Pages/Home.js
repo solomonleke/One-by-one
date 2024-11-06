@@ -1,7 +1,7 @@
 import React from 'react'
 import MainLayout from '../Layouts/Index'
 import Request from '../Utils/Request'
-import Seo from '../Utils/Seo'
+import Seo from '../Utils/Seo' 
 
 export default function Home() {
     // const getApi = async ()=>{
