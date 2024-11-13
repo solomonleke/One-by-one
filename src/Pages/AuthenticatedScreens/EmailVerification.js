@@ -3,9 +3,10 @@ import AuthenticatedWrapper from './Layout/Index'
 import { Box, Text } from '@chakra-ui/react'
 import { ReactComponent as EnvelopeIcon } from "../../Asset/envelope.svg";
 import Button from '../../Components/Button';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function EmailVerification() {
+    const router = useNavigate();
     return (
         <AuthenticatedWrapper>
             <Box px={["3%", "15%"]} mt={"74px"}>
@@ -25,7 +26,9 @@ export default function EmailVerification() {
 
                     <Text fontSize="small" fontWeight="medium" style={{ color: "#6B7280", lineHeight: "24px" }}>We’ve sent a verification link to kenawilson9@gmail.com. <br /> Please check your inbox and click the link to verify your email <br /> before continuing.</Text>
 
-                    <Button><Link to="/roleSelection">Continue</Link></Button>
+                    <Button onClick={() => {
+                        router("/roleSelection")
+                    }}>Continue</Button>
 
                     <Text
                         textTransform={"capitalize"}
@@ -37,7 +40,7 @@ export default function EmailVerification() {
                     >
                         Didn’t receive email?{" "}
                         <Box as="span" color={"greenn.greenn400"} cursor="pointer">
-                            <Link to="">Resend</Link>
+                            Resend
                         </Box>
                     </Text>
                 </Box>
