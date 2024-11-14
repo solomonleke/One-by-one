@@ -33,7 +33,7 @@ export default function Button({
   return (
     <ButtonBox
       fontSize={size === 'xs' ? 'xs' : size === 'sm' ? 'sm' : '16px'}
-      fontWeight={'700'}
+      fontWeight={'500'}
       color={color}
       bg={background}
       border={border}

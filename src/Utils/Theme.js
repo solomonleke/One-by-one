@@ -28,9 +28,9 @@ const theme = extendTheme({
       orange100: '#FEE8C9',
     },
     gray: {
-      gray500: '#524F4E',
-      gray400: '#E5E7EB',
-      gray300: '#858383',
+      gray500: '#FAFAFA',
+      gray400: '#E3E5E8',
+      gray300: '#767F8C',
       gray200: '#C0C0C1',
       gray100: '#E7E8E9',
     },
@@ -39,8 +39,9 @@ const theme = extendTheme({
       greenn400: '#39996B',
       greenn300: '#33996B',
       greenn200: '#32996B',
-      greenn100: '#31996B',
+      greenn100: '#E8FFF4',
     },
+   
     background: '#EEF3FF',
     green: '#38890B',
     white: '#FFFFFF',
