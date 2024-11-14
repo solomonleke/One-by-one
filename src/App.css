@@ -1,0 +1,5 @@
+.fff{
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    text-overflow: clip;
+}

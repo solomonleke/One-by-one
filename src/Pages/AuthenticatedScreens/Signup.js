@@ -4,9 +4,10 @@ import Input from "../../Components/Input";
 import { Box, Checkbox, HStack, Stack, Text } from "@chakra-ui/react";
 import Button from "../../Components/Button";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
+  const router = useNavigate();
   return (
     <AuthenticatedWrapper>
       <Box px={["3%", "15%"]} mt={"74px"}>
@@ -68,7 +69,9 @@ export default function Signup() {
             </Text>
           </HStack>
 
-          <Button><Link to="/emailVerification">Continue</Link></Button>
+          <Button onClick={() => {
+            router("/emailVerification")
+          }}>Continue</Button>
 
           <Box
             textAlign={"center"}
@@ -110,8 +113,10 @@ export default function Signup() {
             fontFamily={"heading"}
           >
             Already have an account?{" "}
-            <Box as="span" color={"greenn.greenn400"} cursor="pointer">
-              <Link to="/sign-in">Log in</Link>
+            <Box as="span" color={"greenn.greenn400"} cursor="pointer" onClick={() => {
+              router("/sign-in");
+            }}>
+              Log in
             </Box>
           </Text>
         </Stack>

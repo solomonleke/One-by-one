@@ -1,29 +1,26 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AuthenticatedWrapper from './Layout/Index';
 import { Box, Text, Radio, Stack, RadioGroup } from '@chakra-ui/react';
 import Button from '../../Components/Button';
 
 export default function RoleSelection() {
     const [selectedRole, setSelectedRole] = useState(null);
+    const navigate = useNavigate();
 
     const roles = [
-        {
-            name: 'School Admin',
-            description: 'I’m managing a school and looking to connect with sponsors and resources.',
-        },
-        {
-            name: 'Scholarship Admin',
-            description: 'I want to help manage scholarships and ensure they reach deserving students.',
-        },
-        {
-            name: 'Sponsor',
-            description: 'I want to fund students or schools to help them reach their potential.',
-        },
-        {
-            name: 'Fund Admin',
-            description: 'I’d like to volunteer to verify schools and supervise fund disbursement.',
-        },
+        { name: 'School Admin', path: '/SchoolAdminSignup', description: 'I’m managing a school and looking to connect with sponsors and resources.' },
+        { name: 'Scholarship Admin', path: '/ScholarshipAdminSignup', description: 'I want to help manage scholarships and ensure they reach deserving students.' },
+        { name: 'Sponsor', path: '/Sponsor', description: 'I want to fund students or schools to help them reach their potential.' },
+        { name: 'Fund Admin', path: '/FundAdminSignup', description: 'I’d like to volunteer to verify schools and supervise fund disbursement.' },
     ];
+
+    const handleContinue = () => {
+        const selected = roles.find(role => role.name === selectedRole);
+        if (selected) {
+            navigate(selected.path);
+        }
+    };
 
     return (
         <AuthenticatedWrapper>
@@ -71,7 +68,6 @@ export default function RoleSelection() {
                                         borderRadius="full"
                                     />
                                 </Stack>
-                                {/* Add description text below each role name */}
                                 <Text fontSize="sm" color="gray.600" mt={2}>
                                     {role.description}
                                 </Text>
@@ -80,7 +76,9 @@ export default function RoleSelection() {
                     </Stack>
                 </RadioGroup>
 
-                <Button mt="50px" isDisabled={!selectedRole}>Continue</Button>
+                <Button mt="50px" isDisabled={!selectedRole} onClick={handleContinue}>
+                    Continue
+                </Button>
             </Box>
         </AuthenticatedWrapper>
     );
