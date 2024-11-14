@@ -4,14 +4,15 @@ import { Box, Stack, Text } from '@chakra-ui/react'
 import Input from '../../Components/Input'
 import Button from '../../Components/Button'
 import { FcGoogle } from 'react-icons/fc'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export default function SignIn() {
+  const router = useNavigate();
   return (
     <AuthenticatedWrapper>
 
 
-      <Box px= {["3%", "15%"]} mt={"74px"}>
+      <Box px={["3%", "15%"]} mt={"74px"}>
         <Text textTransform={"capitalize"} fontWeight={"700"} fontSize={"24px"} color="#101011" fontFamily={"heading"}>welcome back!</Text>
         <Text textTransform={"capitalize"} fontWeight={"400"} fontSize={"14px"} mt="8px" fontFamily={"heading"} color={"#6B7280"}>Enter your username and password to continue</Text>
 
@@ -29,7 +30,9 @@ export default function SignIn() {
         </Box>
 
         <Button border={"2px solid #DDE5EC"} color='black' hColor='#fff' hoverBg='transparent' hoverColor="blue.blue500" background='#fff' leftIcon={<FcGoogle />} > Google</Button>
-        <Text textTransform={"capitalize"} fontWeight={"400"} fontSize={"14px"} mt="23px" textAlign={"center"} color="#1F2937" fontFamily={"heading"}>Don’t have an account? <Box as='span' color={"greenn.greenn400"} cursor="pointer"><Link to="/sign-up">Register</Link></Box></Text>
+        <Text textTransform={"capitalize"} fontWeight={"400"} fontSize={"14px"} mt="23px" textAlign={"center"} color="#1F2937" fontFamily={"heading"}>Don’t have an account? <Box as='span' color={"greenn.greenn400"} cursor="pointer" onClick={() => {
+          router("/sign-up")
+        }}>Register</Box></Text>
 
       </Box>
     </AuthenticatedWrapper>
