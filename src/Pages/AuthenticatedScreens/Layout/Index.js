@@ -17,17 +17,18 @@ export default function AuthenticatedWrapper({ children }) {
   };
 
   return (
-    <Flex minHeight="100vh">
+    <Flex minHeight="100vh" flexWrap="wrap">
       {/* Left Content Section */}
-      <Box w={["100%", "50%"]} pb="64px">
+      <Box w={["100%","100%","50%", "50%",]} pb="64px">
         {children}
         <Footer />
       </Box>
 
       {/* Right Background Image Section with Pagination Box */}
       <Flex
-        w={["100%", "50%"]}
+        w={["100%","100%","50%", "50%",]}
         bgImage={`url(${BackgroundImage})`}
+        display={["none","none","flex","flex",]}
         bgPos="center"
         bgSize="cover"
         bgRepeat="no-repeat"

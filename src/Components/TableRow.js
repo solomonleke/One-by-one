@@ -12,7 +12,7 @@ export default function TableRow({ type, name, email, department, classLevel, fi
 
         <Tr textTransform="capitalize" cursor="pointer">
             {
-                type = "school-admin" && (
+                type === "school-admin" && (
                     <>
                     <Td>
                         <HStack cursor={"pointer"}>
@@ -37,6 +37,19 @@ export default function TableRow({ type, name, email, department, classLevel, fi
                     <Td><Flex justifyContent="center" color="#000000" fontSize="16px"><BsThreeDots /></Flex></Td>
                     </>
                  
+                )
+            }
+
+            {
+                type === "table2" && (
+                    <>
+                        <Td>sds</Td>
+                        <Td>dsd</Td>
+                        <Td>dsds</Td>
+                        <Td>dsd</Td>
+                        <Td>sd</Td>
+                        <Td>ds</Td>
+                    </>
                 )
             }
         </Tr>

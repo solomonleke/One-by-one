@@ -26,7 +26,7 @@ export default function SignIn() {
         }}>Forgot Password?</Text>
 
         <Button mt={"20px"} onClick={() => {
-          router("/roleSelection")
+          router("/school-admin")
         }}>Log in</Button>
 
         <Box mt="32px" textAlign={"center"} borderTop={"1px solid"} borderColor={"gray.gray400"}>

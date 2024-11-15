@@ -9,6 +9,7 @@ export default function Footer() {
       gap="40px"
       alignItems="center"
       mt="10rem"
+      flexWrap="wrap"
     >
       <Text color="gray.400" fontSize="sm" fontWeight="medium">
         © 2024 OnebyOne Inc.

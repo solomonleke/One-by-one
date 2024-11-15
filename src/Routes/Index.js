@@ -7,6 +7,7 @@ import Signup from '../Pages/AuthenticatedScreens/Signup'
 import EmailVerification from '../Pages/AuthenticatedScreens/EmailVerification'
 import RoleSelection from '../Pages/AuthenticatedScreens/RoleSelection'
 import Index from '../Pages/SchoolAdminScreen/Index'
+import StudentManagement from '../Pages/SchoolAdminScreen/StudentManagement'
 import SchoolAdminSignup from '../Pages/AuthenticatedScreens/SchoolAdminSignup'
 import ScholarshipAdminSignup from '../Pages/AuthenticatedScreens/ScholarshipAdminSignup'
 import Sponsor from '../Pages/AuthenticatedScreens/Sponsor'
@@ -23,6 +24,7 @@ export default function IndexRoutes() {
       <Routes>
         {/* school admin routes */}
         <Route path='/school-admin' element={<Index/>} />
+        <Route path='/school-admin/student-management' element={<StudentManagement/>} />
 
         <Route path='/' element={<Home />} />
         <Route path='/sign-in' element={<SignIn />} />
