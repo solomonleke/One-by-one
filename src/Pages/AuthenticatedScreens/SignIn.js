@@ -21,9 +21,13 @@ export default function SignIn() {
           <Input label='password' type='password' />
 
         </Stack>
-        <Text textTransform={"capitalize"} fontWeight={"400"} fontSize={"13px"} mt="13px" textAlign={"right"} color="#6B7280" fontFamily={"heading"}>Forgot Password?</Text>
+        <Text textTransform={"capitalize"} fontWeight={"400"} fontSize={"13px"} mt="13px" textAlign={"right"} cursor={"pointer"} color="#6B7280" fontFamily={"heading"} onClick={() => {
+          router("/ForgotPassword")
+        }}>Forgot Password?</Text>
 
-        <Button mt={"20px"}>Log in</Button>
+        <Button mt={"20px"} onClick={() => {
+          router("/roleSelection")
+        }}>Log in</Button>
 
         <Box mt="32px" textAlign={"center"} borderTop={"1px solid"} borderColor={"gray.gray400"}>
           <Box as="span" fontSize={"13px"} fontWeight={"400"} px={"10px"} color="#6B7280" pos="relative" top="-16px" bg="#FFFFFF">or Log in with</Box>

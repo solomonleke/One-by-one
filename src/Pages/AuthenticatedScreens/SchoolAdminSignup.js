@@ -238,7 +238,7 @@ export default function SchoolAdminSignup() {
                 </Box>
 
                 {/* Pagination Lines, Back, and Next/Finish Buttons */}
-                <HStack mt="20px" align="center" spacing="140px">
+                <HStack mt="20px" align="center" spacing="auto">
                     <HStack spacing="4px" align="flex-start">
                         {renderPaginationLines()}
                     </HStack>

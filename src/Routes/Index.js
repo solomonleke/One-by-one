@@ -12,6 +12,9 @@ import ScholarshipAdminSignup from '../Pages/AuthenticatedScreens/ScholarshipAdm
 import Sponsor from '../Pages/AuthenticatedScreens/Sponsor'
 import FundAdminSignup from '../Pages/AuthenticatedScreens/FundAdminSignup'
 import ProfileSetupComplete from '../Pages/AuthenticatedScreens/ProfileSetupComplete'
+import ForgotPassword from '../Pages/AuthenticatedScreens/ForgotPassword'
+import ForgottenPasswordEmail from '../Pages/AuthenticatedScreens/ForgottenPasswordEmail'
+import ResetPassword from '../Pages/AuthenticatedScreens/ResetPassword'
 
 
 export default function IndexRoutes() {
@@ -31,6 +34,9 @@ export default function IndexRoutes() {
         <Route path='/Sponsor' element={<Sponsor />} />
         <Route path='/FundAdminSignup' element={<FundAdminSignup />} />
         <Route path='/ProfileSetupComplete' element={<ProfileSetupComplete />} />
+        <Route path='/ForgotPassword' element={<ForgotPassword />} />
+        <Route path='/ForgottenPasswordEmail' element={<ForgottenPasswordEmail />} />
+        <Route path='/ResetPassword' element={<ResetPassword />} />
 
       </Routes>
     </BrowserRouter>

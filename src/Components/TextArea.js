@@ -29,6 +29,7 @@ export default function TextArea({
     placeholder = `Enter ${label.toLowerCase()}`, 
     pl = 0,
     py = 0,
+    mt = "",
     rightIcon = null,
     w = "100%",
     h = "40%",
