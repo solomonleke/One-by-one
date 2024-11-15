@@ -7,11 +7,12 @@ import { CiSearch } from 'react-icons/ci'
 import { IoIosArrowDown, IoMdNotificationsOutline } from 'react-icons/io'
 import { BsQuestionCircle } from "react-icons/bs";
 import { MdLogout } from "react-icons/md";
+import { CgMenuLeft } from "react-icons/cg";
 
 
 export default function NavBar() {
 
-    const ReadNotification = (id)=>{
+    const ReadNotification = (id) => {
         // alert(id)
 
         // alert("we dey here ")
@@ -19,13 +20,16 @@ export default function NavBar() {
 
     }
     return (
-        <Flex bgColor={"white"} alignItems={"center"} justifyContent={"space-between"} zIndex={"10"} px="24px" py="15.6px" borderBottom={"1px solid #EDEFF2"}>
+        <Flex pos="sticky" top="0" bgColor={"white"} alignItems={"center"} justifyContent={"space-between"} zIndex={"10"} px="24px" py="15.6px" borderBottom={"1px solid #EDEFF2"}>
 
 
-            <Box w="40%">
+            <Box w="40%" display={["none","none","block","block"]}>
                 <SearchInput leftIcon={<CiSearch />} label='search' />
             </Box>
-            <Box w="25%" cursor={"pointer"}>
+            <Box w="20%" display={["block","block","none","none"]} color="green" fontSize="30px">
+                <CgMenuLeft />
+            </Box>
+            <Flex justifyContent="flex-end" w={["65%", "45%", "45%", "25%"]} cursor={"pointer"}>
 
 
                 <HStack>
@@ -69,8 +73,8 @@ export default function NavBar() {
                                         </TabPanel>
                                         <TabPanel>
                                             {
-                                                [1, 2, 3, 4, 5].map((item,index) => (
-                                                    <HStack borderBottom="1px solid #EDEFF2" pb="17px" pt="10px" onClick={()=>ReadNotification(index)}>
+                                                [1, 2, 3, 4, 5].map((item, index) => (
+                                                    <HStack borderBottom="1px solid #EDEFF2" pb="17px" pt="10px" onClick={() => ReadNotification(index)}>
                                                         <Box h="6px" w="6px" bg="green" rounded={"100%"}></Box>
                                                         <Box>
                                                             <Text fontSize={"13px"} fontWeight={"400"} color={"#6B7280"}>Phillip Amakari’s student's profile has been updated.</Text>
@@ -124,7 +128,7 @@ export default function NavBar() {
                         </Menu>
                     </Box>
                 </HStack>
-            </Box>
+            </Flex>
         </Flex>
     )
 }
