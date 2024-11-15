@@ -1,15 +1,21 @@
 import React from 'react'
-import { Box,HStack } from '@chakra-ui/react'
+import { Box, HStack, Text } from '@chakra-ui/react'
+import { HiOutlineUsers } from 'react-icons/hi'
 
 
-export default function DashboardCard() {
+export default function DashboardCard({ icon, title, value}) {
   return (
-  <Box bg="#fff" border="1px solid #EDEFF2" rounded="10px" p="22px">
+    <Box bg="#fff" border="1px solid #EDEFF2" rounded="10px" p="22px" w={["100%", "48%", "24%", "24%"]} mt={["10px", "10px", "0px", "0px" ]}>
 
-    <HStack>
-        
-    </HStack>
+      <HStack>
+        <Box color={"green"} fontSize={"25px"}>
 
-  </Box>
+        {icon}
+        </Box>
+        <Text fontWeight={"400"} fontSize={"13px"} lineHeight={"24px"} textTransform={"capitalize"}>{title}</Text>
+      </HStack>
+      <Text fontWeight={"600"} fontSize={"20px"} mt="14px" lineHeight={"24px"}>{value}</Text>
+
+    </Box>
   )
 }
