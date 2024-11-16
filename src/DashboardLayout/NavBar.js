@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Avatar, Text, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react'
+import { Box, Flex, HStack, Avatar, Text, Menu, MenuButton, MenuList, MenuItem, useDisclosure } from '@chakra-ui/react'
 import { Tabs, TabList, TabPanels, Tab, TabPanel, TabIndicator } from '@chakra-ui/react'
 import React from 'react'
 import SearchInput from '../Components/SearchInput'
@@ -8,10 +8,23 @@ import { IoIosArrowDown, IoMdNotificationsOutline } from 'react-icons/io'
 import { BsQuestionCircle } from "react-icons/bs";
 import { MdLogout } from "react-icons/md";
 import { CgMenuLeft } from "react-icons/cg";
+import SideBar from './SideBar'
+
+import {
+    Drawer,
+    DrawerBody,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerCloseButton,
+  } from '@chakra-ui/react'
 
 
 export default function NavBar() {
 
+
+    const { isOpen, onOpen, onClose } = useDisclosure()
     const ReadNotification = (id) => {
         // alert(id)
 
@@ -26,7 +39,7 @@ export default function NavBar() {
             <Box w="40%" display={["none","none","block","block"]}>
                 <SearchInput leftIcon={<CiSearch />} label='search' />
             </Box>
-            <Box w="20%" display={["block","block","none","none"]} color="green" fontSize="30px">
+            <Box w="20%" display={["block","block","none","none"]} color="green" fontSize="30px" onClick={onOpen}>
                 <CgMenuLeft />
             </Box>
             <Flex justifyContent="flex-end" w={["65%", "45%", "45%", "25%"]} cursor={"pointer"}>
@@ -128,7 +141,32 @@ export default function NavBar() {
                         </Menu>
                     </Box>
                 </HStack>
+            <Drawer
+        isOpen={isOpen}
+        zIndex={"100px"}
+        placement='left'
+        onClose={onClose}
+
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+         
+
+          <DrawerBody>
+            <SideBar borderRight="none" h="auto"/>
+          </DrawerBody>
+{/* 
+          <DrawerFooter>
+           
+          </DrawerFooter> */}
+        </DrawerContent>
+      </Drawer>
             </Flex>
+
+
+
+            
         </Flex>
     )
 }

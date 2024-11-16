@@ -4,7 +4,6 @@ import { Text, Flex, HStack, Box } from '@chakra-ui/react'
 import { Tooltip as Tooltips } from '@chakra-ui/react';
 import DashboardCard from "../../Components/DashboardCard"
 import Button from "../../Components/Button"
-import TableRow from "../../Components/TableRow"
 import { HiOutlineUsers } from 'react-icons/hi'
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { RxTimer } from "react-icons/rx";
@@ -12,6 +11,7 @@ import { MdOutlineCancel } from 'react-icons/md'
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { GoArrowDown } from "react-icons/go";
 import { Bar, BarChart, CartesianGrid, Label, Legend, Pie, PieChart, Tooltip, XAxis, YAxis } from 'recharts'
+import TableRow from "../../Components/TableRow"
 import { CgSearch } from "react-icons/cg";
 import { IoFilter } from "react-icons/io5";
 import {
@@ -34,48 +34,48 @@ export default function Index() {
   const [Rejected, setRejected] = useState(false)
 
   const Data = [
-    { name: "JAN", value: 140 },
-    { name: "FEB", value: 80 },
-    { name: "MAR", value: 20 },
-    { name: "APR", value: 180 },
-    { name: "MAY", value: 120 },
-    { name: "JUN", value: 100 },
-    { name: "JUL", value: 40 },
-    { name: "AUG", value: 80 },
-    { name: "SEP", value: 34 },
-    { name: "OCT", value: 10 },
-    { name: "NOV", value: 110 },
-    { name: "DEC", value: 130 },
+    { name: "JAN", students: 140 },
+    { name: "FEB", students: 80 },
+    { name: "MAR", students: 20 },
+    { name: "APR", students: 180 },
+    { name: "MAY", students: 120 },
+    { name: "JUN", students: 100 },
+    { name: "JUL", students: 40 },
+    { name: "AUG", students: 80 },
+    { name: "SEP", students: 34 },
+    { name: "OCT", students: 10 },
+    { name: "NOV", students: 110 },
+    { name: "DEC", students: 130 },
 
   ]
   const PendingData = [
-    { name: "JAN", value: 40 },
-    { name: "FEB", value: 180 },
-    { name: "MAR", value: 120 },
-    { name: "APR", value: 80 },
-    { name: "MAY", value: 20 },
-    { name: "JUN", value: 90 },
-    { name: "JUL", value: 140 },
-    { name: "AUG", value: 80 },
-    { name: "SEP", value: 134 },
-    { name: "OCT", value: 110 },
-    { name: "NOV", value: 130 },
-    { name: "DEC", value: 120 },
+    { name: "JAN", students: 40 },
+    { name: "FEB", students: 180 },
+    { name: "MAR", students: 120 },
+    { name: "APR", students: 80 },
+    { name: "MAY", students: 20 },
+    { name: "JUN", students: 90 },
+    { name: "JUL", students: 140 },
+    { name: "AUG", students: 80 },
+    { name: "SEP", students: 134 },
+    { name: "OCT", students: 110 },
+    { name: "NOV", students: 130 },
+    { name: "DEC", students: 120 },
 
   ]
   const RejectedData = [
-    { name: "JAN", value: 130 },
-    { name: "FEB", value: 180 },
-    { name: "MAR", value: 220 },
-    { name: "APR", value: 10 },
-    { name: "MAY", value: 20 },
-    { name: "JUN", value: 30 },
-    { name: "JUL", value: 120 },
-    { name: "AUG", value: 30 },
-    { name: "SEP", value: 134 },
-    { name: "OCT", value: 110 },
-    { name: "NOV", value: 150 },
-    { name: "DEC", value: 180 },
+    { name: "JAN", students: 130 },
+    { name: "FEB", students: 180 },
+    { name: "MAR", students: 220 },
+    { name: "APR", students: 10 },
+    { name: "MAY", students: 20 },
+    { name: "JUN", students: 30 },
+    { name: "JUL", students: 120 },
+    { name: "AUG", students: 30 },
+    { name: "SEP", students: 134 },
+    { name: "OCT", students: 110 },
+    { name: "NOV", students: 150 },
+    { name: "DEC", students: 180 },
 
   ]
 
@@ -164,7 +164,7 @@ export default function Index() {
             <Tooltip />
             <Legend />
             <CartesianGrid strokeDasharray="3 3" />
-            <Bar dataKey={"value"} fill="#39996B" background={{ fill: "#E8FFF4" }} />
+            <Bar dataKey={"students"} fill="#39996B" background={{ fill: "#E8FFF4" }} />
 
           </BarChart>
         </Box>
@@ -173,14 +173,14 @@ export default function Index() {
 
 
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px="18px" rounded='10px'>
-        <Flex justifyContent="space-between">
+        <Flex justifyContent="space-between" flexWrap="wrap">
           <HStack>
             <Text color="#1F2937" fontWeight="600" fontSize="19x">Students</Text>
             <Text color="#667085" fontWeight="400" fontSize="18px">(526)</Text>
           </HStack>
 
-          <Flex>
-            <HStack>
+          <Flex mt={["10px", "10px", "0px", "0px" ]} w={["100%", "30%"]} justifyContent={"space-between"} flexDir={["column-reverse", "row"]}>
+            <HStack flexWrap="wrap">
               <Box border="1px solid #E3E5E8" rounded="7px" p='10px' fontSize="14px">
                 <CgSearch />
               </Box>
@@ -188,8 +188,8 @@ export default function Index() {
                 <IoFilter />
                 <Text>Filter</Text>
               </HStack>
-              <Button w="159px" size="sm">See All students</Button>
             </HStack>
+              <Button w="159px" size="sm">See All students</Button>
           </Flex>
         </Flex>
 

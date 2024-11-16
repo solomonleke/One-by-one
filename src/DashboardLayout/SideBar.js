@@ -3,7 +3,7 @@ import React from 'react'
 import logo from "../Asset/whiteLogo.svg"
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { NavList } from './NavList';
-export default function SideBar() {
+export default function SideBar({borderRight="1px solid #EDEFF2", h="100%"}) {
     const location = useLocation();
 
     const List = NavList(location);
@@ -11,7 +11,7 @@ export default function SideBar() {
 
 
     return (
-        <Box  pb="10px" h={"100%"} overflowY={"auto"} bgColor={"white"} borderRight={"1px solid #EDEFF2"}  >
+        <Box  pb="10px" h={h} overflowY={"auto"} bgColor={"white"} borderRight={borderRight}  >
 
             <Image px="18.5px" py='20px' src={logo} width={"60%"} />
 

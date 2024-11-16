@@ -15,7 +15,7 @@ export default function MainLayout({ children, bgColor = "gray.gray500", color =
 
         <Box width={['100%', '100%', '100%', '100%', '100%']}  ml={["0%","0%","0%","0%","267px"]} >
         <NavBar />
-          <Box  py="16.5px" px="24px">
+          <Box  py="16.5px" px={["10px","10px","24px","24px"]}>
             {children}
           </Box>
 
