@@ -6,11 +6,16 @@ import Input from "../../Components/Input";
 import TextArea from "../../Components/TextArea";
 import Button from "../../Components/Button";
 import { FaArrowLeft, FaCloudUploadAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
+    // const router = useNavigate();
 
 const SchoolDetails = () => (
     <VStack spacing="70px">
         <VStack justifyItems={"start"} alignItems={"start"} spacing={"22px"}>
-            <FaArrowLeft />
+            <FaArrowLeft onClick={() => {
+                {/* router("/roleSelection") */}
+            }}/>
             <Text
                 textTransform="capitalize"
                 fontWeight="700"

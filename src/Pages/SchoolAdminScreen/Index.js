@@ -211,7 +211,7 @@ export default function Index() {
               </Thead>
               <Tbody>
               
-                <TableRow
+                <TableRow 
                   type="school-admin"
                   name="Moyinoluwa King"
                   email="moyinadeleke@yahoo.com"
