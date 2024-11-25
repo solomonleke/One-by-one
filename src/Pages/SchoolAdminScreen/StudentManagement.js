@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../DashboardLayout'
 import { Text, Flex, HStack, Box } from '@chakra-ui/react'
 import TableRow from "../../Components/TableRow"
@@ -22,10 +23,12 @@ export default function StudentManagement() {
     const [Rejected, setRejected] = useState(false)
 
 
+    const router = useNavigate();
+
     return (
         <MainLayout>
             <HStack>
-                <Text color="#1F2937" fontWeight="600" fontSize="19x">Students</Text>
+                <Text color="#1F2937" fontWeight="600" fontSize="19px">Students</Text>
                 <Text color="#667085" fontWeight="400" fontSize="18px">(526)</Text>
             </HStack>
             <Text color="#686C75" mt="9px" fontWeight="400" fontSize="15px">View and manage all student profiles in one place. Quickly access approval statuses, track eligibility, and update details as needed.</Text>
@@ -79,7 +82,9 @@ export default function StudentManagement() {
                                 <Text>Filter</Text>
                             </HStack>
                         </HStack>
-                        <Button w="159px" size="sm">See All students</Button>
+                        <Button w="159px" size="sm" onClick={() => {
+                            router("/AddStudents")
+                        }}>Add student</Button>
                     </Flex>
                 </Flex>
 

@@ -1,7 +1,7 @@
 body {
   margin: 0;
 
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
@@ -55,28 +55,35 @@ code {
   width: 3px;
 }
 
-::-webkit-scrollbar-thumb:horizontal{
+::-webkit-scrollbar-thumb:horizontal {
   /* background: #000; */
   border-radius: 4px;
 }
 
-::-webkit-scrollbar:horizontal{
-  height: 3px
+::-webkit-scrollbar:horizontal {
+  height: 3px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px #E8FFF4;
+  box-shadow: inset 0 0 5px #e8fff4;
   border-radius: 80px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: green; 
+  background: green;
   border-radius: 4px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #00474F; 
-}  
+  background: #00474f;
+}
+
+.remove {
+  border: none;
+  background-color: #edeff2;
+  width: 100%;
+  height: 1px;
+}

@@ -1,234 +1,158 @@
-import { Avatar, Box, Flex, HStack, VStack, Select, Menu, MenuButton, MenuItem, MenuList, Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs, Text, Image } from '@chakra-ui/react'
-import React from 'react'
-import { BsQuestionCircle } from "react-icons/bs"
-import { CgMenuLeft } from "react-icons/cg"
-import { CiSearch } from 'react-icons/ci'
-import { IoIosArrowDown, IoMdNotificationsOutline } from 'react-icons/io'
-import { MdLogout } from "react-icons/md"
-import SearchInput from '../../Components/SearchInput'
-import Input from '../../Components/Input'
-import Button from '../../Components/Button'
-import logo from "../../Asset/whiteLogo.svg"
-import { FaArrowLeft, FaCloudUploadAlt } from "react-icons/fa";
+import React, { useState } from 'react'
+import { ReactComponent as Logo } from "../../Asset/schoolLogo.svg";
+import { ReactComponent as VerifySchool } from "../../Asset/verifySchool.svg";
+import MainLayout from '../../DashboardLayout'
+import Button from "../../Components/Button"
+import { Box, HStack, Text, Flex, VStack } from '@chakra-ui/react'
+import { CgSearch } from "react-icons/cg";
+import { IoFilter } from "react-icons/io5";
+import TableRow from "../../Components/TableRow"
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+} from '@chakra-ui/react'
 
 export default function SchoolProfile() {
-
-  const ReadNotification = (id) => {
-    // alert(id)
-
-    // alert("we dey here ")
-
-
-  }
   return (
-    <VStack alignItems="start" justifyContent="start">
-      <Flex pos="sticky" top="0" bgColor={"white"} alignItems={"center"} justifyContent={"space-between"} zIndex={"10"} px="24px" py="15.6px" borderBottom={"2px solid #EDEFF2"}>
-
-        <Flex justifyContent="flex-start">
+    <MainLayout>
+      <Box backgroundColor={"#fff"} p={"20px"} borderWidth={"1px"} borderRadius={"10px"} borderColor={"#EDEFF2"}>
+        <HStack justifyContent={"space-between"} pb={"20px"} borderBottomWidth={"1px"} borderBottomColor={"#EDEFF2"}>
           <HStack>
-            <Flex alignItems="center" gap="30px">
-              <Image px="0px" py='4px' src={logo} paddingRight="30px" width={"12%"} borderRight={"1px solid #D0D0D0"} />
-              <Flex alignItems="center" gap="10px">
-                <FaArrowLeft />
-                <Text fontWeight="medium" fontSize="16px">Exit</Text>
-              </Flex>
-            </Flex>
+            <Logo cursor={"pointer"} />
+            <Text fontSize="24px" mt="auto" fontWeight="700">Legacy Scholars Academy</Text>
           </HStack>
-        </Flex>
 
-        <Flex justifyContent="flex-end" w={["65%", "45%", "45%", "25%"]} cursor={"pointer"}>
-
-
-          <HStack>
-            <Menu isLazy aria-expanded={true}>
-              <MenuButton as={Box}>
-                <Box color="#46455F" fontSize={"24px"} pos={"relative"} pr={"9px"} borderRight={"1px solid #D0D0D0"}>
-                  <Box h="2.4px" w="2.4px" rounded={"100%"} pos={"absolute"} top={"3px"} left={"20px"} bg="#FC0202"></Box>
-                  <IoMdNotificationsOutline />
-                </Box>
-              </MenuButton>
-              <MenuList minWidth='391px'>
-                {/* MenuItems are not rendered unless Menu is open */}
-                <Box pos='relative'>
-                  <Tabs>
-                    <TabList color="#101828" pb="10px">
-                      <Tab _selected={{ color: "green" }}>All</Tab>
-                      <Tab _selected={{ color: "green" }}>Unread</Tab>
-
-                    </TabList>
-                    <TabIndicator mt='-1.5px' height='2px' bg='green' borderRadius='1px' />
-                    <TabPanels>
-                      <TabPanel>
-                        <HStack borderBottom="1px solid #EDEFF2" pb="17px" pt="10px">
-                          <Box h="6px" w="6px" bg="#ADB4BF" rounded={"100%"}></Box>
-                          <Box>
-                            <Text fontSize={"13px"} fontWeight={"400"} color={"#6B7280"}>Phillip Amakari’s student's profile has been updated.</Text>
-                            <Text fontSize={"12px"} fontWeight="400" color={"#ADB4BF"}>3s ago </Text>
-                          </Box>
-                        </HStack>
-                        {
-                          [1, 2, 3].map((item) => (
-                            <HStack borderBottom="1px solid #EDEFF2" pb="17px" pt="10px">
-                              <Box h="6px" w="6px" bg="green" rounded={"100%"}></Box>
-                              <Box>
-                                <Text fontSize={"13px"} fontWeight={"400"} color={"#6B7280"}>Phillip Amakari’s student's profile has been updated.</Text>
-                                <Text fontSize={"12px"} fontWeight="400" color={"#ADB4BF"}>3s ago </Text>
-                              </Box>
-                            </HStack>
-                          ))
-                        }
-                      </TabPanel>
-                      <TabPanel>
-                        {
-                          [1, 2, 3, 4, 5].map((item, index) => (
-                            <HStack borderBottom="1px solid #EDEFF2" pb="17px" pt="10px" onClick={() => ReadNotification(index)}>
-                              <Box h="6px" w="6px" bg="green" rounded={"100%"}></Box>
-                              <Box>
-                                <Text fontSize={"13px"} fontWeight={"400"} color={"#6B7280"}>Phillip Amakari’s student's profile has been updated.</Text>
-                                <Text fontSize={"12px"} fontWeight="400" color={"#ADB4BF"}>3s ago </Text>
-                              </Box>
-                            </HStack>
-                          ))
-                        }
-                      </TabPanel>
-
-                    </TabPanels>
-                  </Tabs>
-                  <Box pos="absolute" top="0" right="4">
-
-                    <Button background="transparent" border="1px solid #39996B" hColor="#fff" color="green" w='136px'>Mark All As Read</Button>
-                  </Box>
-                </Box>
-
-
-              </MenuList>
-            </Menu>
-
-
-            <Box>
-              <Menu isLazy>
-                <MenuButton as={Box}>
-
-                  <HStack cursor={"pointer"}>
-                    <Avatar name='Adeleke Solomon' size='sm' src='https://bit.ly/tioluwani-kolawole' />
-                    <Text color={"#2E2E2E"} fontWeight={"500"} fontSize={"14px"} >Adeleke Solomon</Text>
-                    <IoIosArrowDown size={"18px"} color='#000000' />
-
-                  </HStack>
-                </MenuButton>
-                <MenuList minWidth='232px'>
-                  {/* MenuItems are not rendered unless Menu is open */}
-                  <MenuItem textTransform="capitalize" fontWeight={"400"} color='#586375' _hover={{ color: "green", fontWeight: "600", bg: "#E8FFF4" }}>
-                    <HStack fontSize="14px"  >
-                      <BsQuestionCircle fontWeight={"900"} />
-                      <Text>help center</Text>
-                    </HStack>
-                  </MenuItem>
-                  <MenuItem textTransform="capitalize" fontWeight={"400"} color='#586375' _hover={{ color: "green", fontWeight: "600", bg: "#E8FFF4" }}>
-                    <HStack fontSize="14px"  >
-                      <MdLogout />
-                      <Text >log out</Text>
-                    </HStack>
-                  </MenuItem>
-
-                </MenuList>
-              </Menu>
-            </Box>
+          <HStack borderWidth={"1px"} cursor={"pointer"} borderColor={"#39996B"} fontWeight={"500"} color={"#39996B"} borderRadius={"8px"} px={"20px"} py={"8px"}>
+            <Box as='span'><VerifySchool display={"inline-block"} /></Box>
+            <Text>Verified</Text>
           </HStack>
-        </Flex>
-      </Flex>
-
-
-      <Box paddingLeft="80px" py="40px" pb="100px">
-        <HStack spacing="200px">
-          <VStack spacing="50px" alignItems="start">
-            <HStack spacing={"20px"}>
-              <Box h="5px" borderRadius="10px" w="60px" bg="#39996B"></Box>
-              <Text>Student Details</Text>
-            </HStack>
-
-            <HStack spacing={"20px"}>
-              <Box h="5px" borderRadius="10px" w="60px" bg="#8A92A6"></Box>
-              <Text>Academic Background</Text>
-            </HStack>
-
-            <HStack spacing={"20px"}>
-              <Box h="5px" borderRadius="10px" w="60px" bg="#8A92A6"></Box>
-              <Text>Aspirations & Support</Text>
-            </HStack>
-
-            <HStack spacing={"20px"}>
-              <Box h="5px" borderRadius="10px" w="60px" bg="#8A92A6"></Box>
-              <Text>Student Essay</Text>
-            </HStack>
-
-            <HStack spacing={"20px"}>
-              <Box h="5px" borderRadius="10px" w="60px" bg="#8A92A6"></Box>
-              <Text>Review</Text>
-            </HStack>
-          </VStack>
-
-          <VStack spacing="60px" alignItems="start">
-            <VStack alignItems="start">
-              <Text
-                textTransform="capitalize"
-                fontWeight="700"
-                fontSize="24px"
-                color="#101011"
-                fontFamily="heading"
-                mt="4"
-              >
-                Student Details
-              </Text>
-              <Text
-                fontSize="small"
-                fontWeight="normal"
-                color="#6B7280"
-                lineHeight="24px"
-              >
-                Please provide the student's details to help sponsors and mentors understand their <br /> academic background and potential.
-              </Text>
-            </VStack>
-            <Input zIndex={"-1"} label="Student Full Name" placeholder="Enter student’s full name as it appears on official documents." />
-            <Input label='Date of Birth (DOB)' placeholder="DD/MM/YYYY" />
-            <VStack w="100%" alignItems="start">
-              <Text
-                textTransform="capitalize"
-                fontWeight="500"
-                fontSize="14px"
-                color="#101011"
-                fontFamily="heading"
-              >
-                Gender
-              </Text>
-
-              <Select
-                border="2px"
-                placeholder="Select option"
-                fontSize="small"
-                fontWeight="normal"
-                w="100%"
-              >
-                <option value="option1">Male</option>
-                <option value="option2">Female</option>
-              </Select>
-            </VStack>
-            <Input label='Phone Number' placeholder='+234' />
-            <Input label='Guardian’s Phone Number (Optional)' placeholder='+234' />
-            <Input label='Email Address' placeholder='Provide the student’s email address' />
-
-            <Input label='State' placeholder="Enter the student's current address (street, city, state)." />
-            <Input label='City' placeholder="Enter the student's current address (street, city, state)." />
-            <Input label='Residential Address' placeholder="Enter the student's current address (street, city, state)." />
-
-            <HStack spacing="350px">
-              <Button px="25px">Cancel</Button>
-              <Button px="25px">Next</Button>
-            </HStack>
-          </VStack>
         </HStack>
-      </Box>
 
-    </VStack>
+
+        <HStack>
+          <VStack spacing={"20px"}>
+            <VStack alignItems={"start"} spacing={"20px"} borderColor={"#EDEFF2"} mt={"30px"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
+              <Text fontSize={"18px"} fontWeight={"500"}>School Details</Text>
+
+              <hr className='remove' />
+
+              <HStack spacing={"40px"}>
+                <Text fontWeight={"200"}>Email</Text>
+                <Text fontWeight={"600"}>LegacyScholarsAcademy@gmail.com</Text>
+              </HStack>
+
+              <HStack spacing={"228px"}>
+                <Text fontWeight={"200"}>Founding Year</Text>
+                <Text fontWeight={"600"}>2016</Text>
+              </HStack>
+
+              <HStack spacing={"50px"}>
+                <Text fontWeight={"200"}>Address</Text>
+                <Text fontWeight={"600"}>84 Balogun Road, Ago palace way</Text>
+              </HStack>
+
+              <HStack spacing={"296px"}>
+                <Text fontWeight={"200"}>City</Text>
+                <Text fontWeight={"600"}>Okota</Text>
+              </HStack>
+
+              <HStack spacing={"290px"}>
+                <Text fontWeight={"200"}>State</Text>
+                <Text fontWeight={"600"}>Lagos</Text>
+              </HStack>
+
+              <HStack spacing={"250px"}>
+                <Text fontWeight={"200"}>Zip Code</Text>
+                <Text fontWeight={"600"}>100001</Text>
+              </HStack>
+            </VStack>
+
+            <VStack alignItems={"start"} spacing={"20px"} borderColor={"#EDEFF2"} mt={"30px"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
+              <Text fontSize={"18px"} fontWeight={"500"}>Principal Information</Text>
+
+              <hr className='remove' />
+
+              <HStack spacing={"317px"}>
+                <Text fontWeight={"200"}>Title</Text>
+                <Text fontWeight={"600"}>Mr</Text>
+              </HStack>
+
+              <HStack spacing={"255px"}>
+                <Text fontWeight={"200"}>First Name</Text>
+                <Text fontWeight={"600"}>John</Text>
+              </HStack>
+
+              <HStack spacing={"265px"}>
+                <Text fontWeight={"200"}>Last Name</Text>
+                <Text fontWeight={"600"}>Doe</Text>
+              </HStack>
+
+              <HStack spacing={"150px"}>
+                <Text fontWeight={"200"}>Email</Text>
+                <Text fontWeight={"600"}>johndoe419@gmail.com</Text>
+              </HStack>
+
+              <HStack spacing={"145px"}>
+                <Text fontWeight={"200"}>Phone Number</Text>
+                <Text fontWeight={"600"}>+234000000001</Text>
+              </HStack>
+
+              <HStack spacing={"265px"}>
+                <Text fontWeight={"200"}>NIN</Text>
+                <Text fontWeight={"500"} color={"#027A48"} bg={"#ECFDF3"} borderRadius={"20px"} py={"5px"} px={"12px"}>Verified</Text>
+              </HStack>
+            </VStack>
+          </VStack>
+
+          <Box bg={"#9BF5CA4A"} borderWidth={"1px"} display={"flex"} flexDir={"column"} gap={"23px"} borderRadius={"16px"} p={"16px"}>
+            <VStack bg={"white"} borderRadius={"10px"} alignItems={"start"} py={"25px"} px={"12px"} spacing={"16px"}>
+              <Text fontSize={"16px"} fontWeight={"500"}>About School</Text>
+              <hr className='remove' />
+              <Text fontSize={"13px"} fontWeight={"medium"} lineHeight={"25px"} color={"#626974"}>Legacy Scholars Academy, founded in 2005, is a nurturing educational institution dedicated to empowering students from underserved communities. Our mission is to foster academic excellence, leadership skills, and social responsibility. With a 90% university acceptance rate and top-tier performance in national exams, we prepare students for success and positive community impact.</Text>
+            </VStack>
+
+            <VStack bg={"white"} borderRadius={"10px"} alignItems={"start"} py={"20px"} px={"12px"} spacing={"10px"}>
+              <Text fontSize={"16px"} fontWeight={"500"}>Class Capacity</Text>
+              <hr className='remove' />
+              <Text fontSize={"13px"} fontWeight={"medium"} lineHeight={"25px"} color={"#626974"}>100</Text>
+            </VStack>
+
+            <VStack bg={"white"} borderRadius={"10px"} alignItems={"start"} py={"25px"} px={"12px"} spacing={"16px"}>
+              <Text fontSize={"16px"} fontWeight={"500"}>Legal Documents</Text>
+              <hr className='remove' />
+
+              <HStack spacing={"285px"}>
+                <Text fontSize={"13px"} fontWeight={"medium"} lineHeight={"25px"} color={"#626974"}>Certificate of Incorporation</Text>
+                <Text fontWeight={"500"} color={"#027A48"} bg={"#ECFDF3"} borderRadius={"20px"} py={"5px"} px={"12px"}>Verified</Text>
+              </HStack>
+
+              <HStack spacing={"260px"}>
+                <Text fontSize={"13px"} fontWeight={"medium"} lineHeight={"25px"} color={"#626974"}>Tax Identification Number (TIN)</Text>
+                <Text fontWeight={"500"} color={"#027A48"} bg={"#ECFDF3"} borderRadius={"20px"} py={"5px"} px={"12px"}>Verified</Text>
+              </HStack>
+
+              <HStack spacing={"230px"}>
+                <Text fontSize={"13px"} fontWeight={"medium"} lineHeight={"25px"} color={"#626974"}>Ministry of Education Approval Letter</Text>
+                <Text fontWeight={"500"} color={"#027A48"} bg={"#ECFDF3"} borderRadius={"20px"} py={"5px"} px={"12px"}>Verified</Text>
+              </HStack>
+
+              <HStack spacing={"265px"}>
+                <Text fontSize={"13px"} fontWeight={"medium"} lineHeight={"25px"} color={"#626974"}>School Registration Certificate</Text>
+                <Text fontWeight={"500"} color={"#027A48"} bg={"#ECFDF3"} borderRadius={"20px"} py={"5px"} px={"12px"}>Verified</Text>
+              </HStack>
+            </VStack>
+
+          </Box>
+        </HStack>
+
+      </Box>
+    </MainLayout>
   )
 }
