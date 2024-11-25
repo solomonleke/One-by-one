@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../DashboardLayout'
 import { Text, Flex, HStack, Box } from '@chakra-ui/react'
 import { Tooltip as Tooltips } from '@chakra-ui/react';
@@ -28,6 +29,8 @@ import {
 
 
 export default function Index() {
+
+  const router = useNavigate();
 
   const [Approved, setApproved] = useState(true)
   const [Pending, setPending] = useState(false)
@@ -189,7 +192,9 @@ export default function Index() {
                 <Text>Filter</Text>
               </HStack>
             </HStack>
-              <Button w="159px" size="sm">See All students</Button>
+              <Button w="159px" size="sm" onClick={() => {
+                router("/school-admin/student-management")
+              }}>See All students</Button>
           </Flex>
         </Flex>
 
