@@ -5,6 +5,7 @@ import {
     FormLabel,
     Input as InputBox,
     InputGroup,
+    Textarea,
     InputLeftElement,
     InputRightElement,
     useColorModeValue,
@@ -74,13 +75,15 @@ export default function TextArea({
             pointerEvents='none'
             children={<Box pos={"relative"} color={active ? borderColor: iconColor} top="4.5px" fontSize={"20px"}>{leftIcon}</Box>}
           /> */}
-                    <InputBox
+                    <Textarea
                         // borderColor={Colors.red}
+                        resize='none'
                         onChange={onChange}
                         {...rest}
                         placeholder={active || !label ? placeholder : placeholder}
                         type={inputType}
                         focusBorderColor={"blue.blue400"}
+                        _placeholder={{color: "#ADB4BF", fontSize: "13px"}}
                         _focus={{ borderColor: borderColor }}
                         size={size}
                         py={py}

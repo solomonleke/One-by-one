@@ -3,7 +3,7 @@ import React from 'react'
 import logo from "../Asset/whiteLogo.svg"
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { NavList } from './NavList';
-export default function SideBar({borderRight="1px solid #EDEFF2", h="100%"}) {
+export default function SideBar({borderRight="1px solid #EDEFF2", h="100%", showNav = true}) {
     const location = useLocation();
 
     const List = NavList(location);
@@ -11,12 +11,12 @@ export default function SideBar({borderRight="1px solid #EDEFF2", h="100%"}) {
 
 
     return (
-        <Box  pb="10px" h={h} overflowY={"auto"} bgColor={"white"} borderRight={borderRight}  >
+        <Box  pb="10px" h={h} overflowY={"auto"} bgColor={"white"} borderRight={borderRight} cursor="pointer">
 
-            <Image px="18.5px" py='20px' src={logo} width={"60%"} />
+            <Image px="18.5px" py='20px' src={logo} width={"60%"}   onClick={()=>navigate("/")}/>
 
             <hr style={{borderBottom: "1px solid #EDEFF2"}}/>
-            <Stack spacing={"15px"} mt="32px" px="18.5px">
+            <Stack spacing={"15px"} mt="32px" px="18.5px"  visibility={showNav? "visible": "hidden"}>
 
                 {
                     List?.filter(item => item.display === true)

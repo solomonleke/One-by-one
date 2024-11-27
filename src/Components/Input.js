@@ -83,6 +83,7 @@ export default function Input({
             _focus={{ borderColor: borderColor }}
             size={size}
             py={py}
+            _placeholder={{color: "#ADB4BF", fontSize: "13px"}}
             color="#00000"
             _autofill={{ bgColor: "#fff !important" }}
             fontWeight={"400"}

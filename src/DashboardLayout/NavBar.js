@@ -1,5 +1,5 @@
 import { Box, Flex, HStack, Avatar, Text, Menu, MenuButton, MenuList, MenuItem, useDisclosure } from '@chakra-ui/react'
-import { Tabs, TabList, TabPanels, Tab, TabPanel, TabIndicator } from '@chakra-ui/react'
+import { Tabs, TabList, TabPanels, Tab, TabPanel, TabIndicator, Image } from '@chakra-ui/react'
 import React from 'react'
 import SearchInput from '../Components/SearchInput'
 import Button from '../Components/Button'
@@ -8,6 +8,8 @@ import { IoIosArrowDown, IoMdNotificationsOutline } from 'react-icons/io'
 import { BsQuestionCircle } from "react-icons/bs";
 import { MdLogout } from "react-icons/md";
 import { CgMenuLeft } from "react-icons/cg";
+import { IoArrowBackSharp } from "react-icons/io5";
+
 import SideBar from './SideBar'
 
 import {
@@ -18,28 +20,41 @@ import {
     DrawerOverlay,
     DrawerContent,
     DrawerCloseButton,
-  } from '@chakra-ui/react'
+} from '@chakra-ui/react'
+
+import logo from "../Asset/whiteLogo.svg"
+import { useNavigate } from 'react-router-dom';
 
 
-export default function NavBar() {
+export default function NavBar({ showSearch = true }) {
 
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const ReadNotification = (id) => {
-        // alert(id)
-
-        // alert("we dey here ")
-
 
     }
+
+    const nav = useNavigate()
     return (
-        <Flex pos="sticky" top="0" bgColor={"white"} alignItems={"center"} justifyContent={"space-between"} zIndex={"10"} px="24px" py="15.6px" borderBottom={"1px solid #EDEFF2"}>
+        <Flex borderLeft="1px solid #EDEFF2" pos="sticky" top="0" bgColor={"white"} alignItems={"center"} justifyContent={"space-between"} zIndex={"10"} px="24px" py="15.6px" borderBottom={"1px solid #EDEFF2"}>
 
 
-            <Box w="40%" display={["none","none","block","block"]}>
+            <Box visibility={showSearch === false ? "visible" : "hidden"} w="40%" display={["none", "none", "block", "block"]} >
+                <HStack spacing="30px">
+                    <Image onClick={()=>nav("/")} pl="-20px" src={logo} width={"30%"} borderRight={"1px solid #EDEFF2"} pr="20px"/>
+                    <HStack  cursor="pointer" w='80px' onClick={() => nav("/school-admin/student-management")}>
+                        <IoArrowBackSharp />
+                        <Text>Exit</Text>
+                    </HStack>
+                </HStack>
+
+            </Box>
+
+            <Box visibility={showSearch ? "visible" : "hidden"} w="40%" display={["none", "none", "block", "block"]} >
                 <SearchInput leftIcon={<CiSearch />} label='search' />
             </Box>
-            <Box w="20%" display={["block","block","none","none"]} color="green" fontSize="30px" onClick={onOpen}>
+
+            <Box w="20%" display={["block", "block", "none", "none"]} color="green" fontSize="30px" onClick={onOpen}>
                 <CgMenuLeft />
             </Box>
             <Flex justifyContent="flex-end" w={["65%", "45%", "45%", "25%"]} cursor={"pointer"}>
@@ -141,32 +156,32 @@ export default function NavBar() {
                         </Menu>
                     </Box>
                 </HStack>
-            <Drawer
-        isOpen={isOpen}
-        zIndex={"100px"}
-        placement='left'
-        onClose={onClose}
+                <Drawer
+                    isOpen={isOpen}
+                    zIndex={"100px"}
+                    placement='left'
+                    onClose={onClose}
 
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-         
+                >
+                    <DrawerOverlay />
+                    <DrawerContent>
+                        <DrawerCloseButton />
 
-          <DrawerBody>
-            <SideBar borderRight="none" h="auto"/>
-          </DrawerBody>
-{/* 
+
+                        <DrawerBody>
+                            <SideBar borderRight="none" h="auto" />
+                        </DrawerBody>
+                        {/* 
           <DrawerFooter>
            
           </DrawerFooter> */}
-        </DrawerContent>
-      </Drawer>
+                    </DrawerContent>
+                </Drawer>
             </Flex>
 
 
 
-            
+
         </Flex>
     )
 }
