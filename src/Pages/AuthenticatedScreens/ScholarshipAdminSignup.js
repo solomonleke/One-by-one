@@ -12,7 +12,7 @@ export default function ScholarshipAdminSignup() {
     return (
         <AuthenticatedWrapper>
             <Box px={["3%", "15%"]} mt="74px">
-                <VStack spacing="70px">
+                <VStack spacing="70px" alignItems={"start"}>
                     <VStack justifyItems={"start"} alignItems={"start"} spacing={"22px"}>
                         <FaArrowLeft />
                         <Text
@@ -35,12 +35,14 @@ export default function ScholarshipAdminSignup() {
                         </Text>
                     </VStack>
                     <Input
-                        label="Organization/Institution"
+                        label="State"
                         type="text"
-                        placeholder="Which organization or institution do you represent?"
+                        placeholder="Enter your state"
                     />
-                    <Input label="Position" type="text" placeholder='Your role or position in the organization.' />
-                    <Input label="Class Capacity" type="text" placeholder='How many students are in the target class?' />
+                    <Input label="Local Government" type="text" placeholder='e.g Oshodi isolo' />
+                    <Input label="City" type="text" placeholder='e.g Okota' />
+                    <Input label="Home Address" type="text" placeholder='e.g 86 Jemtok street' />
+                    <Input label="Occupation" type="text" placeholder='e.g Banker' />
                     <Input label="Phone Number" type="text" placeholder='+234' />
 
         <VStack justifyItems={"start"} alignItems={"start"} flexDirection="column" gap="0px">
