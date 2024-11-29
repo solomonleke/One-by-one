@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Avatar, Text,  } from '@chakra-ui/react'
+import { Box, Flex, HStack, Avatar, Text,Menu, MenuButton, MenuList, MenuItem, useDisclosure,   } from '@chakra-ui/react'
 import {
 
     Tr,
@@ -7,7 +7,7 @@ import {
 } from '@chakra-ui/react';
 import { BsThreeDots } from "react-icons/bs"
 
-export default function TableRow({ type, name, email, department, classLevel, fieldOfStudy, status }) {
+export default function TableRow({ type, name, email, department, classLevel, fieldOfStudy, status, onEdit, onRemove }) {
     return (
 
         <Tr textTransform="capitalize" cursor="pointer">
@@ -34,7 +34,28 @@ export default function TableRow({ type, name, email, department, classLevel, fi
                             <Text fontWeight="400" fontSize={"13px"} >{status}</Text>
                         </HStack>
                     </Td>
-                    <Td><Flex justifyContent="center" color="#000000" fontSize="16px"><BsThreeDots /></Flex></Td>
+                    <Td> <Menu isLazy>
+                            <MenuButton as={Box}>
+
+                            <Flex justifyContent="center" color="#000000" fontSize="16px"><BsThreeDots /></Flex>
+                            </MenuButton>
+                            <MenuList >
+                             
+                                <MenuItem onClick={onEdit} textTransform="capitalize" fontWeight={"500"} color='#2F2F2F' _hover={{ color: "#2F2F2F", fontWeight: "400", bg: "#E8FFF4" }}>
+                                    <HStack fontSize="14px">
+                                      
+                                        <Text>Edit</Text>
+                                    </HStack>
+                                </MenuItem>
+                                <MenuItem  onClick={onRemove} textTransform="capitalize" fontWeight={"500"} color='#FF4040' _hover={{ color: "#FF4040", fontWeight: "400", bg: "#E8FFF4" }}>
+                                    <HStack fontSize="14px">
+                                      
+                                        <Text >Remove Student</Text>
+                                    </HStack>
+                                </MenuItem>
+
+                            </MenuList>
+                        </Menu></Td>
                     </>
                  
                 )

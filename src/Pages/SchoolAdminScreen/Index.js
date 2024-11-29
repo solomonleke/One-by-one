@@ -162,7 +162,7 @@ export default function Index() {
 
         <Box mt="27px" overflowX="auto" w="100%">
           <BarChart width={950} height={300} data={Approved ? Data : Pending ? PendingData : RejectedData} margin={{ top: 0, right: 0, left: 0, bottom: 5 }} barSize={20} label>
-            <XAxis dataKey="name" scale={"point"} padding={{ left: 10, right: 10 }}  fontSize="12px" fontWeight="500" color="#667085"/>
+            <XAxis dataKey="name" scale={"point"} padding={{ left: 10, right: 10 }} fontSize="12px" fontWeight="500" color="#667085" />
             <YAxis />
             <Tooltip />
             <Legend />
@@ -182,7 +182,7 @@ export default function Index() {
             <Text color="#667085" fontWeight="400" fontSize="18px">(526)</Text>
           </HStack>
 
-          <Flex mt={["10px", "10px", "0px", "0px" ]} w={["100%", "30%"]} justifyContent={"space-between"} flexDir={["column-reverse", "row"]}>
+          <Flex w={["100%", "30%"]} flexWrap="wrap" mt={["10px", "10px", "0px", "0px"]} alignItems="center" justifyContent={"space-between"} >
             <HStack flexWrap="wrap">
               <Box border="1px solid #E3E5E8" rounded="7px" p='10px' fontSize="14px">
                 <CgSearch />
@@ -192,9 +192,9 @@ export default function Index() {
                 <Text>Filter</Text>
               </HStack>
             </HStack>
-              <Button w="159px" size="sm" onClick={() => {
-                router("/school-admin/student-management")
-              }}>See All students</Button>
+            <Button w="159px" size="sm" onClick={() => {
+              router("/school-admin/student-management")
+            }}>See All students</Button>
           </Flex>
         </Flex>
 
@@ -202,7 +202,7 @@ export default function Index() {
 
           <TableContainer>
             <Table variant='simple'>
-             
+
               <Thead bg="#F9FAFB">
                 <Tr >
                   <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
@@ -211,11 +211,11 @@ export default function Index() {
                   <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">field of study</Th>
                   <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">eligibility status</Th>
                   <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
-                 
+
                 </Tr>
               </Thead>
               <Tbody>
-              
+
                 <TableRow
                   type="school-admin"
                   name="Moyinoluwa King"
@@ -244,7 +244,7 @@ export default function Index() {
                   status="rejected"
                 />
               </Tbody>
-             
+
             </Table>
           </TableContainer>
 

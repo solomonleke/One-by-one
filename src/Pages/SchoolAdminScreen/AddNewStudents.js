@@ -247,7 +247,7 @@ export default function AddNewStudents() {
                                 <TextArea label='subject' placeholder="List the main subjects this student is studying this session"></TextArea>
 
 
-                                <Flex justifyContent="space-between" w="100%" >
+                                <Flex justifyContent="space-between" w="100%" flexWrap='wrap'>
 
                                     <Flex justifyContent="flex-start" >
 
@@ -260,7 +260,7 @@ export default function AddNewStudents() {
 
 
 
-                                        <HStack>
+                                        <HStack spacing={["100px", "12px", "12px","12px"]}>
 
                                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={() => {
                                                 setStudentDetails({
@@ -382,7 +382,7 @@ export default function AddNewStudents() {
                                 </Stack>
 
 
-                                <Flex justifyContent="space-between" w="100%" >
+                                <Flex justifyContent="space-between" w="100%" flexWrap={"wrap"}>
 
                                     <Flex justifyContent="flex-start" >
 
@@ -395,7 +395,7 @@ export default function AddNewStudents() {
 
 
 
-                                        <HStack>
+                                        <HStack spacing={["100px","12px","12px","12px"]}>
 
                                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={() => {
                                                 setAcademicBackground({
@@ -486,7 +486,7 @@ export default function AddNewStudents() {
                                 </Stack>
 
 
-                                <Flex justifyContent="space-between" w="100%" >
+                                <Flex justifyContent="space-between" w="100%" flexWrap="wrap" >
 
                                     <Flex justifyContent="flex-start" >
 
@@ -499,7 +499,7 @@ export default function AddNewStudents() {
 
 
 
-                                        <HStack>
+                                        <HStack spacing={["100px","12px", "12px","12px"]}>
 
                                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={() => {
                                                 setAspiration({
@@ -513,6 +513,8 @@ export default function AddNewStudents() {
 
 
                                             }}>Back</Button>
+
+                                      
 
                                             <Button px="43px" onClick={() => {
 
@@ -676,7 +678,7 @@ export default function AddNewStudents() {
 
 
 
-                                        <HStack>
+                                        <HStack spacing={["100px","12px", "12px","12px"]}>
 
                                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={() => {
                                                 setReview({

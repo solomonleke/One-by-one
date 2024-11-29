@@ -1,8 +1,9 @@
 import { Box, Flex, HStack, Avatar, Text, Menu, MenuButton, MenuList, MenuItem, useDisclosure } from '@chakra-ui/react'
 import { Tabs, TabList, TabPanels, Tab, TabPanel, TabIndicator, Image } from '@chakra-ui/react'
-import React from 'react'
+import React, {useState} from 'react'
 import SearchInput from '../Components/SearchInput'
 import Button from '../Components/Button'
+import BackNotification from '../Components/BackNotification'
 import { CiSearch } from 'react-icons/ci'
 import { IoIosArrowDown, IoMdNotificationsOutline } from 'react-icons/io'
 import { BsQuestionCircle } from "react-icons/bs";
@@ -30,6 +31,8 @@ export default function NavBar({ showSearch = true }) {
 
 
     const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const [OpenModal, setOpenModal] = useState(false)
     const ReadNotification = (id) => {
 
     }
@@ -42,7 +45,7 @@ export default function NavBar({ showSearch = true }) {
             <Box visibility={showSearch === false ? "visible" : "hidden"} w="40%" display={["none", "none", "block", "block"]} >
                 <HStack spacing="30px">
                     <Image onClick={()=>nav("/")} pl="-20px" src={logo} width={"30%"} borderRight={"1px solid #EDEFF2"} pr="20px"/>
-                    <HStack  cursor="pointer" w='80px' onClick={() => nav("/school-admin/student-management")}>
+                    <HStack  cursor="pointer" w='80px' onClick={() => setOpenModal(true)}>
                         <IoArrowBackSharp />
                         <Text>Exit</Text>
                     </HStack>
@@ -181,7 +184,7 @@ export default function NavBar({ showSearch = true }) {
 
 
 
-
+            <BackNotification isOpen={OpenModal} onClose={()=>setOpenModal(false)} />
         </Flex>
     )
 }

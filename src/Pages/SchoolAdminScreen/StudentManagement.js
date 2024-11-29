@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../DashboardLayout'
-import { Text, Flex, HStack, Box } from '@chakra-ui/react'
+import { Text, Flex, HStack, Box, useDisclosure } from '@chakra-ui/react'
 import TableRow from "../../Components/TableRow"
 import Button from "../../Components/Button"
+import RemoveNotification from "../../Components/RemoveNotification"
+import ProfileUpdateNotification from "../../Components/ProfileUpdateNotification"
 import { CgSearch } from "react-icons/cg";
 import { IoFilter } from "react-icons/io5";
 import {
@@ -21,6 +23,9 @@ export default function StudentManagement() {
     const [Approved, setApproved] = useState(false)
     const [Pending, setPending] = useState(false)
     const [Rejected, setRejected] = useState(false)
+    
+    const [OpenModal, setOpenModal] = useState(false)
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
 
     const router = useNavigate();
@@ -33,7 +38,7 @@ export default function StudentManagement() {
             </HStack>
             <Text color="#686C75" mt="9px" fontWeight="400" fontSize="15px">View and manage all student profiles in one place. Quickly access approval statuses, track eligibility, and update details as needed.</Text>
 
-            <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["18px","18px"]} rounded='10px'>
+            <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["18px", "18px"]} rounded='10px'>
                 <Flex justifyContent="space-between" flexWrap="wrap">
                     <Flex alignItems="center" flexWrap='wrap' bg="#E8FFF4" rounded='7px' py="3.5px" px="5px" cursor="pointer" mt={["10px", "10px", "0px", "0px"]}>
 
@@ -114,6 +119,8 @@ export default function StudentManagement() {
                                     classLevel="SS3"
                                     fieldOfStudy="Computer Science"
                                     status="approved"
+                                    onRemove={onOpen}
+                                    onEdit={()=>setOpenModal(true)}
                                 />
                                 <TableRow
                                     type="school-admin"
@@ -123,6 +130,8 @@ export default function StudentManagement() {
                                     classLevel="SS3"
                                     fieldOfStudy="Computer Science"
                                     status="approved"
+                                    onRemove={onOpen}
+                                    onEdit={()=>setOpenModal(true)}
                                 />
                                 <TableRow
                                     type="school-admin"
@@ -132,6 +141,8 @@ export default function StudentManagement() {
                                     classLevel="SS3"
                                     fieldOfStudy="Computer Science"
                                     status="approved"
+                                    onRemove={onOpen}
+                                    onEdit={()=>setOpenModal(true)}
                                 />
                                 <TableRow
                                     type="school-admin"
@@ -141,6 +152,8 @@ export default function StudentManagement() {
                                     classLevel="SS3"
                                     fieldOfStudy="Computer Science"
                                     status="pending"
+                                    onRemove={onOpen}
+                                    onEdit={()=>setOpenModal(true)}
                                 />
                                 <TableRow
                                     type="school-admin"
@@ -150,6 +163,8 @@ export default function StudentManagement() {
                                     classLevel="SS3"
                                     fieldOfStudy="Computer Science"
                                     status="pending"
+                                    onRemove={onOpen}
+                                    onEdit={()=>setOpenModal(true)}
                                 />
                                 <TableRow
                                     type="school-admin"
@@ -169,7 +184,7 @@ export default function StudentManagement() {
                                     fieldOfStudy="Computer Science"
                                     status="rejected"
                                 />
-                             
+
                             </Tbody>
 
                         </Table>
@@ -177,7 +192,8 @@ export default function StudentManagement() {
 
                 </Box>
             </Box>
-
+            <RemoveNotification isOpen={isOpen} onClose={onClose} />
+            <ProfileUpdateNotification isOpen={OpenModal} onClose={()=>setOpenModal(false)} />
         </MainLayout>
     )
 }
