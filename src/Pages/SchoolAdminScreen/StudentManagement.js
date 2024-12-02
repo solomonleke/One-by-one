@@ -109,7 +109,9 @@ export default function StudentManagement() {
 
                                 </Tr>
                             </Thead>
-                            <Tbody>
+                            <Tbody onClick={() => {
+                                        router("/StudentProfile")
+                                    }}>
 
                                 <TableRow
                                     type="school-admin"
@@ -182,7 +184,7 @@ export default function StudentManagement() {
                                     department="science"
                                     classLevel="SS2"
                                     fieldOfStudy="Computer Science"
-                                    status="rejected"
+                                    status="rejected" 
                                 />
 
                             </Tbody>

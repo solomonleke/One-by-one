@@ -11,6 +11,7 @@ import SchoolProfile from '../Pages/SchoolAdminScreen/SchoolProfile'
 import StudentManagement from '../Pages/SchoolAdminScreen/StudentManagement'
 import Settings from '../Pages/SchoolAdminScreen/Settings'
 import AddNewStudents from '../Pages/SchoolAdminScreen/AddNewStudents'
+import StudentProfile from '../Pages/SchoolAdminScreen/StudentProfile'
 import SchoolAdminSignup from '../Pages/AuthenticatedScreens/SchoolAdminSignup'
 import ScholarshipAdminSignup from '../Pages/AuthenticatedScreens/ScholarshipAdminSignup'
 import Sponsor from '../Pages/AuthenticatedScreens/Sponsor'
@@ -31,6 +32,7 @@ export default function IndexRoutes() {
         <Route path='/school-admin/school-profile' element={<SchoolProfile/>} />
         <Route path='/school-admin/settings' element={<Settings/>} />
         <Route path='/AddStudents' element={<AddNewStudents/>} />
+        <Route path='/StudentProfile' element={<StudentProfile/>} />
 
 
 

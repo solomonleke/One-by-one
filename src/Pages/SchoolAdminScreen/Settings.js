@@ -90,8 +90,8 @@ export default function Settings() {
                 </VStack>
               </Box>
               <Flex justifyContent="flex-end" alignItems="center" mt="20px">
-    <Button w="10%">Update</Button>
-  </Flex>
+                <Button w="10%">Update</Button>
+              </Flex>
             </TabPanel>
 
 
@@ -100,13 +100,13 @@ export default function Settings() {
                 <VStack alignItems={"start"}>
 
                   <VStack spacing={"15px"} w="100%">
-                  <HStack justifyContent="space-between" w="100%">
+                    <HStack justifyContent="space-between" w="100%">
                       <Box w="95%">
                         <Text fontSize={"15px"} fontWeight={"500"} lineHeight={"18.15px"} color={"#1F2937"}>Receive All Notifications</Text>
                         <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Stay updated with all our latest news and alerts.</Text>
                       </Box>
                       <Box w="5%">
-                         <Switch colorScheme="teal" size="md" />
+                        <Switch colorScheme="teal" size="md" />
                       </Box>
                     </HStack>
                     <hr className="remove" />
@@ -116,7 +116,7 @@ export default function Settings() {
                         <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Get notified about account activity and important interactions.</Text>
                       </Box>
                       <Box w="5%">
-                      <Switch colorScheme="teal" size="md" />
+                        <Switch colorScheme="teal" size="md" />
                       </Box>
                     </HStack>
                     <hr className="remove" />
@@ -126,7 +126,7 @@ export default function Settings() {
                         <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Regular updates on new features and our monthly newsletter.</Text>
                       </Box>
                       <Box w="5%">
-                      <Switch colorScheme="teal" size="md" />
+                        <Switch colorScheme="teal" size="md" />
                       </Box>
                     </HStack>
                     <hr className="remove" />
@@ -136,7 +136,7 @@ export default function Settings() {
                         <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Opt to receive notifications as emails instead of app alerts.</Text>
                       </Box>
                       <Box w="5%">
-                      <Switch colorScheme="teal" size="md" />
+                        <Switch colorScheme="teal" size="md" />
                       </Box>
                     </HStack>
                     <hr className="remove" />
@@ -146,85 +146,85 @@ export default function Settings() {
                         <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Immediate alerts directly to your device.</Text>
                       </Box>
                       <Box w="5%">
-                      <Switch colorScheme="teal" size="md" />
+                        <Switch colorScheme="teal" size="md" />
                       </Box>
                     </HStack>
                   </VStack>
                 </VStack>
               </Box>
               <Flex justifyContent="flex-end" alignItems="center" mt="20px">
-    <Button w="10%">Update</Button>
-  </Flex>
+                <Button w="10%">Update</Button>
+              </Flex>
             </TabPanel>
 
             <TabPanel>
-  <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py="20px" px="18px" rounded="10px">
-    <VStack alignItems="start">
-      <VStack spacing="15px" w="100%">
-        <HStack justifyContent="space-between" w="100%">
-          <Box w="85%">
-            <Text fontSize="15px" fontWeight="500" lineHeight="18.15px" color="#1F2937">
-              Password Management
-            </Text>
-            <Text fontSize="13px" fontWeight="400" lineHeight="27px" color="#626974">
-              Update your password regularly to keep your account secure. Create a strong password with a mix of letters,
-              numbers, and special characters.
-            </Text>
-          </Box>
-          <Box w="15%">
-            <HStack
-              borderWidth="1px"
-              cursor="pointer"
-              borderColor="#39996B"
-              fontWeight="500"
-              color="#39996B"
-              borderRadius="8px"
-              px="8px"
-              py="8px"
-            >
-              <Text fontSize="14px" fontWeight="500" lineHeight="22px">
-                Change Password
-              </Text>
-            </HStack>
-          </Box>
-        </HStack>
-        <hr className="remove" />
-        <HStack justifyContent="space-between" w="100%">
-          <Box w="95%">
-            <Text fontSize="15px" fontWeight="500" lineHeight="18.15px" color="#1F2937">
-              Two-Factor Authentication (2FA)
-            </Text>
-            <Text fontSize="13px" fontWeight="400" lineHeight="27px" color="#626974">
-              Add an extra layer of security to your account. Enable two-factor authentication to require a verification
-              code whenever you <br /> sign in from a new device.
-            </Text>
-          </Box>
-          <Box w="5%">
-            <Switch colorScheme="teal" size="md" />
-          </Box>
-        </HStack>
-        <hr className="remove" />
-        <HStack justifyContent="space-between" w="100%">
-          <Box w="95%">
-            <Text fontSize="15px" fontWeight="500" lineHeight="18.15px" color="#1F2937">
-              Login Notifications
-            </Text>
-            <Text fontSize="13px" fontWeight="400" lineHeight="27px" color="#626974">
-              Receive an alert each time your account is accessed from a new device or location. This helps to quickly
-              detect unauthorized <br /> access.
-            </Text>
-          </Box>
-          <Box w="5%">
-            <Switch colorScheme="teal" size="md" />
-          </Box>
-        </HStack>
-      </VStack>
-    </VStack>
-  </Box>
-  <Flex justifyContent="flex-end" alignItems="center" mt="20px">
-    <Button w="10%">Update</Button>
-  </Flex>
-</TabPanel>
+              <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py="20px" px="18px" rounded="10px">
+                <VStack alignItems="start">
+                  <VStack spacing="15px" w="100%">
+                    <HStack justifyContent="space-between" w="100%">
+                      <Box w="85%">
+                        <Text fontSize="15px" fontWeight="500" lineHeight="18.15px" color="#1F2937">
+                          Password Management
+                        </Text>
+                        <Text fontSize="13px" fontWeight="400" lineHeight="27px" color="#626974">
+                          Update your password regularly to keep your account secure. Create a strong password with a mix of letters,
+                          numbers, and special characters.
+                        </Text>
+                      </Box>
+                      <Box w="15%">
+                        <HStack
+                          borderWidth="1px"
+                          cursor="pointer"
+                          borderColor="#39996B"
+                          fontWeight="500"
+                          color="#39996B"
+                          borderRadius="8px"
+                          px="8px"
+                          py="8px"
+                        >
+                          <Text fontSize="14px" fontWeight="500" lineHeight="22px">
+                            Change Password
+                          </Text>
+                        </HStack>
+                      </Box>
+                    </HStack>
+                    <hr className="remove" />
+                    <HStack justifyContent="space-between" w="100%">
+                      <Box w="95%">
+                        <Text fontSize="15px" fontWeight="500" lineHeight="18.15px" color="#1F2937">
+                          Two-Factor Authentication (2FA)
+                        </Text>
+                        <Text fontSize="13px" fontWeight="400" lineHeight="27px" color="#626974">
+                          Add an extra layer of security to your account. Enable two-factor authentication to require a verification
+                          code whenever you <br /> sign in from a new device.
+                        </Text>
+                      </Box>
+                      <Box w="5%">
+                        <Switch colorScheme="teal" size="md" />
+                      </Box>
+                    </HStack>
+                    <hr className="remove" />
+                    <HStack justifyContent="space-between" w="100%">
+                      <Box w="95%">
+                        <Text fontSize="15px" fontWeight="500" lineHeight="18.15px" color="#1F2937">
+                          Login Notifications
+                        </Text>
+                        <Text fontSize="13px" fontWeight="400" lineHeight="27px" color="#626974">
+                          Receive an alert each time your account is accessed from a new device or location. This helps to quickly
+                          detect unauthorized <br /> access.
+                        </Text>
+                      </Box>
+                      <Box w="5%">
+                        <Switch colorScheme="teal" size="md" />
+                      </Box>
+                    </HStack>
+                  </VStack>
+                </VStack>
+              </Box>
+              <Flex justifyContent="flex-end" alignItems="center" mt="20px">
+                <Button w="10%">Update</Button>
+              </Flex>
+            </TabPanel>
 
           </TabPanels>
         </Tabs>
