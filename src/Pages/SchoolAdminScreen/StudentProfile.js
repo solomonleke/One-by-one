@@ -16,18 +16,18 @@ export default function StudentProfile() {
   const router = useNavigate();
   return (
     <MainLayout>
-      <Flex justifyContent={"space-between"} flexWrap="wrap">
+      <Flex justifyContent={"space-between"} flexWrap="wrap" >
         <HStack spacing={"10px"}>
           <Text cursor={"pointer"} _hover={{ fontWeight: "500" }} color={"#626974"} fontSize={"13px"} fontWeight={"400"} onClick={() => {
             router("/school-admin/student-management")
           }}>Student Management</Text>
           <NextArrow />
           <Text cursor={"pointer"} color={"#1F2937"} fontSize={"13px"} fontWeight={"500"} lineHeight={"22px"} onClick={() => {
-            router("/StudentProfile")
+            router("/school-admin/student-management/student-profile")
           }}>Student Profile</Text>
         </HStack>
 
-        <HStack fontSize="14px" fontWeight="600" spacing="10px">
+        <HStack fontSize="14px" fontWeight="600" spacing="10px" cursor="pointer" onClick={()=>router("/school-admin/student-management")}>
           <IoChevronBackOutline />
           <Text>Back</Text>
         </HStack>
