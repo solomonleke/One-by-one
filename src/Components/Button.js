@@ -15,7 +15,7 @@ export default function Button({
   background = 'greenn.greenn400',
   color = '#fff',
   hColor = "black",
-  border,
+  border = "1px solid green",
   w= "100%",
   leftIcon,
   rightIcon,
@@ -37,6 +37,7 @@ export default function Button({
       color={color}
       bg={background}
       border={border}
+      borderImageSource="linear-gradient(0deg, rgba(57, 153, 107, 0.48), rgba(57, 153, 107, 0.48)),linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 100%)"
       transition= "0.5s"
       _hover={{
         bg: "greenn.greenn400",

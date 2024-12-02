@@ -32,7 +32,7 @@ export default function IndexRoutes() {
         <Route path='/school-admin/school-profile' element={<SchoolProfile/>} />
         <Route path='/school-admin/settings' element={<Settings/>} />
         <Route path='/AddStudents' element={<AddNewStudents/>} />
-        <Route path='/StudentProfile' element={<StudentProfile/>} />
+        <Route path='/school-admin/student-management/student-profile' element={<StudentProfile/>} />
 
 
 

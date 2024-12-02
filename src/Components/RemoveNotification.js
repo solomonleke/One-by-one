@@ -29,7 +29,7 @@ export default function RemoveNotification({ isOpen, onClose }) {
 
                 <ModalBody>
                     <Flex justifyContent="flex-end" mb="18px">
-                        <HStack spacing={["100px", "12px", "12px", "12px"]} w="50%">
+                        <HStack spacing={["100px", "12px", "12px", "12px"]} w={["100%","100%","50%","50%"]}>
 
                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={()=>onClose()}>Cancel</Button>
 

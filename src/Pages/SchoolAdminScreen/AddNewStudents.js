@@ -4,12 +4,15 @@ import { Text, Flex, HStack, VStack, Stack, Select, Box, Spacer } from '@chakra-
 import Input from '../../Components/Input'
 import TextArea from '../../Components/TextArea'
 import Button from '../../Components/Button'
+import BackNotification from '../../Components/BackNotification'
 import ReviewCard from '../../Components/ReviewCard'
 import { useNavigate } from 'react-router-dom';
 import { GiCheckMark } from "react-icons/gi";
 import { FaArrowLeft, FaCloudUploadAlt } from 'react-icons/fa'
 import { FiEdit2 } from "react-icons/fi";
 export default function AddNewStudents() {
+
+    const [OpenModal, setOpenModal] = useState(false)
 
     const [StudentDetails, setStudentDetails] = useState({
         view: true,
@@ -191,7 +194,7 @@ export default function AddNewStudents() {
 
                                     <Flex justifyContent="flex-start" >
 
-                                        <Button background="transparent" color="green" px="43px" onClick={() => { nav("/school-admin/student-management") }}>Cancel</Button>
+                                        <Button background="transparent" color="green" px="43px" onClick={() => setOpenModal(true)}>Cancel</Button>
                                     </Flex>
 
 
@@ -251,7 +254,7 @@ export default function AddNewStudents() {
 
                                     <Flex justifyContent="flex-start" >
 
-                                        <Button background="transparent" color="green" px="43px" onClick={() => { nav("/school-admin/student-management") }}>Cancel</Button>
+                                        <Button background="transparent" color="green" px="43px" onClick={() => setOpenModal(true)}>Cancel</Button>
                                     </Flex>
 
 
@@ -386,7 +389,7 @@ export default function AddNewStudents() {
 
                                     <Flex justifyContent="flex-start" >
 
-                                        <Button background="transparent" color="green" px="43px" onClick={() => { nav("/school-admin/student-management") }}>Cancel</Button>
+                                        <Button background="transparent" color="green" px="43px" onClick={() => setOpenModal(true)}>Cancel</Button>
                                     </Flex>
 
 
@@ -490,7 +493,7 @@ export default function AddNewStudents() {
 
                                     <Flex justifyContent="flex-start" >
 
-                                        <Button background="transparent" color="green" px="43px" onClick={() => { nav("/school-admin/student-management") }}>Cancel</Button>
+                                        <Button background="transparent" color="green" px="43px" onClick={() => setOpenModal(true)}>Cancel</Button>
                                     </Flex>
 
 
@@ -669,7 +672,7 @@ export default function AddNewStudents() {
 
                                     <Flex justifyContent="flex-start" >
 
-                                        <Button background="transparent" color="green" px="43px" onClick={() => { nav("/school-admin/student-management") }}>Cancel</Button>
+                                        <Button background="transparent" color="green" px="43px" onClick={() => setOpenModal(true)}>Cancel</Button>
                                     </Flex>
 
 
@@ -712,7 +715,7 @@ export default function AddNewStudents() {
                 </Box>
 
             </Flex>
-
+            <BackNotification isOpen={OpenModal} onClose={()=>setOpenModal(false)} />
         </SubLayout>
 
     )

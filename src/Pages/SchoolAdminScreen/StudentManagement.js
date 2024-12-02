@@ -109,9 +109,7 @@ export default function StudentManagement() {
 
                                 </Tr>
                             </Thead>
-                            <Tbody onClick={() => {
-                                        router("/StudentProfile")
-                                    }}>
+                            <Tbody>
 
                                 <TableRow
                                     type="school-admin"

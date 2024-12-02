@@ -4,8 +4,27 @@ import { GoGear } from "react-icons/go"
 import { RxDashboard } from "react-icons/rx"
 import { IoBriefcaseOutline } from "react-icons/io5"
 export const NavList =(location)=>{
-  
 
+
+
+const checkActive= ()=>{
+
+    let result = ""
+
+    if (isActive(location, "/school-admin/student-management")){
+          result = true
+          return  result
+      }else if (location.pathname === "/school-admin/student-management/student-profile"){
+          result = true
+          return  result
+      }else{
+          result = false
+          return  result
+      }
+  
+}
+  
+    
      let List = [
     
   
@@ -21,7 +40,7 @@ export const NavList =(location)=>{
         name: "student management",
         icon: <HiOutlineUsers/>,
         link: "/school-admin/student-management",
-        active: isActive(location, "/school-admin/student-management"),
+        active: checkActive() ,
         display: true
     },
     {

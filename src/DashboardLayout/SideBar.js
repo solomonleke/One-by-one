@@ -3,8 +3,10 @@ import React from 'react'
 import logo from "../Asset/whiteLogo.svg"
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { NavList } from './NavList';
-export default function SideBar({borderRight="1px solid #EDEFF2", h="100%", showNav = true}) {
+export default function SideBar({borderRight="1px solid #EDEFF2", h="100%", showNav = true,  active = false}) {
     const location = useLocation();
+
+    console.log("location", location)
 
     const List = NavList(location);
     const navigate = useNavigate();
@@ -22,7 +24,7 @@ export default function SideBar({borderRight="1px solid #EDEFF2", h="100%", show
                     List?.filter(item => item.display === true)
                         .map((item, i) => (
                             <Link to={item.link}>
-                                <HStack bgColor={item.active ? "greenn.greenn100" : "#fff"} padding={"8px"} rounded="7px" fontFamily="body" fontSize={"14px"} transition="2s ease in" fontWeight={item.active ? "600" : "400"} color={item.active ? "green" : "#586375"} _hover={{ bgColor: "greenn.greenn100", fontWeight: "600", color: "green" }} key={i} cursor="pointer">
+                                <HStack bgColor={item.active || active ? "greenn.greenn100" : "#fff"} padding={"8px"} rounded="7px" fontFamily="body" fontSize={"14px"} transition="2s ease in" fontWeight={item.active || active ? "600" : "400"} color={item.active || active ? "green" : "#586375"} _hover={{ bgColor: "greenn.greenn100", fontWeight: "600", color: "green" }} key={i} cursor="pointer">
                                     <Box fontSize={"20px"} pos="relative" top="-1px">{item.icon}</Box>
                                     <Text  textTransform={"capitalize"}>{item.name}</Text>
                                 </HStack>

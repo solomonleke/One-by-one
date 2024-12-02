@@ -6,15 +6,17 @@ import {
 
 } from '@chakra-ui/react';
 import { BsThreeDots } from "react-icons/bs"
+import { useNavigate } from 'react-router-dom'
 
 export default function TableRow({ type, name, email, department, classLevel, fieldOfStudy, status, onEdit, onRemove }) {
+    const router = useNavigate()
     return (
 
         <Tr textTransform="capitalize" cursor="pointer">
             {
                 type === "school-admin" && (
                     <>
-                    <Td>
+                    <Td onClick={() => {router("/school-admin/student-management/student-profile")}}>
                         <HStack cursor={"pointer"}>
                             <Avatar name={name} size='sm' src='https://bit.ly/tioluwani-kolawole' />
                             <Box>
