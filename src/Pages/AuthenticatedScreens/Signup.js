@@ -83,7 +83,7 @@ export default function Signup() {
             show: false,
 
           })
-          router("/emailVerification")
+          router("/email-verification")
         }, 3000)
 
       }

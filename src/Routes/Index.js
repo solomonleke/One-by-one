@@ -40,14 +40,14 @@ export default function IndexRoutes() {
         <Route path='/' element={<Home />} />
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<Signup />} />
-        <Route path='/emailVerification' element={<EmailVerification />} />
+        <Route path='/email-verification' element={<EmailVerification />} />
         <Route path='/role-selection/:id' element={<RoleSelection />} />
         <Route path='/SchoolAdminSignup' element={<SchoolAdminSignup />} />
         <Route path='/ScholarshipAdminSignup' element={<ScholarshipAdminSignup />} />
         <Route path='/Sponsor' element={<Sponsor />} />
         <Route path='/FundAdminSignup' element={<FundAdminSignup />} />
         <Route path='/ProfileSetupComplete' element={<ProfileSetupComplete />} />
-        <Route path='/ForgotPassword' element={<ForgotPassword />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/ForgottenPasswordEmail' element={<ForgottenPasswordEmail />} />
         <Route path='/reset-password/:id' element={<ResetPassword />} />
 

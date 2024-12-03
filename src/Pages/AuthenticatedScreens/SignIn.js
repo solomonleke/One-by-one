@@ -22,7 +22,7 @@ export default function SignIn() {
 
         </Stack>
         <Text textTransform={"capitalize"} fontWeight={"400"} fontSize={"13px"} mt="13px" textAlign={"right"} cursor={"pointer"} color="#6B7280" fontFamily={"heading"} onClick={() => {
-          router("/ForgotPassword")
+          router("/forgot-password")
         }}>Forgot Password?</Text>
 
         <Button mt={"20px"} onClick={() => {
