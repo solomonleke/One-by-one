@@ -41,7 +41,7 @@ export default function IndexRoutes() {
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<Signup />} />
         <Route path='/emailVerification' element={<EmailVerification />} />
-        <Route path='/roleSelection' element={<RoleSelection />} />
+        <Route path='/role-selection/:id' element={<RoleSelection />} />
         <Route path='/SchoolAdminSignup' element={<SchoolAdminSignup />} />
         <Route path='/ScholarshipAdminSignup' element={<ScholarshipAdminSignup />} />
         <Route path='/Sponsor' element={<Sponsor />} />

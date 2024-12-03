@@ -6,6 +6,9 @@ import Button from '../../Components/Button';
 import { useNavigate } from 'react-router-dom';
 
 export default function EmailVerification() {
+
+
+    const email = localStorage.getItem("emailUsed")
     const router = useNavigate();
     return (
         <AuthenticatedWrapper>
@@ -24,11 +27,9 @@ export default function EmailVerification() {
                         Verify Your Email Address
                     </Text>
 
-                    <Text fontSize="small" fontWeight="medium" style={{ color: "#6B7280", lineHeight: "24px" }}>We’ve sent a verification link to kenawilson9@gmail.com. <br /> Please check your inbox and click the link to verify your email <br /> before continuing.</Text>
+                    <Text fontSize="small" fontWeight="medium" style={{ color: "#6B7280", lineHeight: "24px" }}>We’ve sent a verification link to {email}. <br /> Please check your inbox and click the link to verify your email <br /> before continuing.</Text>
 
-                    <Button onClick={() => {
-                        router("/roleSelection")
-                    }}>Continue</Button>
+                    <Button>Resend</Button>
 
                     <Text
                         textTransform={"capitalize"}

@@ -8,7 +8,7 @@ import theme from './Utils/Theme';
 
 function App() {
   return (
-    <ChakraProvider theme={theme}>
+    <ChakraProvider theme={theme} toastOptions={{ defaultOptions: { position: 'top', background: "green" } }}>
     
        <IndexRoutes/>
     
