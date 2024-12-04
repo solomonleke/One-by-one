@@ -1,12 +1,27 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import AuthenticatedWrapper from './Layout/Index';
 import { Box, Text, Radio, Stack, HStack, RadioGroup } from '@chakra-ui/react';
 import Button from '../../Components/Button';
+import ShowToast from '../../Components/ToastNotification';
 
 export default function RoleSelection() {
     const [selectedRole, setSelectedRole] = useState(null);
+
+    const [showToast, setShowToast] = useState({
+        show: false,
+        message: "",
+        status: ""
+      })
+
+
     const navigate = useNavigate();
+
+    const {id} = useParams()
+
+    console.log(id)
+
+
 
     const roles = [
         { name: 'School Admin', path: '/SchoolAdminSignup', description: 'I’m managing a school and looking to connect with sponsors and resources.' },
@@ -16,14 +31,40 @@ export default function RoleSelection() {
     ];
 
     const handleContinue = () => {
+
+        localStorage.setItem("tempToken", id)
         const selected = roles.find(role => role.name === selectedRole);
+
         if (selected) {
             navigate(selected.path);
+        }else{
+           
+            setShowToast({
+                show: true,
+                message: "Please Select a Role to Proceed",
+                status: "error"
+              })
+      
+              setTimeout(() => {
+                setShowToast({
+                  show: false,
+      
+                })
+              
+              }, 5000)
+
+           
         }
     };
 
     return (
         <AuthenticatedWrapper>
+            {
+        showToast.show && (
+          <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
+
+        )
+      }
             <Box px={["3%", "15%"]} mt={"74px"} display="flex" flexDirection="column" gap="10px">
                 <Text
                     textTransform="capitalize"
@@ -61,11 +102,16 @@ export default function RoleSelection() {
                                 <Stack direction="row" align="center" justify="space-between">
                                     <HStack>
                                         <Text fontWeight="bold" fontSize="lg" color={selectedRole === role.name ? 'black' : 'gray.700'}>
-                                        {role.name}
-                                    </Text>
-                                    <Box as="span" fontWeight={"semibold"} fontSize={"11px"} lineHeight={"14.48px"} color={"#FFBC4F"} backgroundColor={"#FFF7EA"} borderWidth={"1px"} borderColor={"#FFBC4F"} borderRadius={"4px"} padding={"4px"} marginLeft={"10px"}>{role.tag}</Box>
+                                            {role.name}
+                                        </Text>
+                                        {
+                                            role.tag && (
+
+                                                <Box as="span" fontWeight={"semibold"} fontSize={"11px"} lineHeight={"14.48px"} color={"#FFBC4F"} backgroundColor={"#FFF7EA"} borderWidth={"1px"} borderColor={"#FFBC4F"} borderRadius={"4px"} padding={"4px"} marginLeft={"10px"}>{role.tag}</Box>
+                                            )
+                                        }
                                     </HStack>
-                                    
+
                                     <Radio
                                         value={role.name}
                                         colorScheme="teal"
