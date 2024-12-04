@@ -24,10 +24,10 @@ export default function RoleSelection() {
 
 
     const roles = [
-        { name: 'School Admin', path: '/SchoolAdminSignup', description: 'I’m managing a school and looking to connect with sponsors and resources.' },
-        { name: 'Scholarship Admin', path: '/ScholarshipAdminSignup', description: 'I want to help manage scholarships and ensure they reach deserving students.' },
-        { name: 'Sponsor', tag: 'Volunteer Role', path: '/Sponsor', description: 'I want to fund students or schools to help them reach their potential.' },
-        { name: 'Fund Admin', tag: 'Volunteer Role', path: '/FundAdminSignup', description: 'I’d like to volunteer to verify schools and supervise fund disbursement.' },
+        { name: 'School Admin', path: '/school-admin-signup', description: 'I’m managing a school and looking to connect with sponsors and resources.' },
+        { name: 'Scholarship Admin', path: '/scholarship-admin-signup', description: 'I want to help manage scholarships and ensure they reach deserving students.' },
+        { name: 'Sponsor', tag: 'Volunteer Role', path: '/sponsor', description: 'I want to fund students or schools to help them reach their potential.' },
+        { name: 'Fund Admin', tag: 'Volunteer Role', path: '/fund-admin-signup', description: 'I’d like to volunteer to verify schools and supervise fund disbursement.' },
     ];
 
     const handleContinue = () => {

@@ -42,13 +42,13 @@ export default function IndexRoutes() {
         <Route path='/sign-up' element={<Signup />} />
         <Route path='/email-verification' element={<EmailVerification />} />
         <Route path='/role-selection/:id' element={<RoleSelection />} />
-        <Route path='/SchoolAdminSignup' element={<SchoolAdminSignup />} />
-        <Route path='/ScholarshipAdminSignup' element={<ScholarshipAdminSignup />} />
-        <Route path='/Sponsor' element={<Sponsor />} />
-        <Route path='/FundAdminSignup' element={<FundAdminSignup />} />
-        <Route path='/ProfileSetupComplete' element={<ProfileSetupComplete />} />
+        <Route path='/school-admin-signup' element={<SchoolAdminSignup />} />
+        <Route path='/scholarship-admin-signup' element={<ScholarshipAdminSignup />} />
+        <Route path='/sponsor' element={<Sponsor />} />
+        <Route path='/fund-admin-signup' element={<FundAdminSignup />} />
+        <Route path='/profile-setup-complete' element={<ProfileSetupComplete />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/ForgottenPasswordEmail' element={<ForgottenPasswordEmail />} />
+        <Route path='/forgotten-password-email' element={<ForgottenPasswordEmail />} />
         <Route path='/reset-password/:id' element={<ResetPassword />} />
 
       </Routes>

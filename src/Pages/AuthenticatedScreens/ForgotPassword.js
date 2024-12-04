@@ -24,7 +24,7 @@ export default function ForgotPassword() {
                     <Input type='email' label='Email' placeholder='kenawilson9@gmail.com'/>
 
                     <Button onClick={() => {
-                        router("/ForgottenPasswordEmail")
+                        router("/forgotten-password-email")
                     }}>Send Reset Link</Button>
                 </VStack>
             </Box>
