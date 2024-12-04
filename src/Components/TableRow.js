@@ -36,7 +36,8 @@ export default function TableRow({ type, name, email, department, classLevel, fi
                             <Text fontWeight="400" fontSize={"13px"} >{status}</Text>
                         </HStack>
                     </Td>
-                    <Td> <Menu isLazy>
+                    <Td>
+                         <Menu isLazy>
                             <MenuButton as={Box}>
 
                             <Flex justifyContent="center" color="#000000" fontSize="16px"><BsThreeDots /></Flex>
@@ -57,7 +58,8 @@ export default function TableRow({ type, name, email, department, classLevel, fi
                                 </MenuItem>
 
                             </MenuList>
-                        </Menu></Td>
+                        </Menu>
+                        </Td>
                     </>
                  
                 )

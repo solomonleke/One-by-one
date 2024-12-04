@@ -14,7 +14,7 @@ export default function Settings() {
         Configure your login credentials, set up two-factor authentication for added security, and adjust account preferences.
       </Text>
 
-      <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px="18px" rounded='10px'>
+      <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["10px","10px","18px","18px"]} rounded='10px'>
         <Tabs>
           <TabList>
             <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Your Profile</Tab>
@@ -76,11 +76,11 @@ export default function Settings() {
                       </Box>
                     </HStack>
                     <hr className="remove" />
-                    <HStack justifyContent="space-between" w="100%">
-                      <Box w="30%">
-                        <Text fontSize={"14px"} fontWeight={"500"} lineHeight={"22px"} color={"#1F2937"}>Tell Us About You</Text>
+                    <HStack justifyContent="space-between" w="100%" flexWrap={["wrap","wrap","no-wrap","no-wrap"]}>
+                      <Box w={["100%","100%","30%","30%"]}>
+                        <Text fontSize={"14px"} textAlign={["center","center","left","left"]} fontWeight={"500"} lineHeight={"22px"} color={"#1F2937"}>Tell Us About You</Text>
                       </Box>
-                      <Box w="70%">
+                      <Box w={["100%","100%","70%","70%"]}>
                         <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='17px' px="18px" rounded='10px'>
                           <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"31px"} color={"#626974"}>I’m the Vice Principal at <Box as="span" fontWeight={"700"}>Legacy Scholars Academy,</Box> where I’ve been working for over five years. I oversee student performance and coordinate extracurricular programs. My passion for education comes from a deep belief in the potential of every child, and I strive to create an environment where students feel empowered to achieve their dreams. Outside of work, I love playing the guitar and exploring new cuisines!</Text>
                         </Box>
@@ -101,51 +101,51 @@ export default function Settings() {
 
                   <VStack spacing={"15px"} w="100%">
                     <HStack justifyContent="space-between" w="100%">
-                      <Box w="95%">
+                      <Box w={["90%","90%","95%","95%"]}>
                         <Text fontSize={"15px"} fontWeight={"500"} lineHeight={"18.15px"} color={"#1F2937"}>Receive All Notifications</Text>
                         <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Stay updated with all our latest news and alerts.</Text>
                       </Box>
-                      <Box w="5%">
+                      <Box w={["10%","10%","5%","5%"]}>
                         <Switch colorScheme="teal" size="md" />
                       </Box>
                     </HStack>
                     <hr className="remove" />
                     <HStack justifyContent="space-between" w="100%">
-                      <Box w="95%">
+                      <Box w={["90%","90%","95%","95%"]}>
                         <Text fontSize={"15px"} fontWeight={"500"} lineHeight={"18.15px"} color={"#1F2937"}>Activity Alerts</Text>
                         <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Get notified about account activity and important interactions.</Text>
                       </Box>
-                      <Box w="5%">
+                      <Box w={["10%","10%","5%","5%"]}>
                         <Switch colorScheme="teal" size="md" />
                       </Box>
                     </HStack>
                     <hr className="remove" />
                     <HStack justifyContent="space-between" w="100%">
-                      <Box w="95%">
+                      <Box w={["90%","90%","95%","95%"]}>
                         <Text fontSize={"15px"} fontWeight={"500"} lineHeight={"18.15px"} color={"#1F2937"}>Updates and Newsletters</Text>
                         <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Regular updates on new features and our monthly newsletter.</Text>
                       </Box>
-                      <Box w="5%">
+                      <Box w={["10%","10%","5%","5%"]}>
                         <Switch colorScheme="teal" size="md" />
                       </Box>
                     </HStack>
                     <hr className="remove" />
                     <HStack justifyContent="space-between" w="100%">
-                      <Box w="95%">
+                      <Box w={["90%","90%","95%","95%"]}>
                         <Text fontSize={"15px"} fontWeight={"500"} lineHeight={"18.15px"} color={"#1F2937"}>Email Notifications</Text>
                         <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Opt to receive notifications as emails instead of app alerts.</Text>
                       </Box>
-                      <Box w="5%">
+                      <Box w={["10%","10%","5%","5%"]}>
                         <Switch colorScheme="teal" size="md" />
                       </Box>
                     </HStack>
                     <hr className="remove" />
                     <HStack justifyContent="space-between" w="100%">
-                      <Box w="95%">
+                      <Box w={["90%","90%","95%","95%"]}>
                         <Text fontSize={"15px"} fontWeight={"500"} lineHeight={"18.15px"} color={"#1F2937"}>Push Notifications</Text>
                         <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Immediate alerts directly to your device.</Text>
                       </Box>
-                      <Box w="5%">
+                      <Box w={["10%","10%","5%","5%"]}>
                         <Switch colorScheme="teal" size="md" />
                       </Box>
                     </HStack>
@@ -161,7 +161,7 @@ export default function Settings() {
               <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py="20px" px="18px" rounded="10px">
                 <VStack alignItems="start">
                   <VStack spacing="15px" w="100%">
-                    <HStack justifyContent="space-between" w="100%">
+                    <HStack justifyContent="space-between" flexWrap={"wrap"} w="100%">
                       <Box w="85%">
                         <Text fontSize="15px" fontWeight="500" lineHeight="18.15px" color="#1F2937">
                           Password Management
@@ -171,7 +171,7 @@ export default function Settings() {
                           numbers, and special characters.
                         </Text>
                       </Box>
-                      <Box w="15%">
+                      <Box w={["60%","60%","15%","15%"]}>
                         <HStack
                           borderWidth="1px"
                           cursor="pointer"
@@ -190,7 +190,7 @@ export default function Settings() {
                     </HStack>
                     <hr className="remove" />
                     <HStack justifyContent="space-between" w="100%">
-                      <Box w="95%">
+                      <Box w={["90%","90%","95%","95%"]}>
                         <Text fontSize="15px" fontWeight="500" lineHeight="18.15px" color="#1F2937">
                           Two-Factor Authentication (2FA)
                         </Text>
@@ -199,13 +199,13 @@ export default function Settings() {
                           code whenever you <br /> sign in from a new device.
                         </Text>
                       </Box>
-                      <Box w="5%">
+                      <Box w={["10%","10%","5%","5%"]}>
                         <Switch colorScheme="teal" size="md" />
                       </Box>
                     </HStack>
                     <hr className="remove" />
                     <HStack justifyContent="space-between" w="100%">
-                      <Box w="95%">
+                      <Box w={["90%","90%","95%","95%"]}>
                         <Text fontSize="15px" fontWeight="500" lineHeight="18.15px" color="#1F2937">
                           Login Notifications
                         </Text>
@@ -214,7 +214,7 @@ export default function Settings() {
                           detect unauthorized <br /> access.
                         </Text>
                       </Box>
-                      <Box w="5%">
+                      <Box w={["10%","10%","5%","5%"]}>
                         <Switch colorScheme="teal" size="md" />
                       </Box>
                     </HStack>
