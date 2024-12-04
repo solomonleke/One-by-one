@@ -1,64 +1,118 @@
-import React from 'react'
-import MainLayout from '../../DashboardLayout'
-import Button from "../../Components/Button"
-import ProfileCard from "../../Components/ProfileCard"
-import ProfileHeading from "../../Components/ProfileHeading"
-import Input from "../../Components/Input"
-import { ReactComponent as NextArrow } from "../../Asset/nextArrow.svg"
-import { ReactComponent as Pdf } from "../../Asset/pdf.svg"
-import { FaArrowCircleRight, FaArrowRight, FaRegArrowAltCircleRight } from 'react-icons/fa'
-import { Box, HStack, Text, Stack, Avatar, Spacer, Flex, Tabs, Switch, TabList, TabPanels, Tab, TabPanel, TabIndicator } from '@chakra-ui/react'
-import { useNavigate } from 'react-router-dom'
-import { IoChevronBackOutline } from "react-icons/io5";
-import { BsThreeDots } from "react-icons/bs"
+import React, { useState } from 'react';
+import MainLayout from '../../DashboardLayout';
+import Button from '../../Components/Button';
+import ProfileCard from '../../Components/ProfileCard';
+import ProfileHeading from '../../Components/ProfileHeading';
+import RemoveNotification from '../../Components/RemoveNotification';
+import ProfileUpdateNotification from '../../Components/ProfileUpdateNotification';
+import { ReactComponent as NextArrow } from '../../Asset/nextArrow.svg';
+import { ReactComponent as Pdf } from '../../Asset/pdf.svg';
+import { Box, HStack, Text, useDisclosure, Stack, Menu, MenuButton, MenuList, MenuItem, Avatar, Spacer, Flex } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { IoChevronBackOutline } from 'react-icons/io5';
+import { BsThreeDots } from 'react-icons/bs';
 
 export default function StudentProfile() {
   const router = useNavigate();
+
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const { isOpen: isRemoveModalOpen, onOpen: onOpenRemove, onClose: onCloseRemove } = useDisclosure();
+
   return (
     <MainLayout>
-      <Flex justifyContent={"space-between"} flexWrap="wrap" >
-        <HStack spacing={"10px"}>
-          <Text cursor={"pointer"} _hover={{ fontWeight: "500" }} color={"#626974"} fontSize={"13px"} fontWeight={"400"} onClick={() => {
-            router("/school-admin/student-management")
-          }}>Student Management</Text>
+      <Flex justifyContent="space-between" flexWrap="wrap">
+        <HStack spacing="10px">
+          <Text
+            cursor="pointer"
+            _hover={{ fontWeight: '500' }}
+            color="#626974"
+            fontSize="13px"
+            fontWeight="400"
+            onClick={() => {
+              router('/school-admin/student-management');
+            }}
+          >
+            Student Management
+          </Text>
           <NextArrow />
-          <Text cursor={"pointer"} color={"#1F2937"} fontSize={"13px"} fontWeight={"500"} lineHeight={"22px"} onClick={() => {
-            router("/school-admin/student-management/student-profile")
-          }}>Student Profile</Text>
+          <Text
+            cursor="pointer"
+            color="#1F2937"
+            fontSize="13px"
+            fontWeight="500"
+            onClick={() => {
+              router('/school-admin/student-management/student-profile');
+            }}
+          >
+            Student Profile
+          </Text>
         </HStack>
 
-        <HStack fontSize="14px" fontWeight="600" spacing="10px" cursor="pointer" onClick={()=>router("/school-admin/student-management")}>
+        <HStack fontSize="14px" fontWeight="600" spacing="10px" cursor="pointer" onClick={() => router('/school-admin/student-management')}>
           <IoChevronBackOutline />
           <Text>Back</Text>
         </HStack>
       </Flex>
 
-
-      <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["8px","8px","18px","18px"]} rounded='10px'>
-        <Box bg="#fff" border="1px solid #EFEFEF" py='17px' px={["8px","8px","18px","18px"]} rounded='10px'>
-          <Flex justifyContent={"space-between"} flexWrap="wrap">
-            <HStack spacing="14px" w={["100%", "100%", "70%", "70%" ]}>
-              <Avatar name={"Philip Amakiri"} size='lg' src='https://bit.ly/sage-adebayo' />
-              <Stack spacing={"10px"}>
-                <HStack >
-                  <Text color={"#1F2937"} fontSize={"25px"} fontWeight={"700"} lineHeight={"30.26px"}>Philip Amakiri</Text>
-                  <Flex justifyContent="center" color="#000000" fontSize="16px"><BsThreeDots /></Flex>
-                </HStack>
-                <Text color={"#667085"} fontSize={"13px"} fontWeight={"400"} lineHeight={""}>PhilipAmakiri@gmail.com</Text>
-              </Stack>
-            </HStack>
-
-            <Box  mt={["10px","10px", "0","0"]}>
-            
-              <HStack alignItems="center" backgroundColor={"#FFF5E5"} spacing="6.32px" borderRadius={"16.86px"} py={"8.45px"} px={"7.38px"}>
-                <Box pos="relative" top="-1px" rounded="100%" w="8.43px" h="8.43px" bg={"#FFA30C"}></Box>
-                <Text fontWeight="500" fontSize={"12.65px"} color={"#FFA30C"}>Pending Approval</Text>
+      <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py="17px" px={["8px", "8px", "18px", "18px"]} rounded="10px">
+        <Flex justifyContent="space-between" flexWrap="wrap">
+          <HStack spacing="14px" w={["100%", "100%", "70%", "70%"]}>
+            <Avatar name="Philip Amakiri" size="lg" src="https://bit.ly/sage-adebayo" />
+            <Stack spacing="10px">
+              <HStack>
+                <Text color="#1F2937" fontSize="25px" fontWeight="700">
+                  Philip Amakiri
+                </Text>
+                <Menu isLazy>
+                  <MenuButton as={Box}>
+                    <Flex justifyContent="center" color="#000000" fontSize="16px">
+                      <BsThreeDots />
+                    </Flex>
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem
+                      onClick={() => setEditModalOpen(true)}
+                      textTransform="capitalize"
+                      fontWeight="500"
+                      color="#2F2F2F"
+                      _hover={{ color: '#2F2F2F', fontWeight: '400', bg: '#E8FFF4' }}
+                    >
+                      <HStack fontSize="14px">
+                        <Text>Edit</Text>
+                      </HStack>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={onOpenRemove}
+                      textTransform="capitalize"
+                      fontWeight="500"
+                      color="#FF4040"
+                      _hover={{ color: '#FF4040', fontWeight: '400', bg: '#E8FFF4' }}
+                    >
+                      <HStack fontSize="14px">
+                        <Text>Remove Student</Text>
+                      </HStack>
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
               </HStack>
-            </Box>
-          </Flex>
-        </Box>
+              <Text color="#667085" fontSize="13px" fontWeight="400">
+                PhilipAmakiri@gmail.com
+              </Text>
+            </Stack>
+          </HStack>
 
-        <Flex justifyContent={"space-between"} flexWrap="wrap" mt="16px">
+          <Box mt={["10px", "10px", "0", "0"]}>
+            <HStack alignItems="center" backgroundColor="#FFF5E5" spacing="6.32px" borderRadius="16.86px" py="8.45px" px="7.38px">
+              <Box pos="relative" top="-1px" rounded="100%" w="8.43px" h="8.43px" bg="#FFA30C"></Box>
+              <Text fontWeight="500" fontSize="12.65px" color="#FFA30C">
+                Pending Approval
+              </Text>
+            </HStack>
+          </Box>
+        </Flex>
+      </Box>
+
+      <Flex justifyContent={"space-between"} flexWrap="wrap" mt="16px">
           <Box w={["100%", "100%", "40%", "40%"]} >
 
             <Stack spacing="16px">
@@ -246,7 +300,10 @@ export default function StudentProfile() {
           
           </Box>
         </Flex>
-      </Box>
+
+
+      <RemoveNotification isOpen={isRemoveModalOpen} onClose={onCloseRemove} />
+      <ProfileUpdateNotification isOpen={isEditModalOpen} onClose={() => setEditModalOpen(false)} />
     </MainLayout>
-  )
+  );
 }
