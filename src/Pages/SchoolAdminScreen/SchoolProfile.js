@@ -51,79 +51,71 @@ export default function SchoolProfile() {
         borderRadius={"10px"}
         borderColor={"#EDEFF2"}
       >
-        <Stack borderBottom="1px solid #EDEFF2" pb={"20px"}>
-        <HStack
-          background={"linear-gradient(90.61deg, #39996B 49.47%, #FFBC4F 99.47%)"}
-          justifyContent={"space-between"}
-          borderTopLeftRadius={"10px"}
-          borderTopRightRadius={"10px"}
-          px={"20px"}
-          pt={"40px"}
-          borderBottomWidth={"1px"}
-          borderBottomColor={"#EDEFF2"}
-          flexWrap={"wrap"}
-          height={"100px"}
-        >
-          {/* Logo and School Name */}
-          <HStack spacing={"24px"}>
-            <Flex>
-               <Box position="relative" w={"120px"} h={"120px"} rounded={"full"} boxShadow={"0px 4px 4px 0px #00000040"} cursor="pointer">
-              {/* Display uploaded logo or default SVG */}
-              {logoSrc ? (
-                <Image
-                  src={logoSrc}
-                  alt="School Logo"
-                  boxSize="120px"
-                  borderRadius="full"
-                  onClick={() => document.getElementById("logoInput").click()} // Trigger hidden input
-                />
-              ) : (
-                <LogoSVG
-                  onClick={() => document.getElementById("logoInput").click()}
-                />
-              )}
-              <input
-                type="file"
-                id="logoInput"
-                accept="image/*"
-                style={{ display: "none" }} // Hidden input
-                onChange={handleLogoChange}
-              />
-            </Box>
-            <Box pt="70px" ml="-20px" zIndex="1">
-            <ProfileUpdateIcon cursor={"pointer"} onClick={() => document.getElementById("logoInput").click()}/>
-            </Box>
-            </Flex>
-           
-            <Text fontSize="24px" pt="70px" fontWeight="700">
-              Legacy Scholars Academy
-            </Text>
-          </HStack>
-
-          {/* Verified Badge */}
-          <Box pt={"70px"}>
-          <HStack
-            borderWidth={"1px"}
-            cursor={"pointer"}
-            borderColor={"#39996B"}
-            fontWeight={"500"}
-            color={"#39996B"}
-            borderRadius={"8px"}
+        <Box >
+          <Box
+            background={"linear-gradient(90.61deg, #39996B 49.47%, #FFBC4F 99.47%)"}
+            justifyContent={"space-between"}
+            borderTopLeftRadius={"10px"}
+            borderTopRightRadius={"10px"}
             px={"20px"}
-            py={"8px"}
+            borderBottomWidth={"1px"}
+            borderBottomColor={"#EDEFF2"}
+            height={"100px"}
           >
-            <Box as="span">
-              <VerifySchool display={"inline-block"} />
-            </Box>
-            <Text>Verified</Text>
-          </HStack>
+           
           </Box>
-        </HStack>
 
-        <HStack height={"50px"}>
+          <Flex justifyContent={"space-between"} flexWrap="wrap" mt="22px" borderBottom="1px solid #EDEFF2" >
+           
+                <Box position="relative" cursor="pointer" top={["-72px","-90px"]} left="20px">
+                  {/* Display uploaded logo or default SVG */}
 
-        </HStack>
-        </Stack>
+                  <Image
+                    src={logoSrc}
+                    rounded={"full"} boxShadow={"0px 4px 4px 0px #00000040"}
+                    w={["100px", "100px", "129px", "129px"]} h={["100px", "100px", "129px", "129px"]}
+                    objectFit="cover"
+                    alt="School Logo"
+                    onClick={() => document.getElementById("logoInput").click()} // Trigger hidden input
+                  />
+
+                  <input
+                    type="file"
+                    id="logoInput"
+                    accept="image/*"
+                    style={{ display: "none" }} // Hidden input
+                    onChange={handleLogoChange}
+                  />
+                  <Box pos="absolute" bottom="0" right="0">
+                    <ProfileUpdateIcon cursor={"pointer"} onClick={() => document.getElementById("logoInput").click()} />
+                  </Box>
+                </Box>
+
+              <Text fontSize={["16px","24px"]}  fontWeight="700" w={["60%", "60%","60%","60%"]} pos="relative" left={["20px","0px","30px","0px",]}>
+                Legacy Scholars Academy
+              </Text>
+
+              <Box  w={["","","", "20%"]} pos="relative" top={["-50px", "-50px", "0", "0"]}>
+                <HStack
+                  borderWidth={"1px"}
+                  cursor={"pointer"}
+                  borderColor={"#39996B"}
+                  fontWeight={"500"}
+                  color={"#39996B"}
+                  borderRadius={"8px"}
+                  px={"20px"}
+                  py={"8px"}
+                >
+                  <Box as="span">
+                    <VerifySchool display={"inline-block"} />
+                  </Box>
+                  <Text>Verified</Text>
+                </HStack>
+              </Box>
+            </Flex>
+
+         
+        </Box>
 
         {/* Rest of the Page */}
         <Flex justifyContent={"space-between"} flexWrap="wrap" mt="16px">
