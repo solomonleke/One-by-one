@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ReactComponent as LogoSVG } from "../../Asset/schoolLogo.svg";
+import { ReactComponent as ProfileUpdateIcon } from "../../Asset/profileUpdateIcon.svg";
 import { ReactComponent as VerifySchool } from "../../Asset/verifySchool.svg";
 import MainLayout from "../../DashboardLayout";
 import Button from "../../Components/Button";
@@ -50,22 +51,29 @@ export default function SchoolProfile() {
         borderRadius={"10px"}
         borderColor={"#EDEFF2"}
       >
+        <Stack borderBottom="1px solid #EDEFF2" pb={"20px"}>
         <HStack
+          background={"linear-gradient(90.61deg, #39996B 49.47%, #FFBC4F 99.47%)"}
           justifyContent={"space-between"}
-          pb={"20px"}
+          borderTopLeftRadius={"10px"}
+          borderTopRightRadius={"10px"}
+          px={"20px"}
+          pt={"40px"}
           borderBottomWidth={"1px"}
           borderBottomColor={"#EDEFF2"}
           flexWrap={"wrap"}
+          height={"100px"}
         >
           {/* Logo and School Name */}
-          <HStack>
-            <Box position="relative" cursor="pointer">
+          <HStack spacing={"24px"}>
+            <Flex>
+               <Box position="relative" w={"120px"} h={"120px"} rounded={"full"} boxShadow={"0px 4px 4px 0px #00000040"} cursor="pointer">
               {/* Display uploaded logo or default SVG */}
               {logoSrc ? (
                 <Image
                   src={logoSrc}
                   alt="School Logo"
-                  boxSize="100px"
+                  boxSize="120px"
                   borderRadius="full"
                   onClick={() => document.getElementById("logoInput").click()} // Trigger hidden input
                 />
@@ -82,12 +90,18 @@ export default function SchoolProfile() {
                 onChange={handleLogoChange}
               />
             </Box>
-            <Text fontSize="24px" mt="auto" fontWeight="700">
+            <Box pt="70px" ml="-20px" zIndex="1">
+            <ProfileUpdateIcon cursor={"pointer"} onClick={() => document.getElementById("logoInput").click()}/>
+            </Box>
+            </Flex>
+           
+            <Text fontSize="24px" pt="70px" fontWeight="700">
               Legacy Scholars Academy
             </Text>
           </HStack>
 
           {/* Verified Badge */}
+          <Box pt={"70px"}>
           <HStack
             borderWidth={"1px"}
             cursor={"pointer"}
@@ -103,7 +117,13 @@ export default function SchoolProfile() {
             </Box>
             <Text>Verified</Text>
           </HStack>
+          </Box>
         </HStack>
+
+        <HStack height={"50px"}>
+
+        </HStack>
+        </Stack>
 
         {/* Rest of the Page */}
         <Flex justifyContent={"space-between"} flexWrap="wrap" mt="16px">

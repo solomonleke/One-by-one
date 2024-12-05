@@ -126,7 +126,7 @@ export default function ScholarshipAdminSignup() {
         </VStack>
 
         <Button onClick={() => {
-            router("/ProfileSetupComplete")
+            router("/profile-setup-complete")
         }}>Complete Profile Setup</Button>
                 </VStack>
             </Box>
