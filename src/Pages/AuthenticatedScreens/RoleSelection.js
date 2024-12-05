@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import AuthenticatedWrapper from './Layout/Index';
 import { Box, Text, Radio, Stack, HStack, RadioGroup } from '@chakra-ui/react';
 import Button from '../../Components/Button';
@@ -17,6 +17,8 @@ export default function RoleSelection() {
 
     const navigate = useNavigate();
 
+    const location = useLocation()
+
     const {id} = useParams()
 
     console.log(id)
@@ -33,6 +35,8 @@ export default function RoleSelection() {
     const handleContinue = () => {
 
         localStorage.setItem("tempToken", id)
+        localStorage.setItem("url", location.pathname)
+        
         const selected = roles.find(role => role.name === selectedRole);
 
         if (selected) {
