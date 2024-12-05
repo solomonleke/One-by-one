@@ -41,8 +41,9 @@ export default function NavBar({ showSearch = true }) {
     return (
         <Flex borderLeft="1px solid #EDEFF2" pos="sticky" top="0" bgColor={"white"} alignItems={"center"} justifyContent={"space-between"} zIndex={"10"} px="24px" py="15.6px" borderBottom={"1px solid #EDEFF2"}>
 
-
-            <Box visibility={showSearch === false ? "visible" : "hidden"} w="40%" display={["none", "none", "block", "block"]} >
+            {
+                showSearch === false && (
+                    <Box  w="40%" display={["none", "none", "block", "block"]} >
                 <HStack spacing="30px">
                     <Image onClick={()=>nav("/")} pl="-20px" src={logo} width={"30%"} borderRight={"1px solid #EDEFF2"} pr="20px"/>
                     <HStack  cursor="pointer" w='80px' onClick={() => setOpenModal(true)}>
@@ -52,6 +53,9 @@ export default function NavBar({ showSearch = true }) {
                 </HStack>
 
             </Box>
+                )
+            }
+           
 
             <Box visibility={showSearch ? "visible" : "hidden"} w="40%" display={["none", "none", "block", "block"]} >
                 <SearchInput leftIcon={<CiSearch />} label='search' />
