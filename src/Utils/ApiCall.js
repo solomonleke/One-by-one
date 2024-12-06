@@ -112,7 +112,7 @@ export const ResetPasswordApi = (Payload, Token) => {
   
     let data = JSON.stringify(Payload);
     let config = {
-      method: "post",
+      method: "patch",
       maxBodyLength: Infinity,
       url: `${baseUrl}/users/reset-password`,
       headers: {
