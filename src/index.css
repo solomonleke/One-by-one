@@ -30,6 +30,12 @@ code {
   padding-top: 8px;
 }
 
+.very {
+  padding-top: 8px;
+  width: 100%;
+  padding-right: 5px;
+}
+
 .uploadVerification {
   display: none;
   cursor: pointer;

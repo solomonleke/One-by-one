@@ -96,21 +96,10 @@ export default function SchoolProfile() {
               </Text>
 
               <Box  w={["","","", "20%"]} pos="relative" top={["-50px", "-50px", "0", "0"]}>
-                <HStack
-                  borderWidth={"1px"}
-                  cursor={"pointer"}
-                  borderColor={"#39996B"}
-                  fontWeight={"500"}
-                  color={"#39996B"}
-                  borderRadius={"8px"}
-                  px={"20px"}
-                  py={"8px"}
-                >
-                  <Box as="span">
-                    <VerifySchool display={"inline-block"} />
-                  </Box>
-                  <Text>Verified</Text>
-                </HStack>
+                <Button background="#fff" color={"#027A48"}>
+                  <span className='right'><VerifySchool className='very'/></span>
+                  Verified
+                </Button>
               </Box>
             </Flex>
 
