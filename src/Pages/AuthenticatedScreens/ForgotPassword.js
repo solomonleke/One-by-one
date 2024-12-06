@@ -44,7 +44,9 @@ export default function ForgotPassword() {
             const payload = { email, reason: "forgot-password" };
             const response = await ResendVerificationApi(payload);
 
-            if (response.status === 200) {
+            console.log("response", response )
+
+            if (response.status === 201) {
                 setShowToast({
                     show: true,
                     message: "Password reset link sent to your email.",
