@@ -114,7 +114,7 @@ export const ResetPasswordApi = (Payload, Token) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${baseUrl}/users/resend-email`,
+      url: `${baseUrl}/users/reset-password`,
       headers: {
         "Content-Type": "application/json",
          Authorization: `Bearer ${Token}`

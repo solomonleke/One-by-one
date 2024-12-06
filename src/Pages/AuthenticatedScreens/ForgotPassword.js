@@ -37,22 +37,23 @@ export default function ForgotPassword() {
             }, 3000);
             return;
         }
-
+    
         setLoading(true);
-
+    
         try {
             const payload = { email, reason: "forgot-password" };
             const response = await ResendVerificationApi(payload);
-
-            console.log("response", response )
-
+    
             if (response.status === 201) {
+                // Save the email to localStorage
+                localStorage.setItem('resetEmail', email);
+    
                 setShowToast({
                     show: true,
                     message: "Password reset link sent to your email.",
                     status: "success"
                 });
-
+    
                 setTimeout(() => {
                     setShowToast({ show: false });
                     router("/forgotten-password-email"); // Navigate to confirmation page
@@ -64,7 +65,7 @@ export default function ForgotPassword() {
                 message: error.message || "Failed to send reset link.",
                 status: "error"
             });
-
+    
             setTimeout(() => {
                 setShowToast({ show: false });
             }, 3000);
@@ -72,6 +73,7 @@ export default function ForgotPassword() {
             setLoading(false);
         }
     };
+    
 
     return (
         <AuthenticatedWrapper>
