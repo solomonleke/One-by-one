@@ -6,6 +6,8 @@ import Input from '../../Components/Input';
 import { useNavigate } from 'react-router-dom';
 
 export default function ResetPassword() {
+
+    
     const router = useNavigate();
   return (
     <AuthenticatedWrapper>

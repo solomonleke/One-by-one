@@ -107,7 +107,7 @@ export const CreateAdminApi = (Payload) => {
       });
   };
   
-export const LoginApi = (Payload) => {
+export const ResetPasswordApi = (Payload, Token) => {
     // console.log("CreateAccountPayload", Payload);
   
     let data = JSON.stringify(Payload);
@@ -117,6 +117,7 @@ export const LoginApi = (Payload) => {
       url: `${baseUrl}/users/resend-email`,
       headers: {
         "Content-Type": "application/json",
+         Authorization: `Bearer ${Token}`
       },
       data: data,
     };
