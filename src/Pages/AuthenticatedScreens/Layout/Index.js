@@ -29,7 +29,7 @@ export default function AuthenticatedWrapper({ children }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 2000); // Change slide every 2 seconds
+    }, 10000); // Change slide every 2 seconds
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, [slides.length]);
