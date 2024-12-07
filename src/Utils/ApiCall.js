@@ -141,4 +141,58 @@ export const ResetPasswordApi = (Payload, Token) => {
           }
       });
   };
+
+  export const SignInApi = (Payload) => {
+    let data = JSON.stringify(Payload);
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `${baseUrl}/auth/login`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+  
+    return axios
+      .request(config)
+      .then((response) => {
+        console.log("Response data:", response.data);
+        if (response.data.token) {
+          localStorage.setItem('authToken', response.data.token);
+        }
+        return response.data; // Return only response data
+      })
+      .catch((error) => {
+        console.log("Error response:", error.response?.data);
+        if (error.response?.data?.message) {
+          throw new Error(error.response.data.message);
+        } else if (error.response?.data) {
+          throw new Error(error.response);
+        } else if (error.request) {
+          throw new Error(error.message);
+        } else {
+          throw new Error(error.message);
+        }
+      });
+  };
+  
+  // Usage: Add the Bearer token for subsequent requests
+  export const fetchDataWithToken = async () => {
+    const token = localStorage.getItem('authToken');
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    };
+  
+    try {
+      const response = await axios.get(`${baseUrl}/some-protected-endpoint`, config);
+      console.log('Data from protected route:', response.data);
+    } catch (error) {
+      console.error('Error fetching data with token:', error);
+    }
+  };
+  
+  
   
