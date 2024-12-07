@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import AuthenticatedWrapper from './Layout/Index';
 import { Box, Text, VStack } from '@chakra-ui/react';
 import Button from '../../Components/Button';
 import Input from '../../Components/Input';
-import { useNavigate } from 'react-router-dom';
 import ShowToast from '../../Components/ToastNotification';
 import { ResetPasswordApi } from '../../Utils/ApiCall';
 
 export default function ResetPassword() {
+    const { token } = useParams(); // Extract token from URL
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -27,10 +28,15 @@ export default function ResetPassword() {
             return;
         }
 
+        if (!token) {
+            setShowToast({ show: true, message: 'Invalid token. Please try again.', status: 'error' });
+            setTimeout(() => setShowToast({ show: false }), 3000);
+            return;
+        }
+
         setLoading(true);
 
         try {
-            const token = localStorage.getItem('resetToken'); // Retrieve the reset token from localStorage or URL params
             const payload = { password: newPassword };
             const response = await ResetPasswordApi(payload, token);
 
