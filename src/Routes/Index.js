@@ -49,7 +49,7 @@ export default function IndexRoutes() {
         <Route path='/profile-setup-complete' element={<ProfileSetupComplete />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/forgotten-password-email' element={<ForgottenPasswordEmail />} />
-        <Route path='/reset-password/:id' element={<ResetPassword />} />
+        <Route path='/reset-password/:token' element={<ResetPassword />} />
 
       </Routes>
     </BrowserRouter>
