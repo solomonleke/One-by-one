@@ -5,8 +5,11 @@ import { FaArrowLeft } from "react-icons/fa";
 import { Box, Text, VStack, HStack, Tag, Wrap, WrapItem } from "@chakra-ui/react";
 import TextArea from "../../Components/TextArea";
 import Button from "../../Components/Button";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const Sponsor = () => {
+  const nav = useNavigate();
   const [currentView, setCurrentView] = useState("motivationView");
   const [payload, setPayload] = useState({
     motivation: "",
@@ -49,7 +52,14 @@ const Sponsor = () => {
   return (
     <AuthenticatedWrapper>
       <Box px={["3%", "15%"]} mt="74px">
-        <Box mt="62px">
+      <Box mt="62px" position="relative" overflow="hidden">
+          <motion.div
+            key={currentView}
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "tween", ease: "easeOut", duration: 0.5 }}
+          >
           {currentView === "motivationView" && (
             <VStack spacing="70px" align="start">
               <VStack align="start" spacing="22px">
@@ -109,7 +119,8 @@ const Sponsor = () => {
               </Wrap>
             </VStack>
           )}
-        </Box>
+       </motion.div>
+       </Box>
 
         <HStack mt="150px" align="center" spacing="auto">
           {renderPaginationLines()}
