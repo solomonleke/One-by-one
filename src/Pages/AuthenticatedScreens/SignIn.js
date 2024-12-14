@@ -18,7 +18,7 @@ export default function SignIn() {
 
   const handleSignIn = async () => {
     if (!email || !password) {
-      setShowToast({ show: true, message: 'Please fill in all fields.', status: 'error' });
+      setShowToast({ show: true, message: "Please fill in all fields.", status: "error" });
       setTimeout(() => setShowToast({ show: false }), 3000);
       return;
     }
@@ -27,32 +27,47 @@ export default function SignIn() {
   
     try {
       const payload = { email, password };
-      const response = await SignInApi(payload);
+      const token = await SignInApi(payload);
   
-      if (response) {
-        localStorage.setItem('authToken', response);
-        fetchDataWithToken();
+      if (token) {
+        // Decode the JWT to extract user info
+        const base64Url = token.split(".")[1]; // Get the payload part
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split("")
+            .map((c) => `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`)
+            .join("")
+        );
+  
+        const userData = JSON.parse(jsonPayload);
+        console.log("Decoded JWT Payload:", userData);
+  
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("userName", `${userData.firstName} ${userData.lastName}`); // Save full name
   
         setShowToast({
           show: true,
-          message: 'Login successful! Redirecting...',
-          status: 'success',
+          message: "Login successful! Redirecting...",
+          status: "success",
         });
-        console.log('Redirecting to /school-admin');
+  
         setTimeout(() => {
           setShowToast({ show: false });
-          router('/school-admin');
+          router("/school-admin");
         }, 3000);
       } else {
-        throw new Error('Invalid response format');
+        throw new Error("Invalid response format");
       }
     } catch (error) {
-      setShowToast({ show: true, message: error.message || 'Failed to sign in.', status: 'error' });
+      setShowToast({ show: true, message: error.message || "Failed to sign in.", status: "error" });
       setTimeout(() => setShowToast({ show: false }), 3000);
     } finally {
       setLoading(false);
     }
   };
+  
+  
   
   
 

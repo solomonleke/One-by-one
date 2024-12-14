@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../DashboardLayout'
 import { Text, Flex, HStack, Box } from '@chakra-ui/react'
@@ -11,7 +11,7 @@ import { RxTimer } from "react-icons/rx";
 import { MdOutlineCancel } from 'react-icons/md'
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { GoArrowDown } from "react-icons/go";
-import { Bar, BarChart, CartesianGrid, Label, Legend, Pie, PieChart, Tooltip, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
 import TableRow from "../../Components/TableRow"
 import { CgSearch } from "react-icons/cg";
 import { IoFilter } from "react-icons/io5";
@@ -19,16 +19,22 @@ import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
-  Td,
-  TableCaption,
   TableContainer,
 } from '@chakra-ui/react'
 
 
 export default function Index() {
+
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    const storedName = localStorage.getItem('userName');
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);
 
   const router = useNavigate();
 
@@ -85,7 +91,7 @@ export default function Index() {
   return (
     <MainLayout>
 
-      <Text color={"#1F2937"} fontWeight={"700"} fontSize={"24px"} lineHeight={"25.41px"}>Welcome back, Solomon. </Text>
+      <Text color={"#1F2937"} fontWeight={"700"} fontSize={"24px"} lineHeight={"25.41px"}>Welcome back, {userName || "User"}!</Text>
       <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} lineHeight={"24px"}>Easily track and manage student information with real-time insights and updates. </Text>
 
 
