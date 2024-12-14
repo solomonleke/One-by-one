@@ -26,6 +26,7 @@ export default function SchoolAdminSignup() {
         schoolEmail: "",
         address: "",
         city: "",
+        localGovernment: "",
         state: "",
         zipCode: "",
         classCapacity: "",

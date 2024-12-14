@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import AuthenticatedWrapper from './Layout/Index'
 import { Box, HStack, Text, VStack } from '@chakra-ui/react'
 import { FaArrowLeft, FaCloudUploadAlt } from 'react-icons/fa'
@@ -6,9 +6,77 @@ import Input from '../../Components/Input'
 import TextArea from '../../Components/TextArea'
 import Button from '../../Components/Button'
 import { useNavigate } from 'react-router-dom'
+import { CreateAdminApi } from "../../Utils/ApiCall";
+import ShowToast from "../../Components/ToastNotification";
 
 export default function ScholarshipAdminSignup() {
-    const router = useNavigate();
+
+    const [payload, setPayload] = useState({
+        userType: "SCHOLARSHIP-ADMIN",
+        state: "",
+        localGoverment: "",
+        city: "",
+        homeAddress: "",
+        occupation: "",
+        phoneNumber: "",
+      });
+
+      const [showToast, setShowToast] = useState({
+        show: false,
+        message: "",
+        status: ""
+      })
+    
+      const [Loading, setLoading] = useState(false)
+
+    const nav = useNavigate();
+
+      const handlePayload = (e) => {
+
+        setPayload({ ...payload, [e.target.id]: e.target.value })
+    
+      }
+
+      const Submit = async () => {
+
+        setLoading(true)
+        try {
+    
+          const result = await CreateAdminApi(payload)
+    
+          if (result.status === 201) {
+            setLoading(false)
+            setShowToast({ show: true, message: "Scholarship Admin created successfully. Kindly Sign in to Continue", status: "success" })
+            setTimeout(() => {
+              setShowToast({
+                show: false,
+    
+              })
+    
+              nav("/profile-setup-complete")
+            }, 4000)
+          }
+        } catch (e) {
+          setLoading(false)
+          console.log(e.message)
+          setShowToast({
+            show: true,
+            message: e.message,
+            status: "error"
+          })
+    
+          setTimeout(() => {
+            setShowToast({
+              show: false,
+    
+            })
+          }, 7000)
+        }
+      }
+
+
+
+
     return (
         <AuthenticatedWrapper>
             <Box px={["3%", "15%"]} mt="74px">
@@ -38,12 +106,25 @@ export default function ScholarshipAdminSignup() {
                         label="State"
                         type="text"
                         placeholder="Enter your state"
+                        onChange={handlePayload} 
+                        value={payload.state}
+                        id='state'
                     />
-                    <Input label="Local Government" type="text" placeholder='e.g Oshodi isolo' />
-                    <Input label="City" type="text" placeholder='e.g Okota' />
-                    <Input label="Home Address" type="text" placeholder='e.g 86 Jemtok street' />
-                    <Input label="Occupation" type="text" placeholder='e.g Banker' />
-                    <Input label="Phone Number" type="text" placeholder='+234' />
+                    <Input label="Local Government" type="text" placeholder='e.g Oshodi isolo' onChange={handlePayload} 
+                        value={payload.localGoverment}
+                        id='localGoverment' />
+                    <Input label="City" type="text" placeholder='e.g Okota' onChange={handlePayload} 
+                        value={payload.city}
+                        id='city' />
+                    <Input label="Home Address" type="text" placeholder='e.g 86 Jemtok street' onChange={handlePayload} 
+                        value={payload.homeAddress}
+                        id='homeAddress' />
+                    <Input label="Occupation" type="text" placeholder='e.g Banker' onChange={handlePayload} 
+                        value={payload.occupation}
+                        id='occupation' />
+                    <Input label="Phone Number" type="text" placeholder='+234' onChange={handlePayload} 
+                        value={payload.phoneNumber}
+                        id='phoneNumber' />
 
         <VStack justifyItems={"start"} alignItems={"start"} flexDirection="column" gap="0px">
             <Text
@@ -125,8 +206,8 @@ export default function ScholarshipAdminSignup() {
             </Box>
         </VStack>
 
-        <Button onClick={() => {
-            router("/profile-setup-complete")
+        <Button isLoading={Loading} onClick={() => {
+            Submit();
         }}>Complete Profile Setup</Button>
                 </VStack>
             </Box>
