@@ -35,8 +35,42 @@ export const CreateAccountApi = (Payload) => {
     });
 };
 
+export const CreateStudentApi = (Payload) => {
+  // console.log("CreateStudentApi", Payload);
+
+  let data = JSON.stringify(Payload);
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/school-admin/register-student`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: data,
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error.response);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
 export const ResendVerificationApi = (Payload) => {
-  // console.log("CreateAccountPayload", Payload);
+  // console.log("ResendVerificationApi", Payload);
 
   let data = JSON.stringify(Payload);
   let config = {
@@ -68,8 +102,6 @@ export const ResendVerificationApi = (Payload) => {
       }
     });
 };
-
-// const userData = JSON.parse(jsonPayload);
 
 
 export const CreateAdminApi = (Payload) => {
@@ -111,7 +143,7 @@ export const CreateAdminApi = (Payload) => {
 };
 
 export const ResetPasswordApi = (Payload, Token) => {
-  // console.log("CreateAccountPayload", Payload);
+  // console.log("ResetPasswordApi", Payload);
 
   let data = JSON.stringify(Payload);
   let config = {

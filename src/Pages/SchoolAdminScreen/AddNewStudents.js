@@ -10,7 +10,84 @@ import { useNavigate } from 'react-router-dom';
 import { GiCheckMark } from "react-icons/gi";
 import { FaArrowLeft, FaCloudUploadAlt } from 'react-icons/fa'
 import { FiEdit2 } from "react-icons/fi";
+import { CreateStudentApi } from "../../Utils/ApiCall";
+import ShowToast from "../../Components/ToastNotification";
+
+
 export default function AddNewStudents() {
+
+    const [payload, setPayload] = useState({
+        fullName: "",
+        dob: "",
+        gender: "",
+        studentPhone: "",
+        email: "",
+        guardianPhone: "",
+        state: "",
+        city: "",
+        zipCode: "",
+        address: "",
+        department: "",
+        classLevel: "",
+        performance: "",
+        subjects: "",
+        intendedFieldOfStudy: "",
+        studentInterests: "",
+        higherEducationGoals: "",
+        careerGoals: "",
+        scholarshipNeed: "",
+      });
+
+      const [showToast, setShowToast] = useState({
+        show: false,
+        message: "",
+        status: ""
+      })
+    
+      const [Loading, setLoading] = useState(false);
+
+      const handlePayload = (e) => {
+
+        setPayload({ ...payload, [e.target.id]: e.target.value })
+    
+      }
+
+      const Submit = async () => {
+
+        setLoading(true)
+        try {
+    
+          const result = await CreateStudentApi(payload)
+    
+          if (result.status === 201) {
+            setLoading(false)
+            setShowToast({ show: true, message: "Student Created Successfully", status: "success" })
+            setTimeout(() => {
+              setShowToast({
+                show: false,
+    
+              })
+    
+              nav("/school-admin/student-management")
+            }, 4000)
+          }
+        } catch (e) {
+          setLoading(false)
+          console.log(e.message)
+          setShowToast({
+            show: true,
+            message: e.message,
+            status: "error"
+          })
+    
+          setTimeout(() => {
+            setShowToast({
+              show: false,
+    
+            })
+          }, 7000)
+        }
+      }
 
     const [OpenModal, setOpenModal] = useState(false)
 
@@ -39,7 +116,12 @@ export default function AddNewStudents() {
     return (
         <SubLayout showSearch={false} showNav={false} bgColor='#fff' borderRight={"none"}>
 
+            {
+                showToast.show && (
+                    <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
 
+                )
+            }
 
             <Flex justifyContent="space-between" flexWrap="wrap" pl={["0", "0", "0", "128px"]}>
                 <Box w={["100%", "100%", "25%", "25%",]} zIndex="0" pos="relative" left="0">
@@ -156,8 +238,8 @@ export default function AddNewStudents() {
                                         Please provide the student's details to help sponsors and mentors understand their <br /> academic background and potential.
                                     </Text>
                                 </Stack>
-                                <Input label="Student Full Name" placeholder="Enter student’s full name as it appears on official documents." />
-                                <Input label='Date of Birth (DOB)' placeholder="DD/MM/YYYY" />
+                                <Input label="Student Full Name" placeholder="Enter student’s full name as it appears on official documents." onChange={handlePayload} value={payload.fullName} id='fullName' />
+                                <Input label='Date of Birth (DOB)' placeholder="DD/MM/YYYY" onChange={handlePayload} value={payload.dob} id='dob' />
                                 <Stack w="100%" pos="relative" top="-15px">
                                     <Text
                                         textTransform="capitalize"
@@ -170,6 +252,9 @@ export default function AddNewStudents() {
                                     </Text>
 
                                     <Select
+                                        onChange={handlePayload} 
+                                        value={payload.gender}
+                                        id='gender'
                                         border="2px"
                                         placeholder="Select option"
                                         fontSize="small"
@@ -177,17 +262,17 @@ export default function AddNewStudents() {
                                         size="lg"
                                         w="100%"
                                     >
-                                        <option value="option1">Male</option>
-                                        <option value="option2">Female</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
                                     </Select>
                                 </Stack>
-                                <Input label='Phone Number' placeholder='+234' />
-                                <Input label='Guardian’s Phone Number (Optional)' placeholder='+234' />
-                                <Input label='Email Address' placeholder='Provide the student’s email address' />
+                                <Input label='Phone Number' placeholder='+234' onChange={handlePayload} value={payload.studentPhone} id='studentPhone' />
+                                <Input label='Guardian’s Phone Number (Optional)' placeholder='+234' onChange={handlePayload} value={payload.guardianPhone} id='guardianPhone' />
+                                <Input label='Email Address' placeholder='Provide the student’s email address' onChange={handlePayload} value={payload.email} id='email' />
 
-                                <Input label='State' placeholder="Enter the student's current address (street, city, state)." />
-                                <Input label='City' placeholder="Enter the student's current address (street, city, state)." />
-                                <Input label='Residential Address' placeholder="Enter the student's current address (street, city, state)." />
+                                <Input label='State' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.state} id='state' />
+                                <Input label='City' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.city} id='city' />
+                                <Input label='Residential Address' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.address} id='address' />
 
 
                                 <Flex justifyContent="space-between" w="100%" >
@@ -243,11 +328,11 @@ export default function AddNewStudents() {
                                     >
                                         Please provide the student's details to help sponsors and mentors understand their academic background and potential.                                    </Text>
                                 </Stack>
-                                <Input label="Department" placeholder="e.g science, arts, commercial" />
-                                <Input label='class level' placeholder="e.g SS2" />
+                                <Input label="Department" placeholder="e.g science, arts, commercial" onChange={handlePayload} value={payload.department} id='department' />
+                                <Input label='class level' placeholder="e.g SS2" onChange={handlePayload} value={payload.classLevel} id='classLevel' />
 
-                                <TextArea label='class performance' placeholder="Briefly describe how this student is performing in your current classes (e.g., overall grades, key subjects)."></TextArea>
-                                <TextArea label='subject' placeholder="List the main subjects this student is studying this session"></TextArea>
+                                <TextArea label='class performance' placeholder="Briefly describe how this student is performing in your current classes (e.g., overall grades, key subjects)." onChange={handlePayload} value={payload.performance} id='performance'></TextArea>
+                                <TextArea label='subject' placeholder="List the main subjects this student is studying this session" onChange={handlePayload} value={payload.subjects} id='subjects'></TextArea>
 
 
                                 <Flex justifyContent="space-between" w="100%" flexWrap='wrap'>
@@ -323,9 +408,9 @@ export default function AddNewStudents() {
                                         color="#6B7280"
                                         mt="8px"
                                     >
-                                        Provide details about the student's career goals, interests, leadership roles, and the level of financial support they require.                        </Text>
+                                        Provide details about the student's career goals, interests, leadership roles, and the level of financial support they require.</Text>
                                 </Stack>
-                                <Input label="intended Field of study " placeholder="e.g Nursing Science" />
+                                <Input label="intended Field of study " placeholder="e.g Nursing Science" onChange={handlePayload} value={payload.intendedFieldOfStudy} id='intendedFieldOfStudy'/>
                                 <Stack w="100%" pos="relative" top="-15px">
                                     <Text
                                         textTransform="capitalize"
@@ -345,6 +430,9 @@ export default function AddNewStudents() {
                                         w="100%"
                                         _placeholder={{ color: "red" }}
                                         color="#ADB4BF"
+                                        onChange={handlePayload} 
+                                        value={payload.studentInterests}
+                                        id='studentInterests'
 
                                         placeholder="Select tags associated with the student’s main area of interest"
                                     >
@@ -353,8 +441,8 @@ export default function AddNewStudents() {
                                         <option value="nurse process">Nurse Process</option>
                                     </Select>
                                 </Stack>
-                                <Input label='Higher Education Goals ' placeholder="Enter the student’s higher education aspirations" />
-                                <Input label='career goals' placeholder="Enter the career path the student is aspiring toward" />
+                                <Input label='Higher Education Goals ' placeholder="Enter the student’s higher education aspirations" onChange={handlePayload} value={payload.higherEducationGoals} id='higherEducationGoals'/>
+                                <Input label='career goals' placeholder="Enter the career path the student is aspiring toward" onChange={handlePayload} value={payload.careerGoals} id='careerGoals'/>
                                 <Input label='leadership roles' placeholder="Mention any leadership roles the student has taken on" />
                                 <Input label='Extracurricular Activities' placeholder="e.g Debate club" />
 
@@ -376,6 +464,9 @@ export default function AddNewStudents() {
                                         size="lg"
                                         w="100%"
                                         color="#ADB4BF"
+                                        onChange={handlePayload} 
+                                        value={payload.scholarshipNeed}
+                                        id='scholarshipNeed'
                                         placeholder="Select the level of financial support the student requires"
                                     >
                                         <option value="Full Scholarship">Full Scholarship </option>
@@ -563,38 +654,38 @@ export default function AddNewStudents() {
                                         color="#6B7280"
                                         mt="8px"
                                     >
-                                        Please review the student's details carefully before clicking submit to ensure accuracy.   </Text>
+                                        Please review the student's details carefully before clicking submit to ensure accuracy. </Text>
                                 </Stack>
                          
                          <Stack border="1px solid #E3EBF2" rounded={"7px"} py="14px" px="17px" spacing="13px" w="100%">
 
                             <ReviewCard
                             title="full name"
-                            value="Adeleke Solomon"
+                            value={payload.fullName}
 
                              />
 
                             <ReviewCard
                             title="date of birth"
-                            value="22/01/1990"
+                            value={payload.dob}
 
                              />
 
                             <ReviewCard
                             title="gender"
-                            value="male"
+                            value={payload.gender}
 
                              />
 
                             <ReviewCard
                             title="state"
-                            value="lagos"
+                            value={payload.state}
 
                              />
 
                             <ReviewCard
                             title="city"
-                            value="Okota"
+                            value={payload.city}
 
                              />
 
@@ -604,19 +695,19 @@ export default function AddNewStudents() {
 
                             <ReviewCard
                             title="phone number"
-                            value="08165413816"
+                            value={payload.studentPhone}
 
                              />
 
                             <ReviewCard
                             title="email address"
-                            value="lordsoliz@gmail.com"
+                            value={payload.email}
 
                              />
 
                             <ReviewCard
                             title="residential address"
-                            value="64 jemtok street, ago palace.."
+                            value={payload.address}
 
                              />
 
@@ -626,19 +717,19 @@ export default function AddNewStudents() {
 
                             <ReviewCard
                             title="department"
-                            value="arts"
+                            value={payload.department}
 
                              />
 
                             <ReviewCard
                             title="class level"
-                            value="SS2"
+                            value={payload.classLevel}
 
                              />
 
                             <ReviewCard
                             title="subjects"
-                            value="64 jemtok street, ago palace.."
+                            value={payload.subjects}
 
                              />
 
@@ -647,20 +738,14 @@ export default function AddNewStudents() {
                          <Stack border="1px solid #E3EBF2" rounded={"7px"} py="14px" px="17px" spacing="13px" w="100%">
 
                             <ReviewCard
-                            title="feild of interest"
-                            value="nursing science"
+                            title="field of interest"
+                            value={payload.studentInterests}
 
                              />
 
                             <ReviewCard
                             title="scholarship neeed"
-                            value="full scholarship"
-
-                             />
-
-                            <ReviewCard
-                            title="subjects"
-                            value="64 jemtok street, ago palace.."
+                            value={payload.scholarshipNeed}
 
                              />
 
@@ -696,9 +781,9 @@ export default function AddNewStudents() {
 
                                             }}>Back</Button>
 
-                                            <Button px="43px" onClick={() => {
+                                            <Button px="43px" isLoading={Loading} onClick={() => {
 
-                                               
+                                                    Submit()
 
                                             }}>Add Student</Button>
                                         </HStack>
