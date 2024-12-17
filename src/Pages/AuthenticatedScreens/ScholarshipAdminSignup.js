@@ -79,6 +79,12 @@ export default function ScholarshipAdminSignup() {
 
     return (
         <AuthenticatedWrapper>
+             {
+                showToast.show && (
+                    <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
+
+                )
+            }
             <Box px={["3%", "15%"]} mt="74px">
                 <VStack spacing="70px" alignItems={"start"}>
                     <VStack justifyItems={"start"} alignItems={"start"} spacing={"22px"}>
@@ -207,7 +213,7 @@ export default function ScholarshipAdminSignup() {
         </VStack>
 
         <Button isLoading={Loading} onClick={() => {
-            Submit();
+            Submit()
         }}>Complete Profile Setup</Button>
                 </VStack>
             </Box>
