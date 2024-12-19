@@ -31,7 +31,7 @@ export default function Input({
   py,
   rightIcon = null,
   w = "100%",
-  borderColor = "blue.blue400",
+  borderColor = "greenn.greenn400",
   labelBg = "blue.blue350",
   leftIcon,
   iconColor = "#fff",

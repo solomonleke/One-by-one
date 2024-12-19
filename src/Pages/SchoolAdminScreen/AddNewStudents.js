@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import SubLayout from '../../DashboardLayout/SubLayout'
 import { Text, Flex, HStack, VStack, Stack, Select, Box, Spacer } from '@chakra-ui/react'
 import Input from '../../Components/Input'
@@ -12,9 +12,49 @@ import { FaArrowLeft, FaCloudUploadAlt } from 'react-icons/fa'
 import { FiEdit2 } from "react-icons/fi";
 import { CreateStudentApi } from "../../Utils/ApiCall";
 import ShowToast from "../../Components/ToastNotification";
+import UpdateReviewModal from '../../Components/UpdateReview'
+import { StudentContext } from '../../Components/StudentContext'
 
 
 export default function AddNewStudents() {
+
+const { addStudent } = useContext(StudentContext);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    department: "",
+    classLevel: "",
+    fieldOfStudy: "",
+    status: "pending", // default status
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = () => {
+    addStudent(formData);
+    nav("/school-admin/student-management");
+  };
+
+    const [oldValue, setOldValue] = useState({
+        name: "",
+        value: "",
+        id: ""
+    })
+
+    const updateReview = (name, value, id) => {
+        console.log(name, value)
+        setOpenReviewModal(true)
+        setOldValue({
+            name, value, id
+        })
+    }
+
+   
 
     const [payload, setPayload] = useState({
         fullName: "",
@@ -90,6 +130,7 @@ export default function AddNewStudents() {
       }
 
     const [OpenModal, setOpenModal] = useState(false)
+    const [OpenReviewModal, setOpenReviewModal] = useState(false)
 
     const [StudentDetails, setStudentDetails] = useState({
         view: true,
@@ -239,7 +280,7 @@ export default function AddNewStudents() {
                                     </Text>
                                 </Stack>
                                 <Input label="Student Full Name" placeholder="Enter student’s full name as it appears on official documents." onChange={handlePayload} value={payload.fullName} id='fullName' />
-                                <Input label='Date of Birth (DOB)' placeholder="DD/MM/YYYY" onChange={handlePayload} value={payload.dob} id='dob' />
+                                <Input label='Date of Birth (DOB)' type='date' placeholder="DD/MM/YYYY" onChange={handlePayload} value={payload.dob} id='dob' />
                                 <Stack w="100%" pos="relative" top="-15px">
                                     <Text
                                         textTransform="capitalize"
@@ -662,30 +703,35 @@ export default function AddNewStudents() {
                             <ReviewCard
                             title="full name"
                             value={payload.fullName}
+                            onClick={()=>updateReview("Full Name", payload.fullName, "fullName")}
 
                              />
 
                             <ReviewCard
                             title="date of birth"
                             value={payload.dob}
+                            onClick={()=>updateReview("Date of Birth", payload.dob, "dob")}
 
                              />
 
                             <ReviewCard
                             title="gender"
                             value={payload.gender}
+                            onClick={()=>updateReview("Gender", payload.gender, "gender")}
 
                              />
 
                             <ReviewCard
                             title="state"
                             value={payload.state}
+                            onClick={()=>updateReview("State", payload.state, "state")}
 
                              />
 
                             <ReviewCard
                             title="city"
                             value={payload.city}
+                            onClick={()=>updateReview("City", payload.city, "city")}
 
                              />
 
@@ -696,18 +742,21 @@ export default function AddNewStudents() {
                             <ReviewCard
                             title="phone number"
                             value={payload.studentPhone}
+                            onClick={()=>updateReview("Student Phone", payload.studentPhone, "studentPhone")}
 
                              />
 
                             <ReviewCard
                             title="email address"
                             value={payload.email}
+                            onClick={()=>updateReview("Email Address", payload.email, "email")}
 
                              />
 
                             <ReviewCard
                             title="residential address"
                             value={payload.address}
+                            onClick={()=>updateReview("Residental Address", payload.address, "address")}
 
                              />
 
@@ -718,18 +767,21 @@ export default function AddNewStudents() {
                             <ReviewCard
                             title="department"
                             value={payload.department}
+                            onClick={()=>updateReview("Department", payload.department, "department")}
 
                              />
 
                             <ReviewCard
                             title="class level"
                             value={payload.classLevel}
+                            onClick={()=>updateReview("Class Level", payload.classLevel, "classLevel")}
 
                              />
 
                             <ReviewCard
                             title="subjects"
                             value={payload.subjects}
+                            onClick={()=>updateReview("Subjects", payload.subjects, "subjects")}
 
                              />
 
@@ -740,17 +792,80 @@ export default function AddNewStudents() {
                             <ReviewCard
                             title="field of interest"
                             value={payload.studentInterests}
+                            onClick={()=>updateReview("Field Of Interest", payload.studentInterests, "studentInterests")}
 
                              />
 
                             <ReviewCard
                             title="scholarship neeed"
                             value={payload.scholarshipNeed}
+                            onClick={()=>updateReview("Scholarship Need", payload.fullName, "fullName")}
 
                              />
 
+                             <ReviewCard
+                            title="performance"
+                            value={payload.performance}
+                            onClick={()=>updateReview("Performance", payload.performance, "performance")}
+
+                             />
+
+                             <ReviewCard
+                            title="career goals"
+                            value={payload.careerGoals}
+                            onClick={()=>updateReview("Career Goals", payload.careerGoals, "careerGoals")}
+
+                             />
+
+                             <ReviewCard
+                            title="higher education goals"
+                            value={payload.higherEducationGoals}
+                            onClick={()=>updateReview("Higher Educational Goals", payload.higherEducationGoals, "higherEducationGoals")}
+
+                             />
+
+
+<Box p="20px">
+      <Input
+        placeholder="Full Name"
+        name="name"
+        onChange={handleChange}
+        value={formData.name}
+        mb="10px"
+      />
+      <Input
+        placeholder="Email"
+        name="email"
+        onChange={handleChange}
+        value={formData.email}
+        mb="10px"
+      />
+      <Input
+        placeholder="Department"
+        name="department"
+        onChange={handleChange}
+        value={formData.department}
+        mb="10px"
+      />
+      <Input
+        placeholder="Class Level"
+        name="classLevel"
+        onChange={handleChange}
+        value={formData.classLevel}
+        mb="10px"
+      />
+      <Input
+        placeholder="Field of Study"
+        name="fieldOfStudy"
+        onChange={handleChange}
+        value={formData.fieldOfStudy}
+        mb="10px"
+      />
+      <Button onClick={handleSubmit}>Add Student</Button>
+    </Box>
                         
                          </Stack>
+
 
 
                                 <Flex justifyContent="space-between" w="100%" >
@@ -801,6 +916,7 @@ export default function AddNewStudents() {
 
             </Flex>
             <BackNotification isOpen={OpenModal} onClose={()=>setOpenModal(false)} />
+            <UpdateReviewModal isOpen={OpenReviewModal} onClose={()=>setOpenReviewModal(false)} oldValue={oldValue} payload={payload} setPayload={setPayload} />
         </SubLayout>
 
     )
