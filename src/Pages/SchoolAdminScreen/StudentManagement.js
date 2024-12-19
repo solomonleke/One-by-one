@@ -122,68 +122,6 @@ export default function StudentManagement() {
                                     onRemove={onOpen}
                                     onEdit={()=>setOpenModal(true)}
                                 />
-                                <TableRow
-                                    type="school-admin"
-                                    name="Moyinoluwa King"
-                                    email="moyinadeleke@yahoo.com"
-                                    department="commercial"
-                                    classLevel="SS3"
-                                    fieldOfStudy="Computer Science"
-                                    status="approved"
-                                    onRemove={onOpen}
-                                    onEdit={()=>setOpenModal(true)}
-                                />
-                                <TableRow
-                                    type="school-admin"
-                                    name="Moyinoluwa King"
-                                    email="moyinadeleke@yahoo.com"
-                                    department="commercial"
-                                    classLevel="SS3"
-                                    fieldOfStudy="Computer Science"
-                                    status="approved"
-                                    onRemove={onOpen}
-                                    onEdit={()=>setOpenModal(true)}
-                                />
-                                <TableRow
-                                    type="school-admin"
-                                    name="Paul Smith"
-                                    email="paulsmith@yahoo.com"
-                                    department="arts"
-                                    classLevel="SS3"
-                                    fieldOfStudy="Computer Science"
-                                    status="pending"
-                                    onRemove={onOpen}
-                                    onEdit={()=>setOpenModal(true)}
-                                />
-                                <TableRow
-                                    type="school-admin"
-                                    name="Paul Smith"
-                                    email="paulsmith@yahoo.com"
-                                    department="arts"
-                                    classLevel="SS3"
-                                    fieldOfStudy="Computer Science"
-                                    status="pending"
-                                    onRemove={onOpen}
-                                    onEdit={()=>setOpenModal(true)}
-                                />
-                                <TableRow
-                                    type="school-admin"
-                                    name="Daniel Price"
-                                    email="danielprice@yahoo.com"
-                                    department="science"
-                                    classLevel="SS2"
-                                    fieldOfStudy="Computer Science"
-                                    status="rejected"
-                                />
-                                <TableRow
-                                    type="school-admin"
-                                    name="Daniel Price"
-                                    email="danielprice@yahoo.com"
-                                    department="science"
-                                    classLevel="SS2"
-                                    fieldOfStudy="Computer Science"
-                                    status="rejected" 
-                                />
 
                             </Tbody>
 
