@@ -20,6 +20,7 @@ import ProfileSetupComplete from '../Pages/AuthenticatedScreens/ProfileSetupComp
 import ForgotPassword from '../Pages/AuthenticatedScreens/ForgotPassword'
 import ForgottenPasswordEmail from '../Pages/AuthenticatedScreens/ForgottenPasswordEmail'
 import ResetPassword from '../Pages/AuthenticatedScreens/ResetPassword'
+import ScholarshipAdmin from '../Pages/ScholarshipAdminScreen/Index'
 
 
 export default function IndexRoutes() {
@@ -50,6 +51,13 @@ export default function IndexRoutes() {
         <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/forgotten-password-email' element={<ForgottenPasswordEmail />} />
         <Route path='/reset-password/:token' element={<ResetPassword />} />
+
+
+
+        {/* scholarship admin routes */}
+        <Route path='/scholarship-admin' element={<ScholarshipAdmin/>} />
+
+
 
       </Routes>
     </BrowserRouter>

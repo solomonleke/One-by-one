@@ -50,6 +50,14 @@ const checkActive= ()=>{
         active: isActive(location, "/school-admin/school-profile"),
         display: true
     },
+
+    {
+        name: "overview",
+        icon: <RxDashboard/>,
+        link: "/scholarship-admin",
+        active: isActive(location, "/scholarship-admin"),
+        display: true
+    },
     
     {
         name: "settings",
