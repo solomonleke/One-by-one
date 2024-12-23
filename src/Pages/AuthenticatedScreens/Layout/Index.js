@@ -1,4 +1,4 @@
-import { Box, Flex, VStack, Text } from "@chakra-ui/react";
+import { Box, Flex, VStack, Text, Image } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import BackgroundImage from "../../../Asset/onebyone.svg";
 import Logo from "../../../Asset/onebyonelogo.svg";
@@ -69,17 +69,8 @@ export default function AuthenticatedWrapper({ children }) {
         >
           {/* School Logo */}
           <Box mb="4">
-            <img
-              src={Logo} // Replace with your logo path
-              alt="School Logo"
-              style={{
-                width: "150px",
-                height: "150px",
-                position: "fixed",
-                left: "750px",
-                bottom: "210px",
-              }}
-            />
+        
+            <Image src={Logo} w="150px" h="150px" pos="fixed" left= "750px" bottom="210px" />
           </Box>
           <Flex
             flexDirection="column"

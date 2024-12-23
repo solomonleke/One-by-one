@@ -125,7 +125,7 @@ export default function Index() {
           <HStack bg="#E8FFF4" rounded='7px' py="3.5px" px="5px" cursor="pointer" mt={["10px", "10px", "0px", "0px"]}>
 
             <Box borderRight="1px solid #EDEFF2" pr="5px" onClick={() => {
-              setApproved(true)
+              setApproved(true) 
               setPending(false)
               setRejected(false)
             }}>
