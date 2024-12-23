@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { StudentProvider } from '../Components/StudentContext'
 import Home from '../Pages/Home'
 
 import SignIn from '../Pages/AuthenticatedScreens/SignIn'
@@ -25,6 +26,7 @@ import ScholarshipAdmin from '../Pages/ScholarshipAdminScreen/Index'
 
 export default function IndexRoutes() {
   return (
+    <StudentProvider>
     <BrowserRouter>
       <Routes>
         {/* school admin routes */}
@@ -61,5 +63,6 @@ export default function IndexRoutes() {
 
       </Routes>
     </BrowserRouter>
+    </StudentProvider>
   )
 }

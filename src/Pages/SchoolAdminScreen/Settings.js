@@ -10,6 +10,12 @@ import { Box, HStack, Text, VStack, Flex, Tabs, Switch, Stack, TabList, Spacer, 
 import { FaCloudUploadAlt } from 'react-icons/fa';
 
 export default function Settings() {
+  // const closer = document.getElementById("#closer")
+  // const close = document.getElementById("#close")
+
+  // if (close.onclick) {
+  //   closer.style.display = "none"
+  // }
   return (
     <MainLayout>
       <Text color={"#1F2937"} fontWeight={"700"} fontSize={"24px"} lineHeight={"25.41px"}>Settings</Text>
@@ -224,13 +230,13 @@ export default function Settings() {
             <Text fontSize={"13px"} fontWeight={"400"} color={"#626974"}>Manage and upload the required documents to complete your school’s verification process.</Text>
             </Stack>
 
-            <Box backgroundColor={"#FFF7EB"} py={"14px"} px={"20px"} rounded={"6px"} border={"1px solid #FFA30C80"}>
+            <Box backgroundColor={"#FFF7EB"} py={"14px"} px={"20px"} rounded={"6px"} border={"1px solid #FFA30C80"} id='close'>
               <HStack justifyContent={"space-between"}>
               <HStack>
                <Warning />
               <Text fontSize={"14px"} fontWeight={"400"} color={"#FFA30C"}>Your school cannot be verified until all required documents are uploaded. Ensure the following documents below are uploaded</Text>
               </HStack>
-              <Close cursor={"pointer"}/>
+              <Close cursor={"pointer"} id='closer'/>
               </HStack>
             </Box>
 
