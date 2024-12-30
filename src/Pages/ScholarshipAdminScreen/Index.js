@@ -21,6 +21,17 @@ import { FaGoogleScholar } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa6";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { IoCloseOutline } from "react-icons/io5";
+import { LiaAngleDoubleRightSolid } from "react-icons/lia";
+import { RxInfoCircled } from "react-icons/rx";
+
+import scholarshipImage from "../../Asset/image1.png"
+import scholarshipImage2 from "../../Asset/Image2.png"
+import scholarshipImage3 from "../../Asset/Image3.png"
+import scholarshipImage4 from "../../Asset/Image4.png"
+import scholarshipImage5 from "../../Asset/Image5.png"
+import scholarshipImage6 from "../../Asset/Image6.png"
+import scholarshipImage7 from "../../Asset/Image7.png"
+import scholarshipImage8 from "../../Asset/goldIcon.svg"
 
 import {
   Table,
@@ -40,14 +51,14 @@ export default function ScholarshipAdmin() {
   
 
   const schools = [
-    { name: "Legendary Scholars Academy", email: "legendarysholars@gmail.com",
-      Image:  "../src/Asset/goldIcon.svg"},
-   { name: "Queen's College", email: "queenscollege@gmail.com" },
-{name: "Federal Government College", email: "FederalGovernmentCollege@gmail.com"},
-{name: "Mayflower School", email: "MayflowerSchool@gmail.com"},
-{name: "Chrisland College", email: "ChrislandCollege@gmail.com"},
-{name: "Christ the King College", email: "ChristtheKingCollege@gmail.com"},
-{name: "Corona Secondary School", email: "CoronaSecondarySchool@gmail.com"}
+    { name: "Legendary Scholars Academy", email: "legendaryscholarsacademy@gmail.com",
+      Image:  scholarshipImage},
+   { name: "Queen's College", email: "QueenSCollege@gmail.com", Image: scholarshipImage2 },
+{name: "Federal Government College", email: "FederalGovernmentCollege@gmail.com", Image: scholarshipImage3},
+{name: "Mayflower School", email: "MayflowerSchool@gmail.com", Image: scholarshipImage4 },
+{name: "Chrisland College", email: "ChrislandCollege@gmail.com", Image: scholarshipImage5 },
+{name: "Christ the King College", email: "ChristtheKingCollege@gmail.com", Image: scholarshipImage6},
+{name: "Corona Secondary School", email: "CoronaSecondarySchool@gmail.com", Image: scholarshipImage7}
   ];
 
   const students = [
@@ -91,7 +102,8 @@ export default function ScholarshipAdmin() {
             p={"13px 19px 13px 19px"}
             justifyContent="space-between"
             gap={"0px"}                     
-
+          position={"relative"}
+          overflow={"visible"}
             opacity={"0px"}>
                 <Box w={"356px"} h={"65.18px"} gap={"11px"} opacity={"0px"}>
                 <Flex align="center" mb={2}>
@@ -102,10 +114,10 @@ export default function ScholarshipAdmin() {
                  <Box 
 
 
-                 bg="#03493D54" width={"356px"} opacity={"0px"} height={"26px"} padding={"6px 6px"} gap="12px" borderRadius={"6px"}>
+                 bg="#03493D54" cursor={"pointer"} width={"356px"} opacity={"0px"} height={"26px"} padding={"6px 6px"} gap="12px" borderRadius={"6px"}>
                  <Flex align="center" justify="space-between">
                     <Progress 
-
+                   
                     value={80}
                     gap={"0px"}
                     opacity={"0px"}
@@ -126,6 +138,7 @@ export default function ScholarshipAdmin() {
                    bg="#FFFFFF"
                    width={ "363.99px"}
                     height= { "44px"}
+            
                     gap= "10px"
                     borderRadius= "7px"
                    opacity= "0px"
@@ -133,12 +146,36 @@ export default function ScholarshipAdmin() {
                    mt={"14px"}
                    
                    >
+
                     
+                    <Flex align="center"  m={"8px"} gap={"11px"} >
+                      <Image  src={scholarshipImage8}   w={"23.59px"} 
+                      h={"33px"}  gap={"0"}/>
+                      <Text fontSize="15px" color=" #194B33"
+                       fontWeight="600" textAlign={"left"} letterSpacing={"-0.03em"} 
+                        lineHeight="18.15px">Rank:  <Text as={"span"} fontSize="15px" fontWeight="600" textAlign={"left"} letterSpacing={"-0.25px"} 
+                        lineHeight="18.45px">  #4</Text>
+                      </Text>
+                      <Box width="0px" opacity={"0px"} height={"11.5px"} gap={"0px"} border={"1px solid #194B3380"} />
+                      <Text fontSize="15px" color=" #194B33"
+                         fontWeight="600" textAlign={"left"} letterSpacing={"-0.25px"} 
+                        lineHeight="18.15px">Schools Verified: <Text as={"span"} fontSize="15px"  fontWeight="600" textAlign={"left"} letterSpacing={"-0.25px"} 
+                        lineHeight="18.45px">  24</Text>
+
+
+                      </Text>
+                      <Box width="0px" opacity={"0px"} height={"11.5px"} gap={"0px"} border={"1px solid #194B3380"} />
+                      <Text fontSize="14px" display={"flex"} fontWeight="600" cursor="pointer" letterSpacing={"-0.04em"} textAlign={"left"}  lineHeight="16.94px" color=" #194B33"
+                      > View  </Text>  <Icon as={LiaAngleDoubleRightSolid  } cursor="pointer"  color=" #194B33"/>                      
+                   </Flex> 
+                     
+                   
                
 
                    </Box>
                 
-
+                
+                 
             </Flex>
            
 
@@ -167,11 +204,11 @@ export default function ScholarshipAdmin() {
         
 
      <Flex mt="15px" mb={4} justifyContent="space-between" flexWrap="wrap">
-        <Box w={{ base: "100%", md: "60%" }} p={6} borderRadius={"md"}
+        <Box w={{ base: "100%", md: "60%" }} border="1px solid #eaeaea" p={6} borderRadius={"md"}
         bg="white"  boxShadow={"sm"}>
         <HStack justifyContent="space-between" borderBottomWidth={1} mb={4}>
           <Text letterSpacing="-3%" color="#3F4956" Weight="600" size="15px" lineHeight={"18.15px"}>Schools Awaiting Approval</Text>
-          <Text color="#39996B" size="14px" weight="600" lineHeight={"22px"} letterSpacing="-1%">See All</Text>
+          <Text color="#39996B" size="14px" weight="600" cursor="pointer" lineHeight={"22px"} letterSpacing="-1%">See All</Text>
         </HStack>
 
         <VStack borderRadius={"10px"} border=" 1px solid #EDEFF2" spacing={4} align="stretch">
@@ -183,20 +220,21 @@ export default function ScholarshipAdmin() {
            
             
             
-             p={2} 
+             p={2}
             borderBottomWidth={index !== schools.length - 1 ? 1 : 0} 
             borderColor={"gray.200"}>
-              <HStack  w={{ Hug: "264px"}} h={{ Hug: "42px"}} gap={"12px"} opacity={"0px"}>
-                <Avatar src={school.Image} boxSize={"50px"} borderRadius={"full"} />
-                <Box >
+              <HStack  w={{ Fill: "264px"}}  padding={"16px, 30px, 16px, 12px"} h={{ Fixed: "42px"}} gap={"18px"} opacity={"0px"}>
+                <Avatar src={school.Image} w={{ Fixed: "42px"}} opacity={"0px"} h={{ Fixed: "42px"}} gap={"0px"}  borderRadius={"280px"} />
+                <Box  >
 
-                  <Text letterSpacing="-3%" color="#3F4956" Weight="600" size="12px">{school.name}</Text>
-                  <Text fontSize="12" fontWeight={"400"} lineHeight={"20px"} textAlign={"left"} letterSpacing={"-0.02em"} >{school.email}</Text>
+                  <Text lineHeight={"20px"} fontFamily={"Inter"} textAlign="left" letterSpacing="-0.02em%" color="#101828" fontWeight="500" size="13px">{school.name}</Text>
+                  <Text fontSize="12px" color="#667085" fontWeight={"400"} fontFamily={"Inter"} lineHeight={"20px"} textAlign={"left"} letterSpacing={"-0.02em"} >{school.email}</Text>
                 </Box>
               </HStack>
+             
 
-             <HStack>
-              <Button size="5px" border='1px solid #39996B'  px={3} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" variant="outline" rightIcon={<IoCloseOutline />}>Reject</Button>
+             <HStack >
+              <Button size="7px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B"  rightIcon={<IoCloseOutline />}>Reject</Button>
               <Button size="5px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<FaCheck />}>Approve</Button>
              </HStack>
              </Flex>
@@ -208,7 +246,7 @@ export default function ScholarshipAdmin() {
            bg={"white"} boxShadow={"sm"}>
            <HStack justifyContent={"space-between"} borderBottomWidth={1}  mb={4}>
            <Text letterSpacing="-3%" color="#3F4956" Weight="600" size="15px" lineHeight={"18.15px"}>Pending Students Approval</Text>
-           <Text color="#39996B" size="14px" weight="600" lineHeight={"22px"} letterSpacing="-1%">See All</Text>
+           <Text color="#39996B" size="14px" weight="600" cursor="pointer" lineHeight={"22px"} letterSpacing="-1%">See All</Text>
          </HStack> 
 
           <VStack spacing={13}  align="stretch">{students.map((student, index) => (
@@ -225,13 +263,13 @@ export default function ScholarshipAdmin() {
          <HStack >
 
 
-           <Avatar w="40px" h="30px"  name={student.name} />
+           <Avatar size="sm" name={student.name} />
            <Box >
              <Text fontWeight="500" fontSize="13px" lineHeight="20px" textAlign="left" letterSpacing={"-0.02em"}>{student.name}</Text>
              <Text fontSize={"11px"} opacity="0px" fontWeight={"400"} lineHeight={"20px"} textAlign={"left"} letterSpacing={"-0.02em"}  color="gray.500">{student.email}</Text>
             </Box>
            </HStack>
-          <Icon as={IoIosArrowRoundForward } angle="-180 deg" gap="1px" w={{ Hug: "18.01px"}} h={{ Fixed: "33px"}} color=" #101828" />
+          <Icon as={IoIosArrowRoundForward } cursor={"pointer"} angle="-180 deg" gap="1px" w={{ Hug: "18.01px"}} h={{ Fixed: "33px"}} color=" #101828" />
            </Flex>
                ))}
           </VStack>
@@ -242,9 +280,11 @@ export default function ScholarshipAdmin() {
 
 <Box p={8} m boxShadow={"md"} borderRadius={"md"}  bg={"white"}>
  <Flex justify="space-between" width={{ Fixed: "1,080px"}} gap="0px" opacity="0px" left="18px" top="28px" mb={4} wrap="wrap">
-  <Text fontSize="17px" letterSpacing={"-0.02em"} fontWeight={600} lineHeight="20.57px" textAlign={"left"} >
-    Trends Over Time:  {''} <Text as={"span"} letterSpacing={"-0.02em"} lineHeight={"18.15px"}  fontWeight={"500"} fontSize={"15px"} textAlign={"left"}> Schools, Students, And Funds</Text>
+  <Text fontSize="17px" color="#1F2937" letterSpacing={"-0.02em"} fontWeight={600} lineHeight="20.57px" textAlign={"left"} >
+    Trends Over Time:  {''} <Text as={"span"} letterSpacing={"-0.02em"} lineHeight={"18.15px"}  fontWeight={"500"} fontSize={"15px"} textAlign={"left"}> Schools, Students, And Funds </Text>
+    <Icon as={RxInfoCircled } justifyContent={"space-between"} />
   </Text>
+  
   
 
   <Flex mb={4} justify={"space-between"} w={{ Hug: "178px"}} gap="9px" opacity="0px" h={{ Hug: "20px"}} maxW={"900px"}>
