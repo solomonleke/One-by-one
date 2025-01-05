@@ -153,7 +153,7 @@ export default function NavBar({ showSearch = true }) {
                                     </HStack>
                                 </MenuItem>
                                 <MenuItem textTransform="capitalize" fontWeight={"400"} color='#586375' _hover={{ color: "green", fontWeight: "600", bg: "#E8FFF4" }} onClick={() => {
-                                            nav("sign-in")
+                                            nav("/sign-in")
                                         }}>
                                     <HStack fontSize="14px">
                                         <MdLogout />
