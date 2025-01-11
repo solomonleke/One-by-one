@@ -50,9 +50,12 @@ export default function SignIn() {
           }else if(result.user.role === "SCHOLARSHIP-ADMIN"){
             
             router("/scholarship-admin");
-          }else if(result.user.role === "SPONSOR-ADMIN"){
+          }else if(result.user.role === "SPONSOR"){
             
             router("/sponsor-admin");
+          }else if(result.user.role === "FUND-ADMIN"){
+            
+            router("/fund-admin");
           }
         }, 2000);
       } else {

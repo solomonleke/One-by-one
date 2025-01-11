@@ -36,7 +36,16 @@ export const isScholarshipAdmin = () => {
 
 export const isSponsorAdmin = () => {
    
-    if (role === "SPONSOR-ADMIN") {
+    if (role === "SPONSOR") {
+        return true
+    } else {
+        return false
+    }
+
+};
+export const isFundAdmin = () => {
+   
+    if (role === "FUND-ADMIN") {
         return true
     } else {
         return false

@@ -56,7 +56,7 @@ const checkActive= ()=>{
         icon: <RxDashboard/>,
         link: "/scholarship-admin",
         active: isActive(location, "/scholarship-admin"),
-        display: isScholarshipAdmin
+        display: isScholarshipAdmin()
     },
     
     {

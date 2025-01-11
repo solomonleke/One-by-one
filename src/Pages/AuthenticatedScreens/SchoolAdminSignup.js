@@ -80,13 +80,13 @@ export default function SchoolAdminSignup() {
         status: ""
     })
 
-
+    const tempToken = localStorage.getItem("tempToken")
     const Submit = async () => {
 
         setLoading(true)
         try {
 
-            const result = await CreateAdminApi(Payload)
+            const result = await CreateAdminApi(Payload,tempToken)
 
             if (result.status === 201) {
                 setLoading(false)
