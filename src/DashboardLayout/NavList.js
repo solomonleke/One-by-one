@@ -3,6 +3,7 @@ import { isActive } from "../Authentication/Index"
 import { GoGear } from "react-icons/go"
 import { RxDashboard } from "react-icons/rx"
 import { IoBriefcaseOutline } from "react-icons/io5"
+import { FaSchool } from "react-icons/fa"
 export const NavList =(location)=>{
 
 
@@ -50,7 +51,13 @@ const checkActive= ()=>{
         active: isActive(location, "/school-admin/school-profile"),
         display: true
     },
-
+    {
+        name: "settings",
+        icon: <GoGear />,
+        link: "/school-admin/settings",
+        active: isActive(location, "/school-admin/settings"),
+        display: true
+    },
     {
         name: "overview",
         icon: <RxDashboard/>,
@@ -58,12 +65,11 @@ const checkActive= ()=>{
         active: isActive(location, "/scholarship-admin"),
         display: true
     },
-    
     {
-        name: "settings",
-        icon: <GoGear />,
-        link: "/school-admin/settings",
-        active: isActive(location, "/school-admin/settings"),
+        name: "schools",
+        icon: <FaSchool/>,
+        link: "/scholarship-admin/schools",
+        active: isActive(location, "/scholarship-admin/schools"),
         display: true
     },
     

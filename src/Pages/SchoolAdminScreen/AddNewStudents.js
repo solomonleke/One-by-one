@@ -13,32 +13,32 @@ import { FiEdit2 } from "react-icons/fi";
 import { CreateStudentApi } from "../../Utils/ApiCall";
 import ShowToast from "../../Components/ToastNotification";
 import UpdateReviewModal from '../../Components/UpdateReview'
-import { StudentContext } from '../../Components/StudentContext'
+// import { StudentContext } from '../../Components/StudentContext'
 
 
 export default function AddNewStudents() {
 
-const { addStudent } = useContext(StudentContext);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    department: "",
-    classLevel: "",
-    fieldOfStudy: "",
-    status: "pending", // default status
-  });
+// const { addStudent } = useContext(StudentContext);
+//   const [formData, setFormData] = useState({
+//     name: "",
+//     email: "",
+//     department: "",
+//     classLevel: "",
+//     fieldOfStudy: "",
+//     status: "pending", // default status
+//   });
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+//   const handleChange = (e) => {
+//     setFormData({
+//       ...formData,
+//       [e.target.name]: e.target.value,
+//     });
+//   };
 
-  const handleSubmit = () => {
-    addStudent(formData);
-    nav("/school-admin/student-management");
-  };
+//   const handleSubmit = () => {
+//     addStudent(formData);
+//     nav("/school-admin/student-management");
+//   };
 
     const [oldValue, setOldValue] = useState({
         name: "",
@@ -825,7 +825,7 @@ const { addStudent } = useContext(StudentContext);
                              />
 
 
-<Box p="20px">
+{/* <Box p="20px">
       <Input
         placeholder="Full Name"
         name="name"
@@ -862,7 +862,7 @@ const { addStudent } = useContext(StudentContext);
         mb="10px"
       />
       <Button onClick={handleSubmit}>Add Student</Button>
-    </Box>
+    </Box> */}
                         
                          </Stack>
 
