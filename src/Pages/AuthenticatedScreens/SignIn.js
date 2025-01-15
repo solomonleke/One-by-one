@@ -27,25 +27,15 @@ export default function SignIn() {
   
     try {
       const payload = { email, password };
-      const token = await SignInApi(payload);
+      const result = await SignInApi(payload);
+
+      console.log("login result". result)
   
-      if (token) {
-        // Decode the JWT to extract user info
-        const base64Url = token.split(".")[1]; // Get the payload part
-        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-        const jsonPayload = decodeURIComponent(
-          atob(base64)
-            .split("")
-            .map((c) => `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`)
-            .join("")
-        );
-  
-        const userData = JSON.parse(jsonPayload);
-        console.log("Decoded JWT Payload:", userData);
-  
-        localStorage.setItem("authToken", token);
-        localStorage.setItem("userName", `${userData.firstName} ${userData.lastName}`); // Save full name
-  
+      if (result.accessToken) {
+       
+        localStorage.setItem("authToken", result.accessToken);
+        localStorage.setItem("onlineUser", JSON.stringify(result.user));
+       
         setShowToast({
           show: true,
           message: "Login successful! Redirecting...",
@@ -54,8 +44,20 @@ export default function SignIn() {
   
         setTimeout(() => {
           setShowToast({ show: false });
-          router("/school-admin");
-        }, 3000);
+          if(result.user.role === "SCHOOL-ADMIN"){
+
+            router("/school-admin");
+          }else if(result.user.role === "SCHOLARSHIP-ADMIN"){
+            
+            router("/scholarship-admin");
+          }else if(result.user.role === "SPONSOR"){
+            
+            router("/sponsor-admin");
+          }else if(result.user.role === "FUND-ADMIN"){
+            
+            router("/fund-admin");
+          }
+        }, 2000);
       } else {
         throw new Error("Invalid response format");
       }

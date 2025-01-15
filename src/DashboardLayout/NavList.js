@@ -1,5 +1,5 @@
 import {HiOutlineUsers} from "react-icons/hi"
-import { isActive } from "../Authentication/Index"
+import { isActive, isSchoolAdmin,isScholarshipAdmin } from "../Authentication/Index"
 import { GoGear } from "react-icons/go"
 import { RxDashboard } from "react-icons/rx"
 import { IoBriefcaseOutline } from "react-icons/io5"
@@ -34,7 +34,7 @@ const checkActive= ()=>{
         icon: <RxDashboard/>,
         link: "/school-admin",
         active: isActive(location, "/school-admin"),
-        display: true
+        display: isSchoolAdmin()
     },
     
     {
@@ -42,14 +42,14 @@ const checkActive= ()=>{
         icon: <HiOutlineUsers/>,
         link: "/school-admin/student-management",
         active: checkActive() ,
-        display: true
+        display: isSchoolAdmin()
     },
     {
         name: "school profile",
         icon: <IoBriefcaseOutline/>,
         link: "/school-admin/school-profile",
         active: isActive(location, "/school-admin/school-profile"),
-        display: true
+        display: isSchoolAdmin()
     },
     {
         name: "settings",
@@ -63,16 +63,8 @@ const checkActive= ()=>{
         icon: <RxDashboard/>,
         link: "/scholarship-admin",
         active: isActive(location, "/scholarship-admin"),
-        display: true
+        display: isScholarshipAdmin()
     },
-    {
-        name: "schools",
-        icon: <FaSchool/>,
-        link: "/scholarship-admin/schools",
-        active: isActive(location, "/scholarship-admin/schools"),
-        display: true
-    },
-    
    
     
 ]

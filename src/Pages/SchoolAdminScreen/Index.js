@@ -30,9 +30,22 @@ export default function Index() {
   const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    const storedName = localStorage.getItem('userName');
+    var reloadCount = localStorage.getItem("reloadCount");
+    if(!reloadCount){
+      localStorage.setItem('reloadCount', + parseInt(1))
+
+    }
+    if(reloadCount < 2) {
+      localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
+      setTimeout(() =>
+      window.location.reload(1), 2000)
+    } else {
+      localStorage.removeItem('reloadCount');
+    }
+
+    const storedName = JSON.parse(localStorage.getItem('onlineUser'));
     if (storedName) {
-      setUserName(storedName);
+      setUserName(`${storedName.firstName}`);
     }
   }, []);
 
@@ -91,8 +104,9 @@ export default function Index() {
   return (
     <MainLayout>
 
-      <Text color={"#1F2937"} fontWeight={"700"} fontSize={"24px"} lineHeight={"25.41px"}>Welcome back, {userName || "User"}!</Text>
-      <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} lineHeight={"24px"}>Easily track and manage student information with real-time insights and updates. </Text>
+      <Text color={"#1F2937"} fontWeight={"700"} fontSize={"24px"} textTransform="capitalize" lineHeight={"25.41px"}>Welcome back, {userName || "User"}!</Text>
+
+      <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} lineHeight={"24px"} > Easily track and manage student information with real-time insights and updates. </Text>
 
 
       <Flex mt="27px" justifyContent="space-between" flexWrap="wrap">

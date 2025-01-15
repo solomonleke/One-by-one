@@ -14,11 +14,11 @@ export default function ScholarshipAdminSignup() {
     const [payload, setPayload] = useState({
         userType: "SCHOLARSHIP-ADMIN",
         state: "",
-        localGoverment: "",
+        lga: "",
         city: "",
-        homeAddress: "",
+        address: "",
         occupation: "",
-        phoneNumber: "",
+        phone: "",
       });
 
       const [showToast, setShowToast] = useState({
@@ -37,12 +37,14 @@ export default function ScholarshipAdminSignup() {
     
       }
 
+      const tempToken = localStorage.getItem("tempToken")
+
       const Submit = async () => {
 
         setLoading(true)
         try {
     
-          const result = await CreateAdminApi(payload)
+          const result = await CreateAdminApi(payload,tempToken)
     
           if (result.status === 201) {
             setLoading(false)
@@ -117,100 +119,21 @@ export default function ScholarshipAdminSignup() {
                         id='state'
                     />
                     <Input label="Local Government" type="text" placeholder='e.g Oshodi isolo' onChange={handlePayload} 
-                        value={payload.localGoverment}
-                        id='localGoverment' />
+                        value={payload.lga}
+                        id='lga' />
                     <Input label="City" type="text" placeholder='e.g Okota' onChange={handlePayload} 
                         value={payload.city}
                         id='city' />
                     <Input label="Home Address" type="text" placeholder='e.g 86 Jemtok street' onChange={handlePayload} 
-                        value={payload.homeAddress}
-                        id='homeAddress' />
+                        value={payload.address}
+                        id='address' />
                     <Input label="Occupation" type="text" placeholder='e.g Banker' onChange={handlePayload} 
                         value={payload.occupation}
                         id='occupation' />
                     <Input label="Phone Number" type="text" placeholder='+234' onChange={handlePayload} 
-                        value={payload.phoneNumber}
-                        id='phoneNumber' />
+                        value={payload.phone}
+                        id='phone' />
 
-        <VStack justifyItems={"start"} alignItems={"start"} flexDirection="column" gap="0px">
-            <Text
-                textTransform="capitalize"
-                fontWeight="700"
-                fontSize="16px"
-                color="#101011"
-                fontFamily="heading"
-                textAlign="left"
-            >
-                Verification ID
-            </Text>
-
-            <Text
-                fontSize="small"
-                fontWeight="normal"
-                color="#6B7280"
-                lineHeight="24px"
-            >
-                Upload a valid ID for legitimacy verification (e.g., national ID, passport).
-            </Text>
-        </VStack>
-
-        <VStack justifyItems={"start"} alignItems={"start"}>
-            <Text
-                textTransform="capitalize"
-                fontWeight="500"
-                fontSize="14px"
-                color="#101011"
-                fontFamily="heading"
-                textAlign="left"
-            >
-                Front Side
-            </Text>
-            <Box backgroundColor="#E9FFF5" py="30px" px="100px" cursor="pointer" borderRadius="8px" borderWidth="2px" borderStyle="dashed">
-                <label htmlFor="FrontSide" className="label">
-                    <VStack>
-                        <HStack>
-                            <FaCloudUploadAlt className="labelText" />
-                            <Text><span className="labelText">Click to Upload or</span><span className="drag"> drag and drop</span></Text>
-                        </HStack>
-
-                        <Text fontSize="small"
-                            fontWeight="normal"
-                            color="#6B7280"
-                            lineHeight="24px">PDF, JPG, JPEG, PNG less than 10MB</Text>
-                    </VStack>
-                </label>
-                <input type="file" id="FrontSide" className="uploadVerification" style={{ display: 'none' }} />
-            </Box>
-        </VStack>
-
-        <VStack justifyItems={"start"} alignItems={"start"}>
-            <Text
-                textTransform="capitalize"
-                fontWeight="500"
-                fontSize="14px"
-                color="#101011"
-                fontFamily="heading"
-                textAlign="left"
-            >
-                Back Side
-            </Text>
-            <Box backgroundColor="#E9FFF5" py="30px" px="100px" cursor="pointer" borderRadius="8px" borderWidth="2px" borderStyle="dashed">
-                <label htmlFor="BackSide" className="label">
-                    <VStack>
-                        <HStack>
-                            <FaCloudUploadAlt className="labelText" />
-                            <Text><span className="labelText">Click to Upload or</span><span className="drag"> drag and drop</span></Text>
-                        </HStack>
-
-                        <Text fontSize="small"
-                            fontWeight="normal"
-                            color="#6B7280"
-                            lineHeight="24px">PDF, JPG, JPEG, PNG less than 10MB</Text>
-                    </VStack>
-                </label>
-                <input type="file" id="BackSide" className="uploadVerification" style={{ display: 'none' }} />
-            </Box>
-        </VStack>
 
         <Button isLoading={Loading} onClick={() => {
             Submit()

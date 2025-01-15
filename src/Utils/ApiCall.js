@@ -105,9 +105,9 @@ export const ResendVerificationApi = (Payload) => {
 };
 
 
-export const CreateAdminApi = (Payload) => {
+export const CreateAdminApi = (Payload,tempToken) => {
   console.log("CreateAdminApi", Payload);
-  console.log("token", token);
+  
 
   let data = JSON.stringify(Payload);
   let config = {
@@ -116,7 +116,7 @@ export const CreateAdminApi = (Payload) => {
     url: `${baseUrl}/users/create-admin`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${tempToken}`
     },
     data: data,
   };

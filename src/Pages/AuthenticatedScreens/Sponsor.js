@@ -13,9 +13,9 @@ import ShowToast from "../../Components/ToastNotification";
 const Sponsor = () => {
   const [currentView, setCurrentView] = useState("motivationView");
   const [payload, setPayload] = useState({
-    userType: "SPONSOR-ADMIN",
+    userType: "SPONSOR",
     motivation: "",
-    fieldsOfInterest: [],
+    interest: [],
   });
 
   const [showToast, setShowToast] = useState({
@@ -38,18 +38,19 @@ const Sponsor = () => {
   const toggleFieldSelection = (field) => {
     setPayload((prev) => ({
       ...prev,
-      fieldsOfInterest: prev.fieldsOfInterest.includes(field)
-        ? prev.fieldsOfInterest.filter((item) => item !== field)
-        : [...prev.fieldsOfInterest, field],
+      interest: prev.interest.includes(field)
+        ? prev.interest.filter((item) => item !== field)
+        : [...prev.interest, field],
     }));
   };
 
+  const tempToken = localStorage.getItem("tempToken")
   const Submit = async () => {
 
     setLoading(true)
     try {
 
-        const result = await CreateAdminApi(payload)
+        const result = await CreateAdminApi(payload,tempToken)
 
         if (result.status === 201) {
             setLoading(false)
@@ -99,6 +100,7 @@ const Sponsor = () => {
   );
 
   return (
+
     <AuthenticatedWrapper>
        {
                 showToast.show && (
@@ -157,13 +159,13 @@ const Sponsor = () => {
                         <Tag
                           size="lg"
                           variant="outline"
-                          textColor={payload.fieldsOfInterest.includes(field) ? "#39996B" : ""}
-                          bg={payload.fieldsOfInterest.includes(field) ? "#39996B7A" : "white"}
-                          colorScheme={payload.fieldsOfInterest.includes(field) ? "#39996B7A" : "gray"}
+                          textColor={payload.interest.includes(field) ? "#39996B" : ""}
+                          bg={payload.interest.includes(field) ? "#39996B7A" : "white"}
+                          colorScheme={payload.interest.includes(field) ? "#39996B7A" : "gray"}
                           py="4"
                           px="6"
                           rounded="xl"
-                          color={payload.fieldsOfInterest.includes(field) ? "white" : "gray.700"}
+                          color={payload.interest.includes(field) ? "white" : "gray.700"}
                           cursor="pointer"
                           onClick={() => toggleFieldSelection(field)}
                         >
