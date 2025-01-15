@@ -127,7 +127,6 @@ export default function StudentManagement() {
 
                         </Table>
                     </TableContainer>
-
                 </Box>
             </Box>
             <RemoveNotification isOpen={isOpen} onClose={onClose} />

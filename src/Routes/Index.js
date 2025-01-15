@@ -22,47 +22,49 @@ import ForgotPassword from '../Pages/AuthenticatedScreens/ForgotPassword'
 import ForgottenPasswordEmail from '../Pages/AuthenticatedScreens/ForgottenPasswordEmail'
 import ResetPassword from '../Pages/AuthenticatedScreens/ResetPassword'
 import ScholarshipAdmin from '../Pages/ScholarshipAdminScreen/Index'
+import Schools from '../Pages/ScholarshipAdminScreen/Schools'
 
 
 export default function IndexRoutes() {
   return (
     <StudentProvider>
-    <BrowserRouter>
-      <Routes>
-        {/* school admin routes */}
-        <Route path='/school-admin' element={<Index/>} />
-        <Route path='/school-admin/student-management' element={<StudentManagement/>} />
-        <Route path='/school-admin/school-profile' element={<SchoolProfile/>} />
-        <Route path='/school-admin/settings' element={<Settings/>} />
-        <Route path='/AddStudents' element={<AddNewStudents/>} />
-        <Route path='/school-admin/student-management/student-profile' element={<StudentProfile/>} />
+      <BrowserRouter>
+        <Routes>
+          {/* school admin routes */}
+          <Route path='/school-admin' element={<Index />} />
+          <Route path='/school-admin/student-management' element={<StudentManagement />} />
+          <Route path='/school-admin/school-profile' element={<SchoolProfile />} />
+          <Route path='/school-admin/settings' element={<Settings />} />
+          <Route path='/AddStudents' element={<AddNewStudents />} />
+          <Route path='/school-admin/student-management/student-profile' element={<StudentProfile />} />
 
 
 
 
-        <Route path='/' element={<Home />} />
-        <Route path='/sign-in' element={<SignIn />} />
-        <Route path='/sign-up' element={<Signup />} />
-        <Route path='/email-verification' element={<EmailVerification />} />
-        <Route path='/role-selection/:id' element={<RoleSelection />} />
-        <Route path='/school-admin-signup' element={<SchoolAdminSignup />} />
-        <Route path='/scholarship-admin-signup' element={<ScholarshipAdminSignup />} />
-        <Route path='/sponsor' element={<Sponsor />} />
-        <Route path='/fund-admin-signup' element={<FundAdminSignup />} />
-        <Route path='/profile-setup-complete' element={<ProfileSetupComplete />} />
-        <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/forgotten-password-email' element={<ForgottenPasswordEmail />} />
-        <Route path='/reset-password/:token' element={<ResetPassword />} />
+          <Route path='/' element={<Home />} />
+          <Route path='/sign-in' element={<SignIn />} />
+          <Route path='/sign-up' element={<Signup />} />
+          <Route path='/email-verification' element={<EmailVerification />} />
+          <Route path='/role-selection/:id' element={<RoleSelection />} />
+          <Route path='/school-admin-signup' element={<SchoolAdminSignup />} />
+          <Route path='/scholarship-admin-signup' element={<ScholarshipAdminSignup />} />
+          <Route path='/sponsor' element={<Sponsor />} />
+          <Route path='/fund-admin-signup' element={<FundAdminSignup />} />
+          <Route path='/profile-setup-complete' element={<ProfileSetupComplete />} />
+          <Route path='/forgot-password' element={<ForgotPassword />} />
+          <Route path='/forgotten-password-email' element={<ForgottenPasswordEmail />} />
+          <Route path='/reset-password/:token' element={<ResetPassword />} />
 
 
 
-        {/* scholarship admin routes */}
-        <Route path='/scholarship-admin' element={<ScholarshipAdmin/>} />
+          {/* scholarship admin routes */}
+          <Route path='/scholarship-admin' element={<ScholarshipAdmin />} />
+          <Route path='/scholarship-admin/schools' element={<Schools />} />
 
 
 
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
     </StudentProvider>
   )
 }

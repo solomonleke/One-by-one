@@ -114,8 +114,6 @@ export default function ScholarshipAdmin() {
   return (
     <MainLayout>
 
-
-
       <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Welcome Back, {userName || "User"}!</Text>
       <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Review and approve schools, students, and fund requests to drive meaningful impact.</Text>
 
