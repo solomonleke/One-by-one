@@ -71,7 +71,7 @@ export default function Schools() {
           <FaSearch fontSize={"17px"} color="#2F2F2F"/>
           </Box>
 
-          </HStack>
+          </HStack> 
 
           <TabIndicator mt='-1.5px' height='2px' bg='green' borderRadius='1px' />
 

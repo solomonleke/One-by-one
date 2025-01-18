@@ -4,6 +4,7 @@ import { GoGear } from "react-icons/go"
 import { RxDashboard } from "react-icons/rx"
 import { IoBriefcaseOutline } from "react-icons/io5"
 import { FaSchool } from "react-icons/fa"
+import { PiStudent } from "react-icons/pi"
 export const NavList =(location)=>{
 
 
@@ -56,13 +57,34 @@ const checkActive= ()=>{
         icon: <GoGear />,
         link: "/school-admin/settings",
         active: isActive(location, "/school-admin/settings"),
-        display: true
+        display: isSchoolAdmin()
     },
     {
         name: "overview",
         icon: <RxDashboard/>,
         link: "/scholarship-admin",
         active: isActive(location, "/scholarship-admin"),
+        display: isScholarshipAdmin()
+    },
+    {
+        name: "schools",
+        icon: <FaSchool />,
+        link: "/scholarship-admin/schools",
+        active: isActive(location, "/scholarship-admin/schools"),
+        display: isScholarshipAdmin()
+    },
+    {
+        name: "students",
+        icon: <PiStudent />,
+        link: "/scholarship-admin/students",
+        active: isActive(location, "/scholarship-admin/students"),
+        display: isScholarshipAdmin()
+    },
+    {
+        name: "settings",
+        icon: <GoGear />,
+        link: "/scholarship-admin/settings",
+        active: isActive(location, "/scholarship-admin/settings"),
         display: isScholarshipAdmin()
     },
    
