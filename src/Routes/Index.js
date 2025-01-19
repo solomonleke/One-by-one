@@ -23,6 +23,8 @@ import ForgottenPasswordEmail from '../Pages/AuthenticatedScreens/ForgottenPassw
 import ResetPassword from '../Pages/AuthenticatedScreens/ResetPassword'
 import ScholarshipAdmin from '../Pages/ScholarshipAdminScreen/Index'
 import Schools from '../Pages/ScholarshipAdminScreen/Schools'
+import Settings2 from '../Pages/ScholarshipAdminScreen/Settings'
+import Students from '../Pages/ScholarshipAdminScreen/Students'
 
 
 export default function IndexRoutes() {
@@ -60,6 +62,9 @@ export default function IndexRoutes() {
           {/* scholarship admin routes */}
           <Route path='/scholarship-admin' element={<ScholarshipAdmin />} />
           <Route path='/scholarship-admin/schools' element={<Schools />} />
+          <Route path='/scholarship-admin/schools' element={<Schools />} />
+          <Route path='/scholarship-admin/students' element={<Students />} />
+          <Route path='/scholarship-admin/settings' element={<Settings2 />} />
 
 
 
