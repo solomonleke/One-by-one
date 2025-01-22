@@ -2,7 +2,7 @@ import {HiOutlineUsers} from "react-icons/hi"
 import { isActive, isSchoolAdmin,isScholarshipAdmin } from "../Authentication/Index"
 import { GoGear } from "react-icons/go"
 import { RxDashboard } from "react-icons/rx"
-import { IoBriefcaseOutline } from "react-icons/io5"
+import { IoBriefcaseOutline, IoSchoolOutline } from "react-icons/io5"
 import { FaSchool } from "react-icons/fa"
 import { PiStudent } from "react-icons/pi"
 export const NavList =(location)=>{
@@ -17,6 +17,23 @@ const checkActive= ()=>{
           result = true
           return  result
       }else if (location.pathname === "/school-admin/student-management/student-profile"){
+          result = true
+          return  result
+      }else{
+          result = false
+          return  result
+      }
+  
+}
+
+const checkVeryActive= ()=>{
+
+    let result = ""
+
+    if (isActive(location, "/scholarship-admin/students")){
+          result = true
+          return  result
+      }else if (location.pathname === "/scholarship-admin/students/student-profile"){
           result = true
           return  result
       }else{
@@ -68,7 +85,7 @@ const checkActive= ()=>{
     },
     {
         name: "schools",
-        icon: <FaSchool />,
+        icon: <IoSchoolOutline />,
         link: "/scholarship-admin/schools",
         active: isActive(location, "/scholarship-admin/schools"),
         display: isScholarshipAdmin()
@@ -77,7 +94,7 @@ const checkActive= ()=>{
         name: "students",
         icon: <PiStudent />,
         link: "/scholarship-admin/students",
-        active: isActive(location, "/scholarship-admin/students"),
+        active: checkVeryActive(),
         display: isScholarshipAdmin()
     },
     {

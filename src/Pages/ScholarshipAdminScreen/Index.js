@@ -119,12 +119,13 @@ export default function ScholarshipAdmin() {
 
       <Flex
         w={"1,125px"}
-        h={"101px"}
+        // h={"101px"}
         background="linear-gradient(90.1deg, #18AB91 0.09%, #BCDC60 60.15%, #FFBC4F 101.02%)"
         borderRadius="10px"
         p={"13px 19px 13px 19px"}
         justifyContent="space-between"
         gap={"0px"}
+        flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}
         position={"relative"}
         overflow={"visible"}
         opacity={"0px"}>
@@ -241,9 +242,7 @@ export default function ScholarshipAdmin() {
                 key={index}
                 justify="space-between"
                 align="center"
-
-
-
+                flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}
                 p={2}
                 borderBottomWidth={index !== schools.length - 1 ? 1 : 0}
                 borderColor={"gray.200"}>
@@ -257,7 +256,7 @@ export default function ScholarshipAdmin() {
                 </HStack>
 
 
-                <HStack >
+                <HStack>
                   <Button size="7px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<IoCloseOutline />}>Reject</Button>
                   <Button size="5px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<FaCheck />}>Approve</Button>
                 </HStack>
