@@ -55,16 +55,16 @@ import { ReactComponent as Close } from "../../Asset/close.svg";
 export default function Schools() {
     return (
         <MainLayout>
-            <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Schools <Box as='span' color="#667085" fontWeight="700" fontSize="19px">(34)</Box></Text>
+            <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Schools <Box as='span' color="#667085" fontWeight="600" fontSize="19px">(34)</Box></Text>
             <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>View and manage school approval requests. Quickly review pending applications and take necessary actions like approving or rejecting.</Text>
 
             <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["18px", "18px"]} rounded='10px'>
             <Tabs>
               <HStack justifyContent={"space-between"}>
           <TabList overflowX={"auto"} overflowY={"hidden"}>
-            <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(8)</Box></Tab>
-            <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(25)</Box></Tab>
-            <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(2)</Box></Tab>
+            <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(8)</Box></Text></Tab>
+            <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(25)</Box></Text></Tab>
+            <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(2)</Box></Text></Tab>
           </TabList>
 
           <Box borderWidth="1px" borderColor={"#E3E5E8"} cursor="pointer" borderRadius={"7px"} padding={"10px"}>
@@ -103,7 +103,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Legendary Scholars Academy" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Legendary Scholars Academy</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">legendaryschlarsacademy@gmail.com</Text>
@@ -136,7 +136,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Queen's College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Queen's College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">queenscollege@gmail.com</Text>
@@ -169,7 +169,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Federal Government College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Federal Government College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">federalgovernmentcollege@gmail.com</Text>
@@ -202,7 +202,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Mayflower School" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">MayFlower School</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">mayflowerschool@gmail.com</Text>
@@ -235,7 +235,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Chrisland College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Chrisland College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">chrislandcollege@gmail.com</Text>
@@ -268,7 +268,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Christ The King College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Christ The King College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">christthekingcollege@gmail.com</Text>
@@ -301,7 +301,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Corona Secondary School" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Corona Secondary School</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">coronasecondaryschool@gmail.com</Text>
@@ -334,7 +334,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Adesoye College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Adesoye College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">adesoyecollege@gmail.com</Text>
@@ -393,7 +393,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Legendary Scholars Academy" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Legendary Scholars Academy</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">legendaryschlarsacademy@gmail.com</Text>
@@ -426,7 +426,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Queens's College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Queen's College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">queenscollege@gmail.com</Text>
@@ -459,7 +459,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Federal Government College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Federal Government College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">federalgovernmentcollege@gmail.com</Text>
@@ -492,7 +492,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Mayflower School" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">MayFlower School</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">mayflowerschool@gmail.com</Text>
@@ -525,7 +525,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Chrisland College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Chrisland College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">chrislandcollege@gmail.com</Text>
@@ -558,7 +558,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Christ The KIng College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Christ The King College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">christthekingcollege@gmail.com</Text>
@@ -591,7 +591,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Corona Secondary School" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Corona Secondary School</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">coronasecondaryschool@gmail.com</Text>
@@ -624,7 +624,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Adesoye College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Adesoye College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">adesoyecollege@gmail.com</Text>
@@ -682,7 +682,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Legendary Scholars Academy" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Legendary Scholars Academy</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">legendaryschlarsacademy@gmail.com</Text>
@@ -715,7 +715,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Queen's College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Queen's College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">queenscollege@gmail.com</Text>
@@ -748,7 +748,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Federal Government College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Federal Government College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">federalgovernmentcollege@gmail.com</Text>
@@ -781,7 +781,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Mayflower School" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">MayFlower School</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">mayflowerschool@gmail.com</Text>
@@ -814,7 +814,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Chrisland College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Chrisland College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">chrislandcollege@gmail.com</Text>
@@ -847,7 +847,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Christ The KIng College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Christ The King College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">christthekingcollege@gmail.com</Text>
@@ -880,7 +880,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Corona SEcondary School" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Corona Secondary School</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">coronasecondaryschool@gmail.com</Text>
@@ -913,7 +913,7 @@ export default function Schools() {
 
                 <Box w="40%">
                 <HStack>
-                <Avatar />
+                <Avatar name="Adesoye College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Adesoye College</Text>
                   <Text color="#667085" fontSize="12px" fontWeight="400">adesoyecollege@gmail.com</Text>

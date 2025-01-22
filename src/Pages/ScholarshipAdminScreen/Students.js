@@ -53,18 +53,19 @@ import { ReactComponent as Close } from "../../Asset/close.svg";
 
 
 export default function Students() {
+  const router = useNavigate()
     return (
         <MainLayout>
-        <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Students <Box as='span' color="#667085" fontWeight="700" fontSize="19px">(58)</Box></Text>
+        <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Students <Box as='span' color="#667085" fontWeight="600" fontSize="19px">(58)</Box></Text>
         <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Review and approve student applications. Manage pending requests and take action to accept or reject them.</Text>
 
         <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["18px", "18px"]} rounded='10px'>
         <Tabs>
           <HStack justifyContent={"space-between"}>
       <TabList overflowX={"auto"} overflowY={"hidden"}>
-        <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(8)</Box></Tab>
-        <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(25)</Box></Tab>
-        <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(2)</Box></Tab>
+        <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(8)</Box></Text></Tab>
+        <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(25)</Box></Text></Tab>
+        <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(2)</Box></Text></Tab>
       </TabList>
 
       <Box borderWidth="1px" borderColor={"#E3E5E8"} cursor="pointer" borderRadius={"7px"} padding={"10px"}>
@@ -106,8 +107,10 @@ export default function Students() {
           <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#C7B9DA"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Philip Amakari</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">philipamakari@gmail.com</Text>
@@ -143,8 +146,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#AA9C75"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">David Folarin</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">davidfolarin@gmail.com</Text>
@@ -180,8 +185,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#C7B9DA"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Timothy Salisu</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">timothysalisu@gmail.com</Text>
@@ -217,8 +224,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#D4B5AD"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Peter Usman</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">peterusman@gmail.com</Text>
@@ -254,8 +263,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#BEA887"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Esther Wakali</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">estherwakali@gmail.com</Text>
@@ -291,8 +302,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#D1BAA9"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Simon Ogan</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">simonogan@gmail.com</Text>
@@ -328,8 +341,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#D1DFC3"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Esther Abubakar</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">estherabubakar@gmail.com</Text>
@@ -365,8 +380,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#D2C7AC"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Philip Ezeoke</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">philipezeoke@gmail.com</Text>
@@ -432,8 +449,10 @@ export default function Students() {
           <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#C7B9DA"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Philip Amakari</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">philipamakari@gmail.com</Text>
@@ -469,8 +488,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#AA9C75"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">David Folarin</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">davidfolarin@gmail.com</Text>
@@ -506,8 +527,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#C7B9DA"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Timothy Salisu</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">timothysalisu@gmail.com</Text>
@@ -543,8 +566,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#D4B5AD"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Peter Usman</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">peterusman@gmail.com</Text>
@@ -580,8 +605,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#BEA887"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Esther Wakali</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">estherwakali@gmail.com</Text>
@@ -617,8 +644,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#D1BAA9"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Simon Ogan</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">simonogan@gmail.com</Text>
@@ -654,8 +683,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#D1DFC3"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Esther Abubakar</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">estherabubakar@gmail.com</Text>
@@ -691,8 +722,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#D2C7AC"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Philip Ezeoke</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">philipezeoke@gmail.com</Text>
@@ -757,8 +790,10 @@ export default function Students() {
           <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#D1DFC3"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Philip Amakari</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">philipamakari@gmail.com</Text>
@@ -794,8 +829,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#D2C7AC"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">David Folarin</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">davidfolarin@gmail.com</Text>
@@ -831,8 +868,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#DBC0DD"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Timothy Salisu</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">timothysalisu@gmail.com</Text>
@@ -868,8 +907,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#D4B5AD"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Peter Usman</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">peterusman@gmail.com</Text>
@@ -905,8 +946,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#C7B9DA"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Esther Wakali</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">estherwakali@gmail.com</Text>
@@ -942,8 +985,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#AA9C75"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Simon Ogan</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">simonogan@gmail.com</Text>
@@ -979,8 +1024,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#D4B5AD"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Esther Abubakar</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">estherabubakar@gmail.com</Text>
@@ -1016,8 +1063,10 @@ export default function Students() {
             <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
             <Box w="25%">
-            <HStack>
-            <Avatar />
+            <HStack cursor="pointer" onClick={() => {
+              router("/scholarship-admin/students/student-profile")
+            }}>
+            <Box w="30px" h="30px" rounded="full" bg="#D1DFC3"></Box>
             <Stack>
               <Text color="#101828" fontSize="13px" fontWeight="500">Philip Ezeoke</Text>
               <Text color="#667085" fontSize="12px" fontWeight="400">philipezeoke@gmail.com</Text>
