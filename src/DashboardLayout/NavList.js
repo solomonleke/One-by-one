@@ -42,6 +42,23 @@ const checkVeryActive= ()=>{
       }
   
 }
+
+const checkVeryVeryActive= ()=>{
+
+    let result = ""
+
+    if (isActive(location, "/scholarship-admin/schools")){
+          result = true
+          return  result
+      }else if (location.pathname === "/scholarship-admin/schools/school-profile"){
+          result = true
+          return  result
+      }else{
+          result = false
+          return  result
+      }
+  
+}
   
     
      let List = [
@@ -87,7 +104,7 @@ const checkVeryActive= ()=>{
         name: "schools",
         icon: <IoSchoolOutline />,
         link: "/scholarship-admin/schools",
-        active: isActive(location, "/scholarship-admin/schools"),
+        active: checkVeryVeryActive(),
         display: isScholarshipAdmin()
     },
     {
