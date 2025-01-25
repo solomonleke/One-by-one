@@ -53,6 +53,7 @@ import { ReactComponent as Close } from "../../Asset/close.svg";
 
 
 export default function Schools() {
+  const router = useNavigate();
     return (
         <MainLayout>
             <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Schools <Box as='span' color="#667085" fontWeight="600" fontSize="19px">(34)</Box></Text>
@@ -102,7 +103,9 @@ export default function Schools() {
               <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Legendary Scholars Academy" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Legendary Scholars Academy</Text>
@@ -135,7 +138,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Queen's College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Queen's College</Text>
@@ -168,7 +173,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Federal Government College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Federal Government College</Text>
@@ -201,7 +208,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Mayflower School" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">MayFlower School</Text>
@@ -234,7 +243,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Chrisland College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Chrisland College</Text>
@@ -267,7 +278,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Christ The King College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Christ The King College</Text>
@@ -300,7 +313,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Corona Secondary School" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Corona Secondary School</Text>
@@ -333,7 +348,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Adesoye College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Adesoye College</Text>
@@ -392,7 +409,9 @@ export default function Schools() {
               <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Legendary Scholars Academy" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Legendary Scholars Academy</Text>
@@ -425,7 +444,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Queens's College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Queen's College</Text>
@@ -458,7 +479,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Federal Government College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Federal Government College</Text>
@@ -491,7 +514,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Mayflower School" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">MayFlower School</Text>
@@ -524,7 +549,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Chrisland College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Chrisland College</Text>
@@ -557,7 +584,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Christ The KIng College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Christ The King College</Text>
@@ -590,7 +619,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Corona Secondary School" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Corona Secondary School</Text>
@@ -623,7 +654,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Adesoye College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Adesoye College</Text>
@@ -681,7 +714,9 @@ export default function Schools() {
               <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Legendary Scholars Academy" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Legendary Scholars Academy</Text>
@@ -714,7 +749,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Queen's College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Queen's College</Text>
@@ -747,7 +784,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Federal Government College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Federal Government College</Text>
@@ -780,7 +819,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Mayflower School" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">MayFlower School</Text>
@@ -813,7 +854,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Chrisland College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Chrisland College</Text>
@@ -846,7 +889,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Christ The KIng College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Christ The King College</Text>
@@ -879,7 +924,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Corona SEcondary School" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Corona Secondary School</Text>
@@ -912,7 +959,9 @@ export default function Schools() {
                 <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
 
                 <Box w="40%">
-                <HStack>
+                <HStack cursor="pointer" onClick={() => {
+                  router("/scholarship-admin/schools/school-profile")
+                }}>
                 <Avatar name="Adesoye College" />
                 <Stack>
                   <Text color="#101828" fontSize="13px" fontWeight="500">Adesoye College</Text>
