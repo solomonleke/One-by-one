@@ -48,7 +48,7 @@ import {
 
 export default function ScholarshipAdmin() {
 
-
+  const router = useNavigate();
 
   const schools = [
     {
@@ -191,7 +191,12 @@ export default function ScholarshipAdmin() {
             </Text>
             <Box width="0px" opacity={"0px"} height={"11.5px"} gap={"0px"} border={"1px solid #194B3380"} />
             <Text fontSize="14px" display={"flex"} fontWeight="600" cursor="pointer" letterSpacing={"-0.04em"} textAlign={"left"} lineHeight="16.94px" color=" #194B33"
-            > View  </Text>  <Icon as={LiaAngleDoubleRightSolid} cursor="pointer" color=" #194B33" />
+            onClick={() => {
+              router("/scholarship-admin/scholarship-admin-leaderboard")
+            }}
+            > View  </Text>  <Icon as={LiaAngleDoubleRightSolid} cursor="pointer" color=" #194B33" onClick={() => {
+              router("/scholarship-admin/scholarship-admin-leaderboard")
+            }} />
           </Flex>
 
 
