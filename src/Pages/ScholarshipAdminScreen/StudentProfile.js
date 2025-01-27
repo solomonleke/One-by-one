@@ -56,7 +56,7 @@ export default function StudentProfile() {
       </Flex>
 
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py="17px" px={["8px", "8px", "18px", "18px"]} rounded="10px">
-        <Flex justifyContent="space-between" flexWrap="wrap">
+        <Flex justifyContent="space-between" flexWrap="wrap" gap="10px">
           <HStack spacing="14px" w={["100%", "100%", "70%", "70%"]}>
             <Avatar name="Philip Amakiri" size="lg" src="https://bit.ly/sage-adebayo" />
             <Stack spacing="10px">

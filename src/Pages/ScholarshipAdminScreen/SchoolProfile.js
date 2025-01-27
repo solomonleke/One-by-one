@@ -53,7 +53,7 @@ export default function SchoolProfile() {
       </Flex>
 
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["18px", "18px"]} rounded='10px' display="flex" flexDir="column" gap="20px">
-        <HStack borderWidth="1px" rounded="10px" py="16px" px="17px" justifyContent="space-between">
+        <HStack borderWidth="1px" rounded="10px" py="16px" px="17px" justifyContent="space-between" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="10px">
             <HStack>
             <Avatar name="Legendary Scholars Academy"/>
             <Text color="#2F2F2F" fontSize="21px" fontWeight="800">Legendary Scholars Academy</Text>
@@ -95,7 +95,7 @@ export default function SchoolProfile() {
                 <Text color="#2F2F2F" fontSize="14px" fontWeight="500">School Details</Text>
 
                 <Box bg="#EAFEF4" rounded="10px" borderWidth="1px" borderColor="#D9E8E1" display="flex" flexDir="column" gap="50px" p="17px" pt="50px">
-                    <HStack>
+                    <HStack flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="50px">
                     <Input label='Email' placeholder='LegacyScholarsAcademy@gmail.com' bg="white" ZIndex="-1"/>
 
                     <Input label='Founding Year' placeholder='2016'/>
@@ -103,7 +103,7 @@ export default function SchoolProfile() {
                     <Input label='Address' placeholder='84 Balogun Road, Ago palace way'/>
                     </HStack>
 
-                    <HStack>
+                    <HStack flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="50px">
                     <Input label='City' placeholder='Okota'/>
 
                     <Input label='State' placeholder='Lagos'/>
@@ -111,7 +111,7 @@ export default function SchoolProfile() {
                     <Input label='Zip Code' placeholder='100001'/>
                     </HStack>
 
-                    <HStack>
+                    <HStack flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="50px">
                     <Input label='School Capacity' placeholder='190'/>
                     <Input placeholder='190' visibility="hidden"/>
                     <Input placeholder='190' visibility="hidden"/>
@@ -123,7 +123,7 @@ export default function SchoolProfile() {
                 <Text color="#2F2F2F" fontSize="14px" fontWeight="500">Principal Information</Text>
 
                 <Box bg="#EAFEF4" rounded="10px" borderWidth="1px" borderColor="#D9E8E1" mb="20px" display="flex" flexDir="column" gap="50px" p="17px" pt="50px">
-                    <HStack>
+                    <HStack flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="50px">
                     <Input label='Title' placeholder='Mr.' bg="white"/>
 
                     <Input label='First Name' placeholder='John'/>
@@ -131,7 +131,7 @@ export default function SchoolProfile() {
                     <Input label='Last Name' placeholder='Doe'/>
                     </HStack>
 
-                    <HStack>
+                    <HStack flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="50px">
                     <Input label='Email' placeholder='johndoe@gmail.com'/>
 
                     <Input label='Phone Number' placeholder='+234000000001'/>
@@ -167,10 +167,10 @@ export default function SchoolProfile() {
 
               <Box borderWidth="1px" rounded="10px" px="17px" py="8px" pb="16px">
             <Stack spacing="20px">
-              <HStack justifyContent="space-between">
+              <HStack justifyContent="space-between" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}>
                 <Stack>
                 <Text color="#626974" fontSize="13px" mt="20px" fontWeight="400">Certificate Of Incorporation</Text>
-                <HStack borderWidth="1px" rounded="10px" gap="180px" justifyContent="space-between" px="17px" py="16px">
+                <HStack borderWidth="1px" rounded="10px" gap={["40px", "40px", "180px", "180px"]} justifyContent="space-between" px="17px" py="16px" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}>
                       <HStack>
                         <Pdf />
                         <Stack>
@@ -187,7 +187,7 @@ export default function SchoolProfile() {
 
                 <Stack>
                 <Text color="#626974" fontSize="13px" mt="20px" fontWeight="400">Tax Identification Number (TIN)</Text>
-                <HStack borderWidth="1px" rounded="10px" gap="180px" justifyContent="space-between" px="17px" py="16px">
+                <HStack borderWidth="1px" rounded="10px" gap={["40px", "40px", "180px", "180px"]} justifyContent="space-between" px="17px" py="16px" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}>
                       <HStack>
                         <Pdf />
                         <Stack>
@@ -207,10 +207,10 @@ export default function SchoolProfile() {
                 </Stack>
               </HStack>
 
-              <HStack justifyContent="space-between">
+              <HStack justifyContent="space-between" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}>
                 <Stack>
                 <Text color="#626974" fontSize="13px" mt="20px" fontWeight="400">Ministry of Education Approval Letter</Text>
-                <HStack borderWidth="1px" rounded="10px" gap="180px" justifyContent="space-between" px="17px" py="16px">
+                <HStack borderWidth="1px" rounded="10px" gap={["40px", "40px", "180px", "180px"]} justifyContent="space-between" px="17px" py="16px" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}>
                       <HStack>
                         <Pdf />
                         <Stack>
@@ -227,7 +227,7 @@ export default function SchoolProfile() {
 
                 <Stack>
                 <Text color="#626974" fontSize="13px" mt="20px" fontWeight="400">School Registration Certificate</Text>
-                <HStack borderWidth="1px" rounded="10px" gap="220px" justifyContent="space-between" px="17px" py="16px">
+                <HStack borderWidth="1px" rounded="10px" gap={["40px", "40px", "220px", "220px"]} justifyContent="space-between" px="17px" py="16px" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}>
                       <HStack>
                         <Pdf />
                         <Stack>
