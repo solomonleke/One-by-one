@@ -59,6 +59,23 @@ const checkVeryVeryActive= ()=>{
       }
   
 }
+
+const checkLeaderboardActive= ()=>{
+
+    let result = ""
+
+    if (isActive(location, "/scholarship-admin")){
+          result = true
+          return  result
+      }else if (location.pathname === "/scholarship-admin/scholarship-admin-leaderboard"){
+          result = true
+          return  result
+      }else{
+          result = false
+          return  result
+      }
+  
+}
   
     
      let List = [
@@ -97,7 +114,7 @@ const checkVeryVeryActive= ()=>{
         name: "overview",
         icon: <RxDashboard/>,
         link: "/scholarship-admin",
-        active: isActive(location, "/scholarship-admin"),
+        active: checkLeaderboardActive(),
         display: isScholarshipAdmin()
     },
     {

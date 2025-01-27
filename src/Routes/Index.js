@@ -27,6 +27,7 @@ import Settings2 from '../Pages/ScholarshipAdminScreen/Settings'
 import Students from '../Pages/ScholarshipAdminScreen/Students'
 import StudentProfile2 from '../Pages/ScholarshipAdminScreen/StudentProfile'
 import SchoolProfile2 from '../Pages/ScholarshipAdminScreen/SchoolProfile'
+import ScholarshipAdminLeaderboard from '../Pages/ScholarshipAdminScreen/ScholarshipAdminLeaderboard'
 
 
 export default function IndexRoutes() {
@@ -69,6 +70,7 @@ export default function IndexRoutes() {
           <Route path='/scholarship-admin/settings' element={<Settings2 />} />
           <Route path='/scholarship-admin/students/student-profile' element={<StudentProfile2 />} />
           <Route path='/scholarship-admin/schools/school-profile' element={<SchoolProfile2 />} />
+          <Route path='/scholarship-admin/scholarship-admin-leaderboard' element={<ScholarshipAdminLeaderboard />} />
 
 
 
