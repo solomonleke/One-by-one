@@ -138,7 +138,7 @@ export default function ScholarshipAdmin() {
           <Box
 
 
-            bg="#03493D54" cursor={"pointer"} width={"356px"} opacity={"0px"} height={"26px"} padding={"6px 6px"} gap="12px" borderRadius={"6px"}>
+            bg="#03493D54" cursor={"pointer"} width={["320px", "320px", "356px", "356px"]} opacity={"0px"} height={"26px"} padding={"6px 6px"} gap="12px" borderRadius={"6px"}>
             <Flex align="center" justify="space-between">
               <Progress
 
@@ -146,7 +146,7 @@ export default function ScholarshipAdmin() {
                 gap={"0px"}
                 opacity={"0px"}
                 height="6px"
-                width="199px"
+                width={["170px", "170px", "199px", "199px"]}
                 borderRadius="2px 2px"
                 sx={{
                   "& > div": {
@@ -249,6 +249,7 @@ export default function ScholarshipAdmin() {
                 align="center"
                 flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}
                 p={2}
+                gap="10px"
                 borderBottomWidth={index !== schools.length - 1 ? 1 : 0}
                 borderColor={"gray.200"}>
                 <HStack w={{ Fill: "264px" }} padding={"16px, 30px, 16px, 12px"} h={{ Fixed: "42px" }} gap={"18px"} opacity={"0px"}>
