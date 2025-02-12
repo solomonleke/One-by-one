@@ -45,7 +45,7 @@ export const CreateStudentApi = (Payload) => {
     url: `${baseUrl}/school-admin/register-student`,
     headers: {
       "Content-Type": "application/json",
-      // 'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`,
     },
     data: data,
   };
