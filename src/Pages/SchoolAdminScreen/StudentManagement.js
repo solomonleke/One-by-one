@@ -11,7 +11,8 @@ import { CgSearch } from "react-icons/cg";
 import { FaCalendarAlt } from "react-icons/fa";
 import { IoFilter } from "react-icons/io5";
 import { HiOutlineDocumentArrowUp } from "react-icons/hi2";
-import { BiSearch } from "react-icons/bi"; import Pagination from "../../Components/Pagination";
+import { BiSearch } from "react-icons/bi";
+import Pagination from "../../Components/Pagination";
 import { configuration } from "../../Utils/Helpers";
 import {
     Table,

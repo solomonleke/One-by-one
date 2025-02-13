@@ -162,7 +162,7 @@ export default function NavBar({ showSearch = true }) {
                             <MenuButton as={Box}>
 
                                 <HStack cursor={"pointer"}>
-                                <Avatar name={`${userName} ${lastName}`} size="sm" src="https://bit.ly/tioluwani-kolawole" />
+                                <Avatar name={`${userName.toUpperCase()} ${lastName}`} size="sm" src="https://bit.ly/tioluwani-kolawole" />
                                     <Text color={"#2E2E2E"} fontWeight={"500"} fontSize={"14px"} >{userName} {lastName}</Text>
                                     <IoIosArrowDown size={"18px"} color='#000000' />
 

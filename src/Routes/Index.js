@@ -33,6 +33,8 @@ import MyScholarships from '../Pages/SponsorAdminScreen/MyScholarships'
 import DiscoverStudents from '../Pages/SponsorAdminScreen/DiscoverStudents'
 import FundingHistory from '../Pages/SponsorAdminScreen/FundingHistory'
 import Settings3 from '../Pages/SponsorAdminScreen/Settings'
+import StudentProfile3 from '../Pages/SponsorAdminScreen/StudentProfile'
+import SchoolProfile3 from '../Pages/SponsorAdminScreen/SchoolProfile'
 
 
 export default function IndexRoutes() {
@@ -78,12 +80,14 @@ export default function IndexRoutes() {
           <Route path='/scholarship-admin/scholarship-admin-leaderboard' element={<ScholarshipAdminLeaderboard />} />
 
 
-          {/* sponsor admin routes */}sponsor-admin
+          {/* sponsor admin routes */}
           <Route path='/sponsor-admin' element={<SponsorAdmin />} />
           <Route path='/sponsor-admin/myscholarships' element={<MyScholarships />} />
           <Route path='/sponsor-admin/discoverstudents' element={<DiscoverStudents />} />
           <Route path='/sponsor-admin/fundinghistory' element={<FundingHistory />} />
           <Route path='/sponsor-admin/settings' element={<Settings3 />} />
+          <Route path='/sponsor-admin/discoverstudents/school-profile' element={<SchoolProfile3 />} />
+          <Route path='/sponsor-admin/discoverstudents/student-profile' element={<StudentProfile3 />} />
 
 
 
