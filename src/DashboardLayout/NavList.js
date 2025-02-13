@@ -78,6 +78,23 @@ const checkLeaderboardActive= ()=>{
       }
   
 }
+
+const checkStudentActive= ()=>{
+
+    let result = ""
+
+    if (isActive(location, "/sponsor-admin/discoverstudents")){
+          result = true
+          return  result
+      }else if (location.pathname === "/sponsor-admin/discoverstudents/school-profile" || "/sponsor-admin/discoverstudents/student-profile"){
+          result = true
+          return  result
+      }else{
+          result = false
+          return  result
+      }
+  
+}
   
     
      let List = [
@@ -158,7 +175,7 @@ const checkLeaderboardActive= ()=>{
         name: "discover students",
         icon: <PiStudent />,
         link: "/sponsor-admin/discoverstudents",
-        active: isActive(location, "/sponsor-admin/discoverstudents"),
+        active: checkStudentActive(),
         display: isSponsorAdmin()
     },
     {
