@@ -86,7 +86,7 @@ const checkStudentActive= ()=>{
     if (isActive(location, "/sponsor-admin/discoverstudents")){
           result = true
           return  result
-      }else if (location.pathname === "/sponsor-admin/discoverstudents/school-profile" || "/sponsor-admin/discoverstudents/student-profile"){
+      }else if (location.pathname === "/sponsor-admin/discoverstudents/school-profile" || location.pathname === "/sponsor-admin/discoverstudents/student-profile"){
           result = true
           return  result
       }else{

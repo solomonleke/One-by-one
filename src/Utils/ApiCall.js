@@ -36,7 +36,7 @@ export const CreateAccountApi = (Payload) => {
 };
 
 export const CreateStudentApi = (Payload) => {
-  // console.log("CreateStudentApi", Payload);
+  console.log("CreateStudentApi", Payload);
 
   let data = JSON.stringify(Payload);
   let config = {
