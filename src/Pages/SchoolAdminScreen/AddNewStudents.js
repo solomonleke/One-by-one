@@ -511,7 +511,7 @@ export default function AddNewStudents() {
                                         placeholder="Select the level of financial support the student requires"
                                     >
                                         <option value="Full Scholarship">Full Scholarship </option>
-                                        <option value="Part Scholarship">Part Scholarship </option>
+                                        <option value="Partial Scholarship">Partial Scholarship </option>
 
                                     </Select>
                                 </Stack>
