@@ -1,12 +1,12 @@
 import {HiOutlineUsers} from "react-icons/hi"
-import { isActive, isSchoolAdmin, isScholarshipAdmin, isSponsorAdmin } from "../Authentication/Index"
+import { isActive, isSchoolAdmin,isScholarshipAdmin, isFundAdmin } from "../Authentication/Index"
 import { GoGear } from "react-icons/go"
 import { RxDashboard } from "react-icons/rx"
-import { ReactComponent as Scholarship } from "../Asset/scholarship.svg"
 import { IoBriefcaseOutline, IoSchoolOutline } from "react-icons/io5"
 import { FaSchool } from "react-icons/fa"
 import { PiStudent } from "react-icons/pi"
-import { BiHistory } from "react-icons/bi"
+import { TbCurrencyNaira } from "react-icons/tb"
+import { VscHistory } from "react-icons/vsc"
 export const NavList =(location)=>{
 
 
@@ -70,23 +70,6 @@ const checkLeaderboardActive= ()=>{
           result = true
           return  result
       }else if (location.pathname === "/scholarship-admin/scholarship-admin-leaderboard"){
-          result = true
-          return  result
-      }else{
-          result = false
-          return  result
-      }
-  
-}
-
-const checkStudentActive= ()=>{
-
-    let result = ""
-
-    if (isActive(location, "/sponsor-admin/discoverstudents")){
-          result = true
-          return  result
-      }else if (location.pathname === "/sponsor-admin/discoverstudents/school-profile" || location.pathname === "/sponsor-admin/discoverstudents/student-profile"){
           result = true
           return  result
       }else{
@@ -159,42 +142,46 @@ const checkStudentActive= ()=>{
     },
     {
         name: "overview",
-        icon: <RxDashboard />,
-        link: "/sponsor-admin",
-        active: isActive(location, "/sponsor-admin"),
-        display: isSponsorAdmin()
+        icon: <RxDashboard/>,
+        link: "/fund-admin",
+        active: isActive(location, "/fund-admin"),
+        display: isFundAdmin()
     },
     {
-        name: "my scholarships",
-        icon: <Scholarship />,
-        link: "/sponsor-admin/myscholarships",
-        active: isActive(location, "/sponsor-admin/myscholarships"),
-        display: isSponsorAdmin()
+        name: "awaiting fund",
+        icon: <TbCurrencyNaira />,
+        link: "/fund-admin/awaiting-fund",
+        active: isActive(location, "/fund-admin/awaiting-fund"),
+        display: isFundAdmin()
     },
     {
-        name: "discover students",
+        name: "funded students",
         icon: <PiStudent />,
-        link: "/sponsor-admin/discoverstudents",
-        active: checkStudentActive(),
-        display: isSponsorAdmin()
+        link: "/fund-admin/funded-students",
+        active: isActive(location, "/fund-admin/funded-students"),
+        display: isFundAdmin()
     },
     {
         name: "funding history",
-        icon: <BiHistory />,
-        link: "/sponsor-admin/fundinghistory",
-        active: isActive(location, "/sponsor-admin/fundinghistory"),
-        display: isSponsorAdmin()
+        icon: <VscHistory />,
+        link: "/fund-admin/funding-history",
+        active: isActive(location, "/fund-admin/funding-history"),
+        display: isFundAdmin()
     },
     {
         name: "settings",
-        icon: <GoGear />,
-        link: "/sponsor-admin/settings",
-        active: isActive(location, "/sponsor-admin/settings"),
-        display: isSponsorAdmin()
+        icon: <GoGear/>,
+        link: "/fund-admin/settings",
+        active: isActive(location, "/fund-admin/funding-history"),
+        display: isFundAdmin()
     },
    
     
 ]
+
+
+console.log("isSchoolAdmin():", isSchoolAdmin());
+console.log("isScholarshipAdmin():", isScholarshipAdmin());
 
 return List
 } 

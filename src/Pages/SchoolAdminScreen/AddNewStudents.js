@@ -477,7 +477,7 @@ const genderOptions = [
 
                                 <Stack w="100%" pos="relative" top="-15px">
                                     <Text
-                                        textTransform="capitalize"
+     https://github.com/solomonleke/One-by-one/pull/39/conflict?name=src%252FPages%252FSchoolAdminScreen%252FAddNewStudents.js&ancestor_oid=d976803c3314d2f5ebfafcfbda1c9751d1c81806&base_oid=a65d61eb856513298b7896819a96819324eb2407&head_oid=ca9beddb5f1eca742e33d1316ef73e0a4e5454df                                   textTransform="capitalize"
                                         fontWeight="500"
                                         fontSize="14px"
                                         color="#101011"
@@ -498,8 +498,10 @@ const genderOptions = [
                                         id='scholarshipNeed'
                                         placeholder="Select the level of financial support the student requires"
                                     >
+
                                         <option value="FULL SCHOLARSHIP">FULL SCHOLARSHIP</option>
                                         <option value="PARTIAL SCHOLARSHIP">PARTIAL SCHOLARSHIP</option>
+
 
                                     </Select>
                                 </Stack>

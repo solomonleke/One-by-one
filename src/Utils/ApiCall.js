@@ -36,7 +36,7 @@ export const CreateAccountApi = (Payload) => {
 };
 
 export const CreateStudentApi = (Payload) => {
-  console.log("CreateStudentApi", Payload);
+  // console.log("CreateStudentApi", Payload);
 
   let data = JSON.stringify(Payload);
   let config = {
@@ -45,7 +45,7 @@ export const CreateStudentApi = (Payload) => {
     url: `${baseUrl}/school-admin/register-student`,
     headers: {
       "Content-Type": "application/json",
-      'Authorization': `Bearer ${token}`,
+      // 'Authorization': `Bearer ${token}`,
     },
     data: data,
   };
