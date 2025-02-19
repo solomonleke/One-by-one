@@ -1,4 +1,1 @@
-export const configuration ={
-    sizePerPage: 3,
-    
-}
+// Custom helper functions

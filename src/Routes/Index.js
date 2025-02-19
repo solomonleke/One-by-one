@@ -28,13 +28,11 @@ import Students from '../Pages/ScholarshipAdminScreen/Students'
 import StudentProfile2 from '../Pages/ScholarshipAdminScreen/StudentProfile'
 import SchoolProfile2 from '../Pages/ScholarshipAdminScreen/SchoolProfile'
 import ScholarshipAdminLeaderboard from '../Pages/ScholarshipAdminScreen/ScholarshipAdminLeaderboard'
-import SponsorAdmin from '../Pages/SponsorAdminScreen/Index'
-import MyScholarships from '../Pages/SponsorAdminScreen/MyScholarships'
-import DiscoverStudents from '../Pages/SponsorAdminScreen/DiscoverStudents'
-import FundingHistory from '../Pages/SponsorAdminScreen/FundingHistory'
-import Settings3 from '../Pages/SponsorAdminScreen/Settings'
-import StudentProfile3 from '../Pages/SponsorAdminScreen/StudentProfile'
-import SchoolProfile3 from '../Pages/SponsorAdminScreen/SchoolProfile'
+import Dashboard from '../Pages/FundAdminUserScreen/Index'
+import AwaitingFunding from '../Pages/FundAdminUserScreen/AwaitingFunding'
+import FundedStudents from '../Pages/FundAdminUserScreen/FundedStudents'
+import FundedHistory from '../Pages/FundAdminUserScreen/FundedHistory'
+import FundingRecords from '../Pages/FundAdminUserScreen/FundingRecords'
 
 
 export default function IndexRoutes() {
@@ -80,17 +78,13 @@ export default function IndexRoutes() {
           <Route path='/scholarship-admin/scholarship-admin-leaderboard' element={<ScholarshipAdminLeaderboard />} />
 
 
-          {/* sponsor admin routes */}
-          <Route path='/sponsor-admin' element={<SponsorAdmin />} />
-          <Route path='/sponsor-admin/myscholarships' element={<MyScholarships />} />
-          <Route path='/sponsor-admin/discoverstudents' element={<DiscoverStudents />} />
-          <Route path='/sponsor-admin/fundinghistory' element={<FundingHistory />} />
-          <Route path='/sponsor-admin/settings' element={<Settings3 />} />
-          <Route path='/sponsor-admin/discoverstudents/school-profile' element={<SchoolProfile3 />} />
-          <Route path='/sponsor-admin/discoverstudents/student-profile' element={<StudentProfile3 />} />
 
-
-
+          <Route path='/fund-admin' element={<Dashboard />} />
+          <Route path='/fund-admin/awaiting-funding' element={<AwaitingFunding />} />
+          <Route path='/fund-admin/funded-students' element={<FundedStudents />} />
+          <Route path='/fund-admin/funded-history' element={<FundedHistory />} />
+          <Route path='/fund-admin/funding-records' element={<FundingRecords />} />
+          <Route path='/fund-admin/student-management/student-profile' element={<StudentProfile />} />
         </Routes>
       </BrowserRouter>
     </StudentProvider>
