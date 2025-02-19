@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react'
+import Select from "react-select";
 import SubLayout from '../../DashboardLayout/SubLayout'
-import { Text, Flex, HStack, VStack, Stack, Select, Box, Spacer } from '@chakra-ui/react'
+import { Text, Flex, HStack, VStack, Stack, Box, Spacer } from '@chakra-ui/react'
 import Input from '../../Components/Input'
 import TextArea from '../../Components/TextArea'
 import Button from '../../Components/Button'
@@ -17,28 +18,6 @@ import UpdateReviewModal from '../../Components/UpdateReview'
 
 
 export default function AddNewStudents() {
-
-// const { addStudent } = useContext(StudentContext);
-//   const [formData, setFormData] = useState({
-//     name: "",
-//     email: "",
-//     department: "",
-//     classLevel: "",
-//     fieldOfStudy: "",
-//     status: "pending", // default status
-//   });
-
-//   const handleChange = (e) => {
-//     setFormData({
-//       ...formData,
-//       [e.target.name]: e.target.value,
-//     });
-//   };
-
-//   const handleSubmit = () => {
-//     addStudent(formData);
-//     nav("/school-admin/student-management");
-//   };
 
     const [oldValue, setOldValue] = useState({
         name: "",
@@ -78,6 +57,18 @@ export default function AddNewStudents() {
         scholarshipNeed: "",
       });
 
+      const options = [
+        { value: "health and medicine", label: "Health and Medicine" },
+        { value: "science", label: "Science" },
+        { value: "nurse process", label: "Nurse Process" }
+    ];
+
+
+const genderOptions = [
+    { value: "male", label: "Male" },
+    { value: "female", label: "Female" }
+];
+
       const [showToast, setShowToast] = useState({
         show: false,
         message: "",
@@ -87,10 +78,22 @@ export default function AddNewStudents() {
       const [Loading, setLoading] = useState(false);
 
       const handlePayload = (e) => {
-
-        setPayload({ ...payload, [e.target.id]: e.target.value })
+        if (Array.isArray(e)) {
+            // Handling multi-select case (react-select)
+            setPayload((prev) => ({
+                ...prev,
+                studentInterests: e.map((opt) => opt.value),
+                gender: e ? e.value : "",
+            }));
+        } else {
+            // Handling normal text inputs
+            setPayload((prev) => ({
+                ...prev,
+                [e.target.id]: e.target.value, // Ensure other fields update properly
+            }));
+        }
+    };
     
-      }
 
       const Submit = async () => {
 
@@ -293,19 +296,15 @@ export default function AddNewStudents() {
                                     </Text>
 
                                     <Select
-                                        onChange={handlePayload} 
-                                        value={payload.gender}
-                                        id='gender'
-                                        border="2px"
-                                        placeholder="Select option"
-                                        fontSize="small"
-                                        fontWeight="normal"
-                                        size="lg"
-                                        w="100%"
-                                    >
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                    </Select>
+    options={genderOptions}
+    onChange={handlePayload}
+    value={genderOptions.find(option => option.value === payload.gender) || null} // Ensure correct formatting
+    placeholder="Select gender"
+    isSearchable={false} // Optional: disables typing in the dropdown
+    styles={{
+        control: (base) => ({ ...base, border: "2px solid #CBD5E0" }) // Optional styling
+    }}
+/>
                                 </Stack>
                                 <Input label='Phone Number' placeholder='+234' onChange={handlePayload} value={payload.studentPhone} id='studentPhone' />
                                 <Input label='Guardian’s Phone Number (Optional)' placeholder='+234' onChange={handlePayload} value={payload.guardianPhone} id='guardianPhone' />
@@ -453,35 +452,24 @@ export default function AddNewStudents() {
                                 </Stack>
                                 <Input label="intended Field of study " placeholder="e.g Nursing Science" onChange={handlePayload} value={payload.intendedFieldOfStudy} id='intendedFieldOfStudy'/>
                                 <Stack w="100%" pos="relative" top="-15px">
-                                    <Text
-                                        textTransform="capitalize"
-                                        fontWeight="500"
-                                        fontSize="14px"
-                                        color="#101011"
-                                        fontFamily="heading"
-                                    >
-                                        What are the student's interests?
-                                    </Text>
+    <Text
+        textTransform="capitalize"
+        fontWeight="500"
+        fontSize="14px"
+        color="#101011"
+        fontFamily="heading"
+    >
+        What are the student's interests?
+    </Text>
 
-                                    <Select
-                                        border="2px"
-                                        fontSize="13px"
-                                        fontWeight="400"
-                                        size="lg"
-                                        w="100%"
-                                        _placeholder={{ color: "red" }}
-                                        color="#ADB4BF"
-                                        onChange={handlePayload} 
-                                        value={payload.studentInterests}
-                                        id='studentInterests'
-
-                                        placeholder="Select tags associated with the student’s main area of interest"
-                                    >
-                                        <option value="health and medicine">Health and Medicine </option>
-                                        <option value="science">Science</option>
-                                        <option value="nurse process">Nurse Process</option>
-                                    </Select>
-                                </Stack>
+    <Select
+        options={options}
+        isMulti
+        onChange={handlePayload}
+        value={options.filter(option => payload.studentInterests?.includes(option.value))}
+        placeholder="Select tags associated with the student’s main area of interest"
+    />
+</Stack>
                                 <Input label='Higher Education Goals ' placeholder="Enter the student’s higher education aspirations" onChange={handlePayload} value={payload.higherEducationGoals} id='higherEducationGoals'/>
                                 <Input label='career goals' placeholder="Enter the career path the student is aspiring toward" onChange={handlePayload} value={payload.careerGoals} id='careerGoals'/>
                                 <Input label='leadership roles' placeholder="Mention any leadership roles the student has taken on" />
@@ -510,8 +498,8 @@ export default function AddNewStudents() {
                                         id='scholarshipNeed'
                                         placeholder="Select the level of financial support the student requires"
                                     >
-                                        <option value="Full Scholarship">Full Scholarship </option>
-                                        <option value="Partial Scholarship">Partial Scholarship </option>
+                                        <option value="FULL SCHOLARSHIP">FULL SCHOLARSHIP</option>
+                                        <option value="PARTIAL SCHOLARSHIP">PARTIAL SCHOLARSHIP</option>
 
                                     </Select>
                                 </Stack>
