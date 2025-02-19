@@ -33,7 +33,8 @@ export default function SignIn() {
   
       if (result.accessToken) {
        
-        localStorage.setItem("authToken", result.accessToken);
+        if(result.user.role !== null){
+          localStorage.setItem("authToken", result.accessToken);
         localStorage.setItem("onlineUser", JSON.stringify(result.user));
        
         setShowToast({
@@ -58,6 +59,15 @@ export default function SignIn() {
             router("/fund-admin");
           }
         }, 2000);
+        } else {
+          setShowToast({
+            show: true,
+            message: "You are yet to complete registration. Kindly select the role you want to register as.",
+            status: "success",
+          });
+
+          router(`/role-selection/${result.accessToken}`);
+        }
       } else {
         throw new Error("Invalid response format");
       }
