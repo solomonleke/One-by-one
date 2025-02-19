@@ -150,8 +150,8 @@ const checkLeaderboardActive= ()=>{
     {
         name: "awaiting fund",
         icon: <TbCurrencyNaira />,
-        link: "/fund-admin/awaiting-fund",
-        active: isActive(location, "/fund-admin/awaiting-fund"),
+        link: "/fund-admin/awaiting-funding",
+        active: isActive(location, "/fund-admin/awaiting-funding"),
         display: isFundAdmin()
     },
     {
