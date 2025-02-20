@@ -28,6 +28,11 @@ import Students from '../Pages/ScholarshipAdminScreen/Students'
 import StudentProfile2 from '../Pages/ScholarshipAdminScreen/StudentProfile'
 import SchoolProfile2 from '../Pages/ScholarshipAdminScreen/SchoolProfile'
 import ScholarshipAdminLeaderboard from '../Pages/ScholarshipAdminScreen/ScholarshipAdminLeaderboard'
+import SponsorAdmin from '../Pages/SponsorAdminScreen/Index'
+import MyScholarships from '../Pages/SponsorAdminScreen/MyScholarships'
+import DiscoverStudents from '../Pages/SponsorAdminScreen/DiscoverStudents'
+import FundingHistory from '../Pages/SponsorAdminScreen/FundingHistory'
+import Settings3 from '../Pages/SponsorAdminScreen/Settings'
 import Dashboard from '../Pages/FundAdminUserScreen/Index'
 import AwaitingFunding from '../Pages/FundAdminUserScreen/AwaitingFunding'
 import FundedStudents from '../Pages/FundAdminUserScreen/FundedStudents'
@@ -77,8 +82,16 @@ export default function IndexRoutes() {
           <Route path='/scholarship-admin/schools/school-profile' element={<SchoolProfile2 />} />
           <Route path='/scholarship-admin/scholarship-admin-leaderboard' element={<ScholarshipAdminLeaderboard />} />
 
+           {/* sponsor admin routes */}
+           <Route path='/sponsor-admin' element={<SponsorAdmin />} />
+          <Route path='/sponsor-admin/myscholarships' element={<MyScholarships />} />
+          <Route path='/sponsor-admin/discoverstudents' element={<DiscoverStudents />} />
+          <Route path='/sponsor-admin/fundinghistory' element={<FundingHistory />} />
+          <Route path='/sponsor-admin/settings' element={<Settings3 />} />
 
 
+
+  {/* fund admin routes */}
           <Route path='/fund-admin' element={<Dashboard />} />
           <Route path='/fund-admin/awaiting-funding' element={<AwaitingFunding />} />
           <Route path='/fund-admin/funded-students' element={<FundedStudents />} />
