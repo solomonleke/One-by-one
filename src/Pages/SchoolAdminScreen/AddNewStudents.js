@@ -480,7 +480,7 @@ const genderOptions = [
 
                                 <Stack w="100%" pos="relative" top="-15px">
                                     <Text
-                                    textTransform="capitalize"
+
                                         fontWeight="500"
                                         fontSize="14px"
                                         color="#101011"

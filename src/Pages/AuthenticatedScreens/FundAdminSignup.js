@@ -22,11 +22,11 @@ const FundAdminSignup = () => {
   const [payload, setPayload] = useState({
     userType: "FUND-ADMIN",
     state: "",
-    localGoverment: "",
+    lga: "",
     city: "",
-    homeAddress: "",
+    address: "",
     occupation: "",
-    phoneNumber: "",
+    phone: "",
     experience: "",
   });
 
@@ -46,12 +46,13 @@ const FundAdminSignup = () => {
 
   }
 
+  const tempToken = localStorage.getItem("tempToken")
   const Submit = async () => {
 
     setLoading(true)
     try {
 
-      const result = await CreateAdminApi(payload)
+      const result = await CreateAdminApi(payload, tempToken)
 
       if (result.status === 201) {
         setLoading(false)
@@ -123,11 +124,11 @@ const FundAdminSignup = () => {
                   <Text fontSize="small" color="#6B7280">Let’s get to know you and verify you as a fund admin</Text>
                 </VStack>
                 <Input label="State" onChange={handlePayload} value={payload.state} placeholder="Enter your state" id="state" />
-                <Input label="Local Government" onChange={handlePayload} value={payload.localGoverment} placeholder="e.g Oshodi Isolo" id="localGoverment" />
+                <Input label="Local Government" onChange={handlePayload} value={payload.lga} placeholder="e.g Oshodi Isolo" id="lga" />
                 <Input label="City" onChange={handlePayload} value={payload.city} placeholder="e.g Okota" id="city" />
-                <Input label="Home Address" onChange={handlePayload} value={payload.homeAddress} placeholder="e.g 86 Jemtok street" id="homeAddress" />
+                <Input label="Home Address" onChange={handlePayload} value={payload.address} placeholder="e.g 86 Jemtok street" id="address" />
                 <Input label="Occupation" onChange={handlePayload} value={payload.occupation} placeholder="e.g Banker" id="occupation" />
-                <Input label="Phone Number" onChange={handlePayload} value={payload.phoneNumber} placeholder="+234" id="phoneNumber" />
+                <Input label="Phone Number" onChange={handlePayload} value={payload.phone} placeholder="+234" id="phone" />
               </VStack>
             )}
 
