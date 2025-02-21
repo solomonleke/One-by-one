@@ -1,6 +1,6 @@
 import { Box, Flex, HStack, Avatar, Text, Menu, MenuButton, MenuList, MenuItem, useDisclosure } from '@chakra-ui/react'
 import { Tabs, TabList, TabPanels, Tab, TabPanel, TabIndicator, Image } from '@chakra-ui/react'
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import SearchInput from '../Components/SearchInput'
 import Button from '../Components/Button'
 import BackNotification from '../Components/BackNotification'
@@ -29,6 +29,30 @@ import { useNavigate } from 'react-router-dom';
 
 export default function NavBar({ showSearch = true }) {
 
+
+    const [userName, setUserName] = useState('');
+    const [lastName, setLastName] = useState('');
+
+  useEffect(() => {
+    var reloadCount = localStorage.getItem("reloadCount");
+    if (!reloadCount) {
+      localStorage.setItem('reloadCount', + parseInt(1))
+
+    }
+    if (reloadCount < 2) {
+      localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
+      setTimeout(() =>
+        window.location.reload(1), 2000)
+    } else {
+      localStorage.removeItem('reloadCount');
+    }
+
+    const storedName = JSON.parse(localStorage.getItem('onlineUser'));
+    if (storedName) {
+      setUserName(`${storedName.firstName}`);
+      setLastName(`${storedName.lastName}`);
+    }
+  }, []);
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -138,8 +162,8 @@ export default function NavBar({ showSearch = true }) {
                             <MenuButton as={Box}>
 
                                 <HStack cursor={"pointer"}>
-                                    <Avatar name='Adeleke Solomon' size='sm' src='https://bit.ly/tioluwani-kolawole' />
-                                    <Text color={"#2E2E2E"} fontWeight={"500"} fontSize={"14px"} >Adeleke Solomon</Text>
+                                <Avatar name={`${userName} ${lastName}`} size="sm" src="https://bit.ly/tioluwani-kolawole" />
+                                <Text color={"#2E2E2E"} fontWeight={"500"} fontSize={"14px"} >{userName} {lastName}</Text>
                                     <IoIosArrowDown size={"18px"} color='#000000' />
 
                                 </HStack>

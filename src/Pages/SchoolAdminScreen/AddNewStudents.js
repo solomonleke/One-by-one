@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react'
-import Select from "react-select";
 import SubLayout from '../../DashboardLayout/SubLayout'
-import { Text, Flex, HStack, VStack, Stack, Box, Spacer } from '@chakra-ui/react'
+import { Text, Flex, HStack, VStack, Stack, Select, Box, Spacer } from '@chakra-ui/react'
 import Input from '../../Components/Input'
 import TextArea from '../../Components/TextArea'
 import Button from '../../Components/Button'
@@ -78,21 +77,10 @@ const genderOptions = [
       const [Loading, setLoading] = useState(false);
 
       const handlePayload = (e) => {
-        if (Array.isArray(e)) {
-            // Handling multi-select case (react-select)
-            setPayload((prev) => ({
-                ...prev,
-                studentInterests: e.map((opt) => opt.value),
-                gender: e ? e.value : "",
-            }));
-        } else {
-            // Handling normal text inputs
-            setPayload((prev) => ({
-                ...prev,
-                [e.target.id]: e.target.value, // Ensure other fields update properly
-            }));
-        }
-    };
+
+        setPayload({ ...payload, [e.target.id]: e.target.value })
+    
+      }
     
 
       const Submit = async () => {
@@ -296,15 +284,19 @@ const genderOptions = [
                                     </Text>
 
                                     <Select
-    options={genderOptions}
-    onChange={handlePayload}
-    value={genderOptions.find(option => option.value === payload.gender) || null} // Ensure correct formatting
-    placeholder="Select gender"
-    isSearchable={false} // Optional: disables typing in the dropdown
-    styles={{
-        control: (base) => ({ ...base, border: "2px solid #CBD5E0" }) // Optional styling
-    }}
-/>
+                                        onChange={handlePayload} 
+                                        value={payload.gender}
+                                        id='gender'
+                                        border="2px"
+                                        placeholder="Select option"
+                                        fontSize="small"
+                                        fontWeight="normal"
+                                        size="lg"
+                                        w="100%"
+                                    >
+                                        <option value="male">male</option>
+                                        <option value="female">female</option>
+                                    </Select>
                                 </Stack>
                                 <Input label='Phone Number' placeholder='+234' onChange={handlePayload} value={payload.studentPhone} id='studentPhone' />
                                 <Input label='Guardian’s Phone Number (Optional)' placeholder='+234' onChange={handlePayload} value={payload.guardianPhone} id='guardianPhone' />
@@ -463,12 +455,23 @@ const genderOptions = [
     </Text>
 
     <Select
-        options={options}
-        isMulti
-        onChange={handlePayload}
-        value={options.filter(option => payload.studentInterests?.includes(option.value))}
-        placeholder="Select tags associated with the student’s main area of interest"
-    />
+                                        border="2px"
+                                        fontSize="13px"
+                                        fontWeight="400"
+                                        size="lg"
+                                        w="100%"
+                                        _placeholder={{ color: "red" }}
+                                        color="#ADB4BF"
+                                        onChange={handlePayload} 
+                                        value={payload.studentInterests}
+                                        id='studentInterests'
+
+                                        placeholder="Select tags associated with the student’s main area of interest"
+                                    >
+                                        <option value="health and medicine">Health and Medicine </option>
+                                        <option value="science">Science</option>
+                                        <option value="nurse process">Nurse Process</option>
+                                    </Select>
 </Stack>
                                 <Input label='Higher Education Goals ' placeholder="Enter the student’s higher education aspirations" onChange={handlePayload} value={payload.higherEducationGoals} id='higherEducationGoals'/>
                                 <Input label='career goals' placeholder="Enter the career path the student is aspiring toward" onChange={handlePayload} value={payload.careerGoals} id='careerGoals'/>
@@ -477,6 +480,7 @@ const genderOptions = [
 
                                 <Stack w="100%" pos="relative" top="-15px">
                                     <Text
+
                                         fontWeight="500"
                                         fontSize="14px"
                                         color="#101011"
