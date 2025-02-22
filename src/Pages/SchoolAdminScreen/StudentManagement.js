@@ -143,8 +143,8 @@ export default function StudentManagement() {
         },
     ]
 
-    const [MainData, setMainData] = useState(Data)
-    const [FilterData, setFilterData] = useState(Data)
+    const [MainData, setMainData] = useState([])
+    const [FilterData, setFilterData] = useState([])
 
 
     // Pagination settings to follow
@@ -156,6 +156,7 @@ export default function StudentManagement() {
     const indexOfLastItem = CurrentPage * PostPerPage;
     const indexOfFirstItem = indexOfLastItem - PostPerPage;
     const PaginatedData = FilterData.slice(indexOfFirstItem, indexOfLastItem);
+    console.log("paginatedData",PaginatedData) 
     //change page
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -493,13 +494,13 @@ export default function StudentManagement() {
                                     PaginatedData?.map((item, i) => (
 
                                         <TableRow
-                                            type={item.type}
-                                            name={item.name}
+                                            type={"school-admin"}
+                                            name={item.full_name}
                                             email={item.email}
                                             department={item.department}
-                                            classLevel={item.classLevel}
-                                            fieldOfStudy={item.fieldOfStudy}
-                                            status={item.status}
+                                            classLevel={item.class_level}
+                                            fieldOfStudy={item.intended_field_of_study}
+                                            status={item.verification_status}
                                             onRemove={onOpen}
                                             onEdit={() => setOpenModal(true)}
                                         />
