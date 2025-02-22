@@ -20,7 +20,7 @@ import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import MainLayout from "../../DashboardLayout";
 import { IoMdOpen } from "react-icons/io";
 import TableRow from "../../Components/TableRow"
-import Input from "../../Components/Input"
+import InputX from "../../Components/InputX"
 
 
 const students = [
@@ -41,7 +41,7 @@ export default function FundingTable() {
         <Text mb={4}>Explore a diverse pool of students and their academic aspirations.</Text>
 
         <Flex justify="space-between" align="center">
-          <Input label="Search Students" maxW="600px" />
+          <InputX label="Search Students" maxW="600px" />
           <Flex justify="space-between" align="center" gap={4} marginLeft={4}>
             <Button display="flex" variant="outline" w="48px" h="48px" borderRadius="full">
               <GoArrowLeft />
