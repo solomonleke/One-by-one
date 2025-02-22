@@ -152,9 +152,9 @@ export default function StudentManagement() {
     const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
 
     //get current post
-    const indexOfLastSra = CurrentPage * PostPerPage;
-    const indexOfFirstSra = indexOfLastSra - PostPerPage;
-    const PaginatedData = FilterData.slice(indexOfFirstSra, indexOfLastSra);
+    const indexOfLastItem = CurrentPage * PostPerPage;
+    const indexOfFirstItem = indexOfLastItem - PostPerPage;
+    const PaginatedData = FilterData.slice(indexOfFirstItem, indexOfLastItem);
     //change page
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
