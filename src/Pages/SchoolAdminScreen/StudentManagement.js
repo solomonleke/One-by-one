@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../DashboardLayout'
 import { Text, Flex, HStack, Box, useDisclosure } from '@chakra-ui/react'
@@ -13,6 +13,7 @@ import { IoFilter } from "react-icons/io5";
 import { HiOutlineDocumentArrowUp } from "react-icons/hi2";
 import { BiSearch } from "react-icons/bi"; import Pagination from "../../Components/Pagination";
 import { configuration } from "../../Utils/Helpers";
+import { GetAllStudentApi } from "../../Utils/ApiCall";
 import {
     Table,
     Thead,
@@ -252,7 +253,30 @@ export default function StudentManagement() {
 
     // Search Filter settings to follow end here
 
+    const getallStudent = async ()=>{
 
+        try{
+            const result = await GetAllStudentApi(CurrentPage,PostPerPage)
+
+            console.log("getallStudent", result)
+
+            if(result.status === 200 ){
+                setMainData(result.data.data.students)
+                setFilterData(result.data.data.students)
+            }
+        }catch(e){
+
+            console.log("error", e.message)
+        }
+
+    }
+
+
+    useEffect(() => {
+       
+        getallStudent()
+       
+      }, [CurrentPage]);
 
     return (
         <MainLayout>
@@ -490,7 +514,7 @@ export default function StudentManagement() {
                     <Pagination
                         postPerPage={PostPerPage}
                         currentPage={CurrentPage}
-                        totalPosts={Data.length}
+                        totalPosts={MainData.length}
                         paginate={paginate}
                     />
                 </Box>

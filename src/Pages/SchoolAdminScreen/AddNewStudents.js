@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import SubLayout from '../../DashboardLayout/SubLayout'
-import { Text, Flex, HStack, VStack, Stack, Select, Box, Spacer } from '@chakra-ui/react'
+import { Text, Flex, HStack, SimpleGrid, VStack, Stack, Select, Box, Spacer } from '@chakra-ui/react'
 import Input from '../../Components/Input'
 import TextArea from '../../Components/TextArea'
 import Button from '../../Components/Button'
@@ -13,6 +13,7 @@ import { FiEdit2 } from "react-icons/fi";
 import { CreateStudentApi } from "../../Utils/ApiCall";
 import ShowToast from "../../Components/ToastNotification";
 import UpdateReviewModal from '../../Components/UpdateReview'
+import { IoIosCloseCircle } from 'react-icons/io';
 // import { StudentContext } from '../../Components/StudentContext'
 
 
@@ -32,7 +33,8 @@ export default function AddNewStudents() {
         })
     }
 
-   
+
+    const [StudentInterest, setStudentInterest] = useState([])
 
     const [payload, setPayload] = useState({
         fullName: "",
@@ -54,71 +56,81 @@ export default function AddNewStudents() {
         higherEducationGoals: "",
         careerGoals: "",
         scholarshipNeed: "",
-      });
+    });
 
-      const options = [
+    const options = [
         { value: "health and medicine", label: "Health and Medicine" },
         { value: "science", label: "Science" },
         { value: "nurse process", label: "Nurse Process" }
     ];
 
 
-const genderOptions = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" }
-];
+    const genderOptions = [
+        { value: "male", label: "Male" },
+        { value: "female", label: "Female" }
+    ];
 
-      const [showToast, setShowToast] = useState({
+    const [showToast, setShowToast] = useState({
         show: false,
         message: "",
         status: ""
-      })
-    
-      const [Loading, setLoading] = useState(false);
+    })
 
-      const handlePayload = (e) => {
+    const [Loading, setLoading] = useState(false);
+
+    const handlePayload = (e) => {
 
         setPayload({ ...payload, [e.target.id]: e.target.value })
-    
-      }
-    
 
-      const Submit = async () => {
+        if(e.target.id === "studentInterests"){
+            setStudentInterest([...StudentInterest, e.target.value])
+        }
+
+    }
+
+    const removeItem = (item)=>{
+        const updatedProcedureArr = StudentInterest.filter(id => id !== item);
+        setStudentInterest(updatedProcedureArr);
+
+    }
+
+
+    const Submit = async () => {
 
         setLoading(true)
         try {
-    
-          const result = await CreateStudentApi(payload)
-    
-          if (result.status === 201) {
-            setLoading(false)
-            setShowToast({ show: true, message: "Student Created Successfully", status: "success" })
-            setTimeout(() => {
-              setShowToast({
-                show: false,
-    
-              })
-    
-              nav("/school-admin/student-management")
-            }, 4000)
-          }
+
+            const result = await CreateStudentApi({...payload, studentInterests: StudentInterest})
+
+            if (result.status === 201) {
+                setLoading(false)
+                setShowToast({ show: true, message: "Student Created Successfully", status: "success" })
+                setTimeout(() => {
+                    setShowToast({
+                        show: false,
+
+                    })
+
+                    nav("/school-admin/student-management")
+                }, 4000)
+            }
         } catch (e) {
-          setLoading(false)
-          console.log(e.message)
-          setShowToast({
-            show: true,
-            message: e.message,
-            status: "error"
-          })
-    
-          setTimeout(() => {
+            setLoading(false)
+            console.log(e.message)
             setShowToast({
-              show: false,
-    
+                show: true,
+                message: e.message,
+                status: "error"
             })
-          }, 7000)
+
+            setTimeout(() => {
+                setShowToast({
+                    show: false,
+
+                })
+            }, 7000)
         }
-      }
+    }
 
     const [OpenModal, setOpenModal] = useState(false)
     const [OpenReviewModal, setOpenReviewModal] = useState(false)
@@ -284,7 +296,7 @@ const genderOptions = [
                                     </Text>
 
                                     <Select
-                                        onChange={handlePayload} 
+                                        onChange={handlePayload}
                                         value={payload.gender}
                                         id='gender'
                                         border="2px"
@@ -380,7 +392,7 @@ const genderOptions = [
 
 
 
-                                        <HStack spacing={["100px", "12px", "12px","12px"]}>
+                                        <HStack spacing={["100px", "12px", "12px", "12px"]}>
 
                                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={() => {
                                                 setStudentDetails({
@@ -442,27 +454,28 @@ const genderOptions = [
                                     >
                                         Provide details about the student's career goals, interests, leadership roles, and the level of financial support they require.</Text>
                                 </Stack>
-                                <Input label="intended Field of study " placeholder="e.g Nursing Science" onChange={handlePayload} value={payload.intendedFieldOfStudy} id='intendedFieldOfStudy'/>
+                                <Input label="intended Field of study " placeholder="e.g Nursing Science" onChange={handlePayload} value={payload.intendedFieldOfStudy} id='intendedFieldOfStudy' />
                                 <Stack w="100%" pos="relative" top="-15px">
-    <Text
-        textTransform="capitalize"
-        fontWeight="500"
-        fontSize="14px"
-        color="#101011"
-        fontFamily="heading"
-    >
-        What are the student's interests?
-    </Text>
+                                    <Text
+                                        textTransform="capitalize"
+                                        fontWeight="500"
+                                        fontSize="14px"
+                                        color="#101011"
+                                        fontFamily="heading"
+                                    >
+                                        What are the student's interests?
+                                    </Text>
 
-    <Select
-                                        border="2px"
+                                    <Select
+                                        borderWidth="2px"
                                         fontSize="13px"
+                                        borderColor="#34996B"
                                         fontWeight="400"
                                         size="lg"
                                         w="100%"
                                         _placeholder={{ color: "red" }}
                                         color="#ADB4BF"
-                                        onChange={handlePayload} 
+                                        onChange={handlePayload}
                                         value={payload.studentInterests}
                                         id='studentInterests'
 
@@ -472,9 +485,23 @@ const genderOptions = [
                                         <option value="science">Science</option>
                                         <option value="nurse process">Nurse Process</option>
                                     </Select>
-</Stack>
-                                <Input label='Higher Education Goals ' placeholder="Enter the student’s higher education aspirations" onChange={handlePayload} value={payload.higherEducationGoals} id='higherEducationGoals'/>
-                                <Input label='career goals' placeholder="Enter the career path the student is aspiring toward" onChange={handlePayload} value={payload.careerGoals} id='careerGoals'/>
+
+                                    <SimpleGrid mt="12px" columns={{ base: 2, md: 3 }} spacing={2}>
+
+                                        {
+                                            StudentInterest?.map((item, i) => (
+
+                                                <Flex key={i} cursor="pointer" px="10px" py="10px" rounded={"25px"} fontSize="13px" _hover={{ bg: "blue.blue500" }} bg="greenn.greenn500" w="100%" justifyContent="space-between" alignItems="center" >
+                                                    <Text color="#fff" fontWeight="500" textTransform="capitalize" >{item}</Text>
+                                                    <Box fontSize="20px" color="#fff" onClick={() => removeItem(item)}><IoIosCloseCircle /></Box>
+                                                </Flex>
+                                            ))
+                                        }
+
+                                    </SimpleGrid>
+                                </Stack>
+                                <Input label='Higher Education Goals ' placeholder="Enter the student’s higher education aspirations" onChange={handlePayload} value={payload.higherEducationGoals} id='higherEducationGoals' />
+                                <Input label='career goals' placeholder="Enter the career path the student is aspiring toward" onChange={handlePayload} value={payload.careerGoals} id='careerGoals' />
                                 <Input label='leadership roles' placeholder="Mention any leadership roles the student has taken on" />
                                 <Input label='Extracurricular Activities' placeholder="e.g Debate club" />
 
@@ -496,7 +523,7 @@ const genderOptions = [
                                         size="lg"
                                         w="100%"
                                         color="#ADB4BF"
-                                        onChange={handlePayload} 
+                                        onChange={handlePayload}
                                         value={payload.scholarshipNeed}
                                         id='scholarshipNeed'
                                         placeholder="Select the level of financial support the student requires"
@@ -523,7 +550,7 @@ const genderOptions = [
 
 
 
-                                        <HStack spacing={["100px","12px","12px","12px"]}>
+                                        <HStack spacing={["100px", "12px", "12px", "12px"]}>
 
                                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={() => {
                                                 setAcademicBackground({
@@ -627,7 +654,7 @@ const genderOptions = [
 
 
 
-                                        <HStack spacing={["100px","12px", "12px","12px"]}>
+                                        <HStack spacing={["100px", "12px", "12px", "12px"]}>
 
                                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={() => {
                                                 setAspiration({
@@ -642,7 +669,7 @@ const genderOptions = [
 
                                             }}>Back</Button>
 
-                                      
+
 
                                             <Button px="43px" onClick={() => {
 
@@ -690,135 +717,135 @@ const genderOptions = [
                                     >
                                         Please review the student's details carefully before clicking submit to ensure accuracy. </Text>
                                 </Stack>
-                         
-                         <Stack border="1px solid #E3EBF2" rounded={"7px"} py="14px" px="17px" spacing="13px" w="100%">
 
-                            <ReviewCard
-                            title="full name"
-                            value={payload.fullName}
-                            onClick={()=>updateReview("Full Name", payload.fullName, "fullName")}
+                                <Stack border="1px solid #E3EBF2" rounded={"7px"} py="14px" px="17px" spacing="13px" w="100%">
 
-                             />
+                                    <ReviewCard
+                                        title="full name"
+                                        value={payload.fullName}
+                                        onClick={() => updateReview("Full Name", payload.fullName, "fullName")}
 
-                            <ReviewCard
-                            title="date of birth"
-                            value={payload.dob}
-                            onClick={()=>updateReview("Date of Birth", payload.dob, "dob")}
+                                    />
 
-                             />
+                                    <ReviewCard
+                                        title="date of birth"
+                                        value={payload.dob}
+                                        onClick={() => updateReview("Date of Birth", payload.dob, "dob")}
 
-                            <ReviewCard
-                            title="gender"
-                            value={payload.gender}
-                            onClick={()=>updateReview("Gender", payload.gender, "gender")}
+                                    />
 
-                             />
+                                    <ReviewCard
+                                        title="gender"
+                                        value={payload.gender}
+                                        onClick={() => updateReview("Gender", payload.gender, "gender")}
 
-                            <ReviewCard
-                            title="state"
-                            value={payload.state}
-                            onClick={()=>updateReview("State", payload.state, "state")}
+                                    />
 
-                             />
+                                    <ReviewCard
+                                        title="state"
+                                        value={payload.state}
+                                        onClick={() => updateReview("State", payload.state, "state")}
 
-                            <ReviewCard
-                            title="city"
-                            value={payload.city}
-                            onClick={()=>updateReview("City", payload.city, "city")}
+                                    />
 
-                             />
+                                    <ReviewCard
+                                        title="city"
+                                        value={payload.city}
+                                        onClick={() => updateReview("City", payload.city, "city")}
 
-
-                         </Stack>
-                         <Stack border="1px solid #E3EBF2" rounded={"7px"} py="14px" px="17px" spacing="13px" w="100%">
-
-                            <ReviewCard
-                            title="phone number"
-                            value={payload.studentPhone}
-                            onClick={()=>updateReview("Student Phone", payload.studentPhone, "studentPhone")}
-
-                             />
-
-                            <ReviewCard
-                            title="email address"
-                            value={payload.email}
-                            onClick={()=>updateReview("Email Address", payload.email, "email")}
-
-                             />
-
-                            <ReviewCard
-                            title="residential address"
-                            value={payload.address}
-                            onClick={()=>updateReview("Residental Address", payload.address, "address")}
-
-                             />
-
-                        
-                         </Stack>
-                         <Stack border="1px solid #E3EBF2" rounded={"7px"} py="14px" px="17px" spacing="13px" w="100%">
-
-                            <ReviewCard
-                            title="department"
-                            value={payload.department}
-                            onClick={()=>updateReview("Department", payload.department, "department")}
-
-                             />
-
-                            <ReviewCard
-                            title="class level"
-                            value={payload.classLevel}
-                            onClick={()=>updateReview("Class Level", payload.classLevel, "classLevel")}
-
-                             />
-
-                            <ReviewCard
-                            title="subjects"
-                            value={payload.subjects}
-                            onClick={()=>updateReview("Subjects", payload.subjects, "subjects")}
-
-                             />
-
-                        
-                         </Stack>
-                         <Stack border="1px solid #E3EBF2" rounded={"7px"} py="14px" px="17px" spacing="13px" w="100%">
-
-                            <ReviewCard
-                            title="field of interest"
-                            value={payload.studentInterests}
-                            onClick={()=>updateReview("Field Of Interest", payload.studentInterests, "studentInterests")}
-
-                             />
-
-                            <ReviewCard
-                            title="scholarship neeed"
-                            value={payload.scholarshipNeed}
-                            onClick={()=>updateReview("Scholarship Need", payload.fullName, "fullName")}
-
-                             />
-
-                             <ReviewCard
-                            title="performance"
-                            value={payload.performance}
-                            onClick={()=>updateReview("Performance", payload.performance, "performance")}
-
-                             />
-
-                             <ReviewCard
-                            title="career goals"
-                            value={payload.careerGoals}
-                            onClick={()=>updateReview("Career Goals", payload.careerGoals, "careerGoals")}
-
-                             />
-
-                             <ReviewCard
-                            title="higher education goals"
-                            value={payload.higherEducationGoals}
-                            onClick={()=>updateReview("Higher Educational Goals", payload.higherEducationGoals, "higherEducationGoals")}
-
-                             />
+                                    />
 
 
-{/* <Box p="20px">
+                                </Stack>
+                                <Stack border="1px solid #E3EBF2" rounded={"7px"} py="14px" px="17px" spacing="13px" w="100%">
+
+                                    <ReviewCard
+                                        title="phone number"
+                                        value={payload.studentPhone}
+                                        onClick={() => updateReview("Student Phone", payload.studentPhone, "studentPhone")}
+
+                                    />
+
+                                    <ReviewCard
+                                        title="email address"
+                                        value={payload.email}
+                                        onClick={() => updateReview("Email Address", payload.email, "email")}
+
+                                    />
+
+                                    <ReviewCard
+                                        title="residential address"
+                                        value={payload.address}
+                                        onClick={() => updateReview("Residental Address", payload.address, "address")}
+
+                                    />
+
+
+                                </Stack>
+                                <Stack border="1px solid #E3EBF2" rounded={"7px"} py="14px" px="17px" spacing="13px" w="100%">
+
+                                    <ReviewCard
+                                        title="department"
+                                        value={payload.department}
+                                        onClick={() => updateReview("Department", payload.department, "department")}
+
+                                    />
+
+                                    <ReviewCard
+                                        title="class level"
+                                        value={payload.classLevel}
+                                        onClick={() => updateReview("Class Level", payload.classLevel, "classLevel")}
+
+                                    />
+
+                                    <ReviewCard
+                                        title="subjects"
+                                        value={payload.subjects}
+                                        onClick={() => updateReview("Subjects", payload.subjects, "subjects")}
+
+                                    />
+
+
+                                </Stack>
+                                <Stack border="1px solid #E3EBF2" rounded={"7px"} py="14px" px="17px" spacing="13px" w="100%">
+
+                                    <ReviewCard
+                                        title="field of interest"
+                                        value={payload.studentInterests}
+                                        onClick={() => updateReview("Field Of Interest", payload.studentInterests, "studentInterests")}
+
+                                    />
+
+                                    <ReviewCard
+                                        title="scholarship neeed"
+                                        value={payload.scholarshipNeed}
+                                        onClick={() => updateReview("Scholarship Need", payload.fullName, "fullName")}
+
+                                    />
+
+                                    <ReviewCard
+                                        title="performance"
+                                        value={payload.performance}
+                                        onClick={() => updateReview("Performance", payload.performance, "performance")}
+
+                                    />
+
+                                    <ReviewCard
+                                        title="career goals"
+                                        value={payload.careerGoals}
+                                        onClick={() => updateReview("Career Goals", payload.careerGoals, "careerGoals")}
+
+                                    />
+
+                                    <ReviewCard
+                                        title="higher education goals"
+                                        value={payload.higherEducationGoals}
+                                        onClick={() => updateReview("Higher Educational Goals", payload.higherEducationGoals, "higherEducationGoals")}
+
+                                    />
+
+
+                                    {/* <Box p="20px">
       <Input
         placeholder="Full Name"
         name="name"
@@ -856,8 +883,8 @@ const genderOptions = [
       />
       <Button onClick={handleSubmit}>Add Student</Button>
     </Box> */}
-                        
-                         </Stack>
+
+                                </Stack>
 
 
 
@@ -874,7 +901,7 @@ const genderOptions = [
 
 
 
-                                        <HStack spacing={["100px","12px", "12px","12px"]}>
+                                        <HStack spacing={["100px", "12px", "12px", "12px"]}>
 
                                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={() => {
                                                 setReview({
@@ -891,7 +918,7 @@ const genderOptions = [
 
                                             <Button px="43px" isLoading={Loading} onClick={() => {
 
-                                                    Submit()
+                                                Submit()
 
                                             }}>Add Student</Button>
                                         </HStack>
@@ -908,8 +935,8 @@ const genderOptions = [
                 </Box>
 
             </Flex>
-            <BackNotification isOpen={OpenModal} onClose={()=>setOpenModal(false)} />
-            <UpdateReviewModal isOpen={OpenReviewModal} onClose={()=>setOpenReviewModal(false)} oldValue={oldValue} payload={payload} setPayload={setPayload} />
+            <BackNotification isOpen={OpenModal} onClose={() => setOpenModal(false)} />
+            <UpdateReviewModal isOpen={OpenReviewModal} onClose={() => setOpenReviewModal(false)} oldValue={oldValue} payload={payload} setPayload={setPayload} />
         </SubLayout>
 
     )

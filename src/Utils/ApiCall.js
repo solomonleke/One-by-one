@@ -36,7 +36,8 @@ export const CreateAccountApi = (Payload) => {
 };
 
 export const CreateStudentApi = (Payload) => {
-  // console.log("CreateStudentApi", Payload);
+
+  console.log("CreateStudentAPI~Payload", Payload);
 
   let data = JSON.stringify(Payload);
   let config = {
@@ -228,6 +229,40 @@ export const fetchDataWithToken = async () => {
   } catch (error) {
     console.error('Error fetching data with token:', error);
   }
+};
+
+export const GetAllStudentApi = (pageNo, postPerPage) => {
+ 
+ 
+  let config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/school-admin/all-students?pageNo=${pageNo}&noItems=${postPerPage}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+     
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
 };
 
 
