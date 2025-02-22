@@ -82,11 +82,12 @@ export default function IndexRoutes() {
           <Route path='/fund-admin' element={<Dashboard />} />
           <Route path='/fund-admin/awaiting-funding' element={<AwaitingFunding />} />
           <Route path='/fund-admin/funded-students' element={<FundedStudents />} />
-          <Route path='/fund-admin/funded-history' element={<FundedHistory />} />
+          <Route path='/fund-admin/funding-history' element={<FundedHistory />} />
           <Route path='/fund-admin/funding-records' element={<FundingRecords />} />
           <Route path='/fund-admin/student-management/student-profile' element={<StudentProfile />} />
+          <Route path='/fund-admin/settings' element={<Settings />} />
         </Routes>
-      </BrowserRouter>
+      </BrowserRouter> 
     </StudentProvider>
   )
 }

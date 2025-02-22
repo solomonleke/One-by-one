@@ -11,7 +11,6 @@ import {
   Tr,
   Th,
   Td,
-  Input,
   Button,
   Stack,
   Avatar,
@@ -22,6 +21,7 @@ import {
 import { FiHome, FiSettings, FiFileText, FiUsers, FiMenu } from "react-icons/fi";
 import MainLayout from "../../DashboardLayout";
 import { GoArrowLeft, GoArrowRight, GoDotFill } from "react-icons/go";
+import Input from "../../Components/Input"
 
 
 
@@ -118,11 +118,15 @@ export default function FundedStudents(){
   return (
       <MainLayout>
       <Box p={6}>
-        <Text fontSize="21px" fontWeight="bold">Funded Students (65)</Text>
+      <Text fontSize="21px" fontWeight="bold" color="#101828">
+  Funded Students <span style={{ color: "#667085", fontWeight:"400" }}>(65)</span>
+</Text>
+
         <Text mb={4} fontSize="14px">Explore a diverse pool of students and their academic aspirations. Review profiles, understand funding needs, and choose who to support on their educational journey.</Text>
         
         <Flex  justify="space-between" align="center">
-        <Input placeholder="Search Students" maxW="600px" />
+        <Input label="Search Students" maxW="600px" />
+              
         </Flex>
   
         

@@ -8,7 +8,6 @@ import {
   Th,
   Td,
   TableContainer,
-  Input,
   IconButton,
   Text,
   Avatar,
@@ -20,6 +19,8 @@ import { CiCircleInfo } from "react-icons/ci";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import MainLayout from "../../DashboardLayout";
 import { IoMdOpen } from "react-icons/io";
+import TableRow from "../../Components/TableRow"
+import Input from "../../Components/Input"
 
 
 const students = [
@@ -30,120 +31,106 @@ const students = [
   { name: "Esther Wakili", school: "Chrisland College", guardian: "Stephen Agbasi", schoolBank: "Polaris", BankAcc: "12345678", guardianBank: "Fidelity", GuardianBankAcc: "12345678", tuition: "₦100,000.00" },
 ];
 
-export default function FundingTable(){
+export default function FundingTable() {
   return (
     <MainLayout>
-    <Box p={6}>
-      <Text fontSize="xl" fontWeight="bold">Awaiting Funding (34)</Text>
-      <Text mb={4}>Explore a diverse pool of students and their academic aspirations.</Text>
-      
-      <Flex  justify="space-between" align="center">
-      <Input placeholder="Search Students" maxW="600px" />
-      <Flex  justify="space-between" align="center" gap={4} marginLeft={4}>
-        <Button display="flex"   variant="outline" w="48px" h="48px" borderRadius="full">
-        <GoArrowLeft />
-        </Button>
-        <Button display="flex"   variant="outline" w="48px" h="48px" borderRadius="full">
-        <GoArrowRight />
-        </Button>
-      </Flex>
-      </Flex>
+      <Box p={6}>
+      <Text fontSize="21px" fontWeight="bold" color="#101828">
+  Awaiting Funding <span style={{ color: "#667085", fontWeight:"400" }}>(32)</span>
+</Text>
+        <Text mb={4}>Explore a diverse pool of students and their academic aspirations.</Text>
 
-      
-      <TableContainer border="1px solid #EDEFF2" borderRadius="7px" mt="15px">
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>Student Name</Th>
-              <Th>School Name</Th>
-              <Th>Guardian Name</Th>
-              <Th>
-  <Flex align="center">
-    <Text mr={1}>School Bank Details</Text> 
-    <Box as={CiCircleInfo} size="16px" />
-  </Flex>
-</Th> 
-<Th>
-  <Flex align="center">
-    <Text mr={1}>Guardian Bank</Text> 
-    <Box as={CiCircleInfo} size="16px" />
-  </Flex>
-</Th>
+        <Flex justify="space-between" align="center">
+          <Input label="Search Students" maxW="600px" />
+          <Flex justify="space-between" align="center" gap={4} marginLeft={4}>
+            <Button display="flex" variant="outline" w="48px" h="48px" borderRadius="full">
+              <GoArrowLeft />
+            </Button>
+            <Button display="flex" variant="outline" w="48px" h="48px" borderRadius="full">
+              <GoArrowRight />
+            </Button>
+          </Flex>
+        </Flex>
 
-              <Th>Tuition Fee</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {students.map((student, index) => (
-              <Tr key={index}>
-                <Td>
+
+        <TableContainer border="1px solid #EDEFF2" borderRadius="7px" mt="15px">
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>Student Name</Th>
+                <Th>School Name</Th>
+                <Th>Guardian Name</Th>
+                <Th>
                   <Flex align="center">
-                    <Avatar size="sm" name={student.name} mr={2} />
-                    {student.name}
+                    <Text mr={1}>School Bank Details</Text>
+                    <Box as={CiCircleInfo} size="16px" />
                   </Flex>
-                </Td>
-                <Td>{student.school}</Td>
-                <Td>{student.guardian}</Td>
-                <Td>
-                    <Box display="flex" flexDirection="column">
-                    <Flex align="center" justify="space-between" w="full">
-                     <Text>{student.schoolBank}</Text>
-                      <IoMdOpen color="#97A89F" />
-                    </Flex>
+                </Th>
+                <Th>
+                  <Flex align="center">
+                    <Text mr={1}>Guardian Bank</Text>
+                    <Box as={CiCircleInfo} size="16px" />
+                  </Flex>
+                </Th>
 
-                      <Text fontSize="sm">Acc: {student.BankAcc}</Text>
-                    </Box>
-                  </Td>
-                <Td>
-                    <Box display="flex" flexDirection="column">
-                    <Flex align="center" justify="space-between" w="full">
-                      <Text>{student.guardianBank}</Text>
-                      <IoMdOpen color="#97A89F" />
-                    </Flex>
-
-                      <Text fontSize="sm">Acc: {student.GuardianBankAcc}</Text>
-                    </Box>
-                  </Td>
-                <Td >{student.tuition}</Td>
+                <Th>Tuition Fee</Th>
               </Tr>
+            </Thead>
+            <Tbody>
+              { students.map((student, index) => (
+                <TableRow
+                 key={index}
+                 type="awaiting-funding"
+                 student={student}
+                 name={student.name}
+                 school={student.school}
+                 guardian={student.guardian}
+                 schoolBank={student.schoolBank}
+                 BankAcc={student.BankAcc}
+                 guardianBank={student.guardianBank}
+                 GuardianBankAcc={student.schoolBank}
+                 tuition={student.tuition}
+                  />
+                  
+                
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+
+        {/* Pagination Controls */}
+        <Flex mt="15px" justify="space-between" align="center" border="1px solid #EDEFF2" borderRadius="7px" padding="12px 24px">
+          {/* Previous Button */}
+          <Button
+            leftIcon={<GoArrowLeft />}
+            variant="outline"
+            borderRadius="8px"
+          >
+            {useBreakpointValue({ base: "", md: "Previous" })}
+          </Button>
+
+          {/* Pagination Numbers */}
+          <Flex gap={2}>
+            {useBreakpointValue({
+              base: [1, 2, 3, "...", 10],  // Fewer numbers on small screens
+              md: [1, 2, 3, "...", 8, 9, 10] // More numbers on larger screens
+            }).map((num, index) => (
+              <Button key={index} variant={num === 1 ? "solid" : "outline"}>
+                {num}
+              </Button>
             ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+          </Flex>
 
-      {/* Pagination Controls */}
-      <Flex mt="15px" justify="space-between" align="center" border="1px solid #EDEFF2" borderRadius="7px" padding="12px 24px">
-  {/* Previous Button */}
-  <Button 
-    leftIcon={<GoArrowLeft />} 
-    variant="outline" 
-    borderRadius="8px"
-  >
-    {useBreakpointValue({ base: "", md: "Previous" })}
-  </Button>
-
-  {/* Pagination Numbers */}
-  <Flex gap={2}>
-    {useBreakpointValue({
-      base: [1, 2, 3, "...", 10],  // Fewer numbers on small screens
-      md: [1, 2, 3, "...", 8, 9, 10] // More numbers on larger screens
-    }).map((num, index) => (
-      <Button key={index} variant={num === 1 ? "solid" : "outline"}>
-        {num}
-      </Button>
-    ))}
-  </Flex>
-
-  {/* Next Button */}
-  <Button 
-    rightIcon={<GoArrowRight />} 
-    variant="outline" 
-    borderRadius="8px"
-  >
-    {useBreakpointValue({ base: "", md: "Next" })}
-  </Button>
-</Flex>
-    </Box>
+          {/* Next Button */}
+          <Button
+            rightIcon={<GoArrowRight />}
+            variant="outline"
+            borderRadius="8px"
+          >
+            {useBreakpointValue({ base: "", md: "Next" })}
+          </Button>
+        </Flex>
+      </Box>
     </MainLayout>
   );
 };
