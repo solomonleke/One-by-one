@@ -8,42 +8,40 @@ import {
   InputLeftElement,
   InputRightElement,
   useColorModeValue,
-} from '@chakra-ui/react';
-import React, { useState } from 'react';
-import { act } from 'react-dom/test-utils';
-import { AiOutlineMail } from 'react-icons/ai';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+} from "@chakra-ui/react";
+import React, { useState } from "react";
+import { act } from "react-dom/test-utils";
+import { AiOutlineMail } from "react-icons/ai";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Input({
-  id = '',
+  id = "",
   val = false,
-  label = '',
-  bColor = "#6B7280",
-  hoverBColor = "#7A27AB",
+  label = "",
+  bColor = "#E3EBF2",
   isRequired = false,
-  type= "email",
+  type = "email",
   readOnly = false,
   helper = null,
   onChange = null,
   isDisabled = false,
-  size = 'lg',
+  size = "lg",
   placeholder = `Enter ${label.toLowerCase()}`,
   pl = 0,
   py,
   rightIcon = null,
   w = "100%",
-  borderColor = "blue.blue500",
-  labelBg="#fff",
+  borderColor = "greenn.greenn400",
+  labelBg = "blue.blue350",
   leftIcon,
-  color = "#00000",
-  iconColor =  bColor,
+  iconColor = "#fff",
   ...rest
 }) {
   const [active, setActive] = useState(rest.value);
   // const [value, setValue] = useState(val);
 
   const [inputType, setInputType] = useState(type);
- 
+
   return (
     <FormControl
       id={id}
@@ -54,45 +52,47 @@ export default function Input({
     >
       <FormLabel
         pos="absolute"
-        transform={`translateY(${active || val ? '-19px' : '8px'}) translateX(30px)`}
-        bottom={'3'}
+        transform={`translateY(${
+          active || val ? "-40px" : "-40px"
+        }) translateX(0px)`}
+        bottom={"3"}
         zIndex="10"
-        fontSize={active ? 'xs' : '12px'}
-        fontWeight="400"
-        color={color}
-        bg={ active ? labelBg :labelBg}
+        fontSize={active ? "14" : "14px"}
+        fontWeight="500"
+        textTransform={"capitalize"}
+        color={"#00000"}
+        bg={active ? labelBg : "transparent"}
         px="4px"
       >
-
         {label}
       </FormLabel>
 
       <InputGroup>
         <InputGroup>
-        <InputLeftElement
-        pointerEvents='none'
-        children={<Box pos={"relative"} color={active ? borderColor: iconColor} top="4.5px" fontSize={"20px"}>{leftIcon}</Box>}
-      />
+          {/* <InputLeftElement
+          pointerEvents='none'
+          children={<Box pos={"relative"} color={active ? borderColor: iconColor} top="4.5px" fontSize={"20px"}>{leftIcon}</Box>}
+        /> */}
           <InputBox
             // borderColor={Colors.red}
             onChange={onChange}
             {...rest}
-            placeholder={active || !label ? placeholder : ''}
+            placeholder={active || !label ? placeholder : placeholder}
             type={inputType}
-            focusBorderColor={'blue.blue400'}
+            focusBorderColor={"blue.blue400"}
             _focus={{ borderColor: borderColor }}
             size={size}
             py={py}
-            color={color}
-            _autofill={{bgColor: "transparent !important"}} 
-            _placeholder={{color: color}}
-            fontWeight={'400'}
+            _placeholder={{color: "#ADB4BF", fontSize: "13px"}}
+            color="#00000"
+            _autofill={{ bgColor: "#fff !important" }}
+            fontWeight={"400"}
             fontSize="16px"
             fontFamily={"body"}
-            _hover={{borderColor: hoverBColor}}
-            borderColor = {bColor}
-            rounded="8px" 
-            borderWidth="2px"
+            dropShadow={"#ADE2FFB2"}
+            borderWidth={"2px"}
+            borderColor={bColor}
+            rounded="8px"
             bg="transparent"
             w={w}
             onFocus={() => setActive(true)}
@@ -101,27 +101,32 @@ export default function Input({
                 setActive(false);
               }
             }}
-            height="45px"
+            // height="56px"
           />
           {rightIcon && <InputRightElement children={rightIcon} />}
         </InputGroup>
-        {type === 'password' && (
+        {type === "password" && (
           <InputRightElement
-
-            children={ <Box pos={"relative"} color={active ? borderColor: iconColor} top="3.3px"> {inputType  === "password" ? <FaEyeSlash/>:  <FaEye/>} </Box> }
-            cursor={'pointer'}
+            children={
+              inputType === "password" ? (
+                <FaEyeSlash color="green.500" />
+              ) : (
+                <FaEye color="green.500" />
+              )
+            }
+            cursor={"pointer"}
             onClick={() => {
-              if (inputType === 'password') {
-                setInputType('text');
+              if (inputType === "password") {
+                setInputType("text");
               } else {
-                setInputType('password');
+                setInputType("password");
               }
             }}
           />
         )}
       </InputGroup>
       {helper && (
-        <FormHelperText pos={'absolute'} p={1} m="0" fontSize={'10px'}>
+        <FormHelperText pos={"absolute"} p={1} m="0" fontSize={"10px"}>
           {helper}
         </FormHelperText>
       )}
