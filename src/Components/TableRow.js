@@ -12,13 +12,19 @@ import { GoDotFill } from "react-icons/go";
 
 export default function TableRow({ type, name, email, department, classLevel, fieldOfStudy, status, onEdit, onRemove, school, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee }) {
     const router = useNavigate()
+
+    const handleStudentClick = (student_Id) => {
+        router(`/school-admin/student-management/student-profile/${student_Id}`);
+      };
     return (
 
         <Tr textTransform="capitalize" cursor="pointer">
             {
                 type === "school-admin" && (
                     <>
-                        <Td onClick={() => { router("/school-admin/student-management/student-profile") }}>
+                        <Td onClick={() => {
+                            handleStudentClick()
+                        }}>
                             <HStack cursor={"pointer"}>
                                 <Avatar name={name} size='sm' src='https://bit.ly/tioluwani-kolawole' />
                                 <Box>

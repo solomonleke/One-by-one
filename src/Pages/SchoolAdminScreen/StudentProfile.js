@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MainLayout from '../../DashboardLayout';
 import Button from '../../Components/Button';
 import ProfileCard from '../../Components/ProfileCard';
@@ -11,12 +11,38 @@ import { Box, HStack, Text, useDisclosure, Stack, Menu, MenuButton, MenuList, Me
 import { useNavigate } from 'react-router-dom';
 import { IoChevronBackOutline } from 'react-icons/io5';
 import { BsThreeDots } from 'react-icons/bs';
+import { GetStudentProfile } from "../../Utils/ApiCall";
+import { useParams } from 'react-router-dom';
 
 export default function StudentProfile() {
   const router = useNavigate();
+  const { student_Id } = useParams(); // Get student ID from URL params
+  const [studentData, setStudentData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);  
   const { isOpen: isRemoveModalOpen, onOpen: onOpenRemove, onClose: onCloseRemove } = useDisclosure();
+
+  useEffect(() => {
+    const fetchStudentProfile = async () => {
+      try {
+        const response = await GetStudentProfile(student_Id);
+        setStudentData(response.data); // Store student data
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch student profile');
+        setLoading(false);
+      }
+    };
+
+    fetchStudentProfile();
+  }, [student_Id]);
+
+  if (loading) return <Text>Loading student profile...</Text>;
+  if (error) return <Text color="red.500">{error}</Text>;
+
+
 
   return (
     <MainLayout>
@@ -57,12 +83,13 @@ export default function StudentProfile() {
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py="17px" px={["8px", "8px", "18px", "18px"]} rounded="10px">
         <Flex justifyContent="space-between" flexWrap="wrap">
           <HStack spacing="14px" w={["100%", "100%", "70%", "70%"]}>
-            <Avatar name="Philip Amakiri" size="lg" src="https://bit.ly/sage-adebayo" />
+          <Avatar name={studentData?.fullName} size="lg" src={studentData?.profileImage || 'https://bit.ly/sage-adebayo'} />
             <Stack spacing="10px">
               <HStack>
                 <Text color="#1F2937" fontSize="25px" fontWeight="700">
-                  Philip Amakiri
+                  {studentData?.fullName}
                 </Text>
+                <Text>Student ID: {student_Id}</Text>
                 <Menu isLazy>
                   <MenuButton as={Box}>
                     <Flex justifyContent="center" color="#000000" fontSize="16px">
@@ -96,7 +123,7 @@ export default function StudentProfile() {
                 </Menu>
               </HStack>
               <Text color="#667085" fontSize="13px" fontWeight="400">
-                PhilipAmakiri@gmail.com
+              {studentData?.email}
               </Text>
             </Stack>
           </HStack>
@@ -104,8 +131,8 @@ export default function StudentProfile() {
           <Box mt={["10px", "10px", "0", "0"]}>
             <HStack alignItems="center" backgroundColor="#FFF5E5" spacing="6.32px" borderRadius="16.86px" py="8.45px" px="7.38px">
               <Box pos="relative" top="-1px" rounded="100%" w="8.43px" h="8.43px" bg="#FFA30C"></Box>
-              <Text fontWeight="500" fontSize="12.65px" color="#FFA30C">
-                Pending Approval
+              <Text fontWeight="500" fontSize="12px" color={studentData?.status === 'Pending' ? '#FFA30C' : '#28A745'}>
+                {studentData?.status}
               </Text>
             </HStack>
           </Box>
@@ -123,54 +150,16 @@ export default function StudentProfile() {
 
 
                 <Stack spacing={"14px"} mt="14px">
-
-                  <ProfileCard
-                    title="full name"
-                    value="Adeleke Solomon"
-                  />
-
-                  <ProfileCard
-                    title="date of birth"
-                    value="22/04/2007"
-                  />
-
-                  <ProfileCard
-                    title="Gender"
-                    value="male"
-                  />
-
-
-                  <ProfileCard
-                    title="phone number"
-                    value="+234000000001"
-                  />
-
-                  <ProfileCard
-                    title="Guardian’s Phone number"
-                    value="N/A"
-                  />
-
-                  <ProfileCard
-                    title="address"
-                    value="84 Balogun Road, Ago palace way"
-                  />
-
-                  <ProfileCard
-                    title="city"
-                    value="okota"
-                  />
-
-                  <ProfileCard
-                    title="state"
-                    value="lagos"
-                  />
-
-                  <ProfileCard
-                    title="zip code"
-                    value="100001"
-                  />
-
-                </Stack>
+                <ProfileCard title="Full Name" value={studentData?.fullName} />
+                <ProfileCard title="Date of Birth" value={studentData?.dateOfBirth} />
+                <ProfileCard title="Gender" value={studentData?.gender} />
+                <ProfileCard title="Phone Number" value={studentData?.phoneNumber} />
+                <ProfileCard title="Guardian’s Phone Number" value={studentData?.guardianPhoneNumber || 'N/A'} />
+                <ProfileCard title="Address" value={studentData?.address} />
+                <ProfileCard title="City" value={studentData?.city} />
+                <ProfileCard title="State" value={studentData?.state} />
+                <ProfileCard title="Zip Code" value={studentData?.zipCode} />
+              </Stack>
               </Box>
 
 
