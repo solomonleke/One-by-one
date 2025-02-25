@@ -265,5 +265,25 @@ export const GetAllStudentApi = (pageNo, postPerPage) => {
     });
 };
 
+export const GetStudentProfile = async (student_Id) => {
+  try {
+    const response = await axios.get(
+      `${baseUrl}/school-admin/student-profile/${student_Id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching student profile:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Something went wrong"
+    );
+  }
+};
+
 
 
