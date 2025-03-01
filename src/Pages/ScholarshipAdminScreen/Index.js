@@ -33,6 +33,10 @@ import scholarshipImage6 from "../../Asset/Image6.png"
 import scholarshipImage7 from "../../Asset/Image7.png"
 import scholarshipImage8 from "../../Asset/goldIcon.svg"
 
+import { GetScholarshipDashboardDetailsApi } from "../../Utils/ApiCall";
+import { GetScholarshipDashboardGraphDataApi } from "../../Utils/ApiCall";
+
+
 import {
   Table,
   Thead,
@@ -92,23 +96,69 @@ export default function ScholarshipAdmin() {
   const [userName, setUserName] = useState('');
 
   useEffect(() => {
-  //   var reloadCount = localStorage.getItem("reloadCount");
-  //   if (!reloadCount) {
-  //     localStorage.setItem('reloadCount', + parseInt(1))
+    //   var reloadCount = localStorage.getItem("reloadCount");
+    //   if (!reloadCount) {
+    //     localStorage.setItem('reloadCount', + parseInt(1))
 
-  //   }
-  //   if (reloadCount < 2) {
-  //     localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
-  //     setTimeout(() =>
-  //       window.location.reload(1), 2000)
-  //   } else {
-  //     localStorage.removeItem('reloadCount');
-  //   }
+    //   }
+    //   if (reloadCount < 2) {
+    //     localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
+    //     setTimeout(() =>
+    //       window.location.reload(1), 2000)
+    //   } else {
+    //     localStorage.removeItem('reloadCount');
+    //   }
 
     const storedName = JSON.parse(localStorage.getItem('onlineUser'));
     if (storedName) {
       setUserName(`${storedName.firstName}`);
     }
+  }, []);
+
+  const GetScholarshipDashboardDetails = async () => {
+
+    try {
+      const result = await GetScholarshipDashboardDetailsApi()
+
+      console.log("getScholarshipDashboardDetails", result)
+
+      if (result.status === 200) {
+
+      }
+    } catch (e) {
+
+      console.log("error", e.message)
+    }
+
+  }
+
+  useEffect(() => {
+
+    GetScholarshipDashboardDetails()
+
+  }, []);
+
+  const GetScholarshipDashboardGraphData = async () => {
+
+    try {
+      const result = await GetScholarshipDashboardGraphDataApi()
+
+      console.log("getScholarshipDashboardGraghData", result)
+
+      if (result.status === 200) {
+
+      }
+    } catch (e) {
+
+      console.log("error", e.message)
+    }
+
+  }
+
+  useEffect(() => {
+
+    GetScholarshipDashboardGraphDataApi()
+
   }, []);
 
   return (
@@ -191,9 +241,9 @@ export default function ScholarshipAdmin() {
             </Text>
             <Box width="0px" opacity={"0px"} height={"11.5px"} gap={"0px"} border={"1px solid #194B3380"} />
             <Text fontSize="14px" display={"flex"} fontWeight="600" cursor="pointer" letterSpacing={"-0.04em"} textAlign={"left"} lineHeight="16.94px" color=" #194B33"
-            onClick={() => {
-              router("/scholarship-admin/scholarship-admin-leaderboard")
-            }}
+              onClick={() => {
+                router("/scholarship-admin/scholarship-admin-leaderboard")
+              }}
             > View  </Text>  <Icon as={LiaAngleDoubleRightSolid} cursor="pointer" color=" #194B33" onClick={() => {
               router("/scholarship-admin/scholarship-admin-leaderboard")
             }} />
@@ -213,19 +263,19 @@ export default function ScholarshipAdmin() {
         <DashboardCard
           icon={<FaSchoolFlag />}
           title='approved schools'
-          value='256'
+          value={result.data.data.schoolCount}
           w="32.5%"
         />
         <DashboardCard
           icon={<FaUserGraduate />}
           title='approved students'
-          value='18'
+          value={result.data.data.studentCount}
           w="32.5%"
         />
         <DashboardCard
           icon={<TbCurrencyNaira />}
           title='funds requested'
-          value='135'
+          value={result.data.data.fundRequested}
           w="32.5%"
         />
 

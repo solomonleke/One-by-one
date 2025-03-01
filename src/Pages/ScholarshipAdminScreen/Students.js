@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../DashboardLayout'
 import { Text, Flex, HStack, VStack, Box, Center, Progress, Icon, Avatar, Image } from '@chakra-ui/react'
@@ -22,26 +22,29 @@ import { FaGoogleScholar } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa6";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { IoCloseOutline } from "react-icons/io5";
+import { GetAllScholarshipStudentApi } from "../../Utils/ApiCall";
+import { ApproveStudentApi } from "../../Utils/ApiCall";
+import ShowToast from '../../Components/ToastNotification';
 import { ReactComponent as Revoke } from "../../Asset/revoke.svg";
 import {
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
-    Tabs,
-    Tab,
-    TabList,
-    TabIndicator,
-    TabPanels,
-    TabPanel,
-    Switch,
-    Stack,
-    Spacer,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Tabs,
+  Tab,
+  TabList,
+  TabIndicator,
+  TabPanels,
+  TabPanel,
+  Switch,
+  Stack,
+  Spacer,
 
 
 } from '@chakra-ui/react'
@@ -54,1056 +57,430 @@ import { ReactComponent as Close } from "../../Asset/close.svg";
 
 export default function Students() {
   const router = useNavigate()
-    return (
-        <MainLayout>
-        <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Students <Box as='span' color="#667085" fontWeight="600" fontSize="19px">(58)</Box></Text>
-        <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Review and approve student applications. Manage pending requests and take action to accept or reject them.</Text>
+  const pendingData = [
+    {
+      type: "scholarship-admin-students",
+      name: "Philip Amakari",
+      email: "PhilipAmakari@gmail.com",
+      schoolName: "Legendary Scholars Academy",
+      fieldOfStudy: "Mass Communication",
+      status: "pending",
+      buttonText: "Review",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "David Folarin",
+      email: "DavidFolarin@gmail.com",
+      schoolName: "Queen's College",
+      fieldOfStudy: "Bussiness Administration",
+      status: "pending",
+      buttonText: "Review",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Timothy Salisu",
+      email: "timothySalisu@gmail.com",
+      schoolName: "Federal Government College",
+      fieldOfStudy: "Chemical Engineering",
+      status: "pending",
+      buttonText: "Review",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Peter Usman",
+      email: "PeterUsman@gmail.com",
+      schoolName: "Mayflower School",
+      fieldOfStudy: "Accounting",
+      status: "pending",
+      buttonText: "Review",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Esther Wakili",
+      email: "EstherWakili@gmail.com",
+      schoolName: "Chrisland College",
+      fieldOfStudy: "Banking and Finance",
+      status: "pending",
+      buttonText: "Review",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Simon Ogan",
+      email: "SimonOgan@gmail.com",
+      schoolName: "Christ The King College",
+      fieldOfStudy: "Law",
+      status: "pending",
+      buttonText: "Review",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Esther Abubakar",
+      email: "EstherAbubakar@gmail.com",
+      schoolName: "Corona Secondary School",
+      fieldOfStudy: "Medicine and Surgery",
+      status: "pending",
+      buttonText: "Review",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Philip Ezeoke",
+      email: "Philiezeoke@gmail.com",
+      schoolName: "Adesoye College",
+      fieldOfStudy: "Industrial Chemistry",
+      status: "pending",
+      buttonText: "Review",
+    },
+  ]
 
-        <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["18px", "18px"]} rounded='10px'>
+  const approvedData = [
+    {
+      type: "scholarship-admin-students",
+      name: "Philip Amakari",
+      email: "PhilipAmakari@gmail.com",
+      schoolName: "Legendary Scholars Academy",
+      fieldOfStudy: "Mass Communication",
+      status: "approved",
+      buttonText: "Reject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "David Folarin",
+      email: "DavidFolarin@gmail.com",
+      schoolName: "Queen's College",
+      fieldOfStudy: "Bussiness Administration",
+      status: "approved",
+      buttonText: "Reject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Timothy Salisu",
+      email: "timothySalisu@gmail.com",
+      schoolName: "Federal Government College",
+      fieldOfStudy: "Chemical Engineering",
+      status: "approved",
+      buttonText: "Reject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Peter Usman",
+      email: "PeterUsman@gmail.com",
+      schoolName: "Mayflower School",
+      fieldOfStudy: "Accounting",
+      status: "approved",
+      buttonText: "Reject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Esther Wakili",
+      email: "EstherWakili@gmail.com",
+      schoolName: "Chrisland College",
+      fieldOfStudy: "Banking and Finance",
+      status: "approved",
+      buttonText: "Reject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Simon Ogan",
+      email: "SimonOgan@gmail.com",
+      schoolName: "Christ The King College",
+      fieldOfStudy: "Law",
+      status: "approved",
+      buttonText: "Reject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Esther Abubakar",
+      email: "EstherAbubakar@gmail.com",
+      schoolName: "Corona Secondary School",
+      fieldOfStudy: "Medicine and Surgery",
+      status: "approved",
+      buttonText: "Reject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Philip Ezeoke",
+      email: "Philiezeoke@gmail.com",
+      schoolName: "Adesoye College",
+      fieldOfStudy: "Industrial Chemistry",
+      status: "approved",
+      buttonText: "Reject",
+    },
+  ]
+
+  const rejectedData = [
+    {
+      type: "scholarship-admin-students",
+      name: "Philip Amakari",
+      email: "PhilipAmakari@gmail.com",
+      schoolName: "Legendary Scholars Academy",
+      fieldOfStudy: "Mass Communication",
+      status: "rejected",
+      buttonText: "Unreject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "David Folarin",
+      email: "DavidFolarin@gmail.com",
+      schoolName: "Queen's College",
+      fieldOfStudy: "Bussiness Administration",
+      status: "rejected",
+      buttonText: "Unreject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Timothy Salisu",
+      email: "timothySalisu@gmail.com",
+      schoolName: "Federal Government College",
+      fieldOfStudy: "Chemical Engineering",
+      status: "rejected",
+      buttonText: "Unreject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Peter Usman",
+      email: "PeterUsman@gmail.com",
+      schoolName: "Mayflower School",
+      fieldOfStudy: "Accounting",
+      status: "rejected",
+      buttonText: "Unreject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Esther Wakili",
+      email: "EstherWakili@gmail.com",
+      schoolName: "Chrisland College",
+      fieldOfStudy: "Banking and Finance",
+      status: "rejected",
+      buttonText: "Unreject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Simon Ogan",
+      email: "SimonOgan@gmail.com",
+      schoolName: "Christ The King College",
+      fieldOfStudy: "Law",
+      status: "rejected",
+      buttonText: "Unreject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Esther Abubakar",
+      email: "EstherAbubakar@gmail.com",
+      schoolName: "Corona Secondary School",
+      fieldOfStudy: "Medicine and Surgery",
+      status: "rejected",
+      buttonText: "Unreject",
+    },
+    {
+      type: "scholarship-admin-students",
+      name: "Philip Ezeoke",
+      email: "Philiezeoke@gmail.com",
+      schoolName: "Adesoye College",
+      fieldOfStudy: "Industrial Chemistry",
+      status: "rejected",
+      buttonText: "Unreject",
+    },
+  ]
+
+  const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
+  const [loading, setLoading] = useState(false);
+  const [MainData, setMainData] = useState([])
+
+  const GetAllScholarshipStudent = async () => {
+
+    try {
+      const result = await GetAllScholarshipStudentsApi(pageNo, noItems, status)
+
+      console.log("getallscholarshipStudents", result)
+
+      if (result.status === 200) {
+        setMainData(result.data.data.students)
+      }
+    } catch (e) {
+
+      console.log("error", e.message)
+    }
+
+  }
+
+
+  useEffect(() => {
+
+    GetAllScholarshipStudent()
+
+  }, [noItems]);
+
+  const ApproveStudent = async () => {
+    try {
+      const result = await ApproveStudentApi(status, essayPercentage)
+
+      console.log("approved student", result)
+
+      if (result.status === 200) {
+        setLoading(true);
+        setShowToast({
+          show: true,
+          message: "Approved Student!!!",
+          status: "success",
+        });
+      }
+    } catch (e) {
+      setShowToast({
+        show: true,
+        message: "Error Approving Student!!!",
+        status: "error",
+      });
+      console.log("error", e.message)
+    } finally {
+      setLoading(false);
+    }
+  }
+  return (
+    <MainLayout>
+      <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Students <Box as='span' color="#667085" fontWeight="600" fontSize="19px">({pendingData.length + approvedData.length + rejectedData.length})</Box></Text>
+      <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Review and approve student applications. Manage pending requests and take action to accept or reject them.</Text>
+
+      <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["18px", "18px"]} rounded='10px'>
         <Tabs>
           <HStack justifyContent={"space-between"}>
-      <TabList overflowX={"auto"} overflowY={"hidden"}>
-        <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(8)</Box></Text></Tab>
-        <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(25)</Box></Text></Tab>
-        <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(2)</Box></Text></Tab>
-      </TabList>
+            <TabList overflowX={"auto"} overflowY={"hidden"}>
+              <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({pendingData.length})</Box></Text></Tab>
+              <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({approvedData.length})</Box></Text></Tab>
+              <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({rejectedData.length})</Box></Text></Tab>
+            </TabList>
 
-      <Box borderWidth="1px" borderColor={"#E3E5E8"} cursor="pointer" borderRadius={"7px"} padding={"10px"}>
-      <FaSearch fontSize={"17px"} color="#2F2F2F"/>
+            <Box borderWidth="1px" borderColor={"#E3E5E8"} cursor="pointer" borderRadius={"7px"} padding={"10px"}>
+              <FaSearch fontSize={"17px"} color="#2F2F2F" />
+            </Box>
+
+          </HStack>
+
+          <TabIndicator mt='-1.5px' height='2px' bg='green' borderRadius='1px' />
+
+          <TabPanels>
+            <TabPanel>
+
+              <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px", "8px", "18px", "18px"]} rounded='10px'>
+                <TableContainer>
+                  <Table variant='simple'>
+
+                    <Thead bg="#F9FAFB">
+                      <Tr >
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">school name</Th>
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">field of study</Th>
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">status</Th>
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
+
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+
+                      {
+                        pendingData.map((item, i) => (
+
+                          <TableRow
+                            type={item.type}
+                            name={item.full_name}
+                            email={item.email}
+                            schoolName={item.school_name}
+                            fieldOfStudy={item.intended_field_of_study}
+                            status={item.status}
+                            buttonText={item.buttonText}
+                            onButtonClick={() => ApproveStudent(item)}
+                          />
+                        ))
+                      }
+
+                    </Tbody>
+
+                  </Table>
+                </TableContainer>
+              </Box>
+            </TabPanel>
+
+
+            <TabPanel>
+              <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px", "8px", "18px", "18px"]} rounded='10px'>
+                <TableContainer>
+                  <Table variant='simple'>
+
+                    <Thead bg="#F9FAFB">
+                      <Tr >
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">school name</Th>
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">field of study</Th>
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">status</Th>
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
+
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+
+                      {
+                        approvedData.map((item, i) => (
+
+<TableRow
+                            type={item.type}
+                            name={item.full_name}
+                            email={item.email}
+                            schoolName={item.school_name}
+                            fieldOfStudy={item.intended_field_of_study}
+                            status={item.status}
+                            buttonText={item.buttonText}
+                          />
+                        ))
+                      }
+
+                    </Tbody>
+
+                  </Table>
+                </TableContainer>
+              </Box>
+            </TabPanel>
+
+            <TabPanel>
+              <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px", "8px", "18px", "18px"]} rounded='10px'>
+                <TableContainer>
+                  <Table variant='simple'>
+
+                    <Thead bg="#F9FAFB">
+                      <Tr >
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">school name</Th>
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">field of study</Th>
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">status</Th>
+                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
+
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+
+                      {
+                        rejectedData.map((item, i) => (
+
+                          <TableRow
+                            type={item.type}
+                            name={item.full_name}
+                            email={item.email}
+                            schoolName={item.school_name}
+                            fieldOfStudy={item.intended_field_of_study}
+                            status={item.status}
+                            buttonText={item.buttonText}
+                          />
+                        ))
+                      }
+
+                    </Tbody>
+
+                  </Table>
+                </TableContainer>
+              </Box>
+            </TabPanel>
+
+          </TabPanels>
+        </Tabs>
       </Box>
-
-      </HStack> 
-
-      <TabIndicator mt='-1.5px' height='2px' bg='green' borderRadius='1px' />
-
-      <TabPanels>
-        <TabPanel>
-          <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px","8px","18px","18px"]} rounded='10px'>
-            <Box justifyContent={"space-between"} w="100%" display="flex" p="10px" bg={"#F9FAFB"}>
-              <Box w="25%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Name</Text>
-              </Box>
-
-              <Box w="25%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">School Name</Text>
-              </Box>
-
-              <Box w="20%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Field Of Study</Text>
-              </Box>
-
-              <Box w="15%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Status</Text>
-              </Box>
-
-              <Box w="15%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Actions</Text>
-            </Box>
-
-            </Box>
-
-            <hr className="remove"/>
-
-          <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#C7B9DA"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Philip Amakari</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">philipamakari@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Legendary Scholars Academy</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Mass Communication</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%">Review</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#AA9C75"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">David Folarin</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">davidfolarin@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-             <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Queen's College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Bussiness Administration</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%">Review</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#C7B9DA"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Timothy Salisu</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">timothysalisu@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Federal Government College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Chemical Engineering</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%">Review</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#D4B5AD"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Peter Usman</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">peterusman@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Mayflower</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Accounting</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%">Review</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#BEA887"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Esther Wakali</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">estherwakali@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Chrisland College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Banking and Finance</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%">Review</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#D1BAA9"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Simon Ogan</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">simonogan@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Christ The King College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Law</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%">Review</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#D1DFC3"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Esther Abubakar</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">estherabubakar@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Corona Secondary School</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Medicine and Surgery</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%">Review</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#D2C7AC"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Philip Ezeoke</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">philipezeoke@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Adesoye College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Industrial College</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%">Review</Button>
-            </Box>
-            </Box>
-
-
-          </Box>
-        </TabPanel>
-
-
-        <TabPanel>
-          <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px","8px","18px","18px"]} rounded='10px'>
-            <Box justifyContent={"space-between"} w="100%" display="flex" p="10px" bg={"#F9FAFB"}>
-              <Box w="25%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Name</Text>
-              </Box>
-
-              <Box w="25%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">School Name</Text>
-              </Box>
-
-              <Box w="20%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Field Of Study</Text>
-              </Box>
-
-              <Box w="15%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Status</Text>
-              </Box>
-
-              <Box w="15%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Actions</Text>
-            </Box>
-
-            </Box>
-
-            <hr className="remove"/>
-
-          <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#C7B9DA"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Philip Amakari</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">philipamakari@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Legendary Scholars Academy</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Mass Communication</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Reject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#AA9C75"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">David Folarin</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">davidfolarin@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-             <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Queen's College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Bussiness Administration</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Reject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#C7B9DA"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Timothy Salisu</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">timothysalisu@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Federal Government College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Chemical Engineering</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Reject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#D4B5AD"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Peter Usman</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">peterusman@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Mayflower</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Accounting</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Reject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#BEA887"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Esther Wakali</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">estherwakali@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Chrisland College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Banking and Finance</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Reject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#D1BAA9"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Simon Ogan</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">simonogan@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Christ The King College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Law</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Reject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#D1DFC3"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Esther Abubakar</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">estherabubakar@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Corona Secondary School</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Medicine and Surgery</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Reject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#D2C7AC"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Philip Ezeoke</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">philipezeoke@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Adesoye College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Industrial College</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Reject</Button>
-            </Box>
-            </Box>
-
-
-          </Box>
-        </TabPanel>
-
-        <TabPanel>
-          <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px","8px","18px","18px"]} rounded='10px'>
-            <Box justifyContent={"space-between"} w="100%" display="flex" p="10px" bg={"#F9FAFB"}>
-              <Box w="25%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Name</Text>
-              </Box>
-
-              <Box w="25%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">School Name</Text>
-              </Box>
-
-              <Box w="20%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Field Of Study</Text>
-              </Box>
-
-              <Box w="15%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Status</Text>
-              </Box>
-
-              <Box w="15%">
-              <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Actions</Text>
-            </Box>
-
-            </Box>
-
-            <hr className="remove"/>
-
-          <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#D1DFC3"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Philip Amakari</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">philipamakari@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Legendary Scholars Academy</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Mass Communication</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#D2C7AC"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">David Folarin</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">davidfolarin@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-             <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Queen's College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Bussiness Administration</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#DBC0DD"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Timothy Salisu</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">timothysalisu@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Federal Government College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Chemical Engineering</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#D4B5AD"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Peter Usman</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">peterusman@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Mayflower</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Accounting</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#C7B9DA"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Esther Wakali</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">estherwakali@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Chrisland College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Banking and Finance</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#AA9C75"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Simon Ogan</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">simonogan@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Christ The King College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Law</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#D4B5AD"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Esther Abubakar</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">estherabubakar@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Corona Secondary School</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Medicine and Surgery</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-            </Box>
-            </Box>
-
-            <hr className="remove"/>
-
-            <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-            <Box w="25%">
-            <HStack cursor="pointer" onClick={() => {
-              router("/scholarship-admin/students/student-profile")
-            }}>
-            <Box w="30px" h="30px" rounded="full" bg="#D1DFC3"></Box>
-            <Stack>
-              <Text color="#101828" fontSize="13px" fontWeight="500">Philip Ezeoke</Text>
-              <Text color="#667085" fontSize="12px" fontWeight="400">philipezeoke@gmail.com</Text>
-            </Stack>
-            </HStack>
-            </Box>
-
-            <Box w="25%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Adesoye College</Text>
-            </Box>
-
-            <Box w="20%">
-              <Text fontSize="13px" fontWeight="400" color="#101828">Industrial College</Text>
-            </Box>
-
-            <Box w="15%">
-              <Box>
-              <HStack py="2px" rounded="16px" px="6px">
-                <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-              </HStack>
-              </Box>
-            </Box>
-
-
-            <Box w="15%">
-              <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-            </Box>
-            </Box>
-
-
-          </Box>
-        </TabPanel>
-
-      </TabPanels>
-    </Tabs>
-        </Box>
     </MainLayout>
-    )
+  )
 }
