@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../DashboardLayout'
 import { Text, Flex, HStack, VStack, Box, Center, Progress, Icon, Avatar, Image } from '@chakra-ui/react'
@@ -21,6 +21,9 @@ import { FaSchoolFlag } from "react-icons/fa6";
 import { FaGoogleScholar } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa6";
 import { IoIosArrowRoundForward } from "react-icons/io";
+import { GetAllScholarshipSchoolsApi } from "../../Utils/ApiCall";
+import { ApproveSchoolApi } from "../../Utils/ApiCall";
+import ShowToast from '../../Components/ToastNotification';
 import { IoCloseOutline } from "react-icons/io5";
 import { ReactComponent as Revoke } from "../../Asset/revoke.svg";
 import {
@@ -54,18 +57,276 @@ import { ReactComponent as Close } from "../../Asset/close.svg";
 
 export default function Schools() {
   const router = useNavigate();
+
+  const pendingData = [
+    {
+        type: "scholarship-admin-schools",
+        schoolName: "Legendary Scholars Academy",
+        email: "LegendaryScholarsAcademy@gmail.com",
+        submissionDate: "11/27/2024 21:19",
+        status: "pending",
+        buttonText: "Review",
+    },
+    {
+        type: "scholarship-admin-schools",
+        schoolName: "Queens's College",
+        email: "Queens'sCollege@gmail.com",
+        submissionDate: "11/27/2024 21:19",
+        status: "pending",
+        buttonText: "Review",
+    },
+    {
+        type: "scholarship-admin-schools",
+        schoolName: "Federal Government College",
+        email: "FederalGovernmentCollege@gmail.com",
+        submissionDate: "11/27/2024 21:19",
+        status: "pending",
+        buttonText: "Review",
+    },
+    {
+        type: "scholarship-admin-schools",
+        schoolName: "Mayflower School",
+        email: "MayflowerSchool@gmail.com",
+        submissionDate: "11/27/2024 21:19",
+        status: "pending",
+        buttonText: "Review",
+    },
+    {
+        type: "scholarship-admin-schools",
+        schoolName: "Chrisland College",
+        email: "ChrislandCollege@gmail.com",
+        submissionDate: "11/27/2024 21:19",
+        status: "pending",
+        buttonText: "Review",
+    },
+    {
+        type: "scholarship-admin-schools",
+        schoolName: "Christ The King College",
+        email: "ChristTheKingCollege@gmail.com",
+        submissionDate: "11/27/2024 21:19",
+        status: "pending",
+        buttonText: "Review",
+    },
+    {
+        type: "scholarship-admin-schools",
+        schoolName: "Corona Secondary School",
+        email: "CoronaSecondarySchool@gmail.com",
+        submissionDate: "11/27/2024 21:19",
+        status: "pending",
+        buttonText: "Review",
+    },
+    {
+        type: "scholarship-admin-schools",
+        schoolName: "Adesoye College",
+        email: "AdesoyeCollege@gmail.com",
+        submissionDate: "11/27/2024 21:19",
+        status: "pending",
+        buttonText: "Review",
+    },
+]
+
+const approvedData = [
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Legendary Scholars Academy",
+      email: "LegendaryScholarsAcademy@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "approved",
+      buttonText: "Revoke Approval",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Queens's College",
+      email: "Queens'sCollege@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "approved",
+      buttonText: "Revoke Approval",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Federal Government College",
+      email: "FederalGovernmentCollege@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "approved",
+      buttonText: "Revoke Approval",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Mayflower School",
+      email: "MayflowerSchool@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "approved",
+      buttonText: "Revoke Approval",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Chrisland College",
+      email: "ChrislandCollege@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "approved",
+      buttonText: "Revoke Approval",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Christ The King College",
+      email: "ChristTheKingCollege@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "approved",
+      buttonText: "Revoke Approval",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Corona Secondary School",
+      email: "CoronaSecondarySchool@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "approved",
+      buttonText: "Revoke Approval",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Adesoye College",
+      email: "AdesoyeCollege@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "approved",
+      buttonText: "Revoke Approval",
+  },
+]
+
+const rejectedData = [
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Legendary Scholars Academy",
+      email: "LegendaryScholarsAcademy@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "rejected",
+      buttonText: "Unreject",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Queens's College",
+      email: "Queens'sCollege@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "rejected",
+      buttonText: "Unreject",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Federal Government College",
+      email: "FederalGovernmentCollege@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "rejected",
+      buttonText: "Unreject",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Mayflower School",
+      email: "MayflowerSchool@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "rejected",
+      buttonText: "Unreject",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Chrisland College",
+      email: "ChrislandCollege@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "rejected",
+      buttonText: "Unreject",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Christ The King College",
+      email: "ChristTheKingCollege@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "rejected",
+      buttonText: "Unreject",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Corona Secondary School",
+      email: "CoronaSecondarySchool@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "rejected",
+      buttonText: "Unreject",
+  },
+  {
+      type: "scholarship-admin-schools",
+      schoolName: "Adesoye College",
+      email: "AdesoyeCollege@gmail.com",
+      submissionDate: "11/27/2024 21:19",
+      status: "rejected",
+      buttonText: "Unreject",
+  },
+]
+
+const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
+const [loading, setLoading] = useState(false);
+const [MainData, setMainData] = useState([])
+
+
+const GetAllScholarshipSchool = async ()=>{
+
+  try{
+      const result = await GetAllScholarshipSchoolsApi(pageNo, noItems, status)
+
+      console.log("getallscholarshipSchools", result)
+
+      if(result.status === 200 ){
+          setMainData(result.data.data.students)
+      }
+  }catch(e){
+
+      console.log("error", e.message)
+  }
+
+}
+
+
+useEffect(() => {
+ 
+  GetAllScholarshipSchool()
+ 
+}, [noItems]);
+
+const ApproveSchool = async () => {
+    try{
+        const result = await ApproveSchoolApi(status, note)
+  
+        console.log("approved school", result)
+  
+        if(result.status === 200 ){
+            setLoading(true);
+            setShowToast({
+                show: true,
+                message: "Approved School!!!",
+                status: "success",
+              });
+        }
+    }catch(e){
+        setShowToast({
+            show: true,
+            message: "Error Approving School!!!",
+            status: "error",
+          });
+        console.log("error", e.message)
+    } finally {
+        setLoading(false);
+      }
+}
+
+
     return (
         <MainLayout>
-            <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Schools <Box as='span' color="#667085" fontWeight="600" fontSize="19px">(34)</Box></Text>
+            <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Schools <Box as='span' color="#667085" fontWeight="600" fontSize="19px">({pendingData.length + approvedData.length + rejectedData.length})</Box></Text>
             <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>View and manage school approval requests. Quickly review pending applications and take necessary actions like approving or rejecting.</Text>
 
             <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["18px", "18px"]} rounded='10px'>
             <Tabs>
               <HStack justifyContent={"space-between"}>
           <TabList overflowX={"auto"} overflowY={"hidden"}>
-            <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(8)</Box></Text></Tab>
-            <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(25)</Box></Text></Tab>
-            <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">(2)</Box></Text></Tab>
+          <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({pendingData.length})</Box></Text></Tab>
+            <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({approvedData.length})</Box></Text></Tab>
+            <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({rejectedData.length})</Box></Text></Tab>
           </TabList>
 
           <Box borderWidth="1px" borderColor={"#E3E5E8"} cursor="pointer" borderRadius={"7px"} padding={"10px"}>
@@ -78,919 +339,116 @@ export default function Schools() {
 
           <TabPanels>
             <TabPanel>
-              <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px","8px","18px","18px"]} rounded='10px'>
-                <Box justifyContent={"space-between"} w="100%" display="flex" p="10px" bg={"#F9FAFB"}>
-                  <Box w="40%">
-                  <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Name</Text>
-                  </Box>
+            <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px","8px","18px","18px"]} rounded='10px'>
+              <TableContainer>
+                        <Table variant='simple'>
 
-                  <Box w="20%">
-                  <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Submission Date</Text>
-                  </Box>
+                            <Thead bg="#F9FAFB">
+                                <Tr >
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">submission date</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">status</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
 
-                  <Box w="20%">
-                  <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Status</Text>
-                  </Box>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
 
-                  <Box w="20%">
-                  <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Actions</Text>
-                </Box>
+                                {
+                                    pendingData.map((item, i) => (
 
-                </Box>
+                                        <TableRow
+                                            type={item.type}
+                                            schoolName={item.school_name}
+                                            email={item.email}
+                                            submissionDate={item.created_at}
+                                            status={item.status}
+                                            buttonText={item.buttonText}
+                                            onButtonClick={() => ApproveSchool(item)}
+                                        />
+                                    ))
+                                }
 
-                <hr className="remove"/>
+                            </Tbody>
 
-              <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Legendary Scholars Academy" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Legendary Scholars Academy</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">legendaryschlarsacademy@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%">Review</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Queen's College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Queen's College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">queenscollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%">Review</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Federal Government College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Federal Government College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">federalgovernmentcollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%">Review</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Mayflower School" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">MayFlower School</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">mayflowerschool@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%">Review</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Chrisland College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Chrisland College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">chrislandcollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%">Review</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Christ The King College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Christ The King College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">christthekingcollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%">Review</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Corona Secondary School" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Corona Secondary School</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">coronasecondaryschool@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%">Review</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Adesoye College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Adesoye College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">adesoyecollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FFA30C" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%">Review</Button>
-                </Box>
-                </Box>
-
-
-              </Box>
+                        </Table>
+                    </TableContainer>
+                    </Box>
             </TabPanel>
 
 
             <TabPanel>
-              <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px","8px","18px","18px"]} rounded='10px'>
-                <Box justifyContent={"space-between"} w="100%" display="flex" p="10px" bg={"#F9FAFB"}>
-                  <Box w="40%">
-                  <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Name</Text>
-                  </Box>
+            <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px","8px","18px","18px"]} rounded='10px'>
+              <TableContainer>
+                        <Table variant='simple'>
 
-                  <Box w="20%">
-                  <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Submission Date</Text>
-                  </Box>
+                            <Thead bg="#F9FAFB">
+                                <Tr >
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">submission date</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">status</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
 
-                  <Box w="20%">
-                  <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Status</Text>
-                  </Box>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
 
-                  <Box w="20%">
-                  <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Actions</Text>
-                </Box>
+                                {
+                                    approvedData.map((item, i) => (
 
-                </Box>
+<TableRow
+                                            type={item.type}
+                                            schoolName={item.school_name}
+                                            email={item.email}
+                                            submissionDate={item.created_at}
+                                            status={item.status}
+                                            buttonText={item.buttonText}
+                                        />
+                                    ))
+                                }
 
-                <hr className="remove"/>
+                            </Tbody>
 
-              <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Legendary Scholars Academy" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Legendary Scholars Academy</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">legendaryschlarsacademy@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Revoke Approval</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Queens's College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Queen's College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">queenscollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Revoke Approval</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Federal Government College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Federal Government College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">federalgovernmentcollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Revoke Approval</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Mayflower School" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">MayFlower School</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">mayflowerschool@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Revoke Approval</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Chrisland College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Chrisland College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">chrislandcollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Revoke Approval</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Christ The KIng College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Christ The King College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">christthekingcollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Revoke Approval</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Corona Secondary School" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Corona Secondary School</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">coronasecondaryschool@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Revoke Approval</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Adesoye College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Adesoye College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">adesoyecollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#027A48" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#027A48">Approved</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Revoke Approval</Button>
-                </Box>
-                </Box>
-
-
-              </Box>
+                        </Table>
+                    </TableContainer>
+                    </Box>
             </TabPanel>
 
             <TabPanel>
-              <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px","8px","18px","18px"]} rounded='10px'>
-                <Box justifyContent={"space-between"} w="100%" display="flex" p="10px" bg={"#F9FAFB"}>
-                  <Box w="40%">
-                  <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Name</Text>
-                  </Box>
+            <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px","8px","18px","18px"]} rounded='10px'>
+              <TableContainer>
+                        <Table variant='simple'>
 
-                  <Box w="20%">
-                  <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Submission Date</Text>
-                  </Box>
+                            <Thead bg="#F9FAFB">
+                                <Tr >
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">submission date</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">status</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
 
-                  <Box w="20%">
-                  <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Status</Text>
-                  </Box>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
 
-                  <Box w="20%">
-                  <Text fontSize="13px" fontWeight="500" color="#2F2F2F">Actions</Text>
-                </Box>
+                                {
+                                    rejectedData.map((item, i) => (
 
-                </Box>
+                                        <TableRow
+                                        type={item.type}
+                                        schoolName={item.school_name}
+                                        email={item.email}
+                                        submissionDate={item.created_at}
+                                        status={item.status}
+                                        buttonText={item.buttonText}
+                                    />
+                                    ))
+                                }
 
-                <hr className="remove"/>
+                            </Tbody>
 
-              <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Legendary Scholars Academy" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Legendary Scholars Academy</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">legendaryschlarsacademy@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Queen's College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Queen's College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">queenscollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Federal Government College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Federal Government College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">federalgovernmentcollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Mayflower School" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">MayFlower School</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">mayflowerschool@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Chrisland College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Chrisland College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">chrislandcollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Christ The KIng College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Christ The King College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">christthekingcollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Corona SEcondary School" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Corona Secondary School</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">coronasecondaryschool@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-                </Box>
-                </Box>
-
-                <hr className="remove"/>
-
-                <Box justifyContent={"space-between"} alignItems={"center"} w="100%" py="10px" display="flex"> 
-
-                <Box w="40%">
-                <HStack cursor="pointer" onClick={() => {
-                  router("/scholarship-admin/schools/school-profile")
-                }}>
-                <Avatar name="Adesoye College" />
-                <Stack>
-                  <Text color="#101828" fontSize="13px" fontWeight="500">Adesoye College</Text>
-                  <Text color="#667085" fontSize="12px" fontWeight="400">adesoyecollege@gmail.com</Text>
-                </Stack>
-                </HStack>
-                </Box>
-
-                <Box w="20%">
-                  <Text fontSize="13px" fontWeight="400" color="#101828">11/27/2024 21:19</Text>
-                </Box>
-
-                <Box w="20%">
-                  <Box>
-                  <HStack py="2px" rounded="16px" px="6px">
-                    <Box w="6px" h="6px" bg="#FD4739" rounded="full"></Box>
-                    <Text fontSize="12px" fontWeight="500" color="#FD4739">Rejected</Text>
-                  </HStack>
-                  </Box>
-                </Box>
-
-
-                <Box w="20%">
-                  <Button px="10%" color="#39996B" background="white" border='1px solid green'>Unreject</Button>
-                </Box>
-                </Box>
-
-
-              </Box>
+                        </Table>
+                    </TableContainer>
+                    </Box>
             </TabPanel>
 
           </TabPanels>
