@@ -22,7 +22,7 @@ import { FaGoogleScholar } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa6";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { IoCloseOutline } from "react-icons/io5";
-import { GetAllScholarshipStudentApi } from "../../Utils/ApiCall";
+import { GetAllScholarshipStudentsApi } from "../../Utils/ApiCall";
 import { ApproveStudentApi } from "../../Utils/ApiCall";
 import ShowToast from '../../Components/ToastNotification';
 import { ReactComponent as Revoke } from "../../Asset/revoke.svg";

@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Avatar, Text, Menu, MenuButton, MenuList, MenuItem, useDisclosure, Icon, } from '@chakra-ui/react'
+import { Box, Flex, HStack, Avatar, Text, Menu, Checkbox, MenuButton, MenuList, MenuItem, useDisclosure, Icon, } from '@chakra-ui/react'
 import {
 
     Tr,
@@ -11,7 +11,7 @@ import Button from './Button'
 import { IoMdOpen } from "react-icons/io";
 import { GoDotFill } from "react-icons/go";
 
-export default function TableRow({ type, name, email, department, classLevel, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee }) {
+export default function TableRow({ type, name, email, department, classLevel, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee }) {
     const router = useNavigate()
 
     const handleStudentClick = (student_Id) => {
