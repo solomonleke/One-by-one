@@ -1,5 +1,7 @@
 import axios from "axios";
 import { baseUrl, token } from "./ApiConfig";
+const { student_id } = useParams();
+const { schoolId } = useParams();
 
 export const CreateAccountApi = (Payload) => {
   // console.log("CreateAccountPayload", Payload);
