@@ -171,6 +171,10 @@ export default function StudentManagement() {
     }
 
 
+    const handleStudentClick = (student_Id) => {
+        router(`/school-admin/student-management/student-profile/${student_Id}`);
+      };
+
     useEffect(() => {
 
         getallStudent()
@@ -402,6 +406,7 @@ export default function StudentManagement() {
                                             fieldOfStudy={item.intended_field_of_study}
                                             status={item.verification_status}
                                             date={moment(item.created_at).format("lll")}
+                                            onClick={() => handleStudentClick(item.id)}
                                             onRemove={onOpen}
                                             onEdit={() => setOpenModal(true)}
                                         />

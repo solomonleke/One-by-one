@@ -11,21 +11,17 @@ import Button from './Button'
 import { IoMdOpen } from "react-icons/io";
 import { GoDotFill } from "react-icons/go";
 
-export default function TableRow({ type, name, email, department, classLevel, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee }) {
+export default function TableRow({ type, name, email, department, classLevel, onClick, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee }) {
     const router = useNavigate()
 
-    const handleStudentClick = (student_Id) => {
-        router(`/school-admin/student-management/student-profile/${student_Id}`);
-      };
+    
     return (
 
         <Tr textTransform="capitalize" cursor="pointer">
             {
                 type === "school-admin" && (
                     <>
-                        <Td onClick={() => {
-                            handleStudentClick()
-                        }}>
+                        <Td onClick= {onClick}>
                             <HStack cursor={"pointer"}>
                                 <Avatar name={name} size='sm' src='https://bit.ly/tioluwani-kolawole' />
                                 <Box>
