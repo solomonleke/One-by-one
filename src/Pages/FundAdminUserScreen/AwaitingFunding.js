@@ -1,4 +1,6 @@
 import React from "react";
+import { useState, useEffect } from 'react'
+
 import {
   Box,
   Table,
@@ -21,6 +23,9 @@ import MainLayout from "../../DashboardLayout";
 import { IoMdOpen } from "react-icons/io";
 import TableRow from "../../Components/TableRow"
 import InputX from "../../Components/InputX"
+import { BiSearch } from "react-icons/bi"; import Pagination from "../../Components/Pagination";
+import { configuration } from "../../Utils/Helpers";
+import { GetAllStudentApi } from "../../Utils/ApiCall";
 
 
 const students = [
@@ -31,7 +36,53 @@ const students = [
   { name: "Esther Wakili", school: "Chrisland College", guardian: "Stephen Agbasi", schoolBank: "Polaris", BankAcc: "12345678", guardianBank: "Fidelity", GuardianBankAcc: "12345678", tuition: "₦100,000.00" },
 ];
 
+
+
+
+
+// Pagination settings to follow end here
+
 export default function FundingTable() {
+ 
+  // Pagination settings to follow
+const [CurrentPage, setCurrentPage] = useState(1);
+console.log("currentpage", CurrentPage);
+const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
+const [TotalPage, setTotalPage] = useState("");
+
+//get current post
+//change page
+const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+};
+
+// Pagination settings to follow end here
+
+const getallStudent = async () => {
+
+  try {
+      const result = await GetAllStudentApi(CurrentPage, PostPerPage)
+
+      console.log("getallStudent", result)
+
+      if (result.status === 200) {
+          students(result.data.data.students)
+          setTotalPage(result.data.data.totalPages)
+      }
+  } catch (e) {
+
+      console.log("error", e.message)
+  }
+
+}
+
+
+useEffect(() => {
+
+  getallStudent()
+
+}, [CurrentPage]);
+
   return (
     <MainLayout>
       <Box p={6}>
@@ -110,16 +161,11 @@ export default function FundingTable() {
           </Button>
 
           {/* Pagination Numbers */}
-          <Flex gap={2}>
-            {useBreakpointValue({
-              base: [1, 2, 3, "...", 10],  // Fewer numbers on small screens
-              md: [1, 2, 3, "...", 8, 9, 10] // More numbers on larger screens
-            }).map((num, index) => (
-              <Button key={index} variant={num === 1 ? "solid" : "outline"}>
-                {num}
-              </Button>
-            ))}
-          </Flex>
+          <Pagination
+                        currentPage={CurrentPage}
+                        totalPosts={TotalPage}
+                        paginate={paginate}
+                    />
 
           {/* Next Button */}
           <Button

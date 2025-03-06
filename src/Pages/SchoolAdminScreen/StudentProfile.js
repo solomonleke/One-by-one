@@ -28,7 +28,8 @@ export default function StudentProfile() {
     const fetchStudentProfile = async () => {
       try {
         const response = await GetStudentProfile(student_Id);
-        setStudentData(response.data); // Store student data
+        console.log("response", response);
+        setStudentData(response); // Store student data
         setLoading(false);
       } catch (err) {
         setError(err.message || 'Failed to fetch student profile');
@@ -87,9 +88,8 @@ export default function StudentProfile() {
             <Stack spacing="10px">
               <HStack>
                 <Text color="#1F2937" fontSize="25px" fontWeight="700">
-                  {studentData?.fullName}
+                  {studentData?.full_name}
                 </Text>
-                <Text>Student ID: {student_Id}</Text>
                 <Menu isLazy>
                   <MenuButton as={Box}>
                     <Flex justifyContent="center" color="#000000" fontSize="16px">
