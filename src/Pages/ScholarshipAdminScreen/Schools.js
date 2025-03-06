@@ -267,7 +267,7 @@ const [MainData, setMainData] = useState([])
 const GetAllScholarshipSchool = async ()=>{
 
   try{
-      const result = await GetAllScholarshipSchoolsApi(pageNo, noItems, status)
+      const result = await GetAllScholarshipSchoolsApi()//pageNo, noItems, status
 
       console.log("getallscholarshipSchools", result)
 
@@ -286,11 +286,11 @@ useEffect(() => {
  
   GetAllScholarshipSchool()
  
-}, [noItems]);
+}, []);//noItems
 
 const ApproveSchool = async () => {
     try{
-        const result = await ApproveSchoolApi(status, note)
+        const result = await ApproveSchoolApi()//status, note
   
         console.log("approved school", result)
   

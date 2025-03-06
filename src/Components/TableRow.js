@@ -40,11 +40,12 @@ export default function TableRow({ type, name, email, department, classLevel, fi
                         <Td><Text fontWeight="400" fontSize={"13px"} >{classLevel}</Text></Td>
                         <Td><Text fontWeight="400" fontSize={"13px"}>{fieldOfStudy}</Text></Td>
                         <Td>
-                            <HStack color={status === "approved" ? "#027A48" : status === "pending" ? "#FFA30C" : "#FD4739"}>
-                                <Box rounded="100%" w="8px" h="8px" bg={status === "approved" ? "#027A48" : status === "pending" ? "#FFA30C" : "#FD4739"}></Box>
+                            <HStack color={status === "APPROVED" ? "#027A48" : status === "PENDING" ? "#FFA30C" : "#FD4739"}>
+                                <Box rounded="100%" w="8px" h="8px" bg={status === "APPROVED" ? "#027A48" : status === "PENDING" ? "#FFA30C" : "#FD4739"}></Box>
                                 <Text fontWeight="400" fontSize={"13px"} >{status}</Text>
                             </HStack>
                         </Td>
+                        <Td><Text fontWeight="400" fontSize={"13px"}>{date}</Text></Td>
                         <Td>
                             <Menu isLazy>
                                 <MenuButton as={Box}>
