@@ -263,19 +263,19 @@ export default function ScholarshipAdmin() {
         <DashboardCard
           icon={<FaSchoolFlag />}
           title='approved schools'
-          value={result.data.data.schoolCount}
+          //value={result.data.data.schoolCount}
           w="32.5%"
         />
         <DashboardCard
           icon={<FaUserGraduate />}
           title='approved students'
-          value={result.data.data.studentCount}
+          //value={result.data.data.studentCount}
           w="32.5%"
         />
         <DashboardCard
           icon={<TbCurrencyNaira />}
           title='funds requested'
-          value={result.data.data.fundRequested}
+          //value={result.data.data.fundRequested}
           w="32.5%"
         />
 

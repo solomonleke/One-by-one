@@ -1,14 +1,12 @@
 import { Box, Flex, Text } from '@chakra-ui/react'
 import React from 'react'
 
-export default function Pagination({ postPerPage, totalPosts, paginate,currentPage }) {
+export default function Pagination({ totalPosts, paginate,currentPage }) {
     const pageNumbers = []
 
-    for (let i = 1; i <= Math.ceil(totalPosts / postPerPage); i++) {
+    for (let i = 1; i <= totalPosts ; i++) {
         pageNumbers.push(i)
     }
-
-    console.log("currenddddtpage", currentPage)
 
 
     return (

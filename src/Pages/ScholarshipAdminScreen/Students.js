@@ -289,7 +289,7 @@ export default function Students() {
   const GetAllScholarshipStudent = async () => {
 
     try {
-      const result = await GetAllScholarshipStudentsApi(pageNo, noItems, status)
+      const result = await GetAllScholarshipStudentsApi()//pageNo, noItems, status
 
       console.log("getallscholarshipStudents", result)
 
@@ -308,11 +308,11 @@ export default function Students() {
 
     GetAllScholarshipStudent()
 
-  }, [noItems]);
+  }, []);//noItems
 
   const ApproveStudent = async () => {
     try {
-      const result = await ApproveStudentApi(status, essayPercentage)
+      const result = await ApproveStudentApi()//status, essayPercentage
 
       console.log("approved student", result)
 

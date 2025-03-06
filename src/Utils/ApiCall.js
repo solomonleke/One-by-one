@@ -1,7 +1,8 @@
 import axios from "axios";
 import { baseUrl, token } from "./ApiConfig";
-const { student_id } = useParams();
-const { schoolId } = useParams();
+import { useParams } from "react-router-dom";
+
+
 
 export const CreateAccountApi = (Payload) => {
   // console.log("CreateAccountPayload", Payload);
@@ -337,7 +338,7 @@ export const GetAllScholarshipSchoolsApi = (pageNo, noItems, status) => {
 };
 
 export const ApproveSchoolApi = (status, note) => {
- 
+  const { schoolId } = useParams();
  
   let config = {
     method: "PATCH",
@@ -371,7 +372,7 @@ export const ApproveSchoolApi = (status, note) => {
 };
 
 export const ApproveStudentApi = (status, essayPercentage) => {
- 
+  const { student_id } = useParams();
  
   let config = {
     method: "PATCH",
