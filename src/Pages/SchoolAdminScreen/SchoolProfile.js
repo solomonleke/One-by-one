@@ -16,8 +16,30 @@ import {
 } from "@chakra-ui/react";
 import ProfileCard from "../../Components/ProfileCard";
 import ProfileHeading from "../../Components/ProfileHeading";
+import { GetAdminProfile } from "../../Utils/ApiCall";
+
 
 export default function SchoolProfile() {
+  const [adminData, setAdminData] = useState(null)
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchAdminProfile = async () => {
+      try {
+        const response = await GetAdminProfile();
+        console.log("response", response);
+        setAdminData(response.data); // Store school data
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch school profile');
+        setLoading(false);
+      }
+    };
+
+    fetchAdminProfile();
+  }, []);
+
   const [logoSrc, setLogoSrc] = useState(null);
 
   // Load the profile picture from localStorage on component mount
@@ -41,6 +63,8 @@ export default function SchoolProfile() {
       reader.readAsDataURL(file);
     }
   };
+
+  const schoolEmail = `${adminData?.school_admin.school_name?.toLowerCase()}@gmail.com`;
 
   return (
     <MainLayout>
@@ -92,7 +116,7 @@ export default function SchoolProfile() {
                 </Box>
 
               <Text fontSize={["16px","24px"]}  fontWeight="700" w={["60%", "60%","60%","60%"]} pos="relative" left={["20px","0px","30px","0px",]}>
-                Legacy Scholars Academy
+                {adminData?.school_admin.school_name}
               </Text>
 
               <Box  w={["","","", "20%"]} pos="relative" top={["-50px", "-50px", "0", "0"]}>
@@ -120,15 +144,15 @@ export default function SchoolProfile() {
                 <ProfileHeading title="School Details" />
 
                 <Stack spacing={"14px"} mt="14px">
-                  <ProfileCard title="email" value="LegacyScholars@gmail.com" />
+                  <ProfileCard title="email" value={schoolEmail} />
                   <ProfileCard title="founding year" value="2016" />
                   <ProfileCard
                     title="address"
-                    value="84 Balogun Road, Ago palace way"
+                    value={adminData?.school_admin.school_address}
                   />
-                  <ProfileCard title="city" value="okota" />
-                  <ProfileCard title="state" value="lagos" />
-                  <ProfileCard title="zip code" value="100001" />
+                  <ProfileCard title="city" value={adminData?.school_admin.city} />
+                  <ProfileCard title="state" value={adminData?.school_admin.state} />
+                  <ProfileCard title="zip code" value={adminData?.school_admin.zip_code} />
                 </Stack>
               </Box>
 
@@ -142,12 +166,12 @@ export default function SchoolProfile() {
                 <ProfileHeading title="principal information" />
 
                 <Stack spacing={"14px"} mt="14px">
-                  <ProfileCard title="title" value="mr." />
-                  <ProfileCard title="first name" value="john" />
-                  <ProfileCard title="last name" value="doe" />
-                  <ProfileCard title="email" value="johndoe@gmail.com" />
-                  <ProfileCard title="phone number" value="+234000000001" />
-                  <ProfileCard title="NIN" value="verified" />
+                  <ProfileCard title="title" value={adminData?.school_admin.principal_title} />
+                  <ProfileCard title="first name" value={adminData?.school_admin.principal_fullname} />
+                  {/* <ProfileCard title="last name" value="doe" /> */}
+                  <ProfileCard title="email" value={adminData?.school_admin.principal_email} />
+                  <ProfileCard title="phone number" value={adminData?.school_admin.principal_phone} />
+                  <ProfileCard title="NIN" value={adminData?.school_admin.account_verified} />
                 </Stack>
               </Box>
             </Stack>
@@ -179,13 +203,7 @@ export default function SchoolProfile() {
                   lineHeight={"27px"}
                   color={"#626974"}
                 >
-                  Legacy Scholars Academy, founded in 2005, is a nurturing
-                  educational institution dedicated to empowering students from
-                  underserved communities. Our mission is to foster academic
-                  excellence, leadership skills, and social responsibility. With
-                  a 90% university acceptance rate and top-tier performance in
-                  national exams, we prepare students for success and positive
-                  community impact.
+                  {adminData?.school_admin.about_school}
                 </Text>
               </Box>
 
@@ -205,7 +223,7 @@ export default function SchoolProfile() {
                   lineHeight={"27px"}
                   color={"#626974"}
                 >
-                  100
+                  {adminData?.school_admin.class_capacity}
                 </Text>
               </Box>
 
