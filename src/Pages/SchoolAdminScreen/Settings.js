@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import MainLayout from '../../DashboardLayout'
 import Button from "../../Components/Button"
 import Input from "../../Components/Input"
@@ -15,6 +15,7 @@ import { UploadDocumentApi } from "../../Utils/ApiCall";
 import { GetAdminStats } from "../../Utils/ApiCall";
 
 export default function Settings() {
+
   const isMobile = useBreakpointValue({ base: "100%", md: "500px", lg: "528px" });
     const [files, setFiles] = useState({
       certificate: null,
@@ -66,6 +67,33 @@ export default function Settings() {
   
   
   
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    // var reloadCount = localStorage.getItem("reloadCount");
+    // if(!reloadCount){
+    //   localStorage.setItem('reloadCount', + parseInt(1))
+
+    // }
+    // if(reloadCount < 2) {
+    //   localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
+    //   setTimeout(() =>
+    //   window.location.reload(1), 2000)
+    // } else {
+    //   localStorage.removeItem('reloadCount');
+    // }
+
+    const storedName = JSON.parse(localStorage.getItem('onlineUser'));
+    if (storedName) {
+      setFirstName(`${storedName.firstName}`);
+      setLastName(`${storedName.lastName}`);
+      setEmail(`${storedName.email}`);
+    }
+  }, []);
+
   return (
     <MainLayout>
       <Text color={"#1F2937"} fontWeight={"700"} fontSize={"24px"} lineHeight={"25.41px"}>Settings</Text>
@@ -99,7 +127,7 @@ export default function Settings() {
                         <Text fontSize={"14px"} fontWeight={"500"} lineHeight={"22px"} color={"#1F2937"}>First Name</Text>
                       </Box>
                       <Box w="70%">
-                        <Input placeholder='Kena' />
+                        <Input placeholder={firstName} />
                       </Box>
                     </HStack>
                     <hr className="remove" />
@@ -108,7 +136,7 @@ export default function Settings() {
                         <Text fontSize={"14px"} fontWeight={"500"} lineHeight={"22px"} color={"#1F2937"}>Last Name</Text>
                       </Box>
                       <Box w="70%">
-                        <Input placeholder='Wilson' />
+                        <Input placeholder={lastName} />
                       </Box>
                     </HStack>
                     <hr className="remove" />
@@ -117,7 +145,7 @@ export default function Settings() {
                         <Text fontSize={"14px"} fontWeight={"500"} lineHeight={"22px"} color={"#1F2937"}>Email</Text>
                       </Box>
                       <Box w="70%">
-                        <Input placeholder='kenawilson991@gmail.com' />
+                        <Input placeholder={email} />
                       </Box>
                     </HStack>
                     <hr className="remove" />
