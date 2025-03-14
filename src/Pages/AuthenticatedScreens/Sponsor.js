@@ -22,10 +22,10 @@ const Sponsor = () => {
     show: false,
     message: "",
     status: ""
-})
+  })
 
   const [Loading, setLoading] = useState(false)
-  
+
   const nav = useNavigate();
 
   const switchToMotivationView = () => setCurrentView("motivationView");
@@ -50,37 +50,37 @@ const Sponsor = () => {
     setLoading(true)
     try {
 
-        const result = await CreateAdminApi(payload,tempToken)
+      const result = await CreateAdminApi(payload, tempToken)
 
-        if (result.status === 201) {
-            setLoading(false)
-            setShowToast({ show: true, message: "Sponsor Admin created successfully. Kindly Sign in to Continue", status: "success" })
-            setTimeout(() => {
-                setShowToast({
-                    show: false,
-
-                })
-
-                nav("/sign-in")
-            }, 4000)
-        }
-    } catch (e) {
+      if (result.status === 201) {
         setLoading(false)
-        console.log(e.message)
-        setShowToast({
-            show: true,
-            message: e.message,
-            status: "error"
-        })
-
+        setShowToast({ show: true, message: "Sponsor Admin created successfully. Kindly Sign in to Continue", status: "success" })
         setTimeout(() => {
-            setShowToast({
-                show: false,
+          setShowToast({
+            show: false,
 
-            })
-        }, 7000)
+          })
+
+          nav("/sign-in")
+        }, 4000)
+      }
+    } catch (e) {
+      setLoading(false)
+      console.log(e.message)
+      setShowToast({
+        show: true,
+        message: e.message,
+        status: "error"
+      })
+
+      setTimeout(() => {
+        setShowToast({
+          show: false,
+
+        })
+      }, 7000)
     }
-}
+  }
 
   const renderPaginationLines = () => (
     <HStack spacing="4px" align="flex-start">
@@ -102,12 +102,12 @@ const Sponsor = () => {
   return (
 
     <AuthenticatedWrapper>
-       {
-                showToast.show && (
-                    <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
+      {
+        showToast.show && (
+          <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
 
-                )
-            }
+        )
+      }
       <Box px={["3%", "15%"]} mt="74px">
         <Box mt="62px" position="relative" overflow="hidden">
           <motion.div

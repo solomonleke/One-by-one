@@ -118,13 +118,11 @@ export default function ScholarshipAdmin() {
   const GetScholarshipDashboardDetails = async () => {
 
     try {
-      const result = await GetScholarshipDashboardDetailsApi()
+      const response = await GetScholarshipDashboardDetailsApi()
 
-      console.log("getScholarshipDashboardDetails", result)
+      console.log("getScholarshipDashboardDetails", response)
 
-      if (result.status === 200) {
-
-      }
+      
     } catch (e) {
 
       console.log("error", e.message)
@@ -138,28 +136,28 @@ export default function ScholarshipAdmin() {
 
   }, []);
 
-  const GetScholarshipDashboardGraphData = async () => {
+  // const GetScholarshipDashboardGraphData = async () => {
 
-    try {
-      const result = await GetScholarshipDashboardGraphDataApi()
+  //   try {
+  //     const response = await GetScholarshipDashboardGraphDataApi()
 
-      console.log("getScholarshipDashboardGraghData", result)
+  //     console.log("getScholarshipDashboardGraphData", response)
 
-      if (result.status === 200) {
+  //     if (response.status === 200) {
 
-      }
-    } catch (e) {
+  //     }
+  //   } catch (e) {
 
-      console.log("error", e.message)
-    }
+  //     console.log("error", e.message)
+  //   }
 
-  }
+  // }
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    GetScholarshipDashboardGraphDataApi()
+  //   GetScholarshipDashboardGraphData()
 
-  }, []);
+  // }, []);
 
   return (
     <MainLayout>
@@ -263,19 +261,19 @@ export default function ScholarshipAdmin() {
         <DashboardCard
           icon={<FaSchoolFlag />}
           title='approved schools'
-          //value={result.data.data.schoolCount}
+          //value={response.data.data.schoolCount}
           w="32.5%"
         />
         <DashboardCard
           icon={<FaUserGraduate />}
           title='approved students'
-          //value={result.data.data.studentCount}
+          //value={response.data.data.studentCount}
           w="32.5%"
         />
         <DashboardCard
           icon={<TbCurrencyNaira />}
           title='funds requested'
-          //value={result.data.data.fundRequested}
+          //value={response.data.data.fundRequested}
           w="32.5%"
         />
 
