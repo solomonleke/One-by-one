@@ -12,9 +12,16 @@ import { MdOutlineCancel } from 'react-icons/md'
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { GoArrowDown } from "react-icons/go";
 import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
+import { BiSearch } from "react-icons/bi"; import Pagination from "../../Components/Pagination";
+import { FaCalendarAlt } from "react-icons/fa";
 import TableRow from "../../Components/TableRow"
 import { CgSearch } from "react-icons/cg";
+import { configuration } from "../../Utils/Helpers";
 import { IoFilter } from "react-icons/io5";
+import { GetAllStudentApi } from "../../Utils/ApiCall";
+import { GetSchoolAdminDashboardGraphDataApi } from "../../Utils/ApiCall";
+import moment from "moment";
+
 import {
   Table,
   Thead,
@@ -22,12 +29,144 @@ import {
   Tr,
   Th,
   TableContainer,
+  useDisclosure,
+  Input,
+  MenuList,
+  MenuItem,
+  MenuButton,
+  Menu,
 } from '@chakra-ui/react'
 
 
 export default function Index() {
 
+  const [All, setAll] = useState(true)
+    const [Approved, setApproved] = useState(false)
+    const [Pending, setPending] = useState(false)
+    const [Rejected, setRejected] = useState(false)
+
+
+    const [OpenModal, setOpenModal] = useState(false)
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
   const [userName, setUserName] = useState('');
+  const [SearchInput, setSearchInput] = useState("");
+  const [MainData, setMainData] = useState([])
+    const [FilterData, setFilterData] = useState([])
+    const [FilteredData, setFilteredData] = useState(null);
+
+  const [ByDate, setByDate] = useState(false);
+    const [StartDate, setStartDate] = useState("");
+    const [EndDate, setEndDate] = useState("");
+    const [CurrentPage, setCurrentPage] = useState(1);
+    const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
+    const [TotalPage, setTotalPage] = useState("");
+
+
+
+    const filterAll = () => {
+        setAll(true);
+        setApproved(false);
+        setPending(false);
+        setRejected(false);
+
+        setFilterData(MainData);
+    };
+    const filterApproved = () => {
+        setAll(false);
+        setApproved(true);
+        setPending(false);
+        setRejected(false);
+
+        const filterData = MainData.filter((item) => item.verification_status === "APPROVED");
+        console.log("filterData", filterData, MainData);
+        setFilterData(filterData);
+    };
+    const filterPending = () => {
+        setAll(false);
+        setApproved(false);
+        setPending(true);
+        setRejected(false);
+
+        const filterData = MainData.filter((item) => item.verification_status === "PENDING");
+
+        setFilterData(filterData);
+    };
+    const filterRejected = () => {
+        setAll(false);
+        setApproved(false);
+        setPending(false);
+        setRejected(true);
+
+        const filterData = MainData.filter((item) => item.verification_status === "REJECTED");
+
+        setFilterData(filterData);
+    };
+
+    const filterBy = (title) => {
+        console.log("filter checking", title);
+
+        if (title === "dept") {
+            let filter = MainData.filter((item) =>
+                item.department?.toLowerCase().includes(SearchInput.toLowerCase())
+            );
+            setFilteredData(filter);
+            console.log("filter checking", filter);
+        } else if (title === "email") {
+            let filter = MainData.filter((item) =>
+                item.email?.toLowerCase().includes(SearchInput.toLowerCase())
+            );
+            setFilteredData(filter);
+            console.log("filter checking", filter);
+        } else if (title === "name") {
+            let filter = MainData.filter(
+                (item) =>
+                    item.full_name?.toLowerCase().includes(SearchInput.toLowerCase())
+
+            );
+            setFilteredData(filter);
+            console.log("filter checking", filter);
+        } else if (title === "date") {
+            // add 1 day to end date 
+            let endDate = new Date(EndDate)
+            endDate.setDate(endDate.getDate() + 1);
+            // format date back
+            let formatedEndDate = endDate.toISOString().split('T')[0]
+            let filter = MainData.filter(
+                (item) =>
+                    item.createdAt >= StartDate && item.createdAt <= formatedEndDate
+            );
+            setFilteredData(filter);
+            setSearchInput("s")
+            console.log(" Date filter checking", filter);
+            console.log(" Date plus  checking", endDate.toISOString());
+        }
+    };
+
+    // Search Filter settings to follow end here
+    const handleStudentClick = (student_Id) => {
+      router(`/school-admin/student-management/student-profile/${student_Id}`);
+    };
+
+    const getallStudent = async () => {
+      console.log("CurrentPage:", CurrentPage, "PostPerPage:", PostPerPage);
+
+      try {
+          const result = await GetAllStudentApi(CurrentPage, PostPerPage)
+
+          console.log("getallStudent", result)
+
+          if (result.status === 200) {
+              setMainData(result.data.data.students)
+              setFilterData(result.data.data.students)
+              setTotalPage(result.data.data.totalPages)
+          }
+      } catch (e) {
+
+          console.log("error", e.message)
+      }
+
+  }
 
   useEffect(() => {
     // var reloadCount = localStorage.getItem("reloadCount");
@@ -42,62 +181,94 @@ export default function Index() {
     // } else {
     //   localStorage.removeItem('reloadCount');
     // }
-
+    
     const storedName = JSON.parse(localStorage.getItem('onlineUser'));
     if (storedName) {
       setUserName(`${storedName.firstName}`);
     }
+    
   }, []);
+
+  useEffect(() => {
+
+    getallStudent()
+
+}, [CurrentPage]);
 
   const router = useNavigate();
 
-  const [Approved, setApproved] = useState(true)
-  const [Pending, setPending] = useState(false)
-  const [Rejected, setRejected] = useState(false)
+
+  
+
+  const [graphData, setGraphData] = useState([]);
+
+  const GetSchoolDashboardDetails = async () => {
+
+    try {
+      const response = await GetSchoolAdminDashboardGraphDataApi()
+
+      console.log("getSchoolDashboardDetails", response)
+      if(response.status === 200){
+        setGraphData(response.data.data[0])
+      }
+      
+    } catch (e) {
+
+      console.log("error", e.message)
+    }
+
+  }
+
+  useEffect(() => {
+
+    GetSchoolDashboardDetails()
+
+  }, []);
 
   const Data = [
-    { name: "JAN", students: 140 },
-    { name: "FEB", students: 80 },
-    { name: "MAR", students: 20 },
-    { name: "APR", students: 180 },
-    { name: "MAY", students: 120 },
-    { name: "JUN", students: 100 },
-    { name: "JUL", students: 40 },
-    { name: "AUG", students: 80 },
-    { name: "SEP", students: 34 },
-    { name: "OCT", students: 10 },
-    { name: "NOV", students: 110 },
-    { name: "DEC", students: 130 },
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count },
 
   ]
   const PendingData = [
-    { name: "JAN", students: 40 },
-    { name: "FEB", students: 180 },
-    { name: "MAR", students: 120 },
-    { name: "APR", students: 80 },
-    { name: "MAY", students: 20 },
-    { name: "JUN", students: 90 },
-    { name: "JUL", students: 140 },
-    { name: "AUG", students: 80 },
-    { name: "SEP", students: 134 },
-    { name: "OCT", students: 110 },
-    { name: "NOV", students: 130 },
-    { name: "DEC", students: 120 },
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count },
 
   ]
   const RejectedData = [
-    { name: "JAN", students: 130 },
-    { name: "FEB", students: 180 },
-    { name: "MAR", students: 220 },
-    { name: "APR", students: 10 },
-    { name: "MAY", students: 20 },
-    { name: "JUN", students: 30 },
-    { name: "JUL", students: 120 },
-    { name: "AUG", students: 30 },
-    { name: "SEP", students: 134 },
-    { name: "OCT", students: 110 },
-    { name: "NOV", students: 150 },
-    { name: "DEC", students: 180 },
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count},
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count },
+    { name: graphData.month, students: graphData.count },
+
 
   ]
 
@@ -107,7 +278,7 @@ export default function Index() {
       <Text color={"#1F2937"} fontWeight={"700"} fontSize={"24px"} textTransform="capitalize" lineHeight={"25.41px"}>Welcome back, {userName || "User"}!</Text>
 
       <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} lineHeight={"24px"} > Easily track and manage student information with real-time insights and updates. </Text>
-
+      
 
       <Flex mt="27px" justifyContent="space-between" flexWrap="wrap">
         <DashboardCard
@@ -197,76 +368,235 @@ export default function Index() {
 
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px="18px" rounded='10px'>
         <Flex justifyContent="space-between" flexWrap="wrap">
+        <HStack alignItems="center" justifyContent="space-between" flexWrap="wrap" w="100%">
           <HStack>
             <Text color="#1F2937" fontWeight="600" fontSize="19x">Students</Text>
-            <Text color="#667085" fontWeight="400" fontSize="18px">(526)</Text>
+            <Text color="#667085" fontWeight="400" fontSize="18px">({MainData.length})</Text>
           </HStack>
 
-          <Flex w={["100%", "30%"]} flexWrap="wrap" mt={["10px", "10px", "0px", "0px"]} alignItems="center" justifyContent={"space-between"} >
-            <HStack flexWrap="wrap">
-              <Box border="1px solid #E3E5E8" rounded="7px" p='10px' fontSize="14px">
-                <CgSearch />
-              </Box>
-              <HStack border="1px solid #E3E5E8" rounded="7px" p='6px' color='#2F2F2F' fontWeight="500" fontSize="14px">
-                <IoFilter />
-                <Text>Filter</Text>
-              </HStack>
-            </HStack>
-            <Button w="159px" size="sm" onClick={() => {
+          <Flex  flexWrap="wrap" mt={["10px", "10px", "0px", "0px"]} alignItems="center" justifyContent={"space-between"} >
+          <Flex justifyContent="space-between" flexWrap="wrap">
+                    <Flex flexWrap="wrap"
+                        mt={["10px", "10px", "0px", "0px"]}
+                        alignItems="center"
+                        justifyContent={"flex-end"} >
+                        <HStack flexWrap={["wrap", "nowrap"]} >
+                            {ByDate === false ? (
+                                <Input
+
+                                    placeholder="Search"
+                                    size="sm"
+                                    onChange={(e) => setSearchInput(e.target.value)}
+                                    value={SearchInput}
+                                    bColor="#E4E4E4"
+                                    leftIcon={<BiSearch />}
+                                />
+                            ) : (
+                                <HStack flexWrap={["wrap", "nowrap"]}>
+                                    <Input
+
+                                        placeholder="Start Date"
+                                        type="date"
+                                        size="sm"
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        value={StartDate}
+                                        bColor="#E4E4E4"
+                                        leftIcon={<FaCalendarAlt />}
+                                    />
+                                    <Input
+                                        placeholder="End Date"
+                                        type="date"
+                                        size="sm"
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                        value={EndDate}
+                                        bColor="#E4E4E4"
+                                        leftIcon={<FaCalendarAlt />}
+                                    />
+
+                                    <Flex onClick={() => filterBy("date")} cursor="pointer" px="5px" py="3px" rounded="5px" bg="greenn.greenn500" color="#fff" justifyContent="center" alignItems="center" >
+                                        <BiSearch />
+                                    </Flex>
+                                </HStack>
+                            )}
+                            <Menu isLazy>
+                                <MenuButton as={Box}>
+                                    <HStack
+                                        border="1px solid #E3E5E8" rounded="7px" p='6px' color='#2F2F2F' fontWeight="500" fontSize="14px"
+                                    >
+                                        <Text>Filter</Text>
+                                        <IoFilter />
+                                    </HStack>
+                                </MenuButton>
+                                <MenuList>
+                                    <MenuItem
+                                        onClick={() => filterBy("name")}
+                                        textTransform="capitalize"
+                                        fontWeight={"500"}
+                                        color="#2F2F2F"
+                                        _hover={{
+                                            color: "#fff",
+                                            fontWeight: "400",
+                                            bg: "greenn.greenn500",
+                                        }}
+                                    >
+                                        <HStack fontSize="14px">
+                                            <Text>by Name</Text>
+                                        </HStack>
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={() => filterBy("email")}
+                                        textTransform="capitalize"
+                                        fontWeight={"500"}
+                                        color="#2F2F2F"
+                                        _hover={{
+                                            color: "#fff",
+                                            fontWeight: "400",
+                                            bg: "greenn.greenn500",
+                                        }}
+                                    >
+                                        <HStack fontSize="14px">
+                                            <Text>by email</Text>
+                                        </HStack>
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={() => filterBy("dept")}
+                                        textTransform="capitalize"
+                                        fontWeight={"500"}
+                                        color="#2F2F2F"
+                                        _hover={{
+                                            color: "#fff",
+                                            fontWeight: "400",
+                                            bg: "greenn.greenn500",
+                                        }}
+                                    >
+                                        <HStack fontSize="14px">
+                                            <Text>by department</Text>
+                                        </HStack>
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={() => filterBy("phoneNumber")}
+                                        textTransform="capitalize"
+                                        fontWeight={"500"}
+                                        color="#2F2F2F"
+                                        _hover={{
+                                            color: "#fff",
+                                            fontWeight: "400",
+                                            bg: "greenn.greenn500",
+                                        }}
+                                    >
+                                        <HStack fontSize="14px">
+                                            <Text>by Phone Number</Text>
+                                        </HStack>
+                                    </MenuItem>
+
+                                    <MenuItem
+                                        onClick={() => setByDate(true)}
+                                        textTransform="capitalize"
+                                        fontWeight={"500"}
+                                        color="#2F2F2F"
+                                        _hover={{
+                                            color: "#fff",
+                                            fontWeight: "400",
+                                            bg: "greenn.greenn500",
+                                        }}
+                                    >
+                                        <HStack fontSize="14px">
+                                            <Text>by date</Text>
+                                        </HStack>
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={() => {
+                                            setFilteredData(null);
+                                            setSearchInput("");
+                                            setByDate(false)
+                                            setStartDate("")
+                                            setEndDate("")
+                                        }}
+                                        textTransform="capitalize"
+                                        fontWeight={"500"}
+                                        color="#2F2F2F"
+                                        _hover={{
+                                            color: "#fff",
+                                            fontWeight: "400",
+                                            bg: "greenn.greenn500",
+                                        }}
+                                    >
+                                        <HStack fontSize="14px">
+                                            <Text>clear filter</Text>
+                                        </HStack>
+                                    </MenuItem>
+                                </MenuList>
+                            </Menu>
+                            <Button w="159px" size="sm" onClick={() => {
               router("/school-admin/student-management")
             }}>See All students</Button>
-          </Flex>
-        </Flex>
+                        </HStack>
 
+                    </Flex>
+                </Flex>
+          </Flex>
+          </HStack>
+        </Flex>
         <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='15px' px="15px" rounded='10px' overflowX="auto">
 
-          <TableContainer>
-            <Table variant='simple'>
+        <TableContainer>
+                        <Table variant='simple'>
 
-              <Thead bg="#F9FAFB">
-                <Tr >
-                  <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
-                  <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">department</Th>
-                  <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">class level</Th>
-                  <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">field of study</Th>
-                  <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">eligibility status</Th>
-                  <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
+                            <Thead bg="#F9FAFB">
+                                <Tr >
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">department</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">class level</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">field of study</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">eligibility status</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">created at</Th>
+                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
 
-                </Tr>
-              </Thead>
-              <Tbody>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
 
-                <TableRow
-                  type="school-admin"
-                  name="Moyinoluwa King"
-                  email="moyinadeleke@yahoo.com"
-                  department="commercial"
-                  classLevel="SS3"
-                  fieldOfStudy="Computer Science"
-                  status="approved"
-                />
-                <TableRow
-                  type="school-admin"
-                  name="Paul Smith"
-                  email="paulsmith@yahoo.com"
-                  department="arts"
-                  classLevel="SS3"
-                  fieldOfStudy="Computer Science"
-                  status="pending"
-                />
-                <TableRow
-                  type="school-admin"
-                  name="Daniel Price"
-                  email="danielprice@yahoo.com"
-                  department="science"
-                  classLevel="SS2"
-                  fieldOfStudy="Computer Science"
-                  status="rejected"
-                />
-              </Tbody>
 
-            </Table>
-          </TableContainer>
+                                {SearchInput === "" || FilteredData === null ? (
+                                    FilterData?.map((item, i) => (
+                                        <TableRow
+                                            type={"school-admin"}
+                                            name={item.full_name}
+                                            email={item.email}
+                                            department={item.department}
+                                            classLevel={item.class_level}
+                                            fieldOfStudy={item.intended_field_of_study}
+                                            status={item.verification_status}
+                                            date={moment(item.created_at).format("lll")}
+                                            onClick={() => handleStudentClick(item.id)}
+                                            onRemove={onOpen}
+                                            onEdit={() => setOpenModal(true)}
+                                        />
+                                    ))
+                                ) : SearchInput !== "" && FilteredData?.length > 0 ? (
+                                    FilteredData?.map((item, i) => (
+                                        <TableRow
+                                            type={"school-admin"}
+                                            name={item.full_name}
+                                            email={item.email}
+                                            department={item.department}
+                                            classLevel={item.class_level}
+                                            fieldOfStudy={item.intended_field_of_study}
+                                            status={item.verification_status}
+                                            onRemove={onOpen}
+                                            onEdit={() => setOpenModal(true)}
+                                        />
+                                    ))
+                                ) : (
+                                    <Text textAlign={"center"} mt="32px" color="black">
+                                        *--No record found--*
+                                    </Text>
+                                )}
+
+                            </Tbody>
+
+                        </Table>
+                    </TableContainer>
 
         </Box>
       </Box>

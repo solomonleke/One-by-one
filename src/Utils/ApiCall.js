@@ -494,4 +494,122 @@ export const GetStudentProfile = async (student_Id) => {
 };
 
 
+export const UploadDocumentApi = async (file, name, ownerType, studentEmail = null) => {
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("ownerType", ownerType);
+  if (studentEmail) {
+    formData.append("studentEmail", studentEmail);
+  }
+  formData.append("file", file);
+
+ 
+  console.log("Sending FormData:");
+  for (const [key, value] of formData.entries()) {
+    console.log(`${key}:`, value);
+  }
+
+  try {
+    const response = await axios.post(
+      `${baseUrl}/document-uploader/upload`, 
+      formData, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    console.log(" Upload successful!", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Upload failed:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const GetAdminStat = async () => {
+  try {
+    const response = await axios.get(
+      `${baseUrl}/school-admin/admin-profile`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching student profile:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Something went wrong"
+    );
+  }
+};
+
+export const GetAdminStats = async () => {
+  let config = {
+    method: "GET",
+    url: `${baseUrl}/school-admin/admin-profile`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+  };
+
+  try {
+    const response = await axios.request(config);
+
+    console.log("Status Code:", response.status);
+    console.log("Response Data:", response.data);
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching admin stats:", error);
+
+    if (error.response) {
+      console.log("Error Response Data:", error.response.data);
+      console.log("Error Status Code:", error.response.status);
+    }
+
+    throw new Error("Failed to fetch admin stats");
+  }
+};
+
+export const GetSchoolAdminDashboardGraphDataApi = (status) => {
+ 
+ 
+  let config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/school-admin/student-graph-data?status=PENDING`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+     
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
 
