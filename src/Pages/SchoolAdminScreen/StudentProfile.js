@@ -8,6 +8,7 @@ import RemoveNotification from '../../Components/RemoveNotification';
 import ProfileUpdateNotification from '../../Components/ProfileUpdateNotification';
 import { ReactComponent as NextArrow } from '../../Asset/nextArrow.svg';
 import { ReactComponent as Pdf } from '../../Asset/pdf.svg';
+import ShowToast from "../../Components/ToastNotification";
 import { Box, HStack, Text, useDisclosure, Stack, Menu, MenuButton, MenuList, MenuItem, Avatar, Spacer, Flex, Modal,
   ModalOverlay,
   ModalContent,
@@ -19,6 +20,8 @@ import { useNavigate } from 'react-router-dom';
 import { IoChevronBackOutline } from 'react-icons/io5';
 import { BsThreeDots } from 'react-icons/bs';
 import { GetStudentProfile } from "../../Utils/ApiCall";
+import { DeleteStudentProfile } from "../../Utils/ApiCall";
+import { UpdateStudentProfile } from "../../Utils/ApiCall";
 import { useParams } from 'react-router-dom';
 
 export default function StudentProfile() {
@@ -33,6 +36,12 @@ export default function StudentProfile() {
   const [editedData, setEditedData] = useState(studentData);
   const { isOpen: isEditModalOpen, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
   const { isOpen: isRemoveModalOpen, onOpen: onOpenRemove, onClose: onCloseRemove } = useDisclosure();
+
+  const [showToast, setShowToast] = useState({
+    show: false,
+    message: "",
+    status: ""
+  })
   
   useEffect(() => {
     localStorage.setItem("studentData", JSON.stringify(studentData));
@@ -63,6 +72,33 @@ export default function StudentProfile() {
 
     fetchStudentProfile();
   }, [student_Id]);
+
+  const deleteStudentProfile = async () => {
+    try {
+      const response = await DeleteStudentProfile(student_Id);
+      console.log("response", response);
+      console.log("Deleting student with ID:", student_Id);
+
+      if (response.status === 201) {
+        setShowToast({
+          show: true,
+          message: response.message,
+          status: response.status
+        })
+
+        setTimeout(() => {
+          setShowToast({
+            show: false,
+
+          })
+        }, 3000)
+
+      }
+
+    } catch (err) {
+      setError(err.message || 'Failed to delete student profile');
+    }
+  };
 
   if (loading) return <Text>Loading student profile...</Text>;
   if (error) return <Text color="red.500">{error}</Text>;
@@ -133,7 +169,7 @@ export default function StudentProfile() {
                   </HStack>
                 </MenuItem>
                 <MenuItem
-                 onClick={onOpenRemove}
+                 onClick={deleteStudentProfile(student_Id)}
                   textTransform="capitalize"
                   fontWeight="500"
                   color="#FF4040"
