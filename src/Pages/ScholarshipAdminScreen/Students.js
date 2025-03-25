@@ -53,249 +53,48 @@ import { FaCloudUploadAlt, FaSearch } from 'react-icons/fa';
 import { ReactComponent as EditIcon } from "../../Asset/editIcon.svg";
 import { ReactComponent as Warning } from "../../Asset/warning.svg";
 import { ReactComponent as Close } from "../../Asset/close.svg";
+import { configuration } from "../../Utils/Helpers";
+import Pagination from "../../Components/Pagination";
+import { BiSearch } from "react-icons/bi";
+import { FaCalendarAlt } from "react-icons/fa";
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+} from "@chakra-ui/react";
 
 
-export default function Students() {
-  const router = useNavigate()
-  const pendingData = [
-    {
-      type: "scholarship-admin-students",
-      name: "Philip Amakari",
-      email: "PhilipAmakari@gmail.com",
-      schoolName: "Legendary Scholars Academy",
-      fieldOfStudy: "Mass Communication",
-      status: "pending",
-      buttonText: "Review",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "David Folarin",
-      email: "DavidFolarin@gmail.com",
-      schoolName: "Queen's College",
-      fieldOfStudy: "Bussiness Administration",
-      status: "pending",
-      buttonText: "Review",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Timothy Salisu",
-      email: "timothySalisu@gmail.com",
-      schoolName: "Federal Government College",
-      fieldOfStudy: "Chemical Engineering",
-      status: "pending",
-      buttonText: "Review",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Peter Usman",
-      email: "PeterUsman@gmail.com",
-      schoolName: "Mayflower School",
-      fieldOfStudy: "Accounting",
-      status: "pending",
-      buttonText: "Review",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Esther Wakili",
-      email: "EstherWakili@gmail.com",
-      schoolName: "Chrisland College",
-      fieldOfStudy: "Banking and Finance",
-      status: "pending",
-      buttonText: "Review",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Simon Ogan",
-      email: "SimonOgan@gmail.com",
-      schoolName: "Christ The King College",
-      fieldOfStudy: "Law",
-      status: "pending",
-      buttonText: "Review",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Esther Abubakar",
-      email: "EstherAbubakar@gmail.com",
-      schoolName: "Corona Secondary School",
-      fieldOfStudy: "Medicine and Surgery",
-      status: "pending",
-      buttonText: "Review",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Philip Ezeoke",
-      email: "Philiezeoke@gmail.com",
-      schoolName: "Adesoye College",
-      fieldOfStudy: "Industrial Chemistry",
-      status: "pending",
-      buttonText: "Review",
-    },
-  ]
-
-  const approvedData = [
-    {
-      type: "scholarship-admin-students",
-      name: "Philip Amakari",
-      email: "PhilipAmakari@gmail.com",
-      schoolName: "Legendary Scholars Academy",
-      fieldOfStudy: "Mass Communication",
-      status: "approved",
-      buttonText: "Reject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "David Folarin",
-      email: "DavidFolarin@gmail.com",
-      schoolName: "Queen's College",
-      fieldOfStudy: "Bussiness Administration",
-      status: "approved",
-      buttonText: "Reject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Timothy Salisu",
-      email: "timothySalisu@gmail.com",
-      schoolName: "Federal Government College",
-      fieldOfStudy: "Chemical Engineering",
-      status: "approved",
-      buttonText: "Reject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Peter Usman",
-      email: "PeterUsman@gmail.com",
-      schoolName: "Mayflower School",
-      fieldOfStudy: "Accounting",
-      status: "approved",
-      buttonText: "Reject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Esther Wakili",
-      email: "EstherWakili@gmail.com",
-      schoolName: "Chrisland College",
-      fieldOfStudy: "Banking and Finance",
-      status: "approved",
-      buttonText: "Reject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Simon Ogan",
-      email: "SimonOgan@gmail.com",
-      schoolName: "Christ The King College",
-      fieldOfStudy: "Law",
-      status: "approved",
-      buttonText: "Reject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Esther Abubakar",
-      email: "EstherAbubakar@gmail.com",
-      schoolName: "Corona Secondary School",
-      fieldOfStudy: "Medicine and Surgery",
-      status: "approved",
-      buttonText: "Reject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Philip Ezeoke",
-      email: "Philiezeoke@gmail.com",
-      schoolName: "Adesoye College",
-      fieldOfStudy: "Industrial Chemistry",
-      status: "approved",
-      buttonText: "Reject",
-    },
-  ]
-
-  const rejectedData = [
-    {
-      type: "scholarship-admin-students",
-      name: "Philip Amakari",
-      email: "PhilipAmakari@gmail.com",
-      schoolName: "Legendary Scholars Academy",
-      fieldOfStudy: "Mass Communication",
-      status: "rejected",
-      buttonText: "Unreject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "David Folarin",
-      email: "DavidFolarin@gmail.com",
-      schoolName: "Queen's College",
-      fieldOfStudy: "Bussiness Administration",
-      status: "rejected",
-      buttonText: "Unreject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Timothy Salisu",
-      email: "timothySalisu@gmail.com",
-      schoolName: "Federal Government College",
-      fieldOfStudy: "Chemical Engineering",
-      status: "rejected",
-      buttonText: "Unreject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Peter Usman",
-      email: "PeterUsman@gmail.com",
-      schoolName: "Mayflower School",
-      fieldOfStudy: "Accounting",
-      status: "rejected",
-      buttonText: "Unreject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Esther Wakili",
-      email: "EstherWakili@gmail.com",
-      schoolName: "Chrisland College",
-      fieldOfStudy: "Banking and Finance",
-      status: "rejected",
-      buttonText: "Unreject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Simon Ogan",
-      email: "SimonOgan@gmail.com",
-      schoolName: "Christ The King College",
-      fieldOfStudy: "Law",
-      status: "rejected",
-      buttonText: "Unreject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Esther Abubakar",
-      email: "EstherAbubakar@gmail.com",
-      schoolName: "Corona Secondary School",
-      fieldOfStudy: "Medicine and Surgery",
-      status: "rejected",
-      buttonText: "Unreject",
-    },
-    {
-      type: "scholarship-admin-students",
-      name: "Philip Ezeoke",
-      email: "Philiezeoke@gmail.com",
-      schoolName: "Adesoye College",
-      fieldOfStudy: "Industrial Chemistry",
-      status: "rejected",
-      buttonText: "Unreject",
-    },
-  ]
-
+ export default function Students() {
   const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
+    const [MainData, setMainData] = useState([]);
+    const [FilteredData, setFilteredData] = useState(null);
+    const [SearchInput, setSearchInput] = useState("");
+    const [ByDate, setByDate] = useState(false);
+    const [StartDate, setStartDate] = useState("");
+    const [EndDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
-  const [MainData, setMainData] = useState([])
+    const [CurrentPage, setCurrentPage] = useState(1);
+    const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
+    const [TotalPage, setTotalPage] = useState("");
+    
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
 
   const GetAllScholarshipStudent = async () => {
 
     try {
-      const result = await GetAllScholarshipStudentsApi()//pageNo, noItems, status
+      const result = await GetAllScholarshipStudentsApi(CurrentPage, PostPerPage)
 
       console.log("getallscholarshipStudents", result)
 
-      if (result.status === 200) {
-        setMainData(result.data.data.students)
-      }
+      if (result.status === 200 && result.data?.students?.length > 0) {
+        setMainData(result.data.students);
+        setTotalPage(result.data.totalPages);
+    } else {
+        setMainData([]);
+    }
     } catch (e) {
 
       console.log("error", e.message)
@@ -305,10 +104,27 @@ export default function Students() {
 
 
   useEffect(() => {
+    GetAllScholarshipStudent();
+}, [CurrentPage, PostPerPage]);
 
-    GetAllScholarshipStudent()
-
-  }, []);//noItems
+const filterBy = (type) => {
+  let filtered = [...MainData];
+  if (type === "name") {
+      filtered = filtered.filter(item => item.name.toLowerCase().includes(SearchInput.toLowerCase()));
+  } else if (type === "email") {
+      filtered = filtered.filter(item => item.email.toLowerCase().includes(SearchInput.toLowerCase()));
+  } else if (type === "dept") {
+      filtered = filtered.filter(item => item.department.toLowerCase().includes(SearchInput.toLowerCase()));
+  } else if (type === "phoneNumber") {
+      filtered = filtered.filter(item => item.phoneNumber.includes(SearchInput));
+  } else if (type === "date" && StartDate && EndDate) {
+      filtered = filtered.filter(item => {
+          const itemDate = new Date(item.date);
+          return itemDate >= new Date(StartDate) && itemDate <= new Date(EndDate);
+      });
+  }
+  setFilteredData(filtered);
+};
 
   const ApproveStudent = async () => {
     try {
@@ -337,21 +153,80 @@ export default function Students() {
   }
   return (
     <MainLayout>
-      <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Students <Box as='span' color="#667085" fontWeight="600" fontSize="19px">({pendingData.length + approvedData.length + rejectedData.length})</Box></Text>
+      <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Students <Box as='span' color="#667085" fontWeight="600" fontSize="19px">({MainData.length})</Box></Text>
       <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Review and approve student applications. Manage pending requests and take action to accept or reject them.</Text>
 
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["18px", "18px"]} rounded='10px'>
         <Tabs>
           <HStack justifyContent={"space-between"}>
             <TabList overflowX={"auto"} overflowY={"hidden"}>
-              <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({pendingData.length})</Box></Text></Tab>
-              <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({approvedData.length})</Box></Text></Tab>
-              <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({rejectedData.length})</Box></Text></Tab>
+              <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
+              <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
+              <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
             </TabList>
 
-            <Box borderWidth="1px" borderColor={"#E3E5E8"} cursor="pointer" borderRadius={"7px"} padding={"10px"}>
-              <FaSearch fontSize={"17px"} color="#2F2F2F" />
-            </Box>
+            <Flex flexWrap="wrap" mt={["10px", "10px", "0px", "0px"]} alignItems="center" justifyContent={"flex-end"}>
+            <HStack flexWrap={["wrap", "nowrap"]}>
+                {ByDate === false ? (
+                    <Input
+                        placeholder="Search"
+                        size="sm"
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        value={SearchInput}
+                        bColor="#E4E4E4"
+                        leftIcon={<BiSearch />}
+                    />
+                ) : (
+                    <HStack flexWrap={["wrap", "nowrap"]}>
+                        <Input
+                            placeholder="Start Date"
+                            type="date"
+                            size="sm"
+                            onChange={(e) => setStartDate(e.target.value)}
+                            value={StartDate}
+                            bColor="#E4E4E4"
+                            leftIcon={<FaCalendarAlt />}
+                        />
+                        <Input
+                            placeholder="End Date"
+                            type="date"
+                            size="sm"
+                            onChange={(e) => setEndDate(e.target.value)}
+                            value={EndDate}
+                            bColor="#E4E4E4"
+                            leftIcon={<FaCalendarAlt />}
+                        />
+                        <Flex onClick={() => filterBy("date")} cursor="pointer" px="5px" py="3px" rounded="5px" bg="greenn.greenn500" color="#fff" justifyContent="center" alignItems="center" >
+                            <BiSearch />
+                        </Flex>
+                    </HStack>
+                )}
+                <Menu isLazy>
+                    <MenuButton as={Box}>
+                        <HStack border="1px solid #E3E5E8" rounded="7px" p='6px' color='#2F2F2F' fontWeight="500" fontSize="14px">
+                            <Text>Filter</Text>
+                            <IoFilter />
+                        </HStack>
+                    </MenuButton>
+                    <MenuList>
+                        <MenuItem onClick={() => filterBy("name")}><Text>by Name</Text></MenuItem>
+                        <MenuItem onClick={() => filterBy("email")}><Text>by Email</Text></MenuItem>
+                        <MenuItem onClick={() => filterBy("dept")}><Text>by Department</Text></MenuItem>
+                        <MenuItem onClick={() => filterBy("phoneNumber")}><Text>by Phone Number</Text></MenuItem>
+                        <MenuItem onClick={() => setByDate(true)}><Text>by Date</Text></MenuItem>
+                        <MenuItem onClick={() => {
+                            setFilteredData(null);
+                            setSearchInput("");
+                            setByDate(false);
+                            setStartDate("");
+                            setEndDate("");
+                        }}>
+                            <Text>Clear Filter</Text>
+                        </MenuItem>
+                    </MenuList>
+                </Menu>
+            </HStack>
+        </Flex>
 
           </HStack>
 
@@ -377,10 +252,10 @@ export default function Students() {
                     <Tbody>
 
                       {
-                        pendingData.map((item, i) => (
+                        MainData.map((item, i) => (
 
                           <TableRow
-                            type={item.type}
+                            type={"scholarship-admin-students"}
                             name={item.full_name}
                             email={item.email}
                             schoolName={item.school_name}
@@ -395,6 +270,12 @@ export default function Students() {
                     </Tbody>
 
                   </Table>
+
+                    <Pagination
+                        currentPage={CurrentPage}
+                        totalPosts={TotalPage}
+                        paginate={paginate}
+                    />
                 </TableContainer>
               </Box>
             </TabPanel>
@@ -418,10 +299,10 @@ export default function Students() {
                     <Tbody>
 
                       {
-                        approvedData.map((item, i) => (
+                        MainData.map((item, i) => (
 
 <TableRow
-                            type={item.type}
+                            type={"scholarship-admin-students"}
                             name={item.full_name}
                             email={item.email}
                             schoolName={item.school_name}
@@ -435,6 +316,12 @@ export default function Students() {
                     </Tbody>
 
                   </Table>
+
+                    <Pagination
+                        currentPage={CurrentPage}
+                        totalPosts={TotalPage}
+                        paginate={paginate}
+                    />
                 </TableContainer>
               </Box>
             </TabPanel>
@@ -457,10 +344,10 @@ export default function Students() {
                     <Tbody>
 
                       {
-                        rejectedData.map((item, i) => (
+                        MainData.map((item, i) => (
 
                           <TableRow
-                            type={item.type}
+                            type={"scholarship-admin-students"}
                             name={item.full_name}
                             email={item.email}
                             schoolName={item.school_name}
@@ -474,6 +361,12 @@ export default function Students() {
                     </Tbody>
 
                   </Table>
+
+                    <Pagination
+                        currentPage={CurrentPage}
+                        totalPosts={TotalPage}
+                        paginate={paginate}
+                    />
                 </TableContainer>
               </Box>
             </TabPanel>
@@ -484,3 +377,4 @@ export default function Students() {
     </MainLayout>
   )
 }
+
