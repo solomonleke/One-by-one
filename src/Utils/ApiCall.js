@@ -687,4 +687,143 @@ export const GetSchoolAdminDashboardGraphDataApi = (status) => {
     });
 };
 
+export const GetStudentStatsApi = () => {
+  let config = {
+    method: "GET",
+    url: `${baseUrl}/school-admin/stats`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log("Error fetching student stats:", error);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response?.data) {
+        throw new Error(JSON.stringify(error.response.data));
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
+export const GetSponsorAdminStats = async () => {
+  let config = {
+    method: "GET",
+    url: `${baseUrl}/sponsor-admin/metrics`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  try {
+    console.log("Fetching Sponsor Admin Stats...");
+    console.log("Request Config:", config);
+
+    const response = await axios.request(config);
+
+    console.log("Full API Response:", response); // Log entire response
+
+    return response.data.data;
+  } catch (error) {
+    console.log("Error fetching Sponsor Admin Stats:", error);
+
+    if (error.response) {
+      console.error("Response Data:", error.response.data);
+      console.error("Response Status:", error.response.status);
+      console.error("Response Headers:", error.response.headers);
+    } else if (error.request) {
+      console.error("No Response Received:", error.request);
+    } else {
+      console.error("Request Setup Error:", error.message);
+    }
+
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
+
+export const fetchSponsorStudents = async () => {
+  try {
+    const config = {
+      method: "GET",
+      url: `${baseUrl}/sponsor-admin/all-sponsor-students`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const response = await axios.request(config);
+    console.log("API Response:", JSON.stringify(response.data, null, 2));
+
+    if (response.status === 200 && response.data?.status === true && Array.isArray(response.data?.data)) {
+      return response.data; // ✅ Return full response, not just `data.data`
+    } else {
+      throw new Error("Unexpected API response format");
+    }
+  } catch (error) {
+    console.error("Error fetching student stats:", error);
+
+    if (error.response) {
+      const { data, status } = error.response;
+      console.error(`Server Error [${status}]:`, data);
+      throw new Error(data?.message || `Server responded with status ${status}`);
+    } else if (error.request) {
+      throw new Error("No response from server. Please check your internet connection.");
+    } else {
+      throw new Error(error.message);
+    }
+  }
+};
+
+export const createScholarshipApi = async (formData) => {
+  try {
+    const config = {
+      method: "POST",
+      url: `${baseUrl}/sponsor-admin/create-scholarship`,
+      data: formData,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Token used in headers, not as a parameter
+      },
+    };
+
+    const response = await axios.request(config);
+    console.log("✅ Scholarship Created:", JSON.stringify(response.data, null, 2));
+
+    if (response.status === 201 && response.data?.status === true) {
+      return response.data; // ✅ Return the full response
+    } else {
+      throw new Error("Unexpected API response format");
+    }
+  } catch (error) {
+    console.error("❌ Failed to create scholarship:", error);
+
+    if (error.response) {
+      const { data, status } = error.response;
+      console.error(`Server Error [${status}]:`, data);
+      throw new Error(data?.message || `Server responded with status ${status}`);
+    } else if (error.request) {
+      throw new Error("No response from server. Please check your internet connection.");
+    } else {
+      throw new Error(error.message);
+    }
+  }
+};
+
+
+
+
+
 

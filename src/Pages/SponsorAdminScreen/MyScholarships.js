@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../DashboardLayout'
-import { Text, Flex, HStack, Stack, VStack, Box, Center, Progress, Spacer, Icon, Avatar, Image, Tab, Tabs, TabList, TabPanel, TabPanels, TabIndicator } from '@chakra-ui/react'
+import { Text, Flex, HStack, Stack, VStack, Box, Center, Progress, Spacer, Icon, Avatar, Image, Tab, Tabs, TabList, TabPanel, TabPanels, TabIndicator, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, FormControl, FormLabel, useToast, Select } from '@chakra-ui/react'
 import { Tooltip as Tooltips } from '@chakra-ui/react';
 import DashboardCard from "../../Components/DashboardCard"
 import Button from "../../Components/Button"
@@ -32,6 +33,7 @@ import scholarshipImage5 from "../../Asset/Image5.png"
 import scholarshipImage6 from "../../Asset/Image6.png"
 import scholarshipImage7 from "../../Asset/Image7.png"
 import scholarshipImage8 from "../../Asset/goldIcon.svg"
+import { createScholarshipApi } from "../../Utils/ApiCall";
 
 import {
   Table,
@@ -49,6 +51,58 @@ import { BsThreeDots } from 'react-icons/bs';
 
 export default function MyScholarships() {
   const router = useNavigate();
+
+  const [formData, setFormData] = useState({ 
+    name: '', 
+    purpose: '', 
+    motivation: '' 
+  });
+  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
+  const toast = useToast();
+
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+  
+    try {
+      await createScholarshipApi(formData);
+  
+      toast({
+        title: "Scholarship Created",
+        description: "Scholarship has been successfully created!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+  
+      setFormData({ name: "", purpose: "", motivation: "" });
+      closeModal();
+    } catch (error) {
+      console.error("❌ Error creating scholarship:", error);
+  
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to create scholarship",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false); // ✅ Always set loading to false, even if an error occurs
+    }
+  };
+  
+
+
+
     return(
         <MainLayout>
             <HStack justifyContent="space-between" w="100%">
@@ -60,9 +114,46 @@ export default function MyScholarships() {
                 <Spacer />
 
                 <Box w="20%">
-                <Button><Box as="span" display="inline-flex" pr="6px"><FaPlus /></Box>Create Scholarship</Button>
+                <Button onClick={openModal}><Box as="span" display="inline-flex" pr="6px"><FaPlus /></Box>Create Scholarship</Button>
                 </Box>
             </HStack>
+
+            <Modal isOpen={isOpen} onClose={closeModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Create Scholarship</ModalHeader>
+          <ModalBody>
+            <FormControl mb={4}>
+              <FormLabel>Scholarship Name</FormLabel>
+              <Input name="name" value={formData.name} onChange={handleChange} placeholder="Enter scholarship name" />
+            </FormControl>
+            <FormControl mb={4}>
+  <FormLabel>Purpose of Scholarship</FormLabel>
+  <Select 
+    name="purpose" 
+    value={formData.purpose} 
+    onChange={handleChange} 
+    placeholder="Select Purpose"
+  >
+    <option value="memorial">Memorial</option>
+    <option value="personal">Personal</option>
+    <option value="representing a group">Representing a group</option>
+    <option value="representing a place">Representing a place</option>
+    <option value="others">Others</option>
+  </Select>
+</FormControl>
+<FormControl mb={4}>
+              <FormLabel>Motivation</FormLabel>
+              <Input name="motivation" value={formData.motivation} onChange={handleChange} placeholder="What motivates you to sponsor students?" />
+            </FormControl>
+
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={closeModal} mr={3}>Cancel</Button>
+            <Button colorScheme="blue" onClick={handleSubmit} isLoading={loading}>Create</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
             <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["10px","10px","18px","18px"]} rounded='10px'>
         <Tabs>

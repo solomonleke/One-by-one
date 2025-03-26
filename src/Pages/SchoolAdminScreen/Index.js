@@ -20,6 +20,7 @@ import { configuration } from "../../Utils/Helpers";
 import { IoFilter } from "react-icons/io5";
 import { GetAllStudentApi } from "../../Utils/ApiCall";
 import { GetSchoolAdminDashboardGraphDataApi } from "../../Utils/ApiCall";
+import { GetStudentStatsApi } from "../../Utils/ApiCall";
 import moment from "moment";
 
 import {
@@ -61,6 +62,13 @@ export default function Index() {
     const [CurrentPage, setCurrentPage] = useState(1);
     const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
     const [TotalPage, setTotalPage] = useState("");
+    const [stats, setStats] = useState({
+      totalStudents: 0,
+      approved: 0,
+      pending: 0,
+      rejected: 0
+    });
+    
 
 
 
@@ -225,6 +233,44 @@ export default function Index() {
 
   }, []);
 
+  const fetchStudentStats = async () => {
+    try {
+      const response = await GetStudentStatsApi();
+  
+      if (response?.status === 200) {
+        console.log("Admin Stats Retrieved Successfully");
+        console.log("Total Students:", response.stats.totalStudents);
+        console.log("Pending Students:", response.stats.pendingStudents);
+        console.log("Approved Students:", response.stats.approvedStudents);
+        console.log("Rejected Students:", response.stats.rejectedStudents);
+  
+        return response.stats;
+      } else {
+        throw new Error(response?.message || "Failed to retrieve student stats");
+      }
+    } catch (error) {
+      console.error("Error fetching student stats:", error.message);
+    }
+  };
+  
+  fetchStudentStats();
+
+  useEffect(() => {
+    const loadStats = async () => {
+      const data = await fetchStudentStats();
+      if (data) {
+        setStats(data); // Update state with fetched stats
+      }
+    };
+
+    loadStats();
+  }, []);
+  
+  
+  
+
+  
+
   const Data = [
     { name: graphData.month, students: graphData.count },
     { name: graphData.month, students: graphData.count},
@@ -284,22 +330,22 @@ export default function Index() {
         <DashboardCard
           icon={<HiOutlineUsers />}
           title='total student'
-          value='256'
+          value={stats.totalStudents} 
         />
         <DashboardCard
           icon={<IoMdCheckmarkCircleOutline />}
           title='approved'
-          value='18'
+          value={stats.approvedStudents}
         />
         <DashboardCard
           icon={<RxTimer />}
           title='pending'
-          value='135'
+          value={stats.pendingStudents}
         />
         <DashboardCard
           icon={<MdOutlineCancel />}
           title='rejected'
-          value='32'
+          value={stats.rejectedStudents}
         />
       </Flex>
 
@@ -342,7 +388,7 @@ export default function Index() {
         </Flex>
 
         <HStack mt="4px">
-          <Text fontSize="26px" fontWeight="700" >134</Text>
+          <Text fontSize="26px" fontWeight="700" >{stats.totalStudents} </Text>
           <HStack bg="#FF9F9D" px="3px" alignItems="center" py="1px" fontWeight="500" fontSize="11.66px" rounded="100px" color="#FB3B52" spacing="1px">
             <GoArrowDown />
             <Text top="1px" pos="relative">12%</Text>
