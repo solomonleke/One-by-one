@@ -24,6 +24,8 @@ import { IoIosArrowRoundForward } from "react-icons/io";
 import { IoCloseOutline } from "react-icons/io5";
 import { LiaAngleDoubleRightSolid } from "react-icons/lia";
 import { RxInfoCircled } from "react-icons/rx";
+import { GetSponsorAdminStats } from "../../Utils/ApiCall";
+import { fetchSponsorStudents } from "../../Utils/ApiCall";
 
 import scholarshipImage from "../../Asset/image1.png"
 import scholarshipImage2 from "../../Asset/Image2.png"
@@ -49,9 +51,69 @@ import { PiStudent } from 'react-icons/pi';
 
 
 export default function Index() {
-
+  const [students, setStudents] = useState([]);
   const [userName, setUserName] = useState('');
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({
+    scholarshipCount: 0,
+    studentSponsoredCount: 0,
+    totalDonations: 0,
+  });
+  
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await fetchSponsorStudents();
+        console.log("Full Students API Response:", JSON.stringify(response, null, 2));
+  
+        // ✅ Check if status is true and data is an array
+        if (response?.status === true && Array.isArray(response?.data) && response.data.length > 0) {
+          setStudents(response.data); // ✅ Correctly setting the students array
+        } else {
+          console.warn("No students available or unexpected response:", response);
+        }
+      } catch (error) {
+        console.error("Error fetching students:", error.message);
+      }
+    };
+  
+    fetchStudents();
+  }, []);
+  
+  
+  
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log("Fetching Dashboard Stats...");
+
+        const data = await GetSponsorAdminStats();
+        console.log("Fetched Dashboard Stats:", data);
+
+        if (data) {
+          setStats(data);
+          setData({
+            scholarshipCount: data.scholarshipCount,
+            studentSponsoredCount: data.studentSponsoredCount,
+            totalDonations: data.totalDonations,
+          });
+        } else {
+          console.error("Dashboard data is null or undefined.");
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+  
+  
+  
   useEffect(() => {
   //   var reloadCount = localStorage.getItem("reloadCount");
   //   if (!reloadCount) {
@@ -65,6 +127,7 @@ export default function Index() {
   //   } else {
   //     localStorage.removeItem('reloadCount');
   //   }
+
 
     const storedName = JSON.parse(localStorage.getItem('onlineUser'));
     if (storedName) {
@@ -83,7 +146,7 @@ export default function Index() {
                       <Scholarship />
                       <Text color="#4C515C" fontSize="13px" fontWeight="400">Scholarships Created</Text>
                     </HStack>
-                    <Text color="#2F2F2F" fontSize="20px" fontWeight="600">5</Text>
+                    <Text color="#2F2F2F" fontSize="20px" fontWeight="600">{data.scholarshipCount}</Text>
                   </Stack>
                 </Box>
 
@@ -93,7 +156,7 @@ export default function Index() {
                       <PiStudent color="#39996B" fontSize="24px" />
                       <Text color="#4C515C" fontSize="13px" fontWeight="400">Total Student Sponsored</Text>
                     </HStack>
-                    <Text color="#2F2F2F" fontSize="20px" fontWeight="600">16</Text>
+                    <Text color="#2F2F2F" fontSize="20px" fontWeight="600">{data.studentSponsoredCount}</Text>
                   </Stack>
                 </Box>
 
@@ -103,7 +166,7 @@ export default function Index() {
                       <TbCurrencyNaira color="#39996B" fontSize="24px" />
                       <Text color="#4C515C" fontSize="13px" fontWeight="400">Total Donations</Text>
                     </HStack>
-                    <Text color="#2F2F2F" fontSize="20px" fontWeight="600">₦150,000</Text>
+                    <Text color="#2F2F2F" fontSize="20px" fontWeight="600">{data.totalDonations}</Text>
                   </Stack>
                 </Box>
               </HStack>
@@ -118,12 +181,32 @@ export default function Index() {
                   <hr className="remove"/>
 
                   <HStack justifyContent="space-between">
-                    <Box display="flex" flexDir="column" alignItems="center" w="207px" h="170px" gap="8px" rounded="12px" borderWidth="1px" py="23px" px="16px">
-                      <Avatar size="sm" name="David Folarin" />
-                      <Text color="#101828" fontWeight="500" fontSize="14px">David Folarin</Text>
-                      <Text color="#667085" fontWeight="400" fontSize="11px">davidfolarin@gmail.com</Text>
-                      <Text color="#667085" fontWeight="500" fontSize="11px">Legendary Scholars Academy</Text>
-                    </Box>
+                  {students.map((student, index) => (
+        <Box
+          key={index}
+          display="flex"
+          flexDir="column"
+          alignItems="center"
+          w="207px"
+          h="170px"
+          gap="8px"
+          rounded="12px"
+          borderWidth="1px"
+          py="23px"
+          px="16px"
+        >
+          <Avatar size="sm" name={student.student_full_name} />
+          <Text color="#101828" fontWeight="500" fontSize="14px">
+            {student.student_full_name}
+          </Text>
+          <Text color="#667085" fontWeight="400" fontSize="11px">
+            {student.student_email}
+          </Text>
+          <Text color="#667085" fontWeight="500" fontSize="11px">
+            {student.school_school_name}
+          </Text>
+        </Box>
+      ))}
 
                    <Box display="flex" flexDir="column" alignItems="center" w="207px" h="170px" gap="8px" rounded="12px" borderWidth="1px" py="23px" px="16px">
                       <Avatar size="sm" name="Timothy Salisu" />
