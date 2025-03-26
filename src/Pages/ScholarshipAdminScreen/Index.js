@@ -172,26 +172,26 @@ export default function ScholarshipAdmin() {
 
   // const GetScholarshipDashboardGraphData = async () => {
 
-    try {
-      const result = await GetScholarshipDashboardGraphDataApi()
+  //   try {
+  //     const response = await GetScholarshipDashboardGraphDataApi()
 
-      console.log("getScholarshipDashboardGraghData", result)
+  //     console.log("getScholarshipDashboardGraphData", response)
 
-      if (result.status === 200) {
+  //     if (response.status === 200) {
 
-      }
-    } catch (e) {
+  //     }
+  //   } catch (e) {
 
-      console.log("error", e.message)
-    }
+  //     console.log("error", e.message)
+  //   }
 
-  }
+  // }
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    GetScholarshipDashboardGraphDataApi()
+  //   GetScholarshipDashboardGraphData()
 
-  }, []);
+  // }, []);
 
   return (
     <MainLayout>
