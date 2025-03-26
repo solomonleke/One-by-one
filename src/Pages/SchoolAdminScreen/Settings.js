@@ -6,19 +6,17 @@ import { ReactComponent as EditIcon } from "../../Asset/editIcon.svg";
 import { ReactComponent as Warning } from "../../Asset/warning.svg";
 import { ReactComponent as Close } from "../../Asset/close.svg";
 import { ReactComponent as ProfilePicture } from "../../Asset/profileImage.svg"
-import { useBreakpointValue, Grid, Icon, Divider, Box, HStack, Text, VStack, Flex, Tabs, Switch, Stack, TabList, Spacer, TabPanels, Tab, TabPanel, TabIndicator } from '@chakra-ui/react'
+import { useBreakpointValue, Divider, Grid, Icon, Box, HStack, Text, VStack, Flex, Tabs, Switch, Stack, TabList, Spacer, TabPanels, Tab, TabPanel, TabIndicator } from '@chakra-ui/react'
 import { VscCloudUpload } from "react-icons/vsc";
 import { TbFileMinus } from "react-icons/tb";
+import { AiOutlineCloudUpload } from "react-icons/ai";
+import { FaRegFilePdf } from "react-icons/fa";
 import { UploadDocumentApi } from "../../Utils/ApiCall";
 import { GetAdminStats } from "../../Utils/ApiCall";
-import ShowToast from '../../Components/ToastNotification';
 
 export default function Settings() {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
+
   const isMobile = useBreakpointValue({ base: "100%", md: "500px", lg: "528px" });
-  const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
     const [files, setFiles] = useState({
       certificate: null,
       tin: null,
@@ -28,90 +26,35 @@ export default function Settings() {
       idBack: null,
     });
   
-    const handleFileChange = (e, type) => {
-      const file = e.target.files[0];
-      if (!file) return;
-    
-      const newFiles = { ...files, [type]: file };
-      setFiles(newFiles);
-    
-      // Save file data (name & size) in localStorage
-      const storedFiles = {
-        ...JSON.parse(localStorage.getItem("uploadedFiles") || "{}"),
-        [type]: { name: file.name, size: file.size },
-      };
-      localStorage.setItem("uploadedFiles", JSON.stringify(storedFiles));
+    const handleFileChange = (e, field) => {
+      setFiles((prev) => ({
+        ...prev,
+        [field]: e.target.files[0],
+      }));
     };
-    
-    
   
     const handleSubmit = async () => {
-      const ownerType = "ADMIN"; 
+      const ownerType = "ADMIN"; //
       const studentEmail = ownerType === "STUDENT" ? "student@example.com" : null;
-    
-      // Check if there are any documents to upload
-      if (!files || Object.keys(files).length === 0) {
-        setShowToast({
-          show: true,
-          message: "No documents selected. Please upload at least one document.",
-          status: "error",
-        });
-    
-        // Hide the toast after 3 seconds
-        setTimeout(() => {
-          setShowToast({ show: false, message: "", status: "" });
-        }, 3000);
-    
-        return; // Stop function execution
-      }
-    
+  
       try {
         for (const [key, file] of Object.entries(files)) {
           if (file) {
             await UploadDocumentApi(file, key, ownerType, studentEmail);
           }
         }
-    
-        // Show success toast
-        setShowToast({
-          show: true,
-          message: "All documents uploaded successfully!",
-          status: "success",
-        });
-    
-        // Hide the toast after 3 seconds
-        setTimeout(() => {
-          setShowToast({ show: false, message: "", status: "" });
-        }, 3000);
-    
         console.log("All documents uploaded successfully!");
       } catch (error) {
-        // Show error toast
-        setShowToast({
-          show: true,
-          message: "Error uploading documents. Please try again.",
-          status: "error",
-        });
-    
-        // Hide the toast after 3 seconds
-        setTimeout(() => {
-          setShowToast({ show: false, message: "", status: "" });
-        }, 3000);
-    
         console.log("Error uploading documents", error);
       }
     };
-    
-    
+
     const fetchData = async () => {
       try {
+        // Call the function correctly
         const data = await GetAdminStats();
+        
         console.log("Fetched Data:", data);
-    
-        // Merge previously uploaded documents from localStorage
-        const storedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || {};
-        setFiles(storedFiles);
-    
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -119,14 +62,15 @@ export default function Settings() {
     
     // Call the function
     fetchData();
-
-    useEffect(() => {
-      const storedFiles = localStorage.getItem("uploadedFiles");
-      if (storedFiles) {
-        setFiles(JSON.parse(storedFiles));
-      }
-    }, []);
     
+    
+  
+  
+  
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     // var reloadCount = localStorage.getItem("reloadCount");
@@ -149,6 +93,7 @@ export default function Settings() {
       setEmail(`${storedName.email}`);
     }
   }, []);
+
   return (
     <MainLayout>
       <Text color={"#1F2937"} fontWeight={"700"} fontSize={"24px"} lineHeight={"25.41px"}>Settings</Text>
@@ -182,7 +127,7 @@ export default function Settings() {
                         <Text fontSize={"14px"} fontWeight={"500"} lineHeight={"22px"} color={"#1F2937"}>First Name</Text>
                       </Box>
                       <Box w="70%">
-                        <Input placeholder='Kena' />
+                        <Input placeholder={firstName} />
                       </Box>
                     </HStack>
                     <hr className="remove" />
@@ -191,7 +136,7 @@ export default function Settings() {
                         <Text fontSize={"14px"} fontWeight={"500"} lineHeight={"22px"} color={"#1F2937"}>Last Name</Text>
                       </Box>
                       <Box w="70%">
-                        <Input placeholder='Wilson' />
+                        <Input placeholder={lastName} />
                       </Box>
                     </HStack>
                     <hr className="remove" />
@@ -200,7 +145,7 @@ export default function Settings() {
                         <Text fontSize={"14px"} fontWeight={"500"} lineHeight={"22px"} color={"#1F2937"}>Email</Text>
                       </Box>
                       <Box w="70%">
-                        <Input placeholder='kenawilson991@gmail.com' />
+                        <Input placeholder={email} />
                       </Box>
                     </HStack>
                     <hr className="remove" />
@@ -375,11 +320,10 @@ export default function Settings() {
 
             <hr className="remove"/>
 
-{/* Certificate of Incorporation */}
-{showToast.show && (
-        <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
-      )}
-<Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} w="100%"    >
+            <VStack spacing={4} p="23px" w="100%"  borderWidth={1} borderRadius="lg">
+           
+      {/* Certificate of Incorporation */}
+      <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} w="100%"    >
       <VStack align="start" >
       <Text fontWeight="bold" fontSize="13px" color="#626974">Certificate of Incorporation</Text>
 
@@ -991,9 +935,9 @@ export default function Settings() {
       <Box align="end"  w="100%" >
       <Button fontSize='8px' w="16px" colorScheme="green" onClick={handleSubmit}>Save Changes</Button>
       </Box>
-    
+    </VStack>
 
-      </Stack>
+            </Stack>
             </TabPanel>
 
           </TabPanels>

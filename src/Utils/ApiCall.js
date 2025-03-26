@@ -269,7 +269,7 @@ export const GetAllStudentApi = (pageNo, postPerPage) => {
 };
 
 
-export const GetAllScholarshipStudentsApi = (pageNo, noItems, status) => {
+export const GetAllScholarshipStudentsApi = (pageNo, noItems, status, search) => {
  
  
   let config = {
@@ -472,6 +472,81 @@ export const GetScholarshipDashboardGraphDataApi = () => {
       }
     });
 };
+
+export const GetAdminProfile = () => {
+ 
+ 
+  let config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/school-admin/admin-profile`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+     
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
+export const UpdateStudentProfile = async (student_Id) => {
+  try {
+    const response = await axios.get(
+      `${baseUrl}/school-admin/update-student/${student_Id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching student profile:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Something went wrong"
+    );
+  }
+};
+
+export const DeleteStudentProfile = async (student_Id) => {
+  try {
+    const response = await axios.delete(
+      `${baseUrl}/school-admin/delete-student/${student_Id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting student profile:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Something went wrong"
+    );
+  }
+};
+
 
 export const GetStudentProfile = async (student_Id) => {
   try {

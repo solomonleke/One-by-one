@@ -20,7 +20,7 @@ const checkActive= ()=>{
     if (isActive(location, "/school-admin/student-management")){
           result = true
           return  result
-      }else if (location.pathname === "/school-admin/student-management/student-profile"){
+      }else if (location.pathname === "/school-admin/student-management/student-profile/:student_Id"){
           result = true
           return  result
       }else{

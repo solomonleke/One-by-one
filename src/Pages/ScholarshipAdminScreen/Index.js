@@ -32,6 +32,8 @@ import scholarshipImage5 from "../../Asset/Image5.png"
 import scholarshipImage6 from "../../Asset/Image6.png"
 import scholarshipImage7 from "../../Asset/Image7.png"
 import scholarshipImage8 from "../../Asset/goldIcon.svg"
+import { ApproveSchoolApi } from "../../Utils/ApiCall";
+import ShowToast from '../../Components/ToastNotification';
 
 import { GetScholarshipDashboardDetailsApi } from "../../Utils/ApiCall";
 import { GetScholarshipDashboardGraphDataApi } from "../../Utils/ApiCall";
@@ -94,6 +96,8 @@ export default function ScholarshipAdmin() {
   ];
 
   const [userName, setUserName] = useState('');
+  const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     //   var reloadCount = localStorage.getItem("reloadCount");
@@ -115,16 +119,18 @@ export default function ScholarshipAdmin() {
     }
   }, []);
 
+  const [scholarshipDetails, setScholarshipDetails] = useState({});
+
   const GetScholarshipDashboardDetails = async () => {
 
     try {
-      const result = await GetScholarshipDashboardDetailsApi()
+      const response = await GetScholarshipDashboardDetailsApi()
 
-      console.log("getScholarshipDashboardDetails", result)
+      console.log("getScholarshipDashboardDetails", response)
 
-      if (result.status === 200) {
+      setScholarshipDetails(response.data.data)
 
-      }
+
     } catch (e) {
 
       console.log("error", e.message)
@@ -138,7 +144,33 @@ export default function ScholarshipAdmin() {
 
   }, []);
 
-  const GetScholarshipDashboardGraphData = async () => {
+  const ApproveSchool = async () => {
+    try {
+        const result = await ApproveSchoolApi()//status, note
+
+        console.log("approved school", result)
+
+        if (result.status === 200) {
+            setLoading(true);
+            setShowToast({
+                show: true,
+                message: "Approved School!!!",
+                status: "success",
+            });
+        }
+    } catch (e) {
+        setShowToast({
+            show: true,
+            message: "Error Approving School!!!",
+            status: "error",
+        });
+        console.log("error", e.message)
+    } finally {
+        setLoading(false);
+    }
+}
+
+  // const GetScholarshipDashboardGraphData = async () => {
 
     try {
       const result = await GetScholarshipDashboardGraphDataApi()
@@ -263,19 +295,19 @@ export default function ScholarshipAdmin() {
         <DashboardCard
           icon={<FaSchoolFlag />}
           title='approved schools'
-          //value={result.data.data.schoolCount}
+          value={scholarshipDetails.schoolCount}
           w="32.5%"
         />
         <DashboardCard
           icon={<FaUserGraduate />}
           title='approved students'
-          //value={result.data.data.studentCount}
+          value={scholarshipDetails.studentCount}
           w="32.5%"
         />
         <DashboardCard
           icon={<TbCurrencyNaira />}
           title='funds requested'
-          //value={result.data.data.fundRequested}
+          value={scholarshipDetails.fundRequested}
           w="32.5%"
         />
 
@@ -314,7 +346,7 @@ export default function ScholarshipAdmin() {
 
                 <HStack>
                   <Button size="7px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<IoCloseOutline />}>Reject</Button>
-                  <Button size="5px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<FaCheck />}>Approve</Button>
+                  <Button size="5px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<FaCheck />} onClick={() => {ApproveSchool()}} isLoading={loading}>Approve</Button>
                 </HStack>
               </Flex>
             ))}
