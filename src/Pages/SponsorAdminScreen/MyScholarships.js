@@ -34,6 +34,10 @@ import scholarshipImage6 from "../../Asset/Image6.png"
 import scholarshipImage7 from "../../Asset/Image7.png"
 import scholarshipImage8 from "../../Asset/goldIcon.svg"
 import { createScholarshipApi } from "../../Utils/ApiCall";
+import { getActiveScholarships } from "../../Utils/ApiCall";
+import { getScholarshipsBySponsor } from "../../Utils/ApiCall";
+import { GetSponsorAdminStats } from "../../Utils/ApiCall";
+
 
 import {
   Table,
@@ -52,13 +56,21 @@ import { BsThreeDots } from 'react-icons/bs';
 export default function MyScholarships() {
   const router = useNavigate();
 
-  const [formData, setFormData] = useState({ 
-    name: '', 
-    purpose: '', 
-    motivation: '' 
+  const [formData, setFormData] = useState({
+    name: '',
+    purpose: '',
+    motivation: '',
+    amount: '',
   });
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [scholarships, setScholarships] = useState([]);
+  const [sponsorScholarships, setSponsorScholarships] = useState([]);
+  const [error, setError] = useState(null);
+  const [stats, setStats] = useState(null);
+  const [data, setData] = useState({
+    scholarshipCount: 0,
+  });
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -66,15 +78,25 @@ export default function MyScholarships() {
 
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: name === 'amount' ? String(Number(value)) : value // Convert to number first, then to string
+    });
   };
 
+
+
+
   const handleSubmit = async () => {
+    console.log("Submitting formData:", formData); // Debugging
+
     setLoading(true);
-  
     try {
-      await createScholarshipApi(formData);
-  
+      const response = await createScholarshipApi(formData);
+      console.log("Server Response:", response); // Debugging
+
       toast({
         title: "Scholarship Created",
         description: "Scholarship has been successfully created!",
@@ -82,12 +104,13 @@ export default function MyScholarships() {
         duration: 3000,
         isClosable: true,
       });
-  
-      setFormData({ name: "", purpose: "", motivation: "" });
+
+      setFormData({ name: "", purpose: "", motivation: "", amount: "0" });
       closeModal();
     } catch (error) {
       console.error("❌ Error creating scholarship:", error);
-  
+      console.error("Server Response:", error.response?.data || "No response data");
+
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to create scholarship",
@@ -96,29 +119,93 @@ export default function MyScholarships() {
         isClosable: true,
       });
     } finally {
-      setLoading(false); // ✅ Always set loading to false, even if an error occurs
+      setLoading(false);
     }
   };
-  
+
+  useEffect(() => {
+    const fetchScholarships = async () => {
+      try {
+        const data = await getActiveScholarships();
+        if (data.status) {
+          setScholarships(data.data.activeScholarship);
+        } else {
+          setError(data.message || "Failed to load scholarships");
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchScholarships();
+  }, []);
+
+  useEffect(() => {
+    const fetchScholarshipsBySponsor = async () => {
+      try {
+        const data = await getScholarshipsBySponsor();
+
+        if (data.status && Array.isArray(data.data)) {
+          setSponsorScholarships(data.data); // ✅ Set directly since `data` is an array
+        } else {
+          console.error("Unexpected response format:", data);
+          setError(data.message || "Failed to load scholarships");
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchScholarshipsBySponsor();
+  }, []);
 
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log("Fetching Dashboard Stats...");
 
-    return(
-        <MainLayout>
-            <HStack justifyContent="space-between" w="100%">
-                <Box w="80%">
-                <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">My Scholarships <Box as="span" color="#667085" fontSize="18px" fontWeight="400">(5)</Box></Text>
-                <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Manage your scholarships effortlessly. Support students, and create new opportunities to make a lasting impact.</Text>
-                </Box>
+        const data = await GetSponsorAdminStats();
+        console.log("Fetched Dashboard Stats:", data);
 
-                <Spacer />
+        if (data) {
+          setStats(data);
+          setData({
+            scholarshipCount: data.scholarshipCount,
+          });
+        } else {
+          console.error("Dashboard data is null or undefined.");
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-                <Box w="20%">
-                <Button onClick={openModal}><Box as="span" display="inline-flex" pr="6px"><FaPlus /></Box>Create Scholarship</Button>
-                </Box>
-            </HStack>
+    fetchData();
+  }, []);
 
-            <Modal isOpen={isOpen} onClose={closeModal}>
+  return (
+    <MainLayout>
+      <HStack justifyContent="space-between" w="100%">
+        <Box w="80%">
+          <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">My Scholarships <Box as="span" color="#667085" fontSize="18px" fontWeight="400">({data.scholarshipCount})</Box></Text>
+          <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Manage your scholarships effortlessly. Support students, and create new opportunities to make a lasting impact.</Text>
+        </Box>
+
+        <Spacer />
+
+        <Box w="20%">
+          <Button onClick={openModal}><Box as="span" display="inline-flex" pr="6px"><FaPlus /></Box>Create Scholarship</Button>
+        </Box>
+      </HStack>
+
+      <Modal isOpen={isOpen} onClose={closeModal}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create Scholarship</ModalHeader>
@@ -128,23 +215,27 @@ export default function MyScholarships() {
               <Input name="name" value={formData.name} onChange={handleChange} placeholder="Enter scholarship name" />
             </FormControl>
             <FormControl mb={4}>
-  <FormLabel>Purpose of Scholarship</FormLabel>
-  <Select 
-    name="purpose" 
-    value={formData.purpose} 
-    onChange={handleChange} 
-    placeholder="Select Purpose"
-  >
-    <option value="memorial">Memorial</option>
-    <option value="personal">Personal</option>
-    <option value="representing a group">Representing a group</option>
-    <option value="representing a place">Representing a place</option>
-    <option value="others">Others</option>
-  </Select>
-</FormControl>
-<FormControl mb={4}>
+              <FormLabel>Purpose of Scholarship</FormLabel>
+              <Select
+                name="purpose"
+                value={formData.purpose}
+                onChange={handleChange}
+                placeholder="Select Purpose"
+              >
+                <option value="memorial">Memorial</option>
+                <option value="personal">Personal</option>
+                <option value="representing a group">Representing a group</option>
+                <option value="representing a place">Representing a place</option>
+                <option value="others">Others</option>
+              </Select>
+            </FormControl>
+            <FormControl mb={4}>
               <FormLabel>Motivation</FormLabel>
               <Input name="motivation" value={formData.motivation} onChange={handleChange} placeholder="What motivates you to sponsor students?" />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Amount</FormLabel>
+              <Input name="amount" value={formData.amount} onChange={handleChange} placeholder="Amount" />
             </FormControl>
 
           </ModalBody>
@@ -155,173 +246,188 @@ export default function MyScholarships() {
         </ModalContent>
       </Modal>
 
-            <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["10px","10px","18px","18px"]} rounded='10px'>
+      <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["10px", "10px", "18px", "18px"]} rounded='10px'>
         <Tabs>
           <TabList overflowX={"auto"} overflowY={"hidden"}>
-            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Active Scholarships (2)</Tab>
-            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Awaiting Funding (3)</Tab>
+            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Active Scholarships ({data.scholarshipCount})</Tab>
+            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Awaiting Funding ({data.scholarshipCount})</Tab>
           </TabList>
 
           <TabIndicator mt='-1.5px' height='2px' bg='green' borderRadius='1px' />
 
           <TabPanels>
-          <TabPanel>
-            <Stack spacing="20px">
-          <Stack borderWidth="1px" rounded="11px" py="12px" pl="8px" pr="16px" spacing="10px">
-                    <HStack justifyContent="space-between">
-                      <HStack>
-                        <Box bg="#39996B" w="3px" h="33px" rounded="3px"></Box>
-                         <Stack>
-                        <Text color="#1F2937" fontSize="14px" fontWeight="600">STEM Excellence Scholarship</Text>
-                        <Text color="#767F8E" fontSize="12px" fontWeight="400">Date Created: Oct 6th, 9:00AM</Text>
-                      </Stack>
+            <TabPanel>
+              <Stack spacing="20px">
+                {Array.isArray(scholarships) && scholarships.length > 0 ? (
+                  scholarships.map((scholarship, index) => (
+                    <Stack
+                      key={scholarship.id || index}
+                      borderWidth="1px"
+                      rounded="11px"
+                      py="12px"
+                      pl="8px"
+                      pr="16px"
+                      spacing="10px"
+                    >
+                      {/* Scholarship Details */}
+                      <HStack justifyContent="space-between">
+                        <HStack>
+                          <Box bg="#39996B" w="3px" h="33px" rounded="3px"></Box>
+                          <Stack>
+                            {/* Scholarship Name */}
+                            <Text color="#1F2937" fontSize="14px" fontWeight="600">
+                              {scholarship?.name ?? "Unnamed Scholarship"}
+                            </Text>
+                            {/* Date Created (Formatted) */}
+                            <Text color="#767F8E" fontSize="12px" fontWeight="400">
+                              Date Created:{" "}
+                              {scholarship?.created_at
+                                ? new Date(scholarship.created_at).toLocaleString()
+                                : "N/A"}
+                            </Text>
+                          </Stack>
+                        </HStack>
+
+                        {/* Scholarship Amount */}
+                        <HStack>
+                          <Text color="#344054" fontSize="12px" fontWeight="400">:</Text>
+                          <Text color="#3F4956" fontSize="17px" fontWeight="600">
+                            ₦{scholarship?.amount ? parseInt(scholarship.amount).toLocaleString() : "N/A"}
+                          </Text>
+                        </HStack>
                       </HStack>
-                     
-                     <HStack>
-                     <Text color="#344054" fontSize="12px" fontWeight="400">Amount:</Text>
-                      <Text color="#3F4956" fontSize="17px" fontWeight="600">₦100,000</Text>
-                    </HStack>
-                    </HStack>
 
-                    <hr className="remove"/>
+                      {/* Horizontal Line */}
+                      <hr className="remove" />
 
-                    <HStack justifyContent="space-between">
+                      {/* Awardees & View Funding History */}
+                      <HStack justifyContent="space-between">
+                        <HStack>
+                          {scholarship.students.length > 0 ? (
+                            scholarship.students.slice(0, 2).map((student, idx) => (
+                              <HStack key={idx} bg="#E8F2ED" p="8px" rounded="31px">
+                                <Avatar size="sm" name={student.full_name} />
+                                <Text color="#101828" fontSize="13px" fontWeight="500">
+                                  {student.full_name}
+                                </Text>
+                              </HStack>
+                            ))
+                          ) : (
+                            <Text color="#767F8E" fontSize="12px" fontWeight="400">
+                              No students assigned
+                            </Text>
+                          )}
+                        </HStack>
+
+                        {/* Navigation to Funding History */}
+                        <HStack cursor="pointer" onClick={() => router("/sponsor-admin/fundinghistory")}>
+                          <Text fontSize="12px" fontWeight="500" color="#39996B">
+                            View Funds History
+                          </Text>
+                          <FaArrowRight color="#39996B" />
+                        </HStack>
+                      </HStack>
+                    </Stack>
+                  ))
+                ) : (
+                  <Text fontSize="14px" fontWeight="500" color="#767F8E">
+                    No scholarships available.
+                  </Text>
+                )}
+
+
+
+                
+              </Stack>
+            </TabPanel>
+
+
+            <TabPanel>
+              <Stack spacing="20px">
+                {sponsorScholarships.length > 0 ? (
+                  sponsorScholarships.map((scholarship, index) => (
+                    <Stack
+                      key={scholarship.id || index}
+                      borderWidth="1px"
+                      rounded="11px"
+                      py="12px"
+                      pl="8px"
+                      pr="16px"
+                      spacing="10px"
+                    >
+                      {/* Scholarship Info */}
+                      <HStack justifyContent="space-between">
+                        <HStack>
+                          <Box bg="#39996B" w="3px" h="61px" rounded="3px"></Box>
+                          <Stack>
+                            <Text color="#1F2937" fontSize="14px" fontWeight="600">
+                              {scholarship.name || "Unnamed Scholarship"}{" "}
+                              <Box as="span" display="inline-flex" my="auto">
+                                <BsThreeDots />
+                              </Box>
+                            </Text>
+                            <Text color="#767F8E" fontSize="12px" fontWeight="400">
+                              Date Created: {scholarship.created_at ? new Date(scholarship.created_at).toLocaleDateString() : "N/A"}
+                            </Text>
+                          </Stack>
+                        </HStack>
+
+                        {/* Action Buttons */}
+                        <HStack>
+                          <Button px="50px" color="#39996B" background="white">
+                            Fund Scholarship
+                          </Button>
+                          <Button px="30px" onClick={() => router("/sponsor-admin/discoverstudents")}>
+                            Add Student
+                          </Button>
+                        </HStack>
+                      </HStack>
+
+                      <HStack>
+                        {scholarship.students.length > 0 ? (
+                          scholarship.students.slice(0, 2).map((student, idx) => (
+                            <HStack key={idx} bg="#E8F2ED" p="8px" rounded="31px">
+                              <Avatar size="sm" name={student.name} />
+                              <Text color="#101828" fontSize="13px" fontWeight="500">
+                                {student.name}
+                              </Text>
+                            </HStack>
+                          ))
+                        ) : null}
+                      </HStack>
+
+                      
+                    </Stack>
+                  ))
+                ) : (
+                  <Text fontSize="14px" fontWeight="500" color="#767F8E">
+                    No scholarships available.
+                  </Text>
+                )}
+
+
+
+                <Stack borderWidth="1px" rounded="11px" py="12px" pl="8px" pr="16px" spacing="10px">
+                  <HStack justifyContent="space-between">
                     <HStack>
-                      <HStack bg="#E8F2ED" p="8px" rounded="31px">
-                        <Avatar size="sm" name="Philip Amakari"/>
-                        <Text color="#101828" fontSize="13px" fontWeight="500">Philip Amakari</Text>
-                      </HStack>
-
-                      <HStack bg="#E8F2ED" p="8px" rounded="31px">
-                        <Avatar size="sm" name="Chidinma Precious"/>
-                        <Text color="#101828" fontSize="13px" fontWeight="500">Chidinma Precious</Text>
-                      </HStack>
-                    </HStack>
-
-                    <HStack cursor="pointer" onClick={() => {
-                      router("/sponsor-admin/fundinghistory")
-                    }}>
-                      <Text fontSize="12px" fontWeight="500" color="#39996B">View Funds History</Text>
-                      <FaArrowRight color="#39996B"/>
-                    </HStack>
-                    </HStack>
-                  </Stack>
-
-                  <Stack borderWidth="1px" rounded="11px" py="12px" pl="8px" pr="16px" spacing="10px">
-                    <HStack justifyContent="space-between">
-                      <HStack>
-                        <Box bg="#39996B" w="3px" h="33px" rounded="3px"></Box>
-                         <Stack>
-                        <Text color="#1F2937" fontSize="14px" fontWeight="600">Pathway to Excellence Scholarship</Text>
-                        <Text color="#767F8E" fontSize="12px" fontWeight="400">Date Created: Oct 1st, 10:00AM</Text>
-                      </Stack>
-                      </HStack>
-                     
-                     <HStack>
-                     <Text color="#344054" fontSize="12px" fontWeight="400">Amount:</Text>
-                      <Text color="#3F4956" fontSize="17px" fontWeight="600">₦50,000</Text>
-                    </HStack>
-                    </HStack>
-
-                    <hr className="remove"/>
-
-                    <HStack justifyContent="space-between">
-                    <HStack>
-                      <HStack bg="#E8F2ED" p="8px" rounded="31px">
-                        <Avatar size="sm" name="Sarah Divine"/>
-                        <Text color="#101828" fontSize="13px" fontWeight="500">Sarah Divine</Text>
-                      </HStack>
-                    </HStack>
-
-                    <HStack cursor="pointer" onClick={() => {
-                      router("/sponsor-admin/fundinghistory")
-                    }}>
-                      <Text fontSize="12px" fontWeight="500" color="#39996B">View Funds History</Text>
-                      <FaArrowRight color="#39996B"/>
-                    </HStack>
-                    </HStack>
-                  </Stack>
-                  </Stack>
-          </TabPanel>
-
-
-          <TabPanel>
-            <Stack spacing="20px">
-          <Stack borderWidth="1px" rounded="11px" py="12px" pl="8px" pr="16px" spacing="10px">
-                    <HStack justifyContent="space-between">
-                      <HStack>
-                        <Box bg="#39996B" w="3px" h="61px" rounded="3px"></Box>
-                         <Stack>
-                        <Text color="#1F2937" fontSize="14px" fontWeight="600">Rising Stars Scholarship <Box as="span" display="inline-flex" my={"auto"}><BsThreeDots /></Box></Text>
-                        <Text color="#767F8E" fontSize="12px" fontWeight="400">Amount: <Box as="span" color="#344054" fontSize="12px" fontWeight="500">₦225,000</Box></Text>
-                        <Text color="#767F8E" fontSize="12px" fontWeight="400">Date Created: Oct 6th, 9:00AM</Text>
-                      </Stack>
-                      </HStack>
-                     
-                     <HStack>
-                      <Button px="50px" color="#39996B" background="white">Fund Scholarship</Button>
-                      <Button px="30px">Add Student</Button>
-                    </HStack>
-                    </HStack>
-
-                    <hr className="remove"/>
-
-                    <HStack>
-                      <HStack bg="#E8F2ED" p="8px" rounded="31px">
-                        <Avatar size="sm" name="Emmanuel Ifeanyi"/>
-                        <Text color="#101828" fontSize="13px" fontWeight="500">Emmanuel Ifeanyi</Text>
-                      </HStack>
-
-                      <HStack bg="#E8F2ED" p="8px" rounded="31px">
-                        <Avatar size="sm" name="Saviour Promise"/>
-                        <Text color="#101828" fontSize="13px" fontWeight="500">Saviour Promise</Text>
-                      </HStack>
-
-                      <HStack bg="#E8F2ED" p="8px" rounded="31px">
-                        <Avatar size="sm" name="Solomon Adeleke"/>
-                        <Text color="#101828" fontSize="13px" fontWeight="500">Solomon Adeleke</Text>
-                      </HStack>
-                    </HStack>
-                  </Stack>
-
-                  <Stack borderWidth="1px" rounded="11px" py="12px" pl="8px" pr="16px" spacing="10px">
-                    <HStack justifyContent="space-between">
-                      <HStack>
-                        <Box bg="#39996B" w="3px" h="35px" rounded="3px"></Box>
-                         <Stack>
-                        <Text color="#1F2937" fontSize="14px" fontWeight="600">Legacy of Learning Scholarship <Box as="span" display="inline-flex" my={"auto"}><BsThreeDots /></Box></Text>
-                        <Text color="#767F8E" fontSize="12px" fontWeight="400">Date Created: Oct 6th, 9:00AM</Text>
-                      </Stack>
-                      </HStack>
-                     
-                     <HStack>
-                      <Button px="50px" color="#39996B" background="white" disabled={true} >Fund Scholarship</Button>
-                      <Button px="30px">Add Student</Button>
-                    </HStack>
-                    </HStack>
-                  </Stack>
-
-                  <Stack borderWidth="1px" rounded="11px" py="12px" pl="8px" pr="16px" spacing="10px">
-                    <HStack justifyContent="space-between">
-                      <HStack>
-                        <Box bg="#39996B" w="3px" h="35px" rounded="3px"></Box>
-                         <Stack>
+                      <Box bg="#39996B" w="3px" h="35px" rounded="3px"></Box>
+                      <Stack>
                         <Text color="#1F2937" fontSize="14px" fontWeight="600">NextGen Scholars Fund <Box as="span" display="inline-flex" my={"auto"}><BsThreeDots /></Box></Text>
                         <Text color="#767F8E" fontSize="12px" fontWeight="400">Date Created: Oct 6th, 9:00AM</Text>
                       </Stack>
-                      </HStack>
-                     
-                     <HStack>
+                    </HStack>
+
+                    <HStack>
                       <Button px="50px" color="#39996B" background="white" disabled={true}>Fund Scholarship</Button>
                       <Button px="30px">Add Student</Button>
                     </HStack>
-                    </HStack>
-                  </Stack>
-                  </Stack>
-          </TabPanel>
+                  </HStack>
+                </Stack>
+              </Stack>
+            </TabPanel>
           </TabPanels>
-            </Tabs>
-            </Box>
-        </MainLayout>
-    )
+        </Tabs>
+      </Box>
+    </MainLayout>
+  )
 }
