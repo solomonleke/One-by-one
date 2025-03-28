@@ -57,23 +57,7 @@ export default function StudentProfile() {
     onCloseEdit();
   };
 
-  useEffect(() => {
-    const fetchStudentProfile = async () => {
-      try {
-        const response = await GetStudentProfile(student_Id);
-        console.log("response", response);
-        setStudentData(response); // Store student data
-        setLoading(false);
-      } catch (err) {
-        setError(err.message || 'Failed to fetch student profile');
-        setLoading(false);
-      }
-    };
-
-    fetchStudentProfile();
-  }, [student_Id]);
-
-  const deleteStudentProfile = async () => {
+  const deleteStudentProfileBtn = async () => {
     try {
       const response = await DeleteStudentProfile(student_Id);
       console.log("response", response);
@@ -100,6 +84,25 @@ export default function StudentProfile() {
     }
   };
 
+
+  useEffect(() => {
+
+    const fetchStudentProfile = async () => {
+      try {
+        const response = await GetStudentProfile(student_Id);
+        console.log("response", response);
+        setStudentData(response); // Store student data
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch student profile');
+        setLoading(false);
+      }
+    };
+
+    fetchStudentProfile();
+  }, [student_Id]);
+
+ 
   if (loading) return <Text>Loading student profile...</Text>;
   if (error) return <Text color="red.500">{error}</Text>;
 
@@ -169,7 +172,7 @@ export default function StudentProfile() {
                   </HStack>
                 </MenuItem>
                 <MenuItem
-                 onClick={deleteStudentProfile(student_Id)}
+                 onClick={deleteStudentProfileBtn(student_Id)}
                   textTransform="capitalize"
                   fontWeight="500"
                   color="#FF4040"
