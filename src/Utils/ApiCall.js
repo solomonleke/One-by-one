@@ -822,6 +822,77 @@ export const createScholarshipApi = async (formData) => {
   }
 };
 
+export const getActiveScholarships = async () => {
+  try {
+    const config = {
+      method: "GET",
+      url: `${baseUrl}/sponsor-admin/active-scholarship`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Include token if provided
+      },
+    };
+
+    const response = await axios.request(config);
+    console.log("API Response:", JSON.stringify(response.data, null, 2));
+
+    // Check if response is valid
+    if (response.status === 200 && response.data?.status === true && Array.isArray(response.data?.data?.activeScholarship)) {
+      return response.data; // ✅ Return full response, including metadata
+    } else {
+      throw new Error("Unexpected API response format");
+    }
+  } catch (error) {
+    console.error("❌ Error fetching active scholarships:", error);
+
+    if (error.response) {
+      const { data, status } = error.response;
+      console.error(`Server Error [${status}]:`, data);
+      throw new Error(data?.message || `Server responded with status ${status}`);
+    } else if (error.request) {
+      throw new Error("No response from server. Please check your internet connection.");
+    } else {
+      throw new Error(error.message);
+    }
+  }
+};
+
+export const getScholarshipsBySponsor = async () => {
+  try {
+    const config = {
+      method: "GET",
+      url: `${baseUrl}/sponsor-admin/all-scholarship`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const response = await axios.request(config);
+    console.log("✅ Full API Response:", JSON.stringify(response.data, null, 2));
+
+    if (response.status === 200 && response.data?.status === true && Array.isArray(response.data?.data)) {
+      console.log("📌 Valid response received: Returning data array"); 
+      return response.data;  // ✅ Return full response with `data` as an array
+    } else {
+      throw new Error("Unexpected API response format");
+    }
+  } catch (error) {
+    console.error("❌ Error fetching sponsor scholarships:", error);
+
+    if (error.response) {
+      const { data, status } = error.response;
+      console.error(`Server Error [${status}]:`, data);
+      throw new Error(data?.message || `Server responded with status ${status}`);
+    } else if (error.request) {
+      throw new Error("No response from server. Please check your internet connection.");
+    } else {
+      throw new Error(error.message);
+    }
+  }
+};
+
+
 
 
 

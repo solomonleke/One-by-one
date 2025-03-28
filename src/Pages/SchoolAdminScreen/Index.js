@@ -12,7 +12,8 @@ import { MdOutlineCancel } from 'react-icons/md'
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { GoArrowDown } from "react-icons/go";
 import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
-import { BiSearch } from "react-icons/bi"; import Pagination from "../../Components/Pagination";
+import { BiSearch } from "react-icons/bi";
+import Pagination from "../../Components/Pagination";
 import { FaCalendarAlt } from "react-icons/fa";
 import TableRow from "../../Components/TableRow"
 import { CgSearch } from "react-icons/cg";
@@ -214,6 +215,7 @@ export default function Index() {
 
     try {
       const response = await GetSchoolAdminDashboardGraphDataApi()
+      
 
       console.log("getSchoolDashboardDetails", response)
       if(response.status === 200){
@@ -258,6 +260,7 @@ export default function Index() {
   useEffect(() => {
     const loadStats = async () => {
       const data = await fetchStudentStats();
+      console.log("Data: load stats", data);
       if (data) {
         setStats(data); // Update state with fetched stats
       }
@@ -272,48 +275,48 @@ export default function Index() {
   
 
   const Data = [
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count },
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count },
 
   ]
   const PendingData = [
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count },
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count },
 
   ]
   const RejectedData = [
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count},
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count },
-    { name: graphData.month, students: graphData.count },
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count},
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count },
+    { name: graphData?.month, students: graphData?.count },
 
 
   ]
