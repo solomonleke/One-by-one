@@ -42,6 +42,17 @@ import {
 
 export default function ScholarshipAdminLeaderboard() {
   const router = useNavigate();
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+
+  useEffect(() => {
+
+    const storedName = JSON.parse(localStorage.getItem('onlineUser'));
+    if (storedName) {
+      setFirstName(`${storedName.firstName}`);
+      setLastName(`${storedName.lastName}`);
+    }
+  }, []);
   return (
     <MainLayout>
                <Flex justifyContent="space-between" flexWrap="wrap">
@@ -207,8 +218,8 @@ export default function ScholarshipAdminLeaderboard() {
       <HStack bg="#B9FADB" justifyContent="space-between" rounded="10px" borderWidth="1px" py="21px" px="22px">
         <HStack>
           <Text color="#194B33" fontSize="12px" fontWeight="500">4</Text>
-          <Avatar name="Kena Wilson" size="sm" />
-          <Text color="#101828" fontSize="13px" fontWeight="500">Kena Wilson</Text>
+          <Avatar name={`${firstName} ${lastName}`} size="sm" />
+          <Text color="#101828" fontSize="13px" fontWeight="500">{firstName} {lastName}</Text>
           <Text color="#1018286B" fontSize="13px" fontWeight="500">(You)</Text>
         </HStack>
 
