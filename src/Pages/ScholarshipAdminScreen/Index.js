@@ -161,8 +161,8 @@ export default function ScholarshipAdmin() {
   const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
   const [TotalPage, setTotalPage] = useState("");
   const [status, setStatus] = useState("");
-  const [note, setNote] = useState("");
   const [essayPercentage, setEssayPercentage] = useState(0);
+  const [note, setNote] = useState("");
   const [search, setSearch] = useState("");
 
 

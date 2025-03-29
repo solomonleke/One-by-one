@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MainLayout from '../../DashboardLayout'
 import { Text, Flex, HStack, VStack, Box, Center, Progress, Icon, Avatar, Image } from '@chakra-ui/react'
 import { Tooltip as Tooltips } from '@chakra-ui/react';
@@ -77,7 +77,7 @@ import {
     const [CurrentPage, setCurrentPage] = useState(1);
     const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
     const [TotalPage, setTotalPage] = useState("");
-    const [status, setStatus] = useState("PENDING");
+    const [status, setStatus] = useState("");
     const [search, setSearch] = useState("");
     
     const paginate = (pageNumber) => {
@@ -128,31 +128,40 @@ const filterBy = (type) => {
   setFilteredData(filtered);
 };
 
-  const ApproveStudent = async () => {
-    try {
-      const result = await ApproveStudentApi()//status, essayPercentage
+const { student_id } = useParams()
+const [essayPercentage, setEssayPercentage] = useState(0);
+
+const ApproveStudent = async () => {
+  try {
+      const result = await ApproveStudentApi(student_id, status, essayPercentage)
 
       console.log("approved student", result)
 
-      if (result.status === 200) {
-        setLoading(true);
-        setShowToast({
-          show: true,
-          message: "Approved Student!!!",
-          status: "success",
-        });
-      }
-    } catch (e) {
       setShowToast({
         show: true,
-        message: "Error Approving Student!!!",
-        status: "error",
+        message: result.message,
+        status: result.status,
+    });
+
+      if (result.status === 200) {
+          setLoading(true);
+          setShowToast({
+              show: true,
+              message: "Approved Student!!!",
+              status: "success",
+          });
+      }
+  } catch (e) {
+      setShowToast({
+          show: true,
+          message: "Error Approving Student!!!",
+          status: "error",
       });
       console.log("error", e.message)
-    } finally {
+  } finally {
       setLoading(false);
-    }
   }
+}
   return (
     <MainLayout>
       <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Students <Box as='span' color="#667085" fontWeight="600" fontSize="19px">({MainData.length})</Box></Text>

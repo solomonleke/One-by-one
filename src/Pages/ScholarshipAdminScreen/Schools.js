@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MainLayout from '../../DashboardLayout'
 import { Text, Flex, HStack, VStack, Box, Center, Progress, Icon, Avatar, Image } from '@chakra-ui/react'
 import { Tooltip as Tooltips } from '@chakra-ui/react';
@@ -22,7 +22,7 @@ import { FaGoogleScholar } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa6";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { GetAllScholarshipSchoolsApi } from "../../Utils/ApiCall";
-// import { ApproveSchoolApi } from "../../Utils/ApiCall";
+import { ApproveSchoolApi } from "../../Utils/ApiCall";
 import ShowToast from '../../Components/ToastNotification';
 import { configuration } from "../../Utils/Helpers";
 import Pagination from "../../Components/Pagination";
@@ -77,8 +77,10 @@ export default function Schools() {
     const [EndDate, setEndDate] = useState("");
     const [CurrentPage, setCurrentPage] = useState(1);
     const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
-    const [TotalPage, setTotalPage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [TotalPage, setTotalPage] = useState("");
     const [status, setStatus] = useState("");
+    const [note, setNote] = useState("");
     
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -122,6 +124,40 @@ export default function Schools() {
         }
         setFilteredData(filtered);
     };
+
+  const { schoolId } = useParams()
+
+    const ApproveSchool = async () => {
+        try {
+            const result = await ApproveSchoolApi(schoolId, status, note)
+    
+            console.log("approved school", result)
+    
+            setShowToast({
+              show: true,
+              message: result.message,
+              status: result.status,
+          });
+    
+            if (result.status === 200) {
+                setLoading(true);
+                setShowToast({
+                    show: true,
+                    message: "Approved School!!!",
+                    status: "success",
+                });
+            }
+        } catch (e) {
+            setShowToast({
+                show: true,
+                message: "Error Approving School!!!",
+                status: "error",
+            });
+            console.log("error", e.message)
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (
         <MainLayout>
@@ -240,6 +276,7 @@ export default function Schools() {
                                                         submissionDate={item.created_at}
                                                         status={item.status}
                                                         buttonText={item.buttonText}
+                                                        onButtonClick={() => ApproveSchool(item)}
                                                     />
                                                 ))
                                             }
@@ -284,6 +321,7 @@ export default function Schools() {
                                                         submissionDate={item.created_at}
                                                         status={item.status}
                                                         buttonText={item.buttonText}
+                                                        onButtonClick={() => ApproveSchool(item)}
                                                     />
                                                 ))
                                             }
@@ -327,6 +365,7 @@ export default function Schools() {
                                                         submissionDate={item.created_at}
                                                         status={item.status}
                                                         buttonText={item.buttonText}
+                                                        onButtonClick={() => ApproveSchool(item)}
                                                     />
                                                 ))
                                             }
