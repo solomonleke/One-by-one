@@ -77,6 +77,8 @@ import {
     const [CurrentPage, setCurrentPage] = useState(1);
     const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
     const [TotalPage, setTotalPage] = useState("");
+    const [status, setStatus] = useState("PENDING");
+    const [search, setSearch] = useState("");
     
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -85,7 +87,7 @@ import {
   const GetAllScholarshipStudent = async () => {
 
     try {
-      const result = await GetAllScholarshipStudentsApi(CurrentPage, PostPerPage)
+      const result = await GetAllScholarshipStudentsApi(CurrentPage, PostPerPage, status, search)
 
       console.log("getallscholarshipStudents", result)
 
@@ -105,7 +107,7 @@ import {
 
   useEffect(() => {
     GetAllScholarshipStudent();
-}, [CurrentPage, PostPerPage]);
+}, [CurrentPage, PostPerPage, status, search]);
 
 const filterBy = (type) => {
   let filtered = [...MainData];
@@ -160,9 +162,15 @@ const filterBy = (type) => {
         <Tabs>
           <HStack justifyContent={"space-between"}>
             <TabList overflowX={"auto"} overflowY={"hidden"}>
-              <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
-              <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
-              <Tab _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
+              <Tab  onClick={() => {
+                                setStatus("PENDING")
+                            }} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
+              <Tab  onClick={() => {
+                                setStatus("APPROVED")
+                            }} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
+              <Tab  onClick={() => {
+                                setStatus("REJECTED")
+                            }} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
             </TabList>
 
             <Flex flexWrap="wrap" mt={["10px", "10px", "0px", "0px"]} alignItems="center" justifyContent={"flex-end"}>

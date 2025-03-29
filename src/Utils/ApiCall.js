@@ -377,7 +377,7 @@ export const ApproveStudentApi = (status, essayPercentage) => {
   let config = {
     method: "PATCH",
     maxBodyLength: Infinity,
-    url: `${baseUrl}/scholarship-admin/approve-school/${student_id}`,
+    url: `${baseUrl}/scholarship-admin/approve-student/${student_id}`,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
