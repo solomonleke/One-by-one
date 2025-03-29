@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MainLayout from '../../DashboardLayout'
 import { Text, Flex, HStack, VStack, Box, Center, Progress, Icon, Avatar, Image } from '@chakra-ui/react'
 import { Tooltip as Tooltips } from '@chakra-ui/react';
@@ -23,6 +23,7 @@ import { IoIosArrowRoundForward } from "react-icons/io";
 import { IoCloseOutline } from "react-icons/io5";
 import { LiaAngleDoubleRightSolid } from "react-icons/lia";
 import { RxInfoCircled } from "react-icons/rx";
+import { configuration } from "../../Utils/Helpers";
 
 import scholarshipImage from "../../Asset/image1.png"
 import scholarshipImage2 from "../../Asset/Image2.png"
@@ -33,8 +34,10 @@ import scholarshipImage6 from "../../Asset/Image6.png"
 import scholarshipImage7 from "../../Asset/Image7.png"
 import scholarshipImage8 from "../../Asset/goldIcon.svg"
 import { ApproveSchoolApi } from "../../Utils/ApiCall";
+import { ApproveStudentApi } from "../../Utils/ApiCall";
 import ShowToast from '../../Components/ToastNotification';
-
+import { GetAllScholarshipSchoolsApi } from "../../Utils/ApiCall";
+import { GetAllScholarshipStudentsApi } from "../../Utils/ApiCall";
 import { GetScholarshipDashboardDetailsApi } from "../../Utils/ApiCall";
 import { GetScholarshipDashboardGraphDataApi } from "../../Utils/ApiCall";
 
@@ -50,7 +53,6 @@ import {
   TableCaption,
   TableContainer,
 } from '@chakra-ui/react'
-
 
 export default function ScholarshipAdmin() {
 
@@ -79,44 +81,31 @@ export default function ScholarshipAdmin() {
     { name: "Philip Amakiri", email: "PhilipAmakiri@gmail.com" }
   ];
 
-  const data = [
-    { name: "Jan", Schools: 200, Students: 150, Funds: 90 },
-    { name: "Feb", Schools: 190, Students: 145, Funds: 95 },
-    { name: "Mar", Schools: 180, Students: 160, Funds: 92 },
-    { name: "Apr", Schools: 210, Students: 155, Funds: 88 },
-    { name: "May", Schools: 195, Students: 150, Funds: 87 },
-    { name: "Jun", Schools: 185, Students: 170, Funds: 90 },
-    { name: "Jul", Schools: 200, Students: 165, Funds: 93 },
-    { name: "Aug", Schools: 190, Students: 150, Funds: 89 },
-    { name: "Sep", Schools: 200, Students: 160, Funds: 92 },
-    { name: "Oct", Schools: 205, Students: 170, Funds: 94 },
-    { name: "Nov", Schools: 190, Students: 150, Funds: 88 },
-    { name: "Dec", Schools: 200, Students: 160, Funds: 90 },
+  const [studentGraphData, setStudentGraphData] = useState([]);
+  const [schoolGraphData, setSchoolGraphData] = useState([]);
 
-  ];
+  const GetScholarshipDashboardGraphDetails = async () => {
 
-  const [userName, setUserName] = useState('');
-  const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
-  const [loading, setLoading] = useState(false);
+    try {
+      const response = await GetScholarshipDashboardGraphDataApi()
+
+      console.log("getScholarshipDashboardGraphDetails", response)
+      if(response.status === 200){
+        setStudentGraphData(response.data.data.StudentGraphData[0])
+        setSchoolGraphData(response.data.data.SchoolGraphData[0])
+      }
+      
+    } catch (e) {
+
+      console.log("error", e.message)
+    }
+
+  }
 
   useEffect(() => {
-    //   var reloadCount = localStorage.getItem("reloadCount");
-    //   if (!reloadCount) {
-    //     localStorage.setItem('reloadCount', + parseInt(1))
 
-    //   }
-    //   if (reloadCount < 2) {
-    //     localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
-    //     setTimeout(() =>
-    //       window.location.reload(1), 2000)
-    //   } else {
-    //     localStorage.removeItem('reloadCount');
-    //   }
+    GetScholarshipDashboardGraphDetails()
 
-    const storedName = JSON.parse(localStorage.getItem('onlineUser'));
-    if (storedName) {
-      setUserName(`${storedName.firstName}`);
-    }
   }, []);
 
   const [scholarshipDetails, setScholarshipDetails] = useState({});
@@ -144,11 +133,124 @@ export default function ScholarshipAdmin() {
 
   }, []);
 
+  const data = [
+    { name: "JAN", Schools: schoolGraphData, Students: studentGraphData, Funds: scholarshipDetails.fundRequested },
+    { name: "FEB", Schools: schoolGraphData, Students: studentGraphData, Funds: scholarshipDetails.fundRequested },
+    { name: "MAR", Schools: schoolGraphData, Students: studentGraphData, Funds: scholarshipDetails.fundRequested },
+    { name: "APR", Schools: schoolGraphData, Students: studentGraphData, Funds: scholarshipDetails.fundRequested },
+    { name: "MAY", Schools: schoolGraphData, Students: studentGraphData, Funds: scholarshipDetails.fundRequested },
+    { name: "JUN", Schools: schoolGraphData, Students: studentGraphData, Funds: scholarshipDetails.fundRequested },
+    { name: "JUL", Schools: schoolGraphData, Students: studentGraphData, Funds: scholarshipDetails.fundRequested },
+    { name: "AUG", Schools: schoolGraphData, Students: studentGraphData, Funds: scholarshipDetails.fundRequested },
+    { name: "SEP", Schools: schoolGraphData, Students: studentGraphData, Funds: scholarshipDetails.fundRequested },
+    { name: "OCT", Schools: schoolGraphData, Students: studentGraphData, Funds: scholarshipDetails.fundRequested },
+    { name: "NOV", Schools: schoolGraphData, Students: studentGraphData, Funds: scholarshipDetails.fundRequested },
+    { name: "DEC", Schools: schoolGraphData, Students: studentGraphData, Funds: scholarshipDetails.fundRequested },
+
+  ];
+
+  const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
+  const [SchoolMainData, setSchoolMainData] = useState([]);
+  const [StudentMainData, setStudentMainData] = useState([]);
+  const [FilteredData, setFilteredData] = useState(null);
+  const [SearchInput, setSearchInput] = useState("");
+  const [ByDate, setByDate] = useState(false);
+  const [StartDate, setStartDate] = useState("");
+  const [EndDate, setEndDate] = useState("");
+  const [CurrentPage, setCurrentPage] = useState(1);
+  const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
+  const [TotalPage, setTotalPage] = useState("");
+  const [status, setStatus] = useState("");
+  const [note, setNote] = useState("");
+  const [essayPercentage, setEssayPercentage] = useState(0);
+  const [search, setSearch] = useState("");
+
+
+  const GetAllScholarshipSchool = async () => {
+    try {
+        const result = await GetAllScholarshipSchoolsApi(CurrentPage, PostPerPage, status);
+        console.log("getallscholarshipSchools", result);
+
+        if (result.status === 200 && result.data?.schools?.length > 0) {
+            setSchoolMainData(result.data.schools);
+            setTotalPage(result.data.totalPages); 
+        } else {
+          setSchoolMainData([]);
+        }
+    } catch (e) {
+        console.log("error", e.message);
+    }
+};
+
+useEffect(() => {
+    GetAllScholarshipSchool();
+}, [CurrentPage, PostPerPage, status]);
+
+
+const GetAllScholarshipStudent = async () => {
+
+  try {
+    const result = await GetAllScholarshipStudentsApi(CurrentPage, PostPerPage, status, search)
+
+    console.log("getallscholarshipStudents", result)
+
+    if (result.status === 200 && result.data?.students?.length > 0) {
+      setStudentMainData(result.data.students);
+      setTotalPage(result.data.totalPages);
+  } else {
+    setStudentMainData([]);
+  }
+  } catch (e) {
+
+    console.log("error", e.message)
+  }
+
+}
+
+
+useEffect(() => {
+  GetAllScholarshipStudent();
+}, [CurrentPage, PostPerPage, status, search]);
+
+  const [userName, setUserName] = useState('');
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    //   var reloadCount = localStorage.getItem("reloadCount");
+    //   if (!reloadCount) {
+    //     localStorage.setItem('reloadCount', + parseInt(1))
+
+    //   }
+    //   if (reloadCount < 2) {
+    //     localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
+    //     setTimeout(() =>
+    //       window.location.reload(1), 2000)
+    //   } else {
+    //     localStorage.removeItem('reloadCount');
+    //   }
+
+    const storedName = JSON.parse(localStorage.getItem('onlineUser'));
+    if (storedName) {
+      setUserName(`${storedName.firstName}`);
+    }
+  }, []);
+
+
+  const { schoolId } = useParams()
+  const { student_id } = useParams()
+
   const ApproveSchool = async () => {
     try {
-        const result = await ApproveSchoolApi()//status, note
+        const result = await ApproveSchoolApi(schoolId, status, note)
 
         console.log("approved school", result)
+
+        setShowToast({
+          show: true,
+          message: result.message,
+          status: result.status,
+      });
 
         if (result.status === 200) {
             setLoading(true);
@@ -170,29 +272,40 @@ export default function ScholarshipAdmin() {
     }
 }
 
-  // const GetScholarshipDashboardGraphData = async () => {
 
-  //   try {
-  //     const response = await GetScholarshipDashboardGraphDataApi()
+const ApproveStudent = async () => {
+  try {
+      const result = await ApproveStudentApi(student_id, status, essayPercentage)
 
-  //     console.log("getScholarshipDashboardGraphData", response)
+      console.log("approved student", result)
 
-  //     if (response.status === 200) {
+      setShowToast({
+        show: true,
+        message: result.message,
+        status: result.status,
+    });
 
-  //     }
-  //   } catch (e) {
+      if (result.status === 200) {
+          setLoading(true);
+          setShowToast({
+              show: true,
+              message: "Approved Student!!!",
+              status: "success",
+          });
+      }
+  } catch (e) {
+      setShowToast({
+          show: true,
+          message: "Error Approving Student!!!",
+          status: "error",
+      });
+      console.log("error", e.message)
+  } finally {
+      setLoading(false);
+  }
+}
 
-  //     console.log("error", e.message)
-  //   }
-
-  // }
-
-  // useEffect(() => {
-
-  //   GetScholarshipDashboardGraphData()
-
-  // }, []);
-
+  
   return (
     <MainLayout>
 
@@ -320,11 +433,13 @@ export default function ScholarshipAdmin() {
           bg="white" boxShadow={"sm"}>
           <HStack justifyContent="space-between" borderBottomWidth={1} mb={4}>
             <Text letterSpacing="-3%" color="#3F4956" Weight="600" size="15px" lineHeight={"18.15px"}>Schools Awaiting Approval</Text>
-            <Text color="#39996B" size="14px" weight="600" cursor="pointer" lineHeight={"22px"} letterSpacing="-1%">See All</Text>
+            <Text color="#39996B" size="14px" weight="600" cursor="pointer" lineHeight={"22px"} letterSpacing="-1%" onClick={() => {
+              router("/scholarship-admin/schools")
+            }}>See All</Text>
           </HStack>
 
           <VStack borderRadius={"10px"} border=" 1px solid #EDEFF2" spacing={4} align="stretch">
-            {schools.map((school, index) => (
+            {SchoolMainData.map((school, index) => (
               <Flex
                 key={index}
                 justify="space-between"
@@ -335,11 +450,11 @@ export default function ScholarshipAdmin() {
                 borderBottomWidth={index !== schools.length - 1 ? 1 : 0}
                 borderColor={"gray.200"}>
                 <HStack w={{ Fill: "264px" }} padding={"16px, 30px, 16px, 12px"} h={{ Fixed: "42px" }} gap={"18px"} opacity={"0px"}>
-                  <Avatar src={school.Image} w={{ Fixed: "42px" }} opacity={"0px"} h={{ Fixed: "42px" }} gap={"0px"} borderRadius={"280px"} />
+                  <Avatar src={school.school_name} w={{ Fixed: "42px" }} opacity={"0px"} h={{ Fixed: "42px" }} gap={"0px"} borderRadius={"280px"} />
                   <Box  >
 
-                    <Text lineHeight={"20px"} fontFamily={"Inter"} textAlign="left" letterSpacing="-0.02em%" color="#101828" fontWeight="500" size="13px">{school.name}</Text>
-                    <Text fontSize="12px" color="#667085" fontWeight={"400"} fontFamily={"Inter"} lineHeight={"20px"} textAlign={"left"} letterSpacing={"-0.02em"} >{school.email}</Text>
+                    <Text lineHeight={"20px"} fontFamily={"Inter"} textAlign="left" letterSpacing="-0.02em%" color="#101828" fontWeight="500" size="13px">{school.school_name}</Text>
+                    <Text fontSize="12px" color="#667085" fontWeight={"400"} fontFamily={"Inter"} lineHeight={"20px"} textAlign={"left"} letterSpacing={"-0.02em"} >{school.principal_email}</Text>
                   </Box>
                 </HStack>
 
@@ -357,26 +472,34 @@ export default function ScholarshipAdmin() {
           bg={"white"} boxShadow={"sm"}>
           <HStack justifyContent={"space-between"} borderBottomWidth={1} mb={4}>
             <Text letterSpacing="-3%" color="#3F4956" Weight="600" size="15px" lineHeight={"18.15px"}>Pending Students Approval</Text>
-            <Text color="#39996B" size="14px" weight="600" cursor="pointer" lineHeight={"22px"} letterSpacing="-1%">See All</Text>
+            <Text color="#39996B" size="14px" weight="600" cursor="pointer" lineHeight={"22px"} letterSpacing="-1%" onClick={() => {
+              router("/scholarship-admin/students")
+            }}>See All</Text>
           </HStack>
 
-          <VStack spacing={13} align="stretch">{students.map((student, index) => (
+          <VStack spacing={13} align="stretch">{StudentMainData.map((student, index) => (
             <Flex
               key={index}
               p={"12px"} border=" 1px solid #EDEFF2"
               gap="0px"
+              cursor="pointer"
               align="center"
               opacity="0px"
               w={{ Fill: "396px" }}
               justify="space-between" borderRadius="10px" height={{ Fixed: "68px" }}
               borderBottomWidth={index !== schools.length - 1 ? 1 : 0}
-              borderColor={"gray.200"}>
-              <HStack >
+              borderColor={"gray.200"}
+              onClick={() => {
+                router("/scholarship-admin/students")
+              }}>
+              <HStack onClick={() => {
+                router("/scholarship-admin/students/student-profile")
+              }}>
 
 
-                <Avatar size="sm" name={student.name} />
+                <Avatar size="sm" name={student.full_name} />
                 <Box >
-                  <Text fontWeight="500" fontSize="13px" lineHeight="20px" textAlign="left" letterSpacing={"-0.02em"}>{student.name}</Text>
+                  <Text fontWeight="500" fontSize="13px" lineHeight="20px" textAlign="left" letterSpacing={"-0.02em"}>{student.full_name}</Text>
                   <Text fontSize={"11px"} opacity="0px" fontWeight={"400"} lineHeight={"20px"} textAlign={"left"} letterSpacing={"-0.02em"} color="gray.500">{student.email}</Text>
                 </Box>
               </HStack>

@@ -78,7 +78,7 @@ export default function Schools() {
     const [CurrentPage, setCurrentPage] = useState(1);
     const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
     const [TotalPage, setTotalPage] = useState("");
-    const [status, setStatus] = useState("PENDING");
+    const [status, setStatus] = useState("");
     
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -91,7 +91,7 @@ export default function Schools() {
     
             if (result.status === 200 && result.data?.schools?.length > 0) {
                 setMainData(result.data.schools);
-                setTotalPage(result.data.totalPages);
+                setTotalPage(result.data.totalPages); 
             } else {
                 setMainData([]);
             }
@@ -132,14 +132,17 @@ export default function Schools() {
                 <Tabs>
                     <HStack justifyContent={"space-between"}>
                         <TabList overflowX={"auto"} overflowY={"hidden"}>
-                            <Tab  onClick={() => {
+                            <Tab onClick={() => {
                                 setStatus("PENDING")
+                                console.log("status", status)
                             }} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
                             <Tab onClick={() => {
                                 setStatus("APPROVED")
+                                console.log("status", status)
                             }} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
                             <Tab onClick={() => {
                                 setStatus("REJECTED")
+                                console.log("status", status)
                             }} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
                         </TabList>
 
