@@ -33,6 +33,7 @@ import scholarshipImage5 from "../../Asset/Image5.png"
 import scholarshipImage6 from "../../Asset/Image6.png"
 import scholarshipImage7 from "../../Asset/Image7.png"
 import scholarshipImage8 from "../../Asset/goldIcon.svg"
+import ShowToast from '../../Components/ToastNotification';
 import { createScholarshipApi } from "../../Utils/ApiCall";
 import { getActiveScholarships } from "../../Utils/ApiCall";
 import { getScholarshipsBySponsor } from "../../Utils/ApiCall";
@@ -66,6 +67,7 @@ export default function MyScholarships() {
   const [isOpen, setIsOpen] = useState(false);
   const [scholarships, setScholarships] = useState([]);
   const [sponsorScholarships, setSponsorScholarships] = useState([]);
+  const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
   const [error, setError] = useState(null);
   const [stats, setStats] = useState(null);
   const [data, setData] = useState({
@@ -97,13 +99,12 @@ export default function MyScholarships() {
       const response = await createScholarshipApi(formData);
       console.log("Server Response:", response); // Debugging
 
-      toast({
-        title: "Scholarship Created",
-        description: "Scholarship has been successfully created!",
+      setShowToast({
+        show: true,
+        message: "Scholarship successfully created!",
         status: "success",
-        duration: 3000,
-        isClosable: true,
       });
+      setTimeout(() => setShowToast({ show: false }), 3000);
 
       setFormData({ name: "", purpose: "", motivation: "", amount: "0" });
       closeModal();
@@ -111,13 +112,12 @@ export default function MyScholarships() {
       console.error("❌ Error creating scholarship:", error);
       console.error("Server Response:", error.response?.data || "No response data");
 
-      toast({
-        title: "Error",
-        description: error.response?.data?.message || "Failed to create scholarship",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
+      setShowToast({ 
+        show: true, 
+        message: error.message || "Failed to create scholarship.", 
+        status: "error" 
       });
+      setTimeout(() => setShowToast({ show: false }), 3000);
     } finally {
       setLoading(false);
     }
@@ -192,6 +192,9 @@ export default function MyScholarships() {
 
   return (
     <MainLayout>
+    {showToast.show && (
+        <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
+      )}
       <HStack justifyContent="space-between" w="100%">
         <Box w="80%">
           <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">My Scholarships <Box as="span" color="#667085" fontSize="18px" fontWeight="400">({data.scholarshipCount})</Box></Text>
@@ -205,14 +208,17 @@ export default function MyScholarships() {
         </Box>
       </HStack>
 
-      <Modal isOpen={isOpen} onClose={closeModal}>
+      <Modal isOpen={isOpen} onClose={closeModal} >
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create Scholarship</ModalHeader>
+        <ModalContent maxW="537px">
+          <ModalHeader px="25px" pt="23px">
+          <Text fontSize="19px">Create Scholarship</Text>
+          <Text fontSize="14px" color="#6B7280" fontWeight="400" >Fill in the details below to create a scholarship.</Text>
+          </ModalHeader>
           <ModalBody>
             <FormControl mb={4}>
-              <FormLabel>Scholarship Name</FormLabel>
-              <Input name="name" value={formData.name} onChange={handleChange} placeholder="Enter scholarship name" />
+              <FormLabel fontSize="14px">Scholarship Name</FormLabel>
+              <Input name="name" fontSize="13px" color="#ADB4BF" value={formData.name} onChange={handleChange} placeholder="e.g Operation helping students" />
             </FormControl>
             <FormControl mb={4}>
               <FormLabel>Purpose of Scholarship</FormLabel>
@@ -249,7 +255,7 @@ export default function MyScholarships() {
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["10px", "10px", "18px", "18px"]} rounded='10px'>
         <Tabs>
           <TabList overflowX={"auto"} overflowY={"hidden"}>
-            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Active Scholarships ({data.scholarshipCount})</Tab>
+            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Active Scholarships (1)</Tab>
             <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Awaiting Funding ({data.scholarshipCount})</Tab>
           </TabList>
 
@@ -407,22 +413,7 @@ export default function MyScholarships() {
 
 
 
-                <Stack borderWidth="1px" rounded="11px" py="12px" pl="8px" pr="16px" spacing="10px">
-                  <HStack justifyContent="space-between">
-                    <HStack>
-                      <Box bg="#39996B" w="3px" h="35px" rounded="3px"></Box>
-                      <Stack>
-                        <Text color="#1F2937" fontSize="14px" fontWeight="600">NextGen Scholars Fund <Box as="span" display="inline-flex" my={"auto"}><BsThreeDots /></Box></Text>
-                        <Text color="#767F8E" fontSize="12px" fontWeight="400">Date Created: Oct 6th, 9:00AM</Text>
-                      </Stack>
-                    </HStack>
-
-                    <HStack>
-                      <Button px="50px" color="#39996B" background="white" disabled={true}>Fund Scholarship</Button>
-                      <Button px="30px">Add Student</Button>
-                    </HStack>
-                  </HStack>
-                </Stack>
+                
               </Stack>
             </TabPanel>
           </TabPanels>

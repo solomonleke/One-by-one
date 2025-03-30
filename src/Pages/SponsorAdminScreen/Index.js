@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../DashboardLayout'
-import { Text, Flex, HStack, Stack, VStack, Box, Center, Progress, Icon, Avatar, Image } from '@chakra-ui/react'
+import { Text, Grid, Flex, HStack, Stack, VStack, Box, Center, Progress, Icon, Avatar, Image } from '@chakra-ui/react'
 import { Tooltip as Tooltips } from '@chakra-ui/react';
 import DashboardCard from "../../Components/DashboardCard"
 import Button from "../../Components/Button"
@@ -187,8 +187,8 @@ export default function Index() {
       <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Welcome Back, {userName || "User"}.</Text>
       <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Track your impact and manage your scholarships with ease. Monitor funding trends and create opportunities to change lives.</Text>
 
-      <HStack justifyContent="space-between">
-        <Box borderWidth="1px" rounded="10px" px="20px" py="20px" pr="150px" bg="#fff">
+      <Grid justifyContent="space-between" gridTemplateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap="12px" mt="20px">  
+        <Box borderWidth="1px" rounded="10px" px="20px" py="20px"  bg="#fff">
           <Stack>
             <HStack>
               <Scholarship />
@@ -198,7 +198,7 @@ export default function Index() {
           </Stack>
         </Box>
 
-        <Box borderWidth="1px" rounded="10px" px="20px" py="20px" pr="150px" bg="#fff">
+        <Box borderWidth="1px" rounded="10px" px="20px" py="20px"  bg="#fff">
           <Stack>
             <HStack>
               <PiStudent color="#39996B" fontSize="24px" />
@@ -208,7 +208,7 @@ export default function Index() {
           </Stack>
         </Box>
 
-        <Box borderWidth="1px" rounded="10px" px="20px" py="20px" pr="150px" bg="#fff">
+        <Box borderWidth="1px" rounded="10px" px="20px" py="20px"  bg="#fff">
           <Stack>
             <HStack>
               <TbCurrencyNaira color="#39996B" fontSize="24px" />
@@ -217,10 +217,10 @@ export default function Index() {
             <Text color="#2F2F2F" fontSize="20px" fontWeight="600">{data.totalDonations}</Text>
           </Stack>
         </Box>
-      </HStack>
+      </Grid>
 
-      <HStack mt="20px" w="100%">
-        <Box display="flex" flexDir="column" gap="10px" w="65%" borderWidth="1px" rounded="10px" bg="#fff" px="17px" py="16px">
+      <Grid mt="20px" w="100%" gridTemplateColumns={{ base: "100%", md: "65% 35%" }} gap="12px">
+        <Box display="flex" flexDir="column" gap="10px"  borderWidth="1px" rounded="10px" bg="#fff" px="17px" py="16px">
           <HStack justifyContent="space-between">
             <Text color="#3F4956" fontSize="15px" fontWeight="600">Students You're Sponsoring <Box as="span" fontSize="15px" fontWeight="500" color="#3F495680">(16)</Box></Text>
             <Text cursor="pointer" color="#39996B" fontSize="14px" fontWeight="600">See All</Text>
@@ -304,7 +304,7 @@ export default function Index() {
 
 
 
-        <Box display="flex" flexDir="column" gap="10px" w="35%" borderWidth="1px" rounded="10px" bg="#fff" px="17px" py="16px">
+        <Box display="flex" flexDir="column" gap="10px" w="100%" borderWidth="1px" rounded="10px" bg="#fff" px="17px" py="16px">
           <HStack justifyContent="space-between">
             <Text color="#3F4956" fontSize="15px" fontWeight="600">Active Scholarships <Box as="span" fontSize="15px" fontWeight="500" color="#3F495680">(1)</Box></Text>
             <Text cursor="pointer" color="#39996B" fontSize="14px" fontWeight="600">See All</Text>
@@ -312,19 +312,20 @@ export default function Index() {
 
           <hr className="remove" />
 
-          <Stack borderWidth="1px" rounded="11px" py="12px" pl="8px" pr="16px" spacing="10px">
+          <Stack borderWidth="1px" maxW="426px"  rounded="11px" py="12px" pl="8px" pr="16px" spacing="10px">
             <HStack justifyContent="space-between">
-              <VStack>
+              <VStack w="100%">
                 {Array.isArray(scholarships) && scholarships.length > 0 ? (
                   scholarships.map((scholarship, index) => (
                     <Stack
                       key={scholarship.id || index}
-                      borderWidth="1px"
+                      
                       rounded="11px"
                       py="12px"
                       pl="8px"
                       pr="16px"
-                      spacing="10px"
+                      
+                      maxW="382px"
                     >
                       {/* Scholarship Details */}
                       <HStack justifyContent="space-between">
@@ -332,11 +333,11 @@ export default function Index() {
                           <Box bg="#39996B" w="3px" h="33px" rounded="3px"></Box>
                           <Stack>
                             {/* Scholarship Name */}
-                            <Text color="#1F2937" fontSize="14px" fontWeight="600">
+                            <Text color="#1F2937" fontSize="13px" fontWeight="600">
                               {scholarship?.name ?? "Unnamed Scholarship"}
                             </Text>
                             {/* Date Created (Formatted) */}
-                            <Text color="#767F8E" fontSize="12px" fontWeight="400">
+                            <Text color="#767F8E" fontSize="11px" fontWeight="400">
                               Date Created:{" "}
                               {scholarship?.created_at
                                 ? new Date(scholarship.created_at).toLocaleString()
@@ -348,7 +349,7 @@ export default function Index() {
                         {/* Scholarship Amount */}
                         <HStack>
                           <Text color="#344054" fontSize="12px" fontWeight="400">:</Text>
-                          <Text color="#3F4956" fontSize="17px" fontWeight="600">
+                          <Text color="#3F4956" fontSize="14px" fontWeight="600">
                             ₦{scholarship?.amount ? parseInt(scholarship.amount).toLocaleString() : "N/A"}
                           </Text>
                         </HStack>
@@ -389,7 +390,7 @@ export default function Index() {
           </Stack>
 
         </Box>
-      </HStack>
+      </Grid>
 
       {/* do the chart here */}
 
