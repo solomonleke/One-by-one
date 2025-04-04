@@ -268,6 +268,40 @@ export const GetAllStudentApi = (pageNo, postPerPage) => {
     });
 };
 
+export const GetAllSponsorStudentApi = (pageNo, postPerPage) => {
+ 
+ 
+  let config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/sponsor-admin/all-students?pageNo=${pageNo}&noItems=${postPerPage}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+     
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
 
 export const GetAllScholarshipStudentsApi = (pageNo, noItems, status, search) => {
  
@@ -891,6 +925,35 @@ export const getScholarshipsBySponsor = async () => {
     }
   }
 };
+
+export const AddStudentToScholarshipApi = async (scholarshipId, studentIds) => {
+  if (!scholarshipId) {
+    console.error("❌ scholarshipId is missing!");
+    throw new Error("Scholarship ID is required.");
+  }
+
+  try {
+    const response = await axios.patch(
+      `${baseUrl}/sponsor-admin/add-students-to-scholarship/${scholarshipId}`, // ✅ Correctly insert scholarshipId in URL
+      { studentIds }, // ✅ Send student IDs in the body
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("✅ Student added successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Failed to add student:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+
+
 
 
 

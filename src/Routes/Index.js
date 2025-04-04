@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { StudentProvider } from '../Components/StudentContext'
 import Home from '../Pages/Home'
@@ -41,6 +41,14 @@ import FundingRecords from '../Pages/FundAdminUserScreen/FundingRecords'
 
 
 export default function IndexRoutes() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [studentIdToOpen, setStudentIdToOpen] = useState(null);
+
+  const handleOpenModal = (studentId) => {
+    setStudentIdToOpen(studentId);
+    setIsModalOpen(true);
+  };
+
   return (
     <StudentProvider>
       <BrowserRouter>
@@ -85,7 +93,7 @@ export default function IndexRoutes() {
            {/* sponsor admin routes */}
            <Route path='/sponsor-admin' element={<SponsorAdmin />} />
           <Route path='/sponsor-admin/myscholarships' element={<MyScholarships />} />
-          <Route path='/sponsor-admin/discoverstudents' element={<DiscoverStudents />} />
+          <Route path='/sponsor-admin/discoverstudents' element={<DiscoverStudents />} studentId={studentIdToOpen} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
           <Route path='/sponsor-admin/fundinghistory' element={<FundingHistory />} />
           <Route path='/sponsor-admin/settings' element={<Settings3 />} />
 
