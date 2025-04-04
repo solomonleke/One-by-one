@@ -13,7 +13,6 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { FaRegFilePdf } from "react-icons/fa";
 import ShowToast from '../../Components/ToastNotification';
 import { UploadDocumentApi } from "../../Utils/ApiCall";
-import { GetAdminStats } from "../../Utils/ApiCall";
 
 export default function Settings() {
 
@@ -21,12 +20,12 @@ export default function Settings() {
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
   const initialFiles = {
-    certificate: null,
-    tin: null,
-    educationApproval: null,
-    schoolCert: null,
-    idFront: null,
-    idBack: null,
+    certificateOfIncor: null,
+    taxIdNum: null,
+    educationApprovalLetter: null,
+    schoolCertificate: null,
+    front: null,
+    back: null,
   };
   
   const [files, setFiles] = useState(() => {
@@ -100,22 +99,6 @@ export default function Settings() {
     }
   };
   
-  
-  
-
-    const fetchData = async () => {
-      try {
-        // Call the function correctly
-        const data = await GetAdminStats();
-        
-        console.log("Fetched Data:", data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    
-    // Call the function
-    fetchData();
     
     
   
@@ -153,7 +136,7 @@ export default function Settings() {
     {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
       )}
-      <Text color={"#1F2937"} fontWeight={"700"} fontSize={"24px"} lineHeight={"25.41px"}>Settings</Text>
+      <Text color={"#1F2937"} fontWeight={"700"} fontSize={"24px"} lineHeight={"25.41px"}>SettaxIdNumgs</Text>
       <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} lineHeight={"24px"}>
         Configure your login credentials, set up two-factor authentication for added security, and adjust account preferences.
       </Text>
@@ -385,7 +368,7 @@ export default function Settings() {
       <Text fontWeight="bold" fontSize="13px" color="#626974">Certificate of Incorporation</Text>
 
       <Box w="100%" >
-      {files.certificate   && files.certificate .size ? (
+      {files.certificateOfIncor  && files.certificateOfIncor.size ? (
   // File Display Box
   <HStack
     w="100%"
@@ -403,11 +386,11 @@ export default function Settings() {
         <TbFileMinus size="30px" color="#96C3AD" />
         <Box>
           <Text color="#353535" fontSize={isMobile ? "10px" : "13px"} fontWeight="450000" isTruncated>
-            {files.certificate  ?.name}
+            {files.certificateOfIncor ?.name}
           </Text>
           <Text fontSize={isMobile ? "9px" : "11px"} color="#989692">
-            {files.certificate  ?.size
-              ? `${(files.certificate .size / 1024).toFixed(2)} KB`
+            {files.certificateOfIncor ?.size
+              ? `${(files.certificateOfIncor.size / 1024).toFixed(2)} KB`
               : "0 KB"}
           </Text>
         </Box>
@@ -419,17 +402,17 @@ export default function Settings() {
         color="#39996B"
         cursor="pointer"
         fontWeight="600"
-        onClick={() => document.getElementById("certificate Input").click()}
+        onClick={() => document.getElementById("certificateOfIncorInput").click()}
       >
         Update
       </Text>
     </HStack>
     <Input
-      id="certificate Input"
+      id="certificateOfIncorInput"
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
       display="none"
-      onChange={(e) => handleFileChange(e, "certificate ")}
+      onChange={(e) => handleFileChange(e, "certificateOfIncor")}
     />
   </HStack>
 ) : (
@@ -450,7 +433,7 @@ export default function Settings() {
     bg="#E9F8F0"
     cursor="pointer"
     textAlign="center"
-    onClick={() => document.getElementById("certificate Input").click()}
+    onClick={() => document.getElementById("certificateOfIncorInput").click()}
   >
     <HStack alignText="center">
       <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
@@ -463,11 +446,11 @@ export default function Settings() {
       PDF, JPG, JPEG, PNG less than 10MB
     </Text>
     <Input
-      id="certificate Input"
+      id="certificateOfIncorInput"
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
       display="none"
-      onChange={(e) => handleFileChange(e, "certificate ")}
+      onChange={(e) => handleFileChange(e, "certificateOfIncor")}
     />
   </Box>
 )
@@ -478,7 +461,7 @@ export default function Settings() {
       <Text fontWeight="bold" fontSize="13px" color="#626974">Tax Identification Number</Text>
 
       
-      {files.tin && files.tin.size ? (
+      {files.taxIdNum && files.taxIdNum.size ? (
   // File Display Box
   <HStack
     w="100%"
@@ -496,11 +479,11 @@ export default function Settings() {
         <TbFileMinus size="30px" color="#96C3AD" />
         <Box>
           <Text color="#353535" fontSize={isMobile ? "10px" : "13px"} fontWeight="450000" isTruncated>
-            {files.tin?.name}
+            {files.taxIdNum?.name}
           </Text>
           <Text fontSize={isMobile ? "9px" : "11px"} color="#989692">
-            {files.tin?.size
-              ? `${(files.tin.size / 1024).toFixed(2)} KB`
+            {files.taxIdNum?.size
+              ? `${(files.taxIdNum.size / 1024).toFixed(2)} KB`
               : "0 KB"}
           </Text>
         </Box>
@@ -512,17 +495,17 @@ export default function Settings() {
         color="#39996B"
         cursor="pointer"
         fontWeight="600"
-        onClick={() => document.getElementById("tinInput").click()}
+        onClick={() => document.getElementById("taxIdNumInput").click()}
       >
         Update
       </Text>
     </HStack>
     <Input
-      id="tinInput"
+      id="taxIdNumInput"
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
       display="none"
-      onChange={(e) => handleFileChange(e, "tin")}
+      onChange={(e) => handleFileChange(e, "taxIdNum")}
     />
   </HStack>
 ) : (
@@ -543,7 +526,7 @@ export default function Settings() {
     bg="#E9F8F0"
     cursor="pointer"
     textAlign="center"
-    onClick={() => document.getElementById("tinInput").click()}
+    onClick={() => document.getElementById("taxIdNumInput").click()}
   >
     <HStack alignText="center">
       <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
@@ -556,11 +539,11 @@ export default function Settings() {
       PDF, JPG, JPEG, PNG less than 10MB
     </Text>
     <Input
-      id="tinInput"
+      id="taxIdNumInput"
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
       display="none"
-      onChange={(e) => handleFileChange(e, "tin")}
+      onChange={(e) => handleFileChange(e, "taxIdNum")}
     />
   </Box>
 )
@@ -575,7 +558,7 @@ export default function Settings() {
       <Text fontWeight="bold" fontSize="13px" color="#626974">Ministry of Education Approval Letter</Text>
 
       <Box w="100%" >
-      {files.educationApproval && files.educationApproval.size ? (
+      {files.educationApprovalLetter && files.educationApprovalLetter.size ? (
   // File Display Box
   <HStack
     w="100%"
@@ -593,11 +576,11 @@ export default function Settings() {
         <TbFileMinus size="30px" color="#96C3AD" />
         <Box>
           <Text color="#353535" fontSize={isMobile ? "10px" : "13px"} fontWeight="450000" isTruncated>
-            {files.educationApproval?.name}
+            {files.educationApprovalLetter?.name}
           </Text>
           <Text fontSize={isMobile ? "9px" : "11px"} color="#989692">
-            {files.educationApproval?.size
-              ? `${(files.educationApproval.size / 1024).toFixed(2)} KB`
+            {files.educationApprovalLetter?.size
+              ? `${(files.educationApprovalLetter.size / 1024).toFixed(2)} KB`
               : "0 KB"}
           </Text>
         </Box>
@@ -609,17 +592,17 @@ export default function Settings() {
         color="#39996B"
         cursor="pointer"
         fontWeight="600"
-        onClick={() => document.getElementById("educationApprovalInput").click()}
+        onClick={() => document.getElementById("educationApprovalLetterInput").click()}
       >
         Update
       </Text>
     </HStack>
     <Input
-      id="educationApprovalInput"
+      id="educationApprovalLetterInput"
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
       display="none"
-      onChange={(e) => handleFileChange(e, "educationApproval")}
+      onChange={(e) => handleFileChange(e, "educationApprovalLetter")}
     />
   </HStack>
 ) : (
@@ -640,7 +623,7 @@ export default function Settings() {
     bg="#E9F8F0"
     cursor="pointer"
     textAlign="center"
-    onClick={() => document.getElementById("educationApprovalInput").click()}
+    onClick={() => document.getElementById("educationApprovalLetterInput").click()}
   >
     <HStack alignText="center">
       <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
@@ -653,11 +636,11 @@ export default function Settings() {
       PDF, JPG, JPEG, PNG less than 10MB
     </Text>
     <Input
-      id="educationApprovalInput"
+      id="educationApprovalLetterInput"
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
       display="none"
-      onChange={(e) => handleFileChange(e, "educationApproval")}
+      onChange={(e) => handleFileChange(e, "educationApprovalLetter")}
     />
   </Box>
 )
@@ -668,7 +651,7 @@ export default function Settings() {
       <Text fontWeight="bold" fontSize="13px" color="#626974">School Registration Certificate</Text>
 
       
-      {files.schoolCert && files.schoolCert.size ? (
+      {files.schoolCertificate && files.schoolCertificate.size ? (
   // File Display Box
   <HStack
     w="100%"
@@ -686,11 +669,11 @@ export default function Settings() {
         <TbFileMinus size="30px" color="#96C3AD" />
         <Box>
           <Text color="#353535" fontSize={isMobile ? "10px" : "13px"} fontWeight="450000" isTruncated>
-            {files.schoolCert?.name}
+            {files.schoolCertificate?.name}
           </Text>
           <Text fontSize={isMobile ? "9px" : "11px"} color="#989692">
-            {files.schoolCert?.size
-              ? `${(files.schoolCert.size / 1024).toFixed(2)} KB`
+            {files.schoolCertificate?.size
+              ? `${(files.schoolCertificate.size / 1024).toFixed(2)} KB`
               : "0 KB"}
           </Text>
         </Box>
@@ -702,17 +685,17 @@ export default function Settings() {
         color="#39996B"
         cursor="pointer"
         fontWeight="600"
-        onClick={() => document.getElementById("schoolCertInput").click()}
+        onClick={() => document.getElementById("schoolCertificateInput").click()}
       >
         Update
       </Text>
     </HStack>
     <Input
-      id="schoolCertInput"
+      id="schoolCertificateInput"
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
       display="none"
-      onChange={(e) => handleFileChange(e, "schoolCert")}
+      onChange={(e) => handleFileChange(e, "schoolCertificate")}
     />
   </HStack>
 ) : (
@@ -733,7 +716,7 @@ export default function Settings() {
     bg="#E9F8F0"
     cursor="pointer"
     textAlign="center"
-    onClick={() => document.getElementById("schoolCertInput").click()}
+    onClick={() => document.getElementById("schoolCertificateInput").click()}
   >
     <HStack alignText="center">
       <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
@@ -746,11 +729,11 @@ export default function Settings() {
       PDF, JPG, JPEG, PNG less than 10MB
     </Text>
     <Input
-      id="schoolCertInput"
+      id="schoolCertificateInput"
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
       display="none"
-      onChange={(e) => handleFileChange(e, "schoolCert")}
+      onChange={(e) => handleFileChange(e, "schoolCertificate")}
     />
   </Box>
 )
@@ -773,7 +756,7 @@ export default function Settings() {
 </Text>
 
       <Box w="100%" >
-      {files.idFront && files.idFront.size ? (
+      {files.front && files.front.size ? (
   // File Display Box
   <HStack
     w="100%"
@@ -791,11 +774,11 @@ export default function Settings() {
         <TbFileMinus size="30px" color="#96C3AD" />
         <Box>
           <Text color="#353535" fontSize={isMobile ? "10px" : "13px"} fontWeight="450000" isTruncated>
-            {files.idFront?.name}
+            {files.front?.name}
           </Text>
           <Text fontSize={isMobile ? "9px" : "11px"} color="#989692">
-            {files.idFront?.size
-              ? `${(files.idFront.size / 1024).toFixed(2)} KB`
+            {files.front?.size
+              ? `${(files.front.size / 1024).toFixed(2)} KB`
               : "0 KB"}
           </Text>
         </Box>
@@ -807,17 +790,17 @@ export default function Settings() {
         color="#39996B"
         cursor="pointer"
         fontWeight="600"
-        onClick={() => document.getElementById("idFrontInput").click()}
+        onClick={() => document.getElementById("frontInput").click()}
       >
         Update
       </Text>
     </HStack>
     <Input
-      id="idFrontInput"
+      id="frontInput"
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
       display="none"
-      onChange={(e) => handleFileChange(e, "idFront")}
+      onChange={(e) => handleFileChange(e, "front")}
     />
   </HStack>
 ) : (
@@ -838,7 +821,7 @@ export default function Settings() {
     bg="#E9F8F0"
     cursor="pointer"
     textAlign="center"
-    onClick={() => document.getElementById("idFrontInput").click()}
+    onClick={() => document.getElementById("frontInput").click()}
   >
     <HStack alignText="center">
       <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
@@ -851,11 +834,11 @@ export default function Settings() {
       PDF, JPG, JPEG, PNG less than 10MB
     </Text>
     <Input
-      id="idFrontInput"
+      id="frontInput"
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
       display="none"
-      onChange={(e) => handleFileChange(e, "idFront")}
+      onChange={(e) => handleFileChange(e, "front")}
     />
   </Box>
 )
@@ -866,7 +849,7 @@ export default function Settings() {
       <Text fontWeight="bold" fontSize="13px" color="#626974">Back Side</Text>
 
       
-      {files.idBack && files.idBack.size ? (
+      {files.back && files.back.size ? (
   // File Display Box
   <HStack
     w="100%"
@@ -884,11 +867,11 @@ export default function Settings() {
         <TbFileMinus size="30px" color="#96C3AD" />
         <Box>
           <Text color="#353535" fontSize={isMobile ? "10px" : "13px"} fontWeight="450000" isTruncated>
-            {files.idBack?.name}
+            {files.back?.name}
           </Text>
           <Text fontSize={isMobile ? "9px" : "11px"} color="#989692">
-            {files.idBack?.size
-              ? `${(files.idBack.size / 1024).toFixed(2)} KB`
+            {files.back?.size
+              ? `${(files.back.size / 1024).toFixed(2)} KB`
               : "0 KB"}
           </Text>
         </Box>
@@ -900,17 +883,17 @@ export default function Settings() {
         color="#39996B"
         cursor="pointer"
         fontWeight="600"
-        onClick={() => document.getElementById("idBackInput").click()}
+        onClick={() => document.getElementById("backInput").click()}
       >
         Update
       </Text>
     </HStack>
     <Input
-      id="idBackInput"
+      id="backInput"
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
       display="none"
-      onChange={(e) => handleFileChange(e, "idBack")}
+      onChange={(e) => handleFileChange(e, "back")}
     />
   </HStack>
 ) : (
@@ -931,7 +914,7 @@ export default function Settings() {
     bg="#E9F8F0"
     cursor="pointer"
     textAlign="center"
-    onClick={() => document.getElementById("idBackInput").click()}
+    onClick={() => document.getElementById("backInput").click()}
   >
     <HStack alignText="center">
       <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
@@ -944,11 +927,11 @@ export default function Settings() {
       PDF, JPG, JPEG, PNG less than 10MB
     </Text>
     <Input
-      id="idBackInput"
+      id="backInput"
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
       display="none"
-      onChange={(e) => handleFileChange(e, "idBack")}
+      onChange={(e) => handleFileChange(e, "back")}
     />
   </Box>
 )

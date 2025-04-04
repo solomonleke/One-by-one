@@ -171,15 +171,17 @@ export default function StudentManagement() {
     }
 
 
-    const handleStudentClick = (student_Id) => {
-        router(`/school-admin/student-management/student-profile/${student_Id}`);
-      };
+    
 
     useEffect(() => {
 
         getallStudent()
 
     }, [CurrentPage]);
+
+    const handleStudentClick = (student_Id) => {
+        router(`/school-admin/student-management/student-profile/${student_Id}`);
+      };
 
     return (
         <MainLayout>

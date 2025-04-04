@@ -70,6 +70,8 @@ export default function MyScholarships() {
   const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
   const [error, setError] = useState(null);
   const [stats, setStats] = useState(null);
+  const [activeScholarshipCount, setActiveScholarshipCount] = useState("");
+
   const [data, setData] = useState({
     scholarshipCount: 0,
   });
@@ -129,6 +131,7 @@ export default function MyScholarships() {
         const data = await getActiveScholarships();
         if (data.status) {
           setScholarships(data.data.activeScholarship);
+          setActiveScholarshipCount(data.data.activeScholarship.length);
         } else {
           setError(data.message || "Failed to load scholarships");
         }
@@ -221,9 +224,11 @@ export default function MyScholarships() {
               <Input name="name" fontSize="13px" color="#ADB4BF" value={formData.name} onChange={handleChange} placeholder="e.g Operation helping students" />
             </FormControl>
             <FormControl mb={4}>
-              <FormLabel>Purpose of Scholarship</FormLabel>
+              <FormLabel fontSize="14px">Purpose of Scholarship</FormLabel>
               <Select
-                name="purpose"
+              name="purpose"
+                fontSize="13px" 
+                color="#ADB4BF"
                 value={formData.purpose}
                 onChange={handleChange}
                 placeholder="Select Purpose"
@@ -236,18 +241,18 @@ export default function MyScholarships() {
               </Select>
             </FormControl>
             <FormControl mb={4}>
-              <FormLabel>Motivation</FormLabel>
-              <Input name="motivation" value={formData.motivation} onChange={handleChange} placeholder="What motivates you to sponsor students?" />
+              <FormLabel fontSize="14px">Motivation</FormLabel>
+              <Input name="motivation" fontSize="13px" color="#ADB4BF" value={formData.motivation} onChange={handleChange} placeholder="What motivates you to sponsor students?" />
             </FormControl>
             <FormControl mb={4}>
-              <FormLabel>Amount</FormLabel>
-              <Input name="amount" value={formData.amount} onChange={handleChange} placeholder="Amount" />
+              <FormLabel fontSize="14px">Amount</FormLabel>
+              <Input name="amount" fontSize="13px" color="#ADB4BF" value={formData.amount} onChange={handleChange} placeholder="Amount" />
             </FormControl>
 
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={closeModal} mr={3}>Cancel</Button>
-            <Button colorScheme="blue" onClick={handleSubmit} isLoading={loading}>Create</Button>
+          <ModalFooter gap="10px">
+            <Button onClick={closeModal} w="80px" background="white" color="green" border="1px solid green" mr={3}>Cancel</Button>
+            <Button  w="173px" onClick={handleSubmit} isLoading={loading}>Create Scholarship</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -255,7 +260,7 @@ export default function MyScholarships() {
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["10px", "10px", "18px", "18px"]} rounded='10px'>
         <Tabs>
           <TabList overflowX={"auto"} overflowY={"hidden"}>
-            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Active Scholarships (1)</Tab>
+            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Active Scholarships ({activeScholarshipCount}) </Tab>
             <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Awaiting Funding ({data.scholarshipCount})</Tab>
           </TabList>
 
@@ -393,9 +398,9 @@ export default function MyScholarships() {
                         {scholarship.students.length > 0 ? (
                           scholarship.students.slice(0, 2).map((student, idx) => (
                             <HStack key={idx} bg="#E8F2ED" p="8px" rounded="31px">
-                              <Avatar size="sm" name={student.name} />
+                              <Avatar size="sm" name={student.full_name} />
                               <Text color="#101828" fontSize="13px" fontWeight="500">
-                                {student.name}
+                                {student.full_name}
                               </Text>
                             </HStack>
                           ))
