@@ -18,6 +18,7 @@ import {
   useColorModeValue,
   grid,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom'
 import { FaArrowRight } from 'react-icons/fa';
 import { FaHandHoldingHeart } from "react-icons/fa6";
 import { LuHeartHandshake } from "react-icons/lu";
@@ -45,6 +46,9 @@ const Feature = ({ title, text, icon }) => (
 
 
 export default function LandingPage() {
+
+
+  const router = useNavigate();
 
   const faqItems = [
     {
@@ -111,8 +115,10 @@ export default function LandingPage() {
               Join us in making a lasting impact by supporting deserving students through personalized scholarships and mentorship.
             </Text>
             <Flex gap="10px" w="100%" maxW={{base: "100%", md: "358px"}}  alignItems="center" display={{ base: 'grid', md: 'flex' }}>
-              <Button  w={{base: '100%', md: "171px"}} bg="white" fontSize="14px" px="28px" py="10px" color="#2E2B24">sponsor a student</Button>
-              <Button w={{base: '100%', md: "171px"}} border="1px" bg="transparent" fontSize="14px" px="28px" py="10px" color="#ffff">Start Volunteering</Button>
+              <Button  w={{base: '100%', md: "171px"}} bg="white" fontSize="14px" px="28px" py="10px" color="#2E2B24" onClick={() => {
+              router("/sign-in")}} >sponsor a student</Button>
+              <Button w={{base: '100%', md: "171px"}} border="1px" bg="transparent" fontSize="14px" px="28px" py="10px" color="#ffff" onClick={() => {
+                router("/sign-in")}} >Start Volunteering</Button>
             </Flex>
           </Stack>
 

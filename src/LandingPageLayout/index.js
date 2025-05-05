@@ -13,7 +13,7 @@ export default function MainLayout({ children, bgColor = "gray.gray500", color =
           <Navigation active={active} showNav={showNav}  borderRight={borderRight} />
         </Box>
 
-        <Box width={['100%', '100%', '100%', '100%', '80%']}  ml={["0%","0%","0%","0%","20%"]} >
+        <Box width={['100%']}   >
           <Box >
             {children}
           </Box>

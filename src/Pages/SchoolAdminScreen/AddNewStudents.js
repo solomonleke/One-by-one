@@ -51,6 +51,7 @@ export default function AddNewStudents() {
         classLevel: "",
         performance: "",
         subjects: "",
+        essay: "",
         intendedFieldOfStudy: "",
         studentInterests: "",
         higherEducationGoals: "",
@@ -611,7 +612,7 @@ export default function AddNewStudents() {
                                     >
                                         Please upload the student’s essay detailing their career goals, interests, leadership roles, and required financial support.                    </Text>
                                 </Stack>
-                                <Stack>
+                                {/* <Stack>
                                     <Text
                                         textTransform="capitalize"
                                         fontWeight="500"
@@ -638,7 +639,9 @@ export default function AddNewStudents() {
                                         </label>
                                         <input type="file" id="FrontSide" className="uploadVerification" style={{ display: 'none' }} />
                                     </Box>
-                                </Stack>
+                                </Stack> */}
+
+                                <Input label='Student Essay ' placeholder="Enter the student’s essay" onChange={handlePayload} value={payload.essay} id='essay' />
 
 
                                 <Flex justifyContent="space-between" w="100%" flexWrap="wrap" >
