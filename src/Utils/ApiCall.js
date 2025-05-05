@@ -371,10 +371,8 @@ export const GetAllScholarshipSchoolsApi = (pageNo, noItems, status) => {
     });
 };
 
-export const ApproveSchoolApi = (status, note) => {
-  const { schoolId } = useParams();
- 
-  let config = {
+export const ApproveSchoolApi = async (schoolId, status, note) => {
+  const config = {
     method: "PATCH",
     maxBodyLength: Infinity,
     url: `${baseUrl}/scholarship-admin/approve-school/${schoolId}`,
@@ -382,28 +380,23 @@ export const ApproveSchoolApi = (status, note) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
     },
-    
+    data: {
+      status,
+      note
+    }
   };
 
-  return axios
-    .request(config)
-    .then((response) => {
-     
-      return response;
-    })
-    .catch((error) => {
-      console.log("error", error);
-      if (error.response.data.message) {
-        throw new Error(error.response.data.message);
-      } else if (error.response.data) {
-        throw new Error(error.response);
-      } else if (error.request) {
-        throw new Error(error.message);
-      } else {
-        throw new Error(error.message);
-      }
-    });
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Approval failed"
+    );
+  }
 };
+
 
 export const ApproveStudentApi = (status, essayPercentage) => {
   const { student_id } = useParams();
@@ -541,10 +534,12 @@ export const GetAdminProfile = () => {
     });
 };
 
-export const UpdateStudentProfile = async (student_Id) => {
+export const UpdateStudentProfile = async (studentId, updatedFields) => {
   try {
-    const response = await axios.get(
-      `${baseUrl}/school-admin/update-student/${student_Id}`,
+    console.log("Requesting API with fields:", updatedFields);
+    const response = await axios.patch(
+      `${baseUrl}/school-admin/update-student/${studentId}`,
+      updatedFields,
       {
         headers: {
           "Content-Type": "application/json",
@@ -552,6 +547,7 @@ export const UpdateStudentProfile = async (student_Id) => {
         },
       }
     );
+    console.log("API Response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching student profile:", error);
@@ -560,6 +556,7 @@ export const UpdateStudentProfile = async (student_Id) => {
     );
   }
 };
+
 
 export const DeleteStudentProfile = async (student_Id) => {
   try {
@@ -925,6 +922,33 @@ export const getScholarshipsBySponsor = async () => {
     }
   }
 };
+
+export const fundScholarshipApi = async (Id) => {
+  console.log("Funding Scholarship with ID:", Id);
+  
+try{
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/sponsor-admin/fund-scholarship/${Id}`,
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  };
+
+  const response = await axios.request(config)
+  console.log("Funding response:", response.data);
+  if(response.data.status === true){
+    return response.data
+  };
+} catch {
+
+}
+  
+  
+};
+
+
 
 export const AddStudentToScholarshipApi = async (scholarshipId, studentIds) => {
   if (!scholarshipId) {

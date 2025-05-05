@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback  } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import MainLayout from '../../DashboardLayout'
 import { Text, Flex, HStack, VStack, Box, Center, Progress, Icon, Avatar, Image } from '@chakra-ui/react'
@@ -57,6 +57,8 @@ import { configuration } from "../../Utils/Helpers";
 import Pagination from "../../Components/Pagination";
 import { BiSearch } from "react-icons/bi";
 import { FaCalendarAlt } from "react-icons/fa";
+import Preloader from "../../Components/Preloader"
+
 import {
   Menu,
   MenuButton,
@@ -65,185 +67,233 @@ import {
 } from "@chakra-ui/react";
 
 
- export default function Students() {
+export default function Students() {
   const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
-    const [MainData, setMainData] = useState([]);
-    const [FilteredData, setFilteredData] = useState(null);
-    const [SearchInput, setSearchInput] = useState("");
-    const [ByDate, setByDate] = useState(false);
-    const [StartDate, setStartDate] = useState("");
-    const [EndDate, setEndDate] = useState("");
+  const [MainData, setMainData] = useState([]);
+  const [FilteredData, setFilteredData] = useState(null);
+  const [SearchInput, setSearchInput] = useState("");
+  const [ByDate, setByDate] = useState(false);
+  const [StartDate, setStartDate] = useState("");
+  const [EndDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
-    const [CurrentPage, setCurrentPage] = useState(1);
-    const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
-    const [TotalPage, setTotalPage] = useState("");
-    const [status, setStatus] = useState("");
-    const [search, setSearch] = useState("");
-    
-    const paginate = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
+  const [CurrentPage, setCurrentPage] = useState(1);
+  const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
+  const [TotalPage, setTotalPage] = useState("");
+  const [status, setStatus] = useState("PENDING");
+  const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [pendingStudents, setPendingStudents] = useState([]);
+  const [approvedStudents, setApprovedStudents] = useState([]);
+  const [rejectedStudents, setRejectedStudents] = useState([]);
+  const { student_id } = useParams()
+  const [essayPercentage, setEssayPercentage] = useState(0);
 
-  const GetAllScholarshipStudent = async () => {
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+
+
+  const GetAllScholarshipStudent = async (status) => {
+    console.log(" status:", status);
+
 
     try {
       const result = await GetAllScholarshipStudentsApi(CurrentPage, PostPerPage, status, search)
-
       console.log("getallscholarshipStudents", result)
 
-      if (result.status === 200 && result.data?.students?.length > 0) {
-        setMainData(result.data.students);
-        setTotalPage(result.data.totalPages);
-    } else {
-        setMainData([]);
-    }
+
+      if (result.status === 200 && result.data.data?.students?.length > 0) {
+        const Students = result.data.data.students;
+        setTotalPage(result.data.data.totalPages);
+        if (status === "PENDING") {
+          setPendingStudents(Students);
+        } else if (status === "APPROVED") {
+          setApprovedStudents(Students);
+        } else if (status === "REJECTED") {
+          setRejectedStudents(Students);
+        }
+      } else {
+        if (status === "PENDING") {
+          setPendingStudents([]);
+        } else if (status === "APPROVED") {
+          setApprovedStudents([]);
+        } else if (status === "REJECTED") {
+          setRejectedStudents([]);
+        }
+      }
     } catch (e) {
 
       console.log("error", e.message)
+    } finally {
+      setIsLoading(false);
     }
 
   }
 
 
-  useEffect(() => {
-    GetAllScholarshipStudent();
-}, [CurrentPage, PostPerPage, status, search]);
 
-const filterBy = (type) => {
-  let filtered = [...MainData];
-  if (type === "name") {
-      filtered = filtered.filter(item => item.name.toLowerCase().includes(SearchInput.toLowerCase()));
-  } else if (type === "email") {
-      filtered = filtered.filter(item => item.email.toLowerCase().includes(SearchInput.toLowerCase()));
-  } else if (type === "dept") {
-      filtered = filtered.filter(item => item.department.toLowerCase().includes(SearchInput.toLowerCase()));
-  } else if (type === "phoneNumber") {
-      filtered = filtered.filter(item => item.phoneNumber.includes(SearchInput));
-  } else if (type === "date" && StartDate && EndDate) {
-      filtered = filtered.filter(item => {
-          const itemDate = new Date(item.date);
-          return itemDate >= new Date(StartDate) && itemDate <= new Date(EndDate);
-      });
+  const FetchPending = () => {
+    if (pendingStudents.length === 0) GetAllScholarshipStudent("PENDING")
   }
-  setFilteredData(filtered);
-};
 
-const { student_id } = useParams()
-const [essayPercentage, setEssayPercentage] = useState(0);
+  const FetchApproved = () => {
+    if (pendingStudents.length === 0) GetAllScholarshipStudent("APPROVED")
+  }
 
-const ApproveStudent = async () => {
-  try {
-      const result = await ApproveStudentApi(student_id, status, essayPercentage)
+  const FetchRejected = () => {
+    if (pendingStudents.length === 0) GetAllScholarshipStudent("REJECTED")
+  }
 
-      console.log("approved student", result)
+  
+  const filterBy = (type) => {
+    let filtered = [...MainData];
+    if (type === "name") {
+      filtered = filtered.filter(item => item.name.toLowerCase().includes(SearchInput.toLowerCase()));
+    } else if (type === "email") {
+      filtered = filtered.filter(item => item.email.toLowerCase().includes(SearchInput.toLowerCase()));
+    } else if (type === "dept") {
+      filtered = filtered.filter(item => item.department.toLowerCase().includes(SearchInput.toLowerCase()));
+    } else if (type === "phoneNumber") {
+      filtered = filtered.filter(item => item.phoneNumber.includes(SearchInput));
+    } else if (type === "date" && StartDate && EndDate) {
+      filtered = filtered.filter(item => {
+        const itemDate = new Date(item.date);
+        return itemDate >= new Date(StartDate) && itemDate <= new Date(EndDate);
+      });
+    }
+    setFilteredData(filtered);
+  };
 
+
+
+  const ApproveStudent = async (student_id) => {
+    try {
+      const result = await ApproveStudentApi(student_id, status, essayPercentage);
+      
+      console.log("approved student", result);
+      
       setShowToast({
         show: true,
         message: result.message,
         status: result.status,
-    });
+      });
 
       if (result.status === 200) {
-          setLoading(true);
-          setShowToast({
-              show: true,
-              message: "Approved Student!!!",
-              status: "success",
-          });
-      }
-  } catch (e) {
-      setShowToast({
+        setIsLoading(true);
+        setShowToast({
           show: true,
-          message: "Error Approving Student!!!",
-          status: "error",
+          message: "Approved Student!!!",
+          status: "success",
+        });
+        setTimeout(() => setShowToast({ show: false }), 3000);
+      }
+    } catch (e) {
+      setShowToast({
+        show: true,
+        message: "Error Approving Student!!! ",
+        status: "error",
       });
-      console.log("error", e.message)
-  } finally {
-      setLoading(false);
-  }
-}
+      setTimeout(() => setShowToast({ show: false }), 3000);
+      console.log("error", e.message);
+    } finally {
+      setIsLoading(false);
+    }
+  } 
+
+
+  useEffect(() => {
+    GetAllScholarshipStudent("PENDING");
+  
+    GetAllScholarshipStudent("APPROVED");
+  
+    GetAllScholarshipStudent("REJECTED");
+  }, [CurrentPage, PostPerPage, search]);
+
+
+  if (loading) return <Preloader message="Fetching students..." />;
+
+
   return (
     <MainLayout>
-      <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Students <Box as='span' color="#667085" fontWeight="600" fontSize="19px">({MainData.length})</Box></Text>
+      {showToast.show && (
+        <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
+      )}
+      <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Students <Box as='span' color="#667085" fontWeight="600" fontSize="19px">({pendingStudents.length + approvedStudents.length + rejectedStudents.length})</Box></Text>
       <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Review and approve student applications. Manage pending requests and take action to accept or reject them.</Text>
 
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["18px", "18px"]} rounded='10px'>
         <Tabs>
           <HStack justifyContent={"space-between"}>
             <TabList overflowX={"auto"} overflowY={"hidden"}>
-              <Tab  onClick={() => {
-                                setStatus("PENDING")
-                            }} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
-              <Tab  onClick={() => {
-                                setStatus("APPROVED")
-                            }} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
-              <Tab  onClick={() => {
-                                setStatus("REJECTED")
-                            }} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({MainData.length})</Box></Text></Tab>
+              <Tab onClick={FetchPending} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Pending Approval <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({pendingStudents.length})</Box></Text></Tab>
+              <Tab onClick={FetchApproved} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Approved <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({approvedStudents.length})</Box></Text></Tab>
+              <Tab onClick={FetchRejected} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}><Text fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Rejected <Box as="span" color="#667085" fontSize="12px" fontWeight="600">({rejectedStudents.length})</Box></Text></Tab>
             </TabList>
 
             <Flex flexWrap="wrap" mt={["10px", "10px", "0px", "0px"]} alignItems="center" justifyContent={"flex-end"}>
-            <HStack flexWrap={["wrap", "nowrap"]}>
+              <HStack flexWrap={["wrap", "nowrap"]}>
                 {ByDate === false ? (
-                    <Input
-                        placeholder="Search"
-                        size="sm"
-                        onChange={(e) => setSearchInput(e.target.value)}
-                        value={SearchInput}
-                        bColor="#E4E4E4"
-                        leftIcon={<BiSearch />}
-                    />
+                  <Input
+                    placeholder="Search"
+                    size="sm"
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    value={SearchInput}
+                    bColor="#E4E4E4"
+                    leftIcon={<BiSearch />}
+                  />
                 ) : (
-                    <HStack flexWrap={["wrap", "nowrap"]}>
-                        <Input
-                            placeholder="Start Date"
-                            type="date"
-                            size="sm"
-                            onChange={(e) => setStartDate(e.target.value)}
-                            value={StartDate}
-                            bColor="#E4E4E4"
-                            leftIcon={<FaCalendarAlt />}
-                        />
-                        <Input
-                            placeholder="End Date"
-                            type="date"
-                            size="sm"
-                            onChange={(e) => setEndDate(e.target.value)}
-                            value={EndDate}
-                            bColor="#E4E4E4"
-                            leftIcon={<FaCalendarAlt />}
-                        />
-                        <Flex onClick={() => filterBy("date")} cursor="pointer" px="5px" py="3px" rounded="5px" bg="greenn.greenn500" color="#fff" justifyContent="center" alignItems="center" >
-                            <BiSearch />
-                        </Flex>
-                    </HStack>
+                  <HStack flexWrap={["wrap", "nowrap"]}>
+                    <Input
+                      placeholder="Start Date"
+                      type="date"
+                      size="sm"
+                      onChange={(e) => setStartDate(e.target.value)}
+                      value={StartDate}
+                      bColor="#E4E4E4"
+                      leftIcon={<FaCalendarAlt />}
+                    />
+                    <Input
+                      placeholder="End Date"
+                      type="date"
+                      size="sm"
+                      onChange={(e) => setEndDate(e.target.value)}
+                      value={EndDate}
+                      bColor="#E4E4E4"
+                      leftIcon={<FaCalendarAlt />}
+                    />
+                    <Flex onClick={() => filterBy("date")} cursor="pointer" px="5px" py="3px" rounded="5px" bg="greenn.greenn500" color="#fff" justifyContent="center" alignItems="center" >
+                      <BiSearch />
+                    </Flex>
+                  </HStack>
                 )}
                 <Menu isLazy>
-                    <MenuButton as={Box}>
-                        <HStack border="1px solid #E3E5E8" rounded="7px" p='6px' color='#2F2F2F' fontWeight="500" fontSize="14px">
-                            <Text>Filter</Text>
-                            <IoFilter />
-                        </HStack>
-                    </MenuButton>
-                    <MenuList>
-                        <MenuItem onClick={() => filterBy("name")}><Text>by Name</Text></MenuItem>
-                        <MenuItem onClick={() => filterBy("email")}><Text>by Email</Text></MenuItem>
-                        <MenuItem onClick={() => filterBy("dept")}><Text>by Department</Text></MenuItem>
-                        <MenuItem onClick={() => filterBy("phoneNumber")}><Text>by Phone Number</Text></MenuItem>
-                        <MenuItem onClick={() => setByDate(true)}><Text>by Date</Text></MenuItem>
-                        <MenuItem onClick={() => {
-                            setFilteredData(null);
-                            setSearchInput("");
-                            setByDate(false);
-                            setStartDate("");
-                            setEndDate("");
-                        }}>
-                            <Text>Clear Filter</Text>
-                        </MenuItem>
-                    </MenuList>
+                  <MenuButton as={Box}>
+                    <HStack border="1px solid #E3E5E8" rounded="7px" p='6px' color='#2F2F2F' fontWeight="500" fontSize="14px">
+                      <Text>Filter</Text>
+                      <IoFilter />
+                    </HStack>
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem onClick={() => filterBy("name")}><Text>by Name</Text></MenuItem>
+                    <MenuItem onClick={() => filterBy("email")}><Text>by Email</Text></MenuItem>
+                    <MenuItem onClick={() => filterBy("dept")}><Text>by Department</Text></MenuItem>
+                    <MenuItem onClick={() => filterBy("phoneNumber")}><Text>by Phone Number</Text></MenuItem>
+                    <MenuItem onClick={() => setByDate(true)}><Text>by Date</Text></MenuItem>
+                    <MenuItem onClick={() => {
+                      setFilteredData(null);
+                      setSearchInput("");
+                      setByDate(false);
+                      setStartDate("");
+                      setEndDate("");
+                    }}>
+                      <Text>Clear Filter</Text>
+                    </MenuItem>
+                  </MenuList>
                 </Menu>
-            </HStack>
-        </Flex>
+              </HStack>
+            </Flex>
 
           </HStack>
 
@@ -259,7 +309,6 @@ const ApproveStudent = async () => {
                     <Thead bg="#F9FAFB">
                       <Tr >
                         <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
-                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">school name</Th>
                         <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">field of study</Th>
                         <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">status</Th>
                         <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
@@ -269,30 +318,35 @@ const ApproveStudent = async () => {
                     <Tbody>
 
                       {
-                        MainData.map((item, i) => (
-
-                          <TableRow
-                            type={"scholarship-admin-students"}
-                            name={item.full_name}
-                            email={item.email}
-                            schoolName={item.school_name}
-                            fieldOfStudy={item.intended_field_of_study}
-                            status={item.status}
-                            buttonText={item.buttonText}
-                            onButtonClick={() => ApproveStudent(item)}
-                          />
-                        ))
+                        pendingStudents.length > 0 ? (
+                          pendingStudents.map((item, i) => (
+                            <TableRow
+                              key={i}
+                              type={"scholarship-admin-students"}
+                              name={item.full_name}
+                              email={item.email}
+                              fieldOfStudy={item.intended_field_of_study}
+                              status={item.verification_status}
+                              buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
+                              onButtonClick={() => ApproveStudent(item.id)}
+                            />
+                          ))
+                        ) : (
+                          <Text textAlign="center" py={5} ml="20px">
+                            No pending students found.
+                          </Text>
+                        )
                       }
 
                     </Tbody>
 
                   </Table>
 
-                    <Pagination
-                        currentPage={CurrentPage}
-                        totalPosts={TotalPage}
-                        paginate={paginate}
-                    />
+                  <Pagination
+                    currentPage={CurrentPage}
+                    totalPosts={TotalPage}
+                    paginate={paginate}
+                  />
                 </TableContainer>
               </Box>
             </TabPanel>
@@ -316,29 +370,35 @@ const ApproveStudent = async () => {
                     <Tbody>
 
                       {
-                        MainData.map((item, i) => (
-
-<TableRow
-                            type={"scholarship-admin-students"}
-                            name={item.full_name}
-                            email={item.email}
-                            schoolName={item.school_name}
-                            fieldOfStudy={item.intended_field_of_study}
-                            status={item.status}
-                            buttonText={item.buttonText}
-                          />
-                        ))
+                        approvedStudents.length > 0 ? (
+                          pendingStudents.map((item, i) => (
+                            <TableRow
+                              key={i}
+                              type={"scholarship-admin-students"}
+                              name={item.full_name}
+                              email={item.email}
+                              fieldOfStudy={item.intended_field_of_study}
+                              status={item.verification_status}
+                              buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
+                              onButtonClick={() => ApproveStudent(item.id)}
+                            />
+                          ))
+                        ) : (
+                          <Text textAlign="center" py={5} ml="20px">
+                            No Approved students found.
+                          </Text>
+                        )
                       }
 
                     </Tbody>
 
                   </Table>
 
-                    <Pagination
-                        currentPage={CurrentPage}
-                        totalPosts={TotalPage}
-                        paginate={paginate}
-                    />
+                  <Pagination
+                    currentPage={CurrentPage}
+                    totalPosts={TotalPage}
+                    paginate={paginate}
+                  />
                 </TableContainer>
               </Box>
             </TabPanel>
@@ -361,29 +421,35 @@ const ApproveStudent = async () => {
                     <Tbody>
 
                       {
-                        MainData.map((item, i) => (
-
-                          <TableRow
-                            type={"scholarship-admin-students"}
-                            name={item.full_name}
-                            email={item.email}
-                            schoolName={item.school_name}
-                            fieldOfStudy={item.intended_field_of_study}
-                            status={item.status}
-                            buttonText={item.buttonText}
-                          />
-                        ))
+                        rejectedStudents.length > 0 ? (
+                          pendingStudents.map((item, i) => (
+                            <TableRow
+                              key={i}
+                              type={"scholarship-admin-students"}
+                              name={item.full_name}
+                              email={item.email}
+                              fieldOfStudy={item.intended_field_of_study}
+                              status={item.verification_status}
+                              buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
+                              onButtonClick={() => ApproveStudent(item.id)}
+                            />
+                          ))
+                        ) : (
+                          <Text textAlign="center" py={5} ml="20px">
+                            No Rejected students found.
+                          </Text>
+                        )
                       }
 
                     </Tbody>
 
                   </Table>
 
-                    <Pagination
-                        currentPage={CurrentPage}
-                        totalPosts={TotalPage}
-                        paginate={paginate}
-                    />
+                  <Pagination
+                    currentPage={CurrentPage}
+                    totalPosts={TotalPage}
+                    paginate={paginate}
+                  />
                 </TableContainer>
               </Box>
             </TabPanel>

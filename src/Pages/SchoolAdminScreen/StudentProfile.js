@@ -9,6 +9,7 @@ import ProfileUpdateNotification from '../../Components/ProfileUpdateNotificatio
 import { ReactComponent as NextArrow } from '../../Asset/nextArrow.svg';
 import { ReactComponent as Pdf } from '../../Asset/pdf.svg';
 import ShowToast from "../../Components/ToastNotification";
+import Preloader from "../../Components/Preloader";
 import { Box, HStack, Text, useDisclosure, Stack, Menu, MenuButton, MenuList, MenuItem, Avatar, Spacer, Flex, Modal,
   ModalOverlay,
   ModalContent,
@@ -24,6 +25,7 @@ import { DeleteStudentProfile } from "../../Utils/ApiCall";
 import { UpdateStudentProfile } from "../../Utils/ApiCall";
 import { useParams } from 'react-router-dom';
 
+
 export default function StudentProfile() {
   const router = useNavigate();
   const { student_Id } = useParams(); // Get student ID from URL params
@@ -35,7 +37,9 @@ export default function StudentProfile() {
   const [error, setError] = useState('');
   const [editedData, setEditedData] = useState(studentData);
   const { isOpen: isEditModalOpen, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
-  const { isOpen: isRemoveModalOpen, onOpen: onOpenRemove, onClose: onCloseRemove } = useDisclosure();
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
+
 
   const [showToast, setShowToast] = useState({
     show: false,
@@ -49,33 +53,124 @@ export default function StudentProfile() {
 
   const handleChange = (e) => {
     setEditedData({ ...editedData, [e.target.name]: e.target.value });
+    console.log("Updated field:", e.target.name, " Value:", e.target.value);
   };
 
-  const handleSave = () => {
-    setStudentData(editedData);
-    localStorage.setItem("studentData", JSON.stringify(editedData));
-    onCloseEdit();
+  const [originalData, setOriginalData] = useState(null);
+
+// When opening the modal (e.g. in a useEffect or a handler)
+const handleOpenEditModal = (studentData) => {
+  console.log("Student data before opening modal: ", studentData);
+  setEditedData(studentData);      // Prefill form
+  setOriginalData(studentData);    // Save original for comparison
+  console.log("Edited Data on Modal Open: ", studentData);
+  onOpenEdit();                // Chakra modal handler
+};
+
+const openRemoveModal = (id) => {
+  setSelectedStudentId(id);
+  setIsOpenModal(true);
+};
+
+const closeRemoveModal = () => {
+  setSelectedStudentId(null);
+  setIsOpenModal(false);
+};
+
+
+  // const handleSave = () => {
+  //   setStudentData(editedData);
+  //   localStorage.setItem("studentData", JSON.stringify(editedData));
+  //   onCloseEdit();
+  // };
+
+  const handleSave = async () => {
+    try {
+      const updatedFields = {};
+  
+      for (const key in editedData) {
+        if (
+          editedData[key] !== originalData[key] &&
+          editedData[key] !== "" &&
+          editedData[key] !== null
+        ) {
+          updatedFields[key] = editedData[key];
+        }
+      }
+  
+      console.log("Updated Fields:", updatedFields);
+  
+      if (Object.keys(updatedFields).length === 0) {
+        setShowToast({
+          title: "No changes",
+          description: "You haven't made any changes.",
+          status: "info",
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
+  
+      const res = await UpdateStudentProfile(student_Id, updatedFields);
+      console.log("API Response: ", res);
+  
+      setShowToast({
+        title: "Success",
+        description: res.message || "Student updated successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+  
+      setStudentData(res.student);
+  
+      onCloseEdit(); // Close modal
+    } catch (error) {
+      console.error("Error during save:", error); // Log the actual error
+      setShowToast({
+        title: "Update Failed",
+        description: error.message || "Something went wrong",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
+  
+  
+  
+  
+  
 
   const deleteStudentProfileBtn = async () => {
+    setShowToast({
+      show: true,
+      message: "Deleting student profile...",
+      status: "success"
+    })
+    setTimeout(() => setShowToast({ show: false }), 3000);
     try {
       const response = await DeleteStudentProfile(student_Id);
       console.log("response", response);
       console.log("Deleting student with ID:", student_Id);
 
-      if (response.status === 201) {
+
+      if (response.status === true) {
         setShowToast({
           show: true,
           message: response.message,
-          status: response.status
+          status: "success"
         })
+        setTimeout(() => setShowToast({ show: false }), 3000);
 
         setTimeout(() => {
+         
           setShowToast({
             show: false,
 
           })
-        }, 3000)
+          router("/school-admin/student-management")
+        }, 2000)
 
       }
 
@@ -85,31 +180,40 @@ export default function StudentProfile() {
   };
 
 
+  const fetchStudentProfile = async () => {
+    try {
+      const response = await GetStudentProfile(student_Id);
+      console.log("response", response);
+      setStudentData(response); // Store student data
+      setLoading(false);
+    } catch (err) {
+      setError(err.message || 'Failed to fetch student profile');
+      setLoading(false);
+    }
+  };
+
+
   useEffect(() => {
 
-    const fetchStudentProfile = async () => {
-      try {
-        const response = await GetStudentProfile(student_Id);
-        console.log("response", response);
-        setStudentData(response); // Store student data
-        setLoading(false);
-      } catch (err) {
-        setError(err.message || 'Failed to fetch student profile');
-        setLoading(false);
-      }
-    };
+    
 
     fetchStudentProfile();
-  }, [student_Id]);
+  }, []);
 
+  
  
-  if (loading) return <Text>Loading student profile...</Text>;
+  if(loading) {
+    return ( <Preloader  />)
+  }
   if (error) return <Text color="red.500">{error}</Text>;
 
 
 
   return (
     <MainLayout>
+    {showToast.show && (
+        <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
+      )}
       <Flex justifyContent="space-between" flexWrap="wrap">
         <HStack spacing="10px">
           <Text
@@ -161,7 +265,7 @@ export default function StudentProfile() {
               </MenuButton>
               <MenuList>
                 <MenuItem
-                  onClick={onOpenEdit}
+                  onClick={() => handleOpenEditModal(studentData)}
                   textTransform="capitalize"
                   fontWeight="500"
                   color="#2F2F2F"
@@ -172,7 +276,7 @@ export default function StudentProfile() {
                   </HStack>
                 </MenuItem>
                 <MenuItem
-                 onClick={deleteStudentProfileBtn(student_Id)}
+                 onClick={() => openRemoveModal(student_Id)}
                   textTransform="capitalize"
                   fontWeight="500"
                   color="#FF4040"
@@ -255,7 +359,7 @@ export default function StudentProfile() {
           onChange={handleChange}
         />
         <Input
-          name="deparment"
+          name="department"
           placeholder="Department"
           value={editedData.department}
           onChange={handleChange}
@@ -474,20 +578,14 @@ export default function StudentProfile() {
 
             </Stack>
 
-
-
-
-
-          
-
-           
-
-          
           </Box>
         </Flex>
 
 
-      <RemoveNotification isOpen={isRemoveModalOpen} onClose={onCloseRemove} />
+        <RemoveNotification isOpen={isOpenModal} onClose={()=> closeRemoveModal()} onClick={() => {
+    deleteStudentProfileBtn(selectedStudentId);
+    closeRemoveModal();
+    }} />
       {/* <ProfileUpdateNotification isOpen={isEditModalOpen} onClose={onCloseEdit} /> */}
     </MainLayout>
   );

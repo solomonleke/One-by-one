@@ -56,6 +56,8 @@ import ShowToast from '../../Components/ToastNotification';
 import { configuration } from "../../Utils/Helpers";
 import { getScholarshipsBySponsor } from "../../Utils/ApiCall";
 import { AddStudentToScholarshipApi } from "../../Utils/ApiCall";
+import Preloader from "../../Components/Preloader"
+
 
 
 export default function DiscoverStudents() {
@@ -70,9 +72,6 @@ export default function DiscoverStudents() {
 
 
   const router = useNavigate();
-
-
-
   const [MainData, setMainData] = useState([])
   const [FilterData, setFilterData] = useState([])
   const [FilteredData, setFilteredData] = useState(null);
@@ -82,8 +81,8 @@ export default function DiscoverStudents() {
   const [ByDate, setByDate] = useState(false);
   const [selectedScholarship, setSelectedScholarship] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-
+  const [totalStudentsCount, setTotalStudentsCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Pagination settings to follow
   const [CurrentPage, setCurrentPage] = useState(1);
@@ -92,8 +91,7 @@ export default function DiscoverStudents() {
 
 
   //get current post
-  const indexOfLastSra = CurrentPage * PostPerPage;
-  const indexOfFirstSra = indexOfLastSra - PostPerPage;
+  
 
   //change page
   const paginate = (pageNumber) => {
@@ -150,17 +148,12 @@ export default function DiscoverStudents() {
 
       console.log("getallSponsorStudent", result)
 
-      // if(result.essay_rating === null) {
-      //   result.essay_rating = "0"
-      // } else {
-      //   result.essay_rating = result.essay_rating
-      // }
-
 
       if (result.status === 200) {
         setMainData(result.data.data.students)
         setFilteredData(result.data.data.students)
         setTotalPage(result.data.data.totalPages)
+        setTotalStudentsCount(result.data.data.totalCount);
       }
     } catch (e) {
 
@@ -201,7 +194,7 @@ export default function DiscoverStudents() {
   // Listen for student selection from TableRow
   useEffect(() => {
     const handleStudentSelected = (studentId) => {
-      console.log("📩 Received studentId:", studentId);
+      console.log(" Received studentId:", studentId);
       setSelectedStudentId(studentId);  // Store the selected student
       setIsOpening(true);  // Open the modal
     };
@@ -219,9 +212,12 @@ export default function DiscoverStudents() {
   };
 
   const handleSubmit = async () => {
-    if (!selectedStudentId || !selectedScholarship) {
-      alert("Please select both a student and a scholarship.");
-      return;
+    if (!selectedScholarship) {
+      setShowToast({ 
+        show: true, 
+        message: error.message || "Select a Scholarship.", 
+        status: "error" 
+      });
     }
 
     try {
@@ -233,7 +229,7 @@ export default function DiscoverStudents() {
       );
 
       if (!selectedScholarshipData) {
-        throw new Error("Selected scholarship not found.");
+        throw new Error("Select a Scholarship.");
       }
 
       // Extract current students
@@ -273,6 +269,7 @@ export default function DiscoverStudents() {
       setTimeout(() => setShowToast({ show: false }), 3000);
     } finally {
       setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -299,12 +296,14 @@ export default function DiscoverStudents() {
         setError(err.message);
       } finally {
         setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchScholarshipsBySponsor();
   }, []);
 
+  if (isLoading) return <Preloader message="Fetching students..." />;
 
 
   return (
@@ -509,6 +508,9 @@ export default function DiscoverStudents() {
             <Modal isOpen={isOpening} onClose={handleCloseModal}>
               <ModalOverlay />
               <ModalContent maxW="537px">
+              {showToast.show && (
+        <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
+      )}
                 <ModalHeader>
                 <Text fontWeight="700" color="#1F2937" >Add Student to Scholarship</Text>
                 <Text fontSize="14px" fontWeight="400" color="#6B7280" >Select a scholarship to add the student to</Text>
@@ -617,9 +619,9 @@ export default function DiscoverStudents() {
         </Box>
 
         <Pagination
-          
+          totalPosts={TotalPage}
           currentPage={CurrentPage}
-          totalPosts={MainData.length}
+          // postsPerPage={PostPerPage}
           paginate={paginate}
         />
       </Box>

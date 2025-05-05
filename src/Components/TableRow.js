@@ -13,7 +13,7 @@ import { IoMdOpen } from "react-icons/io";
 import { GoDotFill } from "react-icons/go";
 import eventBus from './eventBus';
 
-export default function TableRow({ type, name, email, studentIds, department, classLevel, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore }) {
+export default function TableRow({ type, name, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore }) {
     const router = useNavigate()
 
     
@@ -66,7 +66,7 @@ export default function TableRow({ type, name, email, studentIds, department, cl
                                             <Text>Edit</Text>
                                         </HStack>
                                     </MenuItem>
-                                    <MenuItem onClick={onRemove} textTransform="capitalize" fontWeight={"500"} color='#FF4040' _hover={{ color: "#FF4040", fontWeight: "400", bg: "#E8FFF4" }}>
+                                    <MenuItem onClick={onDelete} textTransform="capitalize" fontWeight={"500"} color='#FF4040' _hover={{ color: "#FF4040", fontWeight: "400", bg: "#E8FFF4" }}>
                                         <HStack fontSize="14px">
 
                                             <Text >Remove Student</Text>
@@ -189,8 +189,8 @@ export default function TableRow({ type, name, email, studentIds, department, cl
                     </Td>
                     <Td><Text fontWeight="400" fontSize={"13px"} >{submissionDate}</Text></Td>
                     <Td>
-                        <HStack color={status === "approved" ? "#027A48": status === "pending" ? "#FFA30C": "#FD4739"}>
-                            <Box rounded="100%" w="8px" h="8px" bg={status === "approved" ? "#027A48": status === "pending" ? "#FFA30C": "#FD4739"}></Box>
+                    <HStack color={status === "APPROVED" ? "#027A48": status === "PENDING" ? "#FFA30C": "#FD4739"}>
+                            <Box rounded="100%" w="8px" h="8px" bg={status === "APPROVED" ? "#027A48": status === "PENDING" ? "#FFA30C": "#FD4739"}></Box>
                             <Text fontWeight="400" fontSize={"13px"} >{status}</Text>
                         </HStack>
                     </Td>
@@ -215,11 +215,11 @@ export default function TableRow({ type, name, email, studentIds, department, cl
                           
                         </HStack>
                     </Td>
-                            <Td><Text color={"#667085"} textTransform={"capitalize"} fontWeight={"400"} fontSize={"13px"} >{schoolName}</Text></Td>
+                            {/* <Td><Text color={"#667085"} textTransform={"capitalize"} fontWeight={"400"} fontSize={"13px"} >{schoolName}</Text></Td> */}
                     <Td><Text fontWeight="400" color={"#667085"} fontSize={"13px"}>{fieldOfStudy}</Text></Td>
                     <Td>
-                        <HStack color={status === "approved" ? "#027A48": status === "pending" ? "#FFA30C": "#FD4739"}>
-                            <Box rounded="100%" w="8px" h="8px" bg={status === "approved" ? "#027A48": status === "pending" ? "#FFA30C": "#FD4739"}></Box>
+                        <HStack color={status === "APPROVED" ? "#027A48": status === "PENDING" ? "#FFA30C": "#FD4739"}>
+                            <Box rounded="100%" w="8px" h="8px" bg={status === "APPROVED" ? "#027A48": status === "PENDING" ? "#FFA30C": "#FD4739"}></Box>
                             <Text fontWeight="400" fontSize={"13px"} >{status}</Text>
                         </HStack>
                     </Td>

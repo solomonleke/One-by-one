@@ -6,6 +6,7 @@ import { Text, Flex, HStack, Stack, VStack, Box, Center, Progress, Spacer, Icon,
 import { Tooltip as Tooltips } from '@chakra-ui/react';
 import DashboardCard from "../../Components/DashboardCard"
 import Button from "../../Components/Button"
+import Preloader from "../../Components/Preloader"
 import { HiOutlineUsers } from 'react-icons/hi'
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdOutlineCancel } from 'react-icons/md'
@@ -37,7 +38,8 @@ import ShowToast from '../../Components/ToastNotification';
 import { createScholarshipApi } from "../../Utils/ApiCall";
 import { getActiveScholarships } from "../../Utils/ApiCall";
 import { getScholarshipsBySponsor } from "../../Utils/ApiCall";
-import { GetSponsorAdminStats } from "../../Utils/ApiCall";
+import { GetSponsorAdminStats, fundScholarshipApi } from "../../Utils/ApiCall";
+
 
 
 import {
@@ -70,7 +72,9 @@ export default function MyScholarships() {
   const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
   const [error, setError] = useState(null);
   const [stats, setStats] = useState(null);
-  const [activeScholarshipCount, setActiveScholarshipCount] = useState("");
+  const [activeScholarshipCount, setActiveScholarshipCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
 
   const [data, setData] = useState({
     scholarshipCount: 0,
@@ -122,76 +126,96 @@ export default function MyScholarships() {
       setTimeout(() => setShowToast({ show: false }), 3000);
     } finally {
       setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    const fetchScholarships = async () => {
-      try {
-        const data = await getActiveScholarships();
-        if (data.status) {
-          setScholarships(data.data.activeScholarship);
-          setActiveScholarshipCount(data.data.activeScholarship.length);
-        } else {
-          setError(data.message || "Failed to load scholarships");
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
 
+  const fetchScholarships = async () => {
+    try {
+      const data = await getActiveScholarships();
+      if (data.status) {
+        setScholarships(data.data.activeScholarship);
+        setActiveScholarshipCount(data.data.activeScholarship.length);
+      } else {
+        setError(data.message || "Failed to load scholarships");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setIsLoading(false);
+    }
+  };
+
+  const fundScholarship = async(Id) => {
+    try {
+      const data = await fundScholarshipApi(Id);
+      console.log("fundScholarship", data)
+      if(data.status === true){
+
+      }
+      window.location.assign("https://checkout.paystack.com/2ij8ulu20y5057y");
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setIsLoading(false);
+    }
+  }
+
+  const fetchScholarshipsBySponsor = async () => {
+    try {
+      const data = await getScholarshipsBySponsor();
+
+      if (data.status && Array.isArray(data.data)) {
+        setSponsorScholarships(data.data); // ✅ Set directly since `data` is an array
+      } else {
+        console.error("Unexpected response format:", data);
+        setError(data.message || "Failed to load scholarships");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setIsLoading(false);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      console.log("Fetching Dashboard Stats...");
+
+      const data = await GetSponsorAdminStats();
+      console.log("Fetched Dashboard Stats:", data);
+
+      if (data) {
+        setStats(data);
+        setData({
+          scholarshipCount: data.scholarshipCount,
+        });
+      } else {
+        console.error("Dashboard data is null or undefined.");
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error.message);
+    } finally {
+      setLoading(false);
+      setIsLoading(false);
+    }
+  };
+  
+  
+
+  useEffect(() => {
+    
     fetchScholarships();
-  }, []);
-
-  useEffect(() => {
-    const fetchScholarshipsBySponsor = async () => {
-      try {
-        const data = await getScholarshipsBySponsor();
-
-        if (data.status && Array.isArray(data.data)) {
-          setSponsorScholarships(data.data); // ✅ Set directly since `data` is an array
-        } else {
-          console.error("Unexpected response format:", data);
-          setError(data.message || "Failed to load scholarships");
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchScholarshipsBySponsor();
-  }, []);
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log("Fetching Dashboard Stats...");
-
-        const data = await GetSponsorAdminStats();
-        console.log("Fetched Dashboard Stats:", data);
-
-        if (data) {
-          setStats(data);
-          setData({
-            scholarshipCount: data.scholarshipCount,
-          });
-        } else {
-          console.error("Dashboard data is null or undefined.");
-        }
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [isOpen]);
+
+  if (isLoading) return <Preloader message="Fetching scholarships..." />;
 
   return (
     <MainLayout>
@@ -259,9 +283,10 @@ export default function MyScholarships() {
 
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["10px", "10px", "18px", "18px"]} rounded='10px'>
         <Tabs>
-          <TabList overflowX={"auto"} overflowY={"hidden"}>
-            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Active Scholarships ({activeScholarshipCount}) </Tab>
-            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Awaiting Funding ({data.scholarshipCount})</Tab>
+          <TabList overflowX={"auto"} overflowY={"hidden"} _focus={{outline: "none"}}>
+            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} _focus={{outline: "none"}} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Paid Scholarships (0) </Tab>
+            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} _focus={{outline: "none"}} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Active Scholarships ({activeScholarshipCount}) </Tab>
+            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} _focus={{outline: "none"}} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Awaiting Funding ({data.scholarshipCount})</Tab>
           </TabList>
 
           <TabIndicator mt='-1.5px' height='2px' bg='green' borderRadius='1px' />
@@ -385,9 +410,76 @@ export default function MyScholarships() {
 
                         {/* Action Buttons */}
                         <HStack>
-                          <Button px="50px" color="#39996B" background="white">
+                          <Button px="50px" color="#39996B" background="white" onClick={() => fundScholarship(scholarship.id)} >
                             Fund Scholarship
                           </Button>
+                          <Button px="30px" onClick={() => router("/sponsor-admin/discoverstudents")}>
+                            Add Student
+                          </Button>
+                        </HStack>
+                      </HStack>
+
+                      <HStack>
+                        {scholarship.students.length > 0 ? (
+                          scholarship.students.slice(0, 2).map((student, idx) => (
+                            <HStack key={idx} bg="#E8F2ED" p="8px" rounded="31px">
+                              <Avatar size="sm" name={student.full_name} />
+                              <Text color="#101828" fontSize="13px" fontWeight="500">
+                                {student.full_name}
+                              </Text>
+                            </HStack>
+                          ))
+                        ) : null}
+                      </HStack>
+
+                      
+                    </Stack>
+                  ))
+                ) : (
+                  <Text fontSize="14px" fontWeight="500" color="#767F8E">
+                    No scholarships available.
+                  </Text>
+                )}
+
+
+
+                
+              </Stack>
+            </TabPanel>
+            
+            <TabPanel>
+              <Stack spacing="20px">
+                {sponsorScholarships.length > 0 ? (
+                  sponsorScholarships.map((scholarship, index) => (
+                    <Stack
+                      key={scholarship.id || index}
+                      borderWidth="1px"
+                      rounded="11px"
+                      py="12px"
+                      pl="8px"
+                      pr="16px"
+                      spacing="10px"
+                    >
+                      {/* Scholarship Info */}
+                      <HStack justifyContent="space-between">
+                        <HStack>
+                          <Box bg="#39996B" w="3px" h="61px" rounded="3px"></Box>
+                          <Stack>
+                            <Text color="#1F2937" fontSize="14px" fontWeight="600">
+                              {scholarship.name || "Unnamed Scholarship"}{" "}
+                              <Box as="span" display="inline-flex" my="auto">
+                                <BsThreeDots />
+                              </Box>
+                            </Text>
+                            <Text color="#767F8E" fontSize="12px" fontWeight="400">
+                              Date Created: {scholarship.created_at ? new Date(scholarship.created_at).toLocaleDateString() : "N/A"}
+                            </Text>
+                          </Stack>
+                        </HStack>
+
+                        {/* Action Buttons */}
+                        <HStack>
+                          
                           <Button px="30px" onClick={() => router("/sponsor-admin/discoverstudents")}>
                             Add Student
                           </Button>

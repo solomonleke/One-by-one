@@ -5,6 +5,7 @@ import { Text, Grid, Flex, HStack, Stack, VStack, Box, Center, Progress, Icon, A
 import { Tooltip as Tooltips } from '@chakra-ui/react';
 import DashboardCard from "../../Components/DashboardCard"
 import Button from "../../Components/Button"
+import Preloader from "../../Components/Preloader"
 import { ReactComponent as Scholarship } from "../../Asset/scholarship.svg"
 import { HiOutlineUsers } from 'react-icons/hi'
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
@@ -64,6 +65,8 @@ export default function Index() {
   const [error, setError] = useState(null);
   const router = useNavigate();
   const [activeScholarshipCount, setActiveScholarshipCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
 
   const [data, setData] = useState({
     scholarshipCount: 0,
@@ -71,96 +74,96 @@ export default function Index() {
     totalDonations: 0,
   });
 
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        console.log("Fetching students..."); // Debugging Step 1
+  const fetchStudents = async () => {
+    try {
+      console.log("Fetching students..."); // Debugging Step 1
 
-        const response = await fetchSponsorStudents();
-        console.log("Full Students API Response:", JSON.stringify(response, null, 2)); // Debugging Step 2
+      const response = await fetchSponsorStudents();
+      console.log("Full Students API Response:", JSON.stringify(response, null, 2)); // Debugging Step 2
 
-        if (response?.status === true && Array.isArray(response?.data) && response.data.length > 0) {
-          console.log("Setting Students State:", response.data); // Debugging Step 3
-          setStudents(response.data);
-        } else {
-          console.warn("No students available or unexpected response:", response);
-        }
-      } catch (error) {
-        console.error("Error fetching students:", error.message);
+      if (response?.status === true && Array.isArray(response?.data) && response.data.length > 0) {
+        console.log("Setting Students State:", response.data); // Debugging Step 3
+        setStudents(response.data);
+      } else {
+        console.warn("No students available or unexpected response:", response);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching students:", error.message);
+    }
+  };
 
-    fetchStudents();
-  }, []);
+  
+
+  const fetchScholarships = async () => {
+    try {
+      const data = await getActiveScholarships();
+      if (data.status) {
+        setScholarships(data.data.activeScholarship);
+        setActiveScholarshipCount(data.data.activeScholarship.length);
+      } else {
+        setError(data.message || "Failed to load scholarships");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setLoading(false);
+    }
+  };
+
+
+  const fetchScholarshipsBySponsor = async () => {
+    try {
+      const data = await getScholarshipsBySponsor();
+
+      if (data.status && Array.isArray(data.data)) {
+        setSponsorScholarships(data.data); // ✅ Set directly since `data` is an array
+      } else {
+        console.error("Unexpected response format:", data);
+        setError(data.message || "Failed to load scholarships");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setIsLoading(false);
+    }
+  };
+
+
+  const fetchData = async () => {
+    try {
+      console.log("Fetching Dashboard Stats...");
+
+      const data = await GetSponsorAdminStats();
+      console.log("Fetched Dashboard Stats:", data);
+
+      if (data) {
+        setStats(data);
+        setData({
+          scholarshipCount: data.scholarshipCount,
+          studentSponsoredCount: data.studentSponsoredCount,
+          totalDonations: data.totalDonations,
+        });
+      } else {
+        console.error("Dashboard data is null or undefined.");
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error.message);
+    } finally {
+      setLoading(false);
+      setIsLoading(false);
+    }
+  };
+
+  
 
   useEffect(() => {
-    const fetchScholarships = async () => {
-      try {
-        const data = await getActiveScholarships();
-        if (data.status) {
-          setScholarships(data.data.activeScholarship);
-          setActiveScholarshipCount(data.data.activeScholarship.length);
-        } else {
-          setError(data.message || "Failed to load scholarships");
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchScholarships();
-  }, []);
-
-  useEffect(() => {
-    const fetchScholarshipsBySponsor = async () => {
-      try {
-        const data = await getScholarshipsBySponsor();
-
-        if (data.status && Array.isArray(data.data)) {
-          setSponsorScholarships(data.data); // ✅ Set directly since `data` is an array
-        } else {
-          console.error("Unexpected response format:", data);
-          setError(data.message || "Failed to load scholarships");
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchScholarshipsBySponsor();
-  }, []);
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log("Fetching Dashboard Stats...");
-
-        const data = await GetSponsorAdminStats();
-        console.log("Fetched Dashboard Stats:", data);
-
-        if (data) {
-          setStats(data);
-          setData({
-            scholarshipCount: data.scholarshipCount,
-            studentSponsoredCount: data.studentSponsoredCount,
-            totalDonations: data.totalDonations,
-          });
-        } else {
-          console.error("Dashboard data is null or undefined.");
-        }
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+    
     fetchData();
+    fetchStudents();
+    fetchScholarshipsBySponsor();
+    fetchScholarships();
   }, []);
 
 
@@ -185,6 +188,8 @@ export default function Index() {
       setUserName(`${storedName.firstName}`);
     }
   }, []);
+
+  if (isLoading) return <Preloader  />;
   return (
     <MainLayout>
       <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Welcome Back, {userName || "User"}.</Text>
@@ -302,7 +307,7 @@ export default function Index() {
           <Stack borderWidth="1px" w="100%" alignItems="center" maxW={{ base: "100%", md: "426px" }}  rounded="11px" py="12px" pl="8px" pr="16px" spacing="10px">
   <VStack w="100%">
     {Array.isArray(scholarships) && scholarships.length > 0 ? (
-      scholarships.map((scholarship, index) => (
+      scholarships.slice(0,2).map((scholarship, index) => (
         <Stack
           key={scholarship.id || index}
           borderWidth="1px"
