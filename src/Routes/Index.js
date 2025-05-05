@@ -38,6 +38,8 @@ import AwaitingFunding from '../Pages/FundAdminUserScreen/AwaitingFunding'
 import FundedStudents from '../Pages/FundAdminUserScreen/FundedStudents'
 import FundedHistory from '../Pages/FundAdminUserScreen/FundedHistory'
 import FundingRecords from '../Pages/FundAdminUserScreen/FundingRecords'
+import LandingPage from '../Pages/LandingPage/Index'
+import AboutUs from '../Pages/LandingPage/AboutUs'
 
 
 export default function IndexRoutes() {
@@ -107,6 +109,11 @@ export default function IndexRoutes() {
           <Route path='/fund-admin/funding-records' element={<FundingRecords />} />
           <Route path='/fund-admin/student-management/student-profile' element={<StudentProfile />} />
           <Route path='/fund-admin/settings' element={<Settings />} />
+
+  {/* fund admin routes */}
+          <Route path='/landing-page' element={<LandingPage />} />
+          <Route path='/about-us' element={<AboutUs />} />
+         
         </Routes>
       </BrowserRouter> 
     </StudentProvider>

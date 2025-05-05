@@ -23,7 +23,8 @@ import MainLayout from "../../DashboardLayout";
 import { IoMdOpen } from "react-icons/io";
 import TableRow from "../../Components/TableRow"
 import InputX from "../../Components/InputX"
-import { BiSearch } from "react-icons/bi"; import Pagination from "../../Components/Pagination";
+import { BiSearch } from "react-icons/bi"; 
+import Pagination from "../../Components/Pagination";
 import { configuration } from "../../Utils/Helpers";
 import { GetAllStudentApi } from "../../Utils/ApiCall";
 
