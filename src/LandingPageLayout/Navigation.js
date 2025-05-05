@@ -48,8 +48,10 @@ export default function Header() {
         </HStack>
         </Box>
         <Box gap={4} display={{ base: 'none', md: 'flex' }} alignItems="center">
-        <Button w="113.5px" border="1px" bg="transparent" color="#39996B">Login</Button>
-        <Button w="113.5px" border="1px" bg="#39996B" color="#ffff">Sign in</Button>
+        <Button w="113.5px" border="1px" bg="transparent" color="#39996B" onClick={() => {
+              navigate("/sign-in")}} >Login</Button>
+        <Button w="113.5px" border="1px" bg="#39996B" color="#ffff" onClick={() => {
+              navigate("/sign-up")}} >Sign in</Button>
         </Box>
         <IconButton
           size="md"
