@@ -66,7 +66,7 @@ export default function IndexRoutes() {
 
 
 
-          <Route path='/' element={<Home />} />
+          {/* <Route path='/' element={<Home />} /> */}
           <Route path='/sign-in' element={<SignIn />} />
           <Route path='/sign-up' element={<Signup />} />
           <Route path='/email-verification' element={<EmailVerification />} />
@@ -111,7 +111,7 @@ export default function IndexRoutes() {
           <Route path='/fund-admin/settings' element={<Settings />} />
 
   {/* fund admin routes */}
-          <Route path='/landing-page' element={<LandingPage />} />
+          <Route path='/' element={<LandingPage />} />
           <Route path='/about-us' element={<AboutUs />} />
          
         </Routes>

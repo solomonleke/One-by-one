@@ -6,7 +6,7 @@ import logo from "../Asset/whiteLogo.svg"
 
 
 const Links = [
-    { name: 'Home', path: '/landing-page' },
+    { name: 'Home', path: '/' },
     { name: 'About us', path: '/about-us' },
     { name: 'Get involved', path: '/get-involved' },
     { name: 'Contact us', path: '/contact-us' },
