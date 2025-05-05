@@ -80,8 +80,10 @@ export default function Header() {
             ))}
           </Stack>
           <Box gap="10px"  alignItems="center">
-        <Button w="100%" mb="10px" border="1px" bg="transparent" color="#39996B">Login</Button>
-        <Button w="100%" border="1px" bg="#39996B" color="#ffff">Sign in</Button>
+        <Button w="100%" mb="10px" border="1px" bg="transparent" color="#39996B" onClick={() => {
+              navigate("/sign-in")}}>Login</Button>
+        <Button w="100%" border="1px" bg="#39996B" color="#ffff" onClick={() => {
+              navigate("/sign-up")}} >Sign in</Button>
         </Box>
         </Box>
       )}
