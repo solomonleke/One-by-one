@@ -40,6 +40,7 @@ import FundedHistory from '../Pages/FundAdminUserScreen/FundedHistory'
 import FundingRecords from '../Pages/FundAdminUserScreen/FundingRecords'
 import LandingPage from '../Pages/LandingPage/Index'
 import AboutUs from '../Pages/LandingPage/AboutUs'
+import GetInvolved from '../Pages/LandingPage/GetInvolved'
 
 
 export default function IndexRoutes() {
@@ -113,6 +114,7 @@ export default function IndexRoutes() {
   {/* fund admin routes */}
           <Route path='/' element={<LandingPage />} />
           <Route path='/about-us' element={<AboutUs />} />
+          <Route path='/get-involved' element={<GetInvolved />} />
          
         </Routes>
       </BrowserRouter> 
