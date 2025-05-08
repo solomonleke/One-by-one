@@ -15,6 +15,7 @@ import {
   AccordionPanel,
   AccordionIcon,
   Grid,
+  Wrap,
   useColorModeValue,
   grid,
 } from '@chakra-ui/react';
@@ -186,7 +187,7 @@ export default function LandingPage() {
             </Text>
 
             <Grid display={{base: "grid", md: "flex"}} gap="18px" templateColumns={{ base: "1fr", md: "2fr", lg: "3fr"}} mt="40px">
-              <Box maxW="357px" py="40px" px="18px" mt="34px" boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)" borderRadius="30px" bg="white" >
+              <Box mx="auto" maxW="357px" py="40px" px="18px" mt="34px" boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)" borderRadius="30px" bg="white" >
                 <HStack maxW="303px" justifyContent="space-between" mb="40px">
                   <Image src={fingerPrint} alt="Fingerprint" w={{base: "20px", md: "40px"}} />
                   <FaArrowRight color="#71717A" w={{base: "20px", md: "40px"}} />
@@ -202,7 +203,7 @@ export default function LandingPage() {
                   </Text>
                 </VStack>
               </Box>
-              <Box maxW="357px" py="40px" px="27px" mt="34px" boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)" borderRadius="30px" bg="white">
+              <Box mx="auto" maxW="357px" py="40px" px="27px" mt="34px" boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)" borderRadius="30px" bg="white">
                 <HStack maxW="303px" justifyContent="space-between" mb="40px">
                   <Image src={fingerPrint} alt="Fingerprint" w={{base: "20px", md: "40px"}}/>
                   <FaArrowRight color="#71717A" />
@@ -218,7 +219,7 @@ export default function LandingPage() {
                   </Text>
                 </VStack>
               </Box>
-              <Box maxW="357px" py="40px" px="27px" mt="34px" boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)" borderRadius="30px" bg="white">
+              <Box mx="auto" maxW="357px" py="40px" px="27px" mt="34px" boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)" borderRadius="30px" bg="white">
                 <HStack maxW="303px" justifyContent="space-between" mb="40px">
                   <Image src={fingerPrint} alt="Fingerprint" w={{base: "20px", md: "40px"}}/>
                   <FaArrowRight color="#71717A" />
@@ -266,7 +267,7 @@ export default function LandingPage() {
           <Box bg="#17422D" p="10px" h="762px" alignContent="center" align="center" justifyContent="center">
             <Box display={{base:"grid", md:"flex"}} justifyContent="center">
               <Box mr={{base:"none", md:"41px", lg:"61px"}}>
-                <Image src={ChildrenImage} zIndex="1001"  w={{base:"350px", md:"463px"}} h="auto" borderRadius="10.41px" />
+                <Image src={ChildrenImage} zIndex="1001"  w={{base:"300px", md:"463px"}} h="auto" borderRadius="10.41px" />
               </Box>
               <VStack maxW={{base:"500px", md:"350px", lg:"500px"}} align={{base:"center", md:"left"}} textAlign="left" >
                 <Text fontSize={{base: "30px", md: "40px", lg:"50px"}} fontWeight="700"  >
@@ -281,15 +282,15 @@ export default function LandingPage() {
                   resources they need to excel.
                 </Text>
 
-                <Flex p="20px" w={{base:"350px", md: "350px", lg:"480px"}} border="1px solid rgba(255, 255, 255, 0.23)" color="white" borderRadius="10px" fontWeight="600" align="center">
+                <Flex p="20px" w={{base:"325px", md: "350px", lg:"480px"}} border="1px solid rgba(255, 255, 255, 0.23)" color="white" borderRadius="10px" fontWeight="600" align="center">
                   <PiHandHeartBold fontSize={{base:"30px", md:"35px"}} />
                   <Text fontSize={{base:"13px", md:"13px", lg: "17px"}} ml="5px" >Be the Hope disadvantaged students Deserve</Text>
                 </Flex>
-                <Flex p="20px" w={{base:"350px", md: "350px", lg:"480px"}} border="1px solid rgba(255, 255, 255, 0.23)" color="white" borderRadius="10px" fontWeight="600" align="center">
+                <Flex p="20px" w={{base:"325px", md: "350px", lg:"480px"}} border="1px solid rgba(255, 255, 255, 0.23)" color="white" borderRadius="10px" fontWeight="600" align="center">
                   <LuHeartHandshake fontSize={{base:"30px", md:"35px"}} />
                   <Text fontSize={{base:"13px", md:"13px", lg: "17px"}} ml="5px" >Support Dreams</Text>
                 </Flex>
-                <Flex p="20px" w={{base:"350px", md: "350px", lg:"480px"}} border="1px solid rgba(255, 255, 255, 0.23)" color="white" borderRadius="10px" fontWeight="600" align="center">
+                <Flex p="20px" w={{base:"325px", md: "350px", lg:"480px"}} border="1px solid rgba(255, 255, 255, 0.23)" color="white" borderRadius="10px" fontWeight="600" align="center">
                   <PiPlant fontSize={{base:"30px", md:"35px"}} />
                   <Text fontSize={{base:"13px", md:"13px", lg: "17px"}} ml="5px" >Invest in a Brighter Future</Text>
                 </Flex>
@@ -297,113 +298,121 @@ export default function LandingPage() {
             </Box>
 
           </Box>
-          <Box>
-            <Flex
-              direction={{ base: 'column', md: 'row' }}
-              align="left"
-              justify="left"
-              py="151px"
-              px="30px"
-              bg="#091C13"
-              color="white"
-            >
-              <Stack maxW="661px" align="left" textAlign="left" justifyContent="center">
-                <Text fontSize={{base:"12px", md:"15px"}} w="fit-content" color="#FAA51C" fontWeight="700">
-                  join the movement
-                </Text>
-                <Text fontSize={{base:"25px", md:"50px"}} letterSpacing="-2px" fontWeight="600" color="white" >
-                  Be part of the{" "}
-                  <Text as="span" color="#8C9492">
-                    Change
-                  </Text>
-                </Text>
-                <Text fontSize={{base:"13px", md:"18px"}} letterSpacing="-1px" fontWeight="400" color="#71717A" w={{base:"350px", md:"500px"}}>
-                  Our mission thrives because of people like you—dedicated
-                  volunteers and sponsors who make education possible for
-                  disadvantaged students.
-                </Text>
-                <Flex >
-                  <Button maxW="275px" bg="#39996B" fontWeight="400" mb={{base:"20px", md:"none"}} fontSize={{base:"13px", md:"14px"}} px="28px" py="10px" color="#ffff" rightIcon={<FaArrowRightLong />}>learn more about our roles </Button>
-                </Flex>
-              </Stack>
-              <Box display="grid" gap="20px">
-                <Box display={{base:"grid", md:"flex"}} justifyContent="center" gap="20px" >
-                  <Box w="327px" maxH="250px" alignContent="center" py="40px" px="25px" boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)" borderRadius="30px" bg="white">
-                    <HStack maxW="303px" justifyContent="space-between" mb="15px" >
-                      <PiHandCoins fontSize="35px" color="#39996B" />
-                      <FaArrowRight fontSize="32px" color="#71717A" />
-                    </HStack>
-                    <VStack textAlign="left" align="left" >
-                      <Box mb="15px">
-                        <Text fontSize={{base:"15px", md:"18px"}} align="left" fontWeight="600" color="#2E2B24"  >Sponsor</Text>
-                        <Text fontSize={{base:"13px", md:"15px"}} fontWeight="400" color="#71717A" >
-                          Support a student’s future directly.
-                        </Text>
-                      </Box>
-                      <Button maxW="133px" fontSize={{base:"13px", md:"15px"}} background="transparent" color="#39996B" border="1px solid #39996B">Get Started</Button>
-                    </VStack>
-                  </Box>
-                  <Box w="327px" maxH="250px" alignContent="center" py="40px" px="25px" boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)" borderRadius="30px" bg="white">
-                    <HStack maxW="303px" justifyContent="space-between" mb="15px" >
-                      <RiUserSettingsLine fontSize="35px" color="#39996B" />
-                      <FaArrowRight fontSize="32px" color="#71717A" />
-                    </HStack>
-                    <VStack textAlign="left" align="left" >
-                      <Box mb="15px">
-                        <Flex justifyContent="space-between" alignItems="center">
-                          <Text fontSize={{base:"15px", md:"18px"}} align="left" fontWeight="600" color="#2E2B24"  >school admin </Text>
-                          <Text fontSize="12px" border="0.6px solid #FFBC4F" w="fit-content" borderRadius="4px" color="#FFBC4F" bg="#FFF7EA" px="6px">Partner role</Text>
-                        </Flex>
-                        <Text fontSize={{base:"13px", md:"15px"}} fontWeight="400" color="#71717A" >
-                          Work with us to identify students in need.
-                        </Text>
-                      </Box>
-                      <Button maxW="133px" fontSize={{base:"13px", md:"15px"}} background="transparent" color="#39996B" border="1px solid #39996B">Get Started</Button>
-                    </VStack>
-                  </Box>
-                </Box>
+          <Box bg="#091C13" color="white" py={{ base: "80px", md: "120px" }} px={{ base: "20px", md: "60px" }}>
+  <Flex
+    direction={{ base: 'column', md: 'row' }}
+    justify="space-between"
+    align="start"
+    gap="40px"
+  >
+    {/* Left Side Content */}
+    <Stack maxW="600px" spacing={6}>
+      <Text fontSize={{ base: "12px", md: "15px" }} color="#FAA51C" fontWeight="700">
+        Join the movement
+      </Text>
+      <Text fontSize={{ base: "30px", md: "50px" }} fontWeight="600" lineHeight="1.2">
+        Be part of the{" "}
+        <Text as="span" color="#8C9492">
+          Change
+        </Text>
+      </Text>
+      <Text fontSize={{ base: "14px", md: "18px" }} color="#71717A" maxW="500px">
+        Our mission thrives because of people like you—dedicated volunteers and sponsors who make education possible for disadvantaged students.
+      </Text>
+      <Button
+        bg="#39996B"
+        color="white"
+        fontWeight="500"
+        fontSize={{ base: "14px", md: "16px" }}
+        px="28px"
+        py="10px"
+        maxW="fit-content"
+        rightIcon={<FaArrowRightLong />}
+      >
+        Learn more about our roles
+      </Button>
+    </Stack>
 
-                <Box display={{base:"grid", md:"flex"}} justifyContent="center" gap="20px" >
-                  <Box w="327px" maxH="250px" alignContent="center" py="40px" px="25px" boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)" borderRadius="30px" bg="white">
-                    <HStack maxW="303px" justifyContent="space-between" mb="15px" >
-                      <PiHandCoins fontSize="35px" color="#39996B" />
-                      <FaArrowRight fontSize="32px" color="#71717A" />
-                    </HStack>
-                    <VStack textAlign="left" align="left" >
-                      <Box mb="15px">
-                        <Flex justifyContent="space-between" alignItems="center">
-                          <Text fontSize={{base:"15px", md:"18px"}} align="left" fontWeight="600" color="#2E2B24"  >scholarship admin  </Text>
-                          <Text fontSize="12px" border="0.6px solid #FFBC4F" w="fit-content" borderRadius="4px" color="#FFBC4F" bg="#FFF7EA" px="6px">volunteer role</Text>
-                        </Flex>
-                        <Text fontSize={{base:"13px", md:"15px"}} fontWeight="400" color="#71717A" >
-                          Match students with opportunities.
-                        </Text>
-                      </Box>
-                      <Button maxW="133px" fontSize={{base:"13px", md:"15px"}} background="transparent" color="#39996B" border="1px solid #39996B">Get Started</Button>
-                    </VStack>
-                  </Box>
-                  <Box w="327px" maxH="250px" alignContent="center" py="40px" px="25px" boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)" borderRadius="30px" bg="white">
-                    <HStack maxW="303px" justifyContent="space-between" mb="15px" >
-                      <RiUserSettingsLine fontSize="35px" color="#39996B" />
-                      <FaArrowRight fontSize="32px" color="#71717A" />
-                    </HStack>
-                    <VStack textAlign="left" align="left" >
-                      <Box mb="15px">
-                        <Flex justifyContent="space-between" alignItems="center">
-                          <Text fontSize={{base:"15px", md:"18px"}} align="left" fontWeight="600" color="#2E2B24"  >fund admin </Text>
-                          <Text fontSize="12px" border="0.6px solid #FFBC4F" w="fit-content" borderRadius="4px" color="#FFBC4F" bg="#FFF7EA" px="6px">volunteer role</Text>
-                        </Flex>
-                        <Text fontSize={{base:"13px", md:"15px"}} fontWeight="400" color="#71717A" >
-                          Manage funds and ensure transparency.
-                        </Text>
-                      </Box>
-                      <Button maxW="133px" fontSize={{base:"13px", md:"15px"}} background="transparent" color="#39996B" border="1px solid #39996B">Get Started</Button>
-                    </VStack>
-                  </Box>
-                </Box>
-              </Box>
+    {/* Role Cards */}
+    <Wrap spacing="20px" justify={{ base: "center", md: "start" }} maxW="700px">
+      {[
+        {
+          title: "Sponsor",
+          description: "Support a student’s future directly.",
+          icon: <PiHandCoins fontSize="35px" color="#39996B" />,
+          label: null,
+        },
+        {
+          title: "School Admin",
+          description: "Work with us to identify students in need.",
+          icon: <RiUserSettingsLine fontSize="35px" color="#39996B" />,
+          label: { text: "Partner role", color: "#FFBC4F", bg: "#FFF7EA" },
+        },
+        {
+          title: "Scholarship Admin",
+          description: "Match students with opportunities.",
+          icon: <PiHandCoins fontSize="35px" color="#39996B" />,
+          label: { text: "Volunteer role", color: "#FFBC4F", bg: "#FFF7EA" },
+        },
+        {
+          title: "Fund Admin",
+          description: "Manage funds and ensure transparency.",
+          icon: <RiUserSettingsLine fontSize="35px" color="#39996B" />,
+          label: { text: "Volunteer role", color: "#FFBC4F", bg: "#FFF7EA" },
+        },
+      ].map((role, i) => (
+        <Box
+          key={i}
+          w={{ base: "280px", md: "300px" }}
+          minH="250px"
+          bg="white"
+          borderRadius="30px"
+          boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)"
+          p="25px"
+        >
+          <HStack justifyContent="space-between" mb="15px">
+            {role.icon}
+            <FaArrowRight fontSize="28px" color="#71717A" />
+          </HStack>
+          <VStack align="start" spacing={3}>
+            <Flex justify="space-between" w="full" align="center">
+              <Text fontSize="18px" fontWeight="600" color="#2E2B24">
+                {role.title}
+              </Text>
+              {role.label && (
+                <Text
+                  fontSize="12px"
+                  px="6px"
+                  border="0.6px solid"
+                  borderColor={role.label.color}
+                  color={role.label.color}
+                  borderRadius="4px"
+                  bg={role.label.bg}
+                  w="fit-content"
+                >
+                  {role.label.text}
+                </Text>
+              )}
             </Flex>
-          </Box>
+            <Text fontSize="15px" color="#71717A">{role.description}</Text>
+            <Button
+              size="sm"
+              variant="outline"
+              color="#39996B"
+              borderColor="#39996B"
+              _hover={{ bg: "transparent" }}
+              fontSize="14px"
+              mt="auto"
+            >
+              Get Started
+            </Button>
+          </VStack>
+        </Box>
+      ))}
+    </Wrap>
+  </Flex>
+</Box>
+
 
           <Box bg="white" p={{base:"30px", md:"120px"}}>
       <Box maxW="7xl" mx="auto" >
