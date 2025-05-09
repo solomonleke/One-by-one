@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { StudentProvider } from '../Components/StudentContext'
 import Home from '../Pages/Home'
@@ -38,9 +38,20 @@ import AwaitingFunding from '../Pages/FundAdminUserScreen/AwaitingFunding'
 import FundedStudents from '../Pages/FundAdminUserScreen/FundedStudents'
 import FundedHistory from '../Pages/FundAdminUserScreen/FundedHistory'
 import FundingRecords from '../Pages/FundAdminUserScreen/FundingRecords'
+import LandingPage from '../Pages/LandingPage/Index'
+import AboutUs from '../Pages/LandingPage/AboutUs'
+import GetInvolved from '../Pages/LandingPage/GetInvolved'
 
 
 export default function IndexRoutes() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [studentIdToOpen, setStudentIdToOpen] = useState(null);
+
+  const handleOpenModal = (studentId) => {
+    setStudentIdToOpen(studentId);
+    setIsModalOpen(true);
+  };
+
   return (
     <StudentProvider>
       <BrowserRouter>
@@ -56,7 +67,7 @@ export default function IndexRoutes() {
 
 
 
-          <Route path='/' element={<Home />} />
+          {/* <Route path='/' element={<Home />} /> */}
           <Route path='/sign-in' element={<SignIn />} />
           <Route path='/sign-up' element={<Signup />} />
           <Route path='/email-verification' element={<EmailVerification />} />
@@ -85,7 +96,7 @@ export default function IndexRoutes() {
            {/* sponsor admin routes */}
            <Route path='/sponsor-admin' element={<SponsorAdmin />} />
           <Route path='/sponsor-admin/myscholarships' element={<MyScholarships />} />
-          <Route path='/sponsor-admin/discoverstudents' element={<DiscoverStudents />} />
+          <Route path='/sponsor-admin/discoverstudents' element={<DiscoverStudents />} studentId={studentIdToOpen} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
           <Route path='/sponsor-admin/fundinghistory' element={<FundingHistory />} />
           <Route path='/sponsor-admin/settings' element={<Settings3 />} />
 
@@ -99,6 +110,12 @@ export default function IndexRoutes() {
           <Route path='/fund-admin/funding-records' element={<FundingRecords />} />
           <Route path='/fund-admin/student-management/student-profile' element={<StudentProfile />} />
           <Route path='/fund-admin/settings' element={<Settings />} />
+
+  {/* fund admin routes */}
+          <Route path='/' element={<LandingPage />} />
+          <Route path='/about-us' element={<AboutUs />} />
+          <Route path='/get-involved' element={<GetInvolved />} />
+         
         </Routes>
       </BrowserRouter> 
     </StudentProvider>

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../DashboardLayout'
-import { Text, Flex, HStack, VStack, Box, useDisclosure, Center, Progress, Icon, Avatar, Image } from '@chakra-ui/react'
+import { Text, Flex, Stack, HStack, VStack, Box, Radio, useDisclosure, Center, Progress, Icon, Avatar, Image, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from '@chakra-ui/react'
 import { Tooltip as Tooltips } from '@chakra-ui/react';
 import DashboardCard from "../../Components/DashboardCard"
 import Button from "../../Components/Button"
@@ -30,9 +30,9 @@ import { RxInfoCircled } from "react-icons/rx";
 import { BiSearch } from "react-icons/bi";
 import { FaCalendarAlt } from "react-icons/fa";
 
-import RemoveNotification from "../../Components/RemoveNotification"
 import ProfileUpdateNotification from "../../Components/ProfileUpdateNotification"
-import { GetAllStudentApi } from "../../Utils/ApiCall";
+import eventBus from "../../Components/eventBus"
+import { GetAllSponsorStudentApi } from "../../Utils/ApiCall";
 
 
 import {
@@ -52,386 +52,580 @@ import {
 } from '@chakra-ui/react'
 import { BsThreeDots } from 'react-icons/bs';
 import Pagination from "../../Components/Pagination";
+import ShowToast from '../../Components/ToastNotification';
 import { configuration } from "../../Utils/Helpers";
+import { getScholarshipsBySponsor } from "../../Utils/ApiCall";
+import { AddStudentToScholarshipApi } from "../../Utils/ApiCall";
+import Preloader from "../../Components/Preloader"
+
 
 
 export default function DiscoverStudents() {
-    const [OpenModal, setOpenModal] = useState(false)
-    const { isOpen, onOpen, onClose } = useDisclosure()
-
-
-    const router = useNavigate();
-
-    
-
-    const [MainData, setMainData] = useState([])
-    const [FilterData, setFilterData] = useState([])
-    const [FilteredData, setFilteredData] = useState(null);
-    const [SearchInput, setSearchInput] = useState("");
-    const [StartDate, setStartDate] = useState("");
-    const [EndDate, setEndDate] = useState("");
-    const [userName, setUserName] = useState('');
-    const [TotalPage, setTotalPage] = useState("");
-    const [ByDate, setByDate] = useState(false);
+  const [OpenModal, setOpenModal] = useState(false)
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [scholarships, setScholarships] = useState([]);
+  const [sponsorScholarships, setSponsorScholarships] = useState([]);
+  const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
 
 
+  const router = useNavigate();
+  const [MainData, setMainData] = useState([])
+  const [FilterData, setFilterData] = useState([])
+  const [FilteredData, setFilteredData] = useState(null);
+  const [SearchInput, setSearchInput] = useState("");
+  const [userName, setUserName] = useState('');
+  const [TotalPage, setTotalPage] = useState("");
+  const [ByDate, setByDate] = useState(false);
+  const [selectedScholarship, setSelectedScholarship] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [totalStudentsCount, setTotalStudentsCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
-    // Pagination settings to follow
-    const [CurrentPage, setCurrentPage] = useState(1);
-    console.log("currentpage", CurrentPage);
-    const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
-    
+  // Pagination settings to follow
+  const [CurrentPage, setCurrentPage] = useState(1);
+  console.log("currentpage", CurrentPage);
+  const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
 
-    //get current post
-    const indexOfLastSra = CurrentPage * PostPerPage;
-    const indexOfFirstSra = indexOfLastSra - PostPerPage;
 
-        //change page
-    const paginate = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
-
-    // Pagination settings to follow end here
-
-    const handleStudentClick = (student_Id) => {
-        router(`/school-admin/student-management/student-profile/${student_Id}`);
-      };
-
-    const filterBy = (title) => {
-        console.log("filter checking", title);
-
-        if (title === "dept") {
-            let filter = MainData.filter((item) =>
-                item.department?.toLowerCase().includes(SearchInput.toLowerCase())
-            );
-            setFilteredData(filter);
-            console.log("filter checking", filter);
-        } else if (title === "email") {
-            let filter = MainData.filter((item) =>
-                item.email?.toLowerCase().includes(SearchInput.toLowerCase())
-            );
-            setFilteredData(filter);
-            console.log("filter checking", filter);
-        } else if (title === "name") {
-            let filter = MainData.filter(
-                (item) =>
-                    item.full_name?.toLowerCase().includes(SearchInput.toLowerCase())
-
-            );
-            setFilteredData(filter);
-            console.log("filter checking", filter);
-        } else if (title === "date") {
-            // add 1 day to end date 
-            let endDate = new Date(EndDate)
-            endDate.setDate(endDate.getDate() + 1);
-            // format date back
-            let formatedEndDate = endDate.toISOString().split('T')[0]
-            let filter = MainData.filter(
-                (item) =>
-                    item.createdAt >= StartDate && item.createdAt <= formatedEndDate
-            );
-            setFilteredData(filter);
-            setSearchInput("s")
-            console.log(" Date filter checking", filter);
-            console.log(" Date plus  checking", endDate.toISOString());
-        }
-    };
-
-    const getallStudent = async () => {
-        console.log("CurrentPage:", CurrentPage, "PostPerPage:", PostPerPage);
+  //get current post
   
-        try {
-            const result = await GetAllStudentApi(CurrentPage, PostPerPage)
-  
-            console.log("getallStudent", result)
-  
-            if (result.status === 200) {
-                setMainData(result.data.data.students)
-                setTotalPage(result.data.data.totalPages)
-            }
-        } catch (e) {
-  
-            console.log("error", e.message)
-        }
-  
+
+  //change page
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Pagination settings to follow end here
+
+  const filterBy = (title) => {
+    console.log("filter checking", title);
+
+    if (title === "essay") {
+      let filter = MainData.filter((item) =>
+        item.essay_rating?.toLowerCase().includes(SearchInput.toLowerCase())
+      );
+      setFilteredData(filter);
+      console.log("filter checking", filter);
+    } else if (title === "class") {
+      let filter = MainData.filter((item) =>
+        item.class_level?.toLowerCase().includes(SearchInput.toLowerCase())
+      );
+      setFilteredData(filter);
+      console.log("filter checking", filter);
+
+    } else if (title === "amount") {
+      let filter = MainData.filter((item) =>
+        item.amount_needed?.toLowerCase().includes(SearchInput.toLowerCase())
+      );
+      setFilteredData(filter);
+      console.log("filter checking", filter);
+    } else if (title === "name") {
+      let filter = MainData.filter(
+        (item) =>
+          item.full_name?.toLowerCase().includes(SearchInput.toLowerCase())
+
+      );
+      setFilteredData(filter);
+      console.log("filter checking", filter);
+
+      setFilteredData(filter);
+      setSearchInput("s")
+      console.log(" Date filter checking", filter);
+
+    }
+  };
+
+
+
+  const getallStudent = async () => {
+    console.log("CurrentPage:", CurrentPage, "PostPerPage:", PostPerPage);
+
+    try {
+      const result = await GetAllSponsorStudentApi(CurrentPage, PostPerPage)
+
+      console.log("getallSponsorStudent", result)
+
+
+      if (result.status === 200) {
+        setMainData(result.data.data.students)
+        setFilteredData(result.data.data.students)
+        setTotalPage(result.data.data.totalPages)
+        setTotalStudentsCount(result.data.data.totalCount);
+      }
+    } catch (e) {
+
+      console.log("error", e.message)
     }
 
-    useEffect(() => {
-  
-        getallStudent()
-    
-    }, [CurrentPage]);
-  
-    useEffect(() => {
-      // var reloadCount = localStorage.getItem("reloadCount");
-      // if(!reloadCount){
-      //   localStorage.setItem('reloadCount', + parseInt(1))
-  
-      // }
-      // if(reloadCount < 2) {
-      //   localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
-      //   setTimeout(() =>
-      //   window.location.reload(1), 2000)
-      // } else {
-      //   localStorage.removeItem('reloadCount');
-      // }
-      
-      const storedName = JSON.parse(localStorage.getItem('onlineUser'));
-      if (storedName) {
-        setUserName(`${storedName.firstName}`);
+  }
+
+  useEffect(() => {
+
+    getallStudent()
+
+  }, [CurrentPage]);
+
+  useEffect(() => {
+    // var reloadCount = localStorage.getItem("reloadCount");
+    // if(!reloadCount){
+    //   localStorage.setItem('reloadCount', + parseInt(1))
+
+    // }
+    // if(reloadCount < 2) {
+    //   localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
+    //   setTimeout(() =>
+    //   window.location.reload(1), 2000)
+    // } else {
+    //   localStorage.removeItem('reloadCount');
+    // }
+
+    const storedName = JSON.parse(localStorage.getItem('onlineUser'));
+    if (storedName) {
+      setUserName(`${storedName.firstName}`);
+    }
+
+  }, []);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [isOpening, setIsOpening] = useState(false);
+
+  // Listen for student selection from TableRow
+  useEffect(() => {
+    const handleStudentSelected = (studentId) => {
+      console.log(" Received studentId:", studentId);
+      setSelectedStudentId(studentId);  // Store the selected student
+      setIsOpening(true);  // Open the modal
+    };
+
+    eventBus.on("studentSelected", handleStudentSelected);
+
+    return () => {
+      eventBus.removeListener("studentSelected", handleStudentSelected);
+    };
+  }, []);
+
+  const handleCloseModal = () => {
+    setIsOpening(false);
+    setSelectedStudentId(null);
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedScholarship) {
+      setShowToast({ 
+        show: true, 
+        message: error.message || "Select a Scholarship.", 
+        status: "error" 
+      });
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      // Find selected scholarship data
+      const selectedScholarshipData = sponsorScholarships.find(
+        (sch) => sch.id === selectedScholarship
+      );
+
+      if (!selectedScholarshipData) {
+        throw new Error("Select a Scholarship.");
       }
-      
-    }, []);
-  
-    
 
-    return(
-        <MainLayout>
-            <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">All Students <Box as="span" color="#667085" fontSize="18px" fontWeight="400">({MainData.length})</Box></Text>
-            <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Explore a diverse pool of students and their academic aspirations. Review profiles, understand funding needs, and choose who to support on their educational journey.</Text>
+      // Extract current students
+      const existingStudentIds = selectedScholarshipData.students.map(student => student.id);
 
-            <Box bg="#fff" border="1px solid #EDEFF2" mt="12px" pt='20px' pb="32px" px={["10px","10px","18px","18px"]} rounded='10px'>
-            <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px="18px" rounded='10px'>
-        <Flex justifyContent="space-between" flexWrap="wrap">
-        <HStack alignItems="center" justifyContent="space-between" flexWrap="wrap" w="100%">
-          <HStack>
-            <Text color="#1F2937" fontWeight="600" fontSize="19x">Students</Text>
-            <Text color="#667085" fontWeight="400" fontSize="18px">({MainData.length})</Text>
-          </HStack>
+      // Merge new student (avoid duplicates)
+      const updatedStudentIds = [...new Set([...existingStudentIds, selectedStudentId])];
 
-          <Flex  flexWrap="wrap" mt={["10px", "10px", "0px", "0px"]} alignItems="center" justifyContent={"space-between"} >
+      // Now send the updated list
+      const response = await AddStudentToScholarshipApi(selectedScholarship, updatedStudentIds);
+
+      if (response.status) {
+        setShowToast({
+          show: true,
+          message: "Student successfully added!",
+          status: "success",
+        });
+
+        // **Update state to reflect the newly added student**
+        setSponsorScholarships(prevScholarships =>
+          prevScholarships.map(sch =>
+            sch.id === selectedScholarship ?
+              { ...sch, students: [...sch.students, { id: selectedStudentId, full_name: "New Student" }] } : sch
+          )
+        );
+
+        setTimeout(() => setShowToast({ show: false }), 3000);
+        handleCloseModal();
+      }
+    } catch (error) {
+      setShowToast({
+        show: true,
+        message: error.message || "Failed to add Student.",
+        status: "error",
+      });
+
+      setTimeout(() => setShowToast({ show: false }), 3000);
+    } finally {
+      setIsSubmitting(false);
+      setIsLoading(false);
+    }
+  };
+
+
+
+
+
+
+
+
+
+  useEffect(() => {
+    const fetchScholarshipsBySponsor = async () => {
+      try {
+        const data = await getScholarshipsBySponsor();
+
+        if (data.status && Array.isArray(data.data)) {
+          setSponsorScholarships(data.data); // ✅ Set directly since `data` is an array
+        } else {
+          console.error("Unexpected response format:", data);
+          setError(data.message || "Failed to load scholarships");
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+        setIsLoading(false);
+      }
+    };
+
+    fetchScholarshipsBySponsor();
+  }, []);
+
+  if (isLoading) return <Preloader message="Fetching students..." />;
+
+
+  return (
+    <MainLayout>
+      {showToast.show && (
+        <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
+      )}
+      <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">All Students <Box as="span" color="#667085" fontSize="18px" fontWeight="400">({MainData.length})</Box></Text>
+      <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Explore a diverse pool of students and their academic aspirations. Review profiles, understand funding needs, and choose who to support on their educational journey.</Text>
+
+      <Box bg="#fff" border="1px solid #EDEFF2" mt="12px" pt='20px' pb="32px" px={["10px", "10px", "18px", "18px"]} rounded='10px'>
+        <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px="18px" rounded='10px'>
           <Flex justifyContent="space-between" flexWrap="wrap">
-                    <Flex flexWrap="wrap"
-                        mt={["10px", "10px", "0px", "0px"]}
-                        alignItems="center"
-                        justifyContent={"flex-end"} >
-                        <HStack flexWrap={["wrap", "nowrap"]} >
-                            {ByDate === false ? (
-                                <Input
+            <HStack alignItems="center" justifyContent="space-between" flexWrap="wrap" w="100%">
+              <HStack>
+                <Text color="#1F2937" fontWeight="600" fontSize="19x">Students</Text>
+                <Text color="#667085" fontWeight="400" fontSize="18px">({MainData.length})</Text>
+              </HStack>
 
-                                    placeholder="Search"
-                                    size="sm"
-                                    onChange={(e) => setSearchInput(e.target.value)}
-                                    value={SearchInput}
-                                    bColor="#E4E4E4"
-                                    leftIcon={<BiSearch />}
-                                />
-                            ) : (
-                                <HStack flexWrap={["wrap", "nowrap"]}>
-                                    <Input
+              <Flex flexWrap="wrap" mt={["10px", "10px", "0px", "0px"]} alignItems="center" justifyContent={"space-between"} >
+                <Flex justifyContent="space-between" flexWrap="wrap">
+                  <Flex flexWrap="wrap"
+                    mt={["10px", "10px", "0px", "0px"]}
+                    alignItems="center"
+                    justifyContent={"flex-end"} >
+                    <HStack flexWrap={["wrap", "nowrap"]} >
+                      {ByDate === false ? (
+                        <Input
 
-                                        placeholder="Start Date"
-                                        type="date"
-                                        size="sm"
-                                        onChange={(e) => setStartDate(e.target.value)}
-                                        value={StartDate}
-                                        bColor="#E4E4E4"
-                                        leftIcon={<FaCalendarAlt />}
-                                    />
-                                    <Input
-                                        placeholder="End Date"
-                                        type="date"
-                                        size="sm"
-                                        onChange={(e) => setEndDate(e.target.value)}
-                                        value={EndDate}
-                                        bColor="#E4E4E4"
-                                        leftIcon={<FaCalendarAlt />}
-                                    />
+                          placeholder="Search"
+                          size="sm"
+                          onChange={(e) => setSearchInput(e.target.value)}
+                          value={SearchInput}
+                          bColor="#E4E4E4"
+                          leftIcon={<BiSearch />}
+                        />
+                      ) : (
+                        <HStack flexWrap={["wrap", "nowrap"]}>
 
-                                    <Flex onClick={() => filterBy("date")} cursor="pointer" px="5px" py="3px" rounded="5px" bg="greenn.greenn500" color="#fff" justifyContent="center" alignItems="center" >
-                                        <BiSearch />
-                                    </Flex>
+
+                          <Flex onClick={() => filterBy("date")} cursor="pointer" px="5px" py="3px" rounded="5px" bg="greenn.greenn500" color="#fff" justifyContent="center" alignItems="center" >
+                            <BiSearch />
+                          </Flex>
+                        </HStack>
+                      )}
+                      <Menu isLazy>
+                        <MenuButton as={Box}>
+                          <HStack
+                            border="1px solid #E3E5E8" rounded="7px" p='6px' color='#2F2F2F' fontWeight="500" fontSize="14px"
+                          >
+                            <Text>Filter</Text>
+                            <IoFilter />
+                          </HStack>
+                        </MenuButton>
+                        <MenuList>
+                          <MenuItem
+                            onClick={() => filterBy("name")}
+                            textTransform="capitalize"
+                            fontWeight={"500"}
+                            color="#2F2F2F"
+                            _hover={{
+                              color: "#fff",
+                              fontWeight: "400",
+                              bg: "greenn.greenn500",
+                            }}
+                          >
+                            <HStack fontSize="14px">
+                              <Text>by Name</Text>
+                            </HStack>
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => filterBy("class")}
+                            textTransform="capitalize"
+                            fontWeight={"500"}
+                            color="#2F2F2F"
+                            _hover={{
+                              color: "#fff",
+                              fontWeight: "400",
+                              bg: "greenn.greenn500",
+                            }}
+                          >
+                            <HStack fontSize="14px">
+                              <Text>by class</Text>
+                            </HStack>
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => filterBy("essay")}
+                            textTransform="capitalize"
+                            fontWeight={"500"}
+                            color="#2F2F2F"
+                            _hover={{
+                              color: "#fff",
+                              fontWeight: "400",
+                              bg: "greenn.greenn500",
+                            }}
+                          >
+                            <HStack fontSize="14px">
+                              <Text>by Essay Score</Text>
+                            </HStack>
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => filterBy("amount")}
+                            textTransform="capitalize"
+                            fontWeight={"500"}
+                            color="#2F2F2F"
+                            _hover={{
+                              color: "#fff",
+                              fontWeight: "400",
+                              bg: "greenn.greenn500",
+                            }}
+                          >
+                            <HStack fontSize="14px">
+                              <Text>by amount awarded</Text>
+                            </HStack>
+                          </MenuItem>
+
+                          <MenuItem
+                            onClick={() => {
+                              setFilteredData(null);
+                              setSearchInput("");
+                              setByDate(false)
+                            }}
+                            textTransform="capitalize"
+                            fontWeight={"500"}
+                            color="#2F2F2F"
+                            _hover={{
+                              color: "#fff",
+                              fontWeight: "400",
+                              bg: "greenn.greenn500",
+                            }}
+                          >
+                            <HStack fontSize="14px">
+                              <Text>clear filter</Text>
+                            </HStack>
+                          </MenuItem>
+                        </MenuList>
+                      </Menu>
+                    </HStack>
+
+                  </Flex>
+                </Flex>
+              </Flex>
+            </HStack>
+          </Flex>
+          <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='15px' px="15px" rounded='10px' overflowX="auto">
+
+            <TableContainer>
+              <Table variant='simple'>
+
+                <Thead bg="#F9FAFB">
+                  <Tr >
+                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
+                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">Class level</Th>
+                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">Essay score</Th>
+                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">Amount</Th>
+                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
+
+                  </Tr>
+                </Thead>
+                <Tbody>
+
+
+                  {SearchInput === "" || FilteredData === null ? (
+                    FilteredData?.map((item, i) => (
+                      <TableRow
+                        type={"sponsor-admin-discoverstudents"}
+                        name={item.full_name}
+                        classLevel={item.class_level}
+                        essayScore={item.essay_rating === null ? "0%" : item.essay_rating}
+                        amount={item.amount_needed}
+                        studentIds={item.id}
+
+                        onOpen={onOpen}
+                        onEdit={() => setOpenModal(true)}
+                      />
+                    ))
+                  ) : SearchInput !== "" && FilteredData?.length > 0 ? (
+                    FilteredData?.map((item, i) => (
+                      <TableRow
+                        type={"sponsor-admin-discoverstudents"}
+                        name={item.full_name}
+                        classLevel={item.class_level}
+                        essayScore={item.essay_rating}
+                        amount={item.amount_needed}
+                        studentIds={item.id}
+
+                        onOpen={onOpen}
+                        onEdit={() => setOpenModal(true)}
+                      />
+                    ))
+                  ) : (
+                    <Text textAlign={"center"} mt="32px" color="black">
+                      *--No record found--*
+                    </Text>
+                  )}
+
+                </Tbody>
+
+              </Table>
+            </TableContainer>
+
+            <Modal isOpen={isOpening} onClose={handleCloseModal}>
+              <ModalOverlay />
+              <ModalContent maxW="537px">
+              {showToast.show && (
+        <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
+      )}
+                <ModalHeader>
+                <Text fontWeight="700" color="#1F2937" >Add Student to Scholarship</Text>
+                <Text fontSize="14px" fontWeight="400" color="#6B7280" >Select a scholarship to add the student to</Text>
+                </ModalHeader>
+                <ModalCloseButton />
+                <ModalBody borderWidth="1px">
+                  {sponsorScholarships.length > 0 ? (
+                    sponsorScholarships.map((scholarship, index) => (
+                      <Stack
+                        key={scholarship.id || index}
+                        borderWidth="1px"
+                        rounded="11px"
+                        py="12px"
+                        pl="8px"
+                        pr="16px"
+                        spacing="10px"
+                        mb="21px"
+                        w="100%"
+                      >
+                        <HStack justifyContent="space-between">
+                          <Box w="100%" >
+                            <Stack >
+                              <HStack w="100%" justifyContent="space-between" gap="10px">
+                                <HStack>
+                                <Text color="#1F2937" fontSize="13px" fontWeight="600">
+                                  {scholarship.name || "Unnamed Scholarship"}
+                                </Text>
+                                <Text fontSize="12px" fontWeight="500" color="#344054">
+                                  ({scholarship.amount})
+                                </Text>
                                 </HStack>
-                            )}
-                            <Menu isLazy>
-                                <MenuButton as={Box}>
-                                    <HStack
-                                        border="1px solid #E3E5E8" rounded="7px" p='6px' color='#2F2F2F' fontWeight="500" fontSize="14px"
-                                    >
-                                        <Text>Filter</Text>
-                                        <IoFilter />
-                                    </HStack>
-                                </MenuButton>
-                                <MenuList>
-                                    <MenuItem
-                                        onClick={() => filterBy("name")}
-                                        textTransform="capitalize"
-                                        fontWeight={"500"}
-                                        color="#2F2F2F"
-                                        _hover={{
-                                            color: "#fff",
-                                            fontWeight: "400",
-                                            bg: "greenn.greenn500",
-                                        }}
-                                    >
-                                        <HStack fontSize="14px">
-                                            <Text>by Name</Text>
-                                        </HStack>
-                                    </MenuItem>
-                                    <MenuItem
-                                        onClick={() => filterBy("email")}
-                                        textTransform="capitalize"
-                                        fontWeight={"500"}
-                                        color="#2F2F2F"
-                                        _hover={{
-                                            color: "#fff",
-                                            fontWeight: "400",
-                                            bg: "greenn.greenn500",
-                                        }}
-                                    >
-                                        <HStack fontSize="14px">
-                                            <Text>by email</Text>
-                                        </HStack>
-                                    </MenuItem>
-                                    <MenuItem
-                                        onClick={() => filterBy("dept")}
-                                        textTransform="capitalize"
-                                        fontWeight={"500"}
-                                        color="#2F2F2F"
-                                        _hover={{
-                                            color: "#fff",
-                                            fontWeight: "400",
-                                            bg: "greenn.greenn500",
-                                        }}
-                                    >
-                                        <HStack fontSize="14px">
-                                            <Text>by department</Text>
-                                        </HStack>
-                                    </MenuItem>
-                                    <MenuItem
-                                        onClick={() => filterBy("phoneNumber")}
-                                        textTransform="capitalize"
-                                        fontWeight={"500"}
-                                        color="#2F2F2F"
-                                        _hover={{
-                                            color: "#fff",
-                                            fontWeight: "400",
-                                            bg: "greenn.greenn500",
-                                        }}
-                                    >
-                                        <HStack fontSize="14px">
-                                            <Text>by Phone Number</Text>
-                                        </HStack>
-                                    </MenuItem>
+                                <Radio
+  value={scholarship.id}
+  isChecked={selectedScholarship === scholarship.id}
+  onChange={() => {
+    console.log("📌 Selected Scholarship:", scholarship.id);
+    setSelectedScholarship(scholarship.id);
+  }}
+  
+  sx={{
+    "& .chakra-radio__control": {
+      borderColor: "green.500", // Default border color
+    },
+    "& .chakra-radio__control[data-checked]": {
+      bg: "green.500", // Background when selected
+      borderColor: "green.500", // Keep border color consistent
+      position: "relative",
+    },
+    "& .chakra-radio__control[data-checked]::after": {
+      content: '"✔"', // Checkmark symbol
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      color: "white",
+      fontSize: "14px",
+      fontWeight: "bold",
+    },
+  }}
+/>
 
-                                    <MenuItem
-                                        onClick={() => setByDate(true)}
-                                        textTransform="capitalize"
-                                        fontWeight={"500"}
-                                        color="#2F2F2F"
-                                        _hover={{
-                                            color: "#fff",
-                                            fontWeight: "400",
-                                            bg: "greenn.greenn500",
-                                        }}
-                                    >
-                                        <HStack fontSize="14px">
-                                            <Text>by date</Text>
-                                        </HStack>
-                                    </MenuItem>
-                                    <MenuItem
-                                        onClick={() => {
-                                            setFilteredData(null);
-                                            setSearchInput("");
-                                            setByDate(false)
-                                            setStartDate("")
-                                            setEndDate("")
-                                        }}
-                                        textTransform="capitalize"
-                                        fontWeight={"500"}
-                                        color="#2F2F2F"
-                                        _hover={{
-                                            color: "#fff",
-                                            fontWeight: "400",
-                                            bg: "greenn.greenn500",
-                                        }}
-                                    >
-                                        <HStack fontSize="14px">
-                                            <Text>clear filter</Text>
-                                        </HStack>
-                                    </MenuItem>
-                                </MenuList>
-                            </Menu>
+
+                              </HStack>
+                            </Stack>
+                          </Box>
                         </HStack>
 
-                    </Flex>
-                </Flex>
-          </Flex>
-          </HStack>
-        </Flex>
-        <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='15px' px="15px" rounded='10px' overflowX="auto">
+                        <HStack>
+                          {scholarship.students.length > 0 ? (
+                            scholarship.students.slice(0, 2).map((student, idx) => (
+                              <HStack key={idx} bg="#E8F2ED" p="8px" rounded="31px">
+                                <Avatar size="sm" name={student.full_name} />
+                                <Text color="#101828" fontSize="13px" fontWeight="500">
+                                  {student.full_name}
+                                </Text>
+                              </HStack>
+                            ))
+                          ) : null}
+                        </HStack>
+                      </Stack>
+                    ))
+                  ) : (
+                    <Text fontSize="14px" fontWeight="500" color="#767F8E">
+                      No scholarships available.
+                    </Text>
+                  )}
+                </ModalBody>
 
-        <TableContainer>
-                        <Table variant='simple'>
-
-                            <Thead bg="#F9FAFB">
-                                <Tr >
-                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
-                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">department</Th>
-                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">class level</Th>
-                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">field of study</Th>
-                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">eligibility status</Th>
-                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">created at</Th>
-                                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
-
-                                </Tr>
-                            </Thead>
-                            <Tbody>
+                <ModalFooter gap="10px">
+                  <Button w="80px" background="white" color="green" border="1px solid green" mr={3} onClick={handleCloseModal}>
+                    Cancel
+                  </Button>
+                  <Button
+                    w="173px"
+                    isLoading={isSubmitting}
+                    onClick={handleSubmit}
+                  >
+                    Confirm
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
 
 
-                                {SearchInput === "" || FilteredData === null ? (
-                                    FilterData?.map((item, i) => (
-                                        <TableRow
-                                            type={"school-admin"}
-                                            name={item.full_name}
-                                            email={item.email}
-                                            department={item.department}
-                                            classLevel={item.class_level}
-                                            fieldOfStudy={item.intended_field_of_study}
-                                            status={item.verification_status}
-                                            onClick={() => handleStudentClick(item.id)}
-                                            onRemove={onOpen}
-                                            onEdit={() => setOpenModal(true)}
-                                        />
-                                    ))
-                                ) : SearchInput !== "" && FilteredData?.length > 0 ? (
-                                    FilteredData?.map((item, i) => (
-                                        <TableRow
-                                            type={"school-admin"}
-                                            name={item.full_name}
-                                            email={item.email}
-                                            department={item.department}
-                                            classLevel={item.class_level}
-                                            fieldOfStudy={item.intended_field_of_study}
-                                            status={item.verification_status}
-                                            onRemove={onOpen}
-                                            onEdit={() => setOpenModal(true)}
-                                        />
-                                    ))
-                                ) : (
-                                    <Text textAlign={"center"} mt="32px" color="black">
-                                        *--No record found--*
-                                    </Text>
-                                )}
-
-                            </Tbody>
-
-                        </Table>
-                    </TableContainer>
-
+          </Box>
         </Box>
-      </Box>
 
-                    <Pagination
-                        postPerPage={PostPerPage}
-                        currentPage={CurrentPage}
-                        totalPosts={MainData.length}
-                        paginate={paginate}
-                    />
-            </Box>
-            <RemoveNotification isOpen={isOpen} onClose={onClose} />
-            <ProfileUpdateNotification isOpen={OpenModal} onClose={() => setOpenModal(false)} />
-        </MainLayout>
-    )
+        <Pagination
+          totalPosts={TotalPage}
+          currentPage={CurrentPage}
+          // postsPerPage={PostPerPage}
+          paginate={paginate}
+        />
+      </Box>
+      <ProfileUpdateNotification isOpen={OpenModal} onClose={() => setOpenModal(false)} />
+    </MainLayout>
+  )
 }

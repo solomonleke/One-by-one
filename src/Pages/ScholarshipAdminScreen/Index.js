@@ -4,6 +4,7 @@ import MainLayout from '../../DashboardLayout'
 import { Text, Flex, HStack, VStack, Box, Center, Progress, Icon, Avatar, Image } from '@chakra-ui/react'
 import { Tooltip as Tooltips } from '@chakra-ui/react';
 import DashboardCard from "../../Components/DashboardCard"
+import Preloader from "../../Components/Preloader"
 import Button from "../../Components/Button"
 import { HiOutlineUsers } from 'react-icons/hi'
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
@@ -160,7 +161,7 @@ export default function ScholarshipAdmin() {
   const [CurrentPage, setCurrentPage] = useState(1);
   const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
   const [TotalPage, setTotalPage] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("PENDING");
   const [essayPercentage, setEssayPercentage] = useState(0);
   const [note, setNote] = useState("");
   const [search, setSearch] = useState("");
@@ -171,15 +172,17 @@ export default function ScholarshipAdmin() {
         const result = await GetAllScholarshipSchoolsApi(CurrentPage, PostPerPage, status);
         console.log("getallscholarshipSchools", result);
 
-        if (result.status === 200 && result.data?.schools?.length > 0) {
-            setSchoolMainData(result.data.schools);
-            setTotalPage(result.data.totalPages); 
+        if (result.status === 200 && result.data.data?.schools?.length > 0) {
+            setSchoolMainData(result.data.data.schools);
+            setTotalPage(result.data.data.totalPages); 
         } else {
           setSchoolMainData([]);
         }
     } catch (e) {
         console.log("error", e.message);
-    }
+    }  finally {
+      setIsLoading(false);
+  }
 };
 
 useEffect(() => {
@@ -194,16 +197,18 @@ const GetAllScholarshipStudent = async () => {
 
     console.log("getallscholarshipStudents", result)
 
-    if (result.status === 200 && result.data?.students?.length > 0) {
-      setStudentMainData(result.data.students);
-      setTotalPage(result.data.totalPages);
+    if (result.status === 200 && result.data.data?.students?.length > 0) {
+      setStudentMainData(result.data.data.students);
+      setTotalPage(result.data.data.totalPages);
   } else {
     setStudentMainData([]);
   }
   } catch (e) {
 
     console.log("error", e.message)
-  }
+  }  finally {
+    setIsLoading(false);
+}
 
 }
 
@@ -215,32 +220,17 @@ useEffect(() => {
   const [userName, setUserName] = useState('');
 
   const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    //   var reloadCount = localStorage.getItem("reloadCount");
-    //   if (!reloadCount) {
-    //     localStorage.setItem('reloadCount', + parseInt(1))
 
-    //   }
-    //   if (reloadCount < 2) {
-    //     localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
-    //     setTimeout(() =>
-    //       window.location.reload(1), 2000)
-    //   } else {
-    //     localStorage.removeItem('reloadCount');
-    //   }
-
-    const storedName = JSON.parse(localStorage.getItem('onlineUser'));
-    if (storedName) {
-      setUserName(`${storedName.firstName}`);
-    }
-  }, []);
+  
 
 
   const { schoolId } = useParams()
   const { student_id } = useParams()
 
-  const ApproveSchool = async () => {
+  const ApproveSchool = async (schoolId, status, note) => {
+    
     try {
         const result = await ApproveSchoolApi(schoolId, status, note)
 
@@ -269,6 +259,7 @@ useEffect(() => {
         console.log("error", e.message)
     } finally {
         setLoading(false);
+        setIsLoading(false);
     }
 }
 
@@ -302,8 +293,34 @@ const ApproveStudent = async () => {
       console.log("error", e.message)
   } finally {
       setLoading(false);
+      setIsLoading(false);
   }
 }
+
+
+useEffect(() => {
+  //   var reloadCount = localStorage.getItem("reloadCount");
+  //   if (!reloadCount) {
+  //     localStorage.setItem('reloadCount', + parseInt(1))
+
+  //   }
+  //   if (reloadCount < 2) {
+  //     localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
+  //     setTimeout(() =>
+  //       window.location.reload(1), 2000)
+  //   } else {
+  //     localStorage.removeItem('reloadCount');
+  //   }
+
+  const storedName = JSON.parse(localStorage.getItem('onlineUser'));
+  if (storedName) {
+    setUserName(`${storedName.firstName}`);
+  }
+}, []);
+
+if (isLoading) return <Preloader />;
+
+
 
   
   return (
@@ -439,7 +456,8 @@ const ApproveStudent = async () => {
           </HStack>
 
           <VStack borderRadius={"10px"} border=" 1px solid #EDEFF2" spacing={4} align="stretch">
-            {SchoolMainData.map((school, index) => (
+          {SchoolMainData.length > 0 ? (
+            SchoolMainData.map((school, index) => (
               <Flex
                 key={index}
                 justify="space-between"
@@ -450,7 +468,7 @@ const ApproveStudent = async () => {
                 borderBottomWidth={index !== schools.length - 1 ? 1 : 0}
                 borderColor={"gray.200"}>
                 <HStack w={{ Fill: "264px" }} padding={"16px, 30px, 16px, 12px"} h={{ Fixed: "42px" }} gap={"18px"} opacity={"0px"}>
-                  <Avatar src={school.school_name} w={{ Fixed: "42px" }} opacity={"0px"} h={{ Fixed: "42px" }} gap={"0px"} borderRadius={"280px"} />
+                  <Avatar name={school.school_name} w={{ Fixed: "42px" }} opacity={"0px"} h={{ Fixed: "42px" }} gap={"0px"} borderRadius={"280px"} />
                   <Box  >
 
                     <Text lineHeight={"20px"} fontFamily={"Inter"} textAlign="left" letterSpacing="-0.02em%" color="#101828" fontWeight="500" size="13px">{school.school_name}</Text>
@@ -461,10 +479,16 @@ const ApproveStudent = async () => {
 
                 <HStack>
                   <Button size="7px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<IoCloseOutline />}>Reject</Button>
-                  <Button size="5px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<FaCheck />} onClick={() => {ApproveSchool()}} isLoading={loading}>Approve</Button>
+                  <Button size="5px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<FaCheck />} onClick={() => {ApproveSchool(school.id, "APPROVED", "Approved after review")}} isLoading={loading}>Approve</Button>
                 </HStack>
               </Flex>
-            ))}
+            ))
+            ): (
+                                                    <Text textAlign="center" py={5} >
+                                                        No Awaiting approval found.
+                                                    </Text>
+                                                )
+            }
           </VStack>
         </Box>
 
@@ -477,7 +501,10 @@ const ApproveStudent = async () => {
             }}>See All</Text>
           </HStack>
 
-          <VStack spacing={13} align="stretch">{StudentMainData.map((student, index) => (
+          <VStack spacing={13} align="stretch">
+          {
+            StudentMainData.length > 0 ? (
+            StudentMainData.map((student, index) => (
             <Flex
               key={index}
               p={"12px"} border=" 1px solid #EDEFF2"
@@ -505,7 +532,13 @@ const ApproveStudent = async () => {
               </HStack>
               <Icon as={IoIosArrowRoundForward} cursor={"pointer"} angle="-180 deg" gap="1px" w={{ Hug: "18.01px" }} h={{ Fixed: "33px" }} color=" #101828" />
             </Flex>
-          ))}
+          ))
+        ): (
+                                                    <Text textAlign="center" py={5} >
+                                                        No Pending approval found.
+                                                    </Text>
+                                                )
+                                                }
           </VStack>
         </Box>
       </Flex>

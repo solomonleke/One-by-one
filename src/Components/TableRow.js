@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { Box, Flex, HStack, Avatar, Text, Menu, Checkbox, MenuButton, MenuList, MenuItem, useDisclosure, Icon, } from '@chakra-ui/react'
 import {
 
@@ -10,9 +11,18 @@ import { useNavigate } from 'react-router-dom'
 import Button from './Button'
 import { IoMdOpen } from "react-icons/io";
 import { GoDotFill } from "react-icons/go";
+import eventBus from './eventBus';
 
-export default function TableRow({ type, name, email, department, classLevel, onClick, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee }) {
+export default function TableRow({ type, name, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore }) {
     const router = useNavigate()
+
+    
+      const handleOpenModal = (studentId) => {
+        console.log("📌 Student ID Clicked:", studentIds);
+        eventBus.emit("studentSelected", studentId); // Send studentId to DiscoverStudents
+    };
+    
+    
 
     
     return (
@@ -56,7 +66,7 @@ export default function TableRow({ type, name, email, department, classLevel, on
                                             <Text>Edit</Text>
                                         </HStack>
                                     </MenuItem>
-                                    <MenuItem onClick={onRemove} textTransform="capitalize" fontWeight={"500"} color='#FF4040' _hover={{ color: "#FF4040", fontWeight: "400", bg: "#E8FFF4" }}>
+                                    <MenuItem onClick={onDelete} textTransform="capitalize" fontWeight={"500"} color='#FF4040' _hover={{ color: "#FF4040", fontWeight: "400", bg: "#E8FFF4" }}>
                                         <HStack fontSize="14px">
 
                                             <Text >Remove Student</Text>
@@ -72,11 +82,11 @@ export default function TableRow({ type, name, email, department, classLevel, on
             }
 
 {
-                type === "sponsor-admin-students" && (
+                type === "school-admin-students" && (
                     <>
                     <Td display="flex" gap="10px">
                         <Checkbox></Checkbox>
-                        <HStack cursor={"pointer"} onClick={() => {router("/sponsor-admin/discoverstudents/student-profile")}}>
+                        <HStack cursor={"pointer"} onClick={() => {router("/sponsor-admin/students/student-profile")}}>
                             <Avatar name={name} size='sm' src='https://bit.ly/tioluwani-kolawole' />
                             <Box>
                             <Text color={"#101828"} fontWeight={"500"} fontSize={"13px"} >{name}</Text>
@@ -117,6 +127,52 @@ export default function TableRow({ type, name, email, department, classLevel, on
                  
                 )
             }
+            
+
+{
+                type === "sponsor-admin-discoverstudents" && (
+                    <>
+                    <Td display="flex" gap="10px">
+                        <HStack cursor={"pointer"} onClick={() => {router("/sponsor-admin/discoverstudents/student-profile")}}>
+                            <Avatar name={name} size='sm' src='https://bit.ly/tioluwani-kolawole' />
+                            <Box>
+                            <Text color={"#101828"} fontWeight={"500"} fontSize={"13px"} >{name}</Text>
+
+                            </Box>
+                          
+                        </HStack>
+                    </Td>
+                    <Td><Text fontWeight="400" fontSize={"13px"} >{classLevel}</Text></Td>
+                    <Td><Text fontWeight="400" fontSize={"13px"} textTransform={"capitalize"}>{essayScore}</Text></Td>
+                    <Td><Text fontWeight="400" fontSize={"13px"}>{amount}</Text></Td>
+                    <Td>
+                         <Menu isLazy>
+                            <MenuButton as={Box}>
+
+                            <Flex justifyContent="center" color="#000000" fontSize="16px"><BsThreeDots /></Flex>
+                            </MenuButton>
+                            <MenuList >
+                             
+                                <MenuItem onClick={onEdit} textTransform="capitalize" fontWeight={"500"} color='#2F2F2F' _hover={{ color: "#2F2F2F", fontWeight: "400", bg: "#E8FFF4" }}>
+                                    <HStack fontSize="14px">
+                                      
+                                        <Text>View Profile</Text>
+                                    </HStack>
+                                </MenuItem>
+                                <MenuItem onClick={() => handleOpenModal(studentIds)} textTransform="capitalize" fontWeight={"500"}  _hover={{ color: "#2F2F2F", fontWeight: "400", bg: "#E8FFF4" }}>
+                                    <HStack fontSize="14px">
+                                      
+                                        <Text >Add to Scholarship</Text>
+                                    </HStack>
+                                </MenuItem>
+
+                            </MenuList>
+                        </Menu>
+                        </Td>
+                    </>
+                 
+                )
+            }
              {
                 type === "scholarship-admin-schools" && (
                     <>
@@ -133,8 +189,8 @@ export default function TableRow({ type, name, email, department, classLevel, on
                     </Td>
                     <Td><Text fontWeight="400" fontSize={"13px"} >{submissionDate}</Text></Td>
                     <Td>
-                        <HStack color={status === "approved" ? "#027A48": status === "pending" ? "#FFA30C": "#FD4739"}>
-                            <Box rounded="100%" w="8px" h="8px" bg={status === "approved" ? "#027A48": status === "pending" ? "#FFA30C": "#FD4739"}></Box>
+                    <HStack color={status === "APPROVED" ? "#027A48": status === "PENDING" ? "#FFA30C": "#FD4739"}>
+                            <Box rounded="100%" w="8px" h="8px" bg={status === "APPROVED" ? "#027A48": status === "PENDING" ? "#FFA30C": "#FD4739"}></Box>
                             <Text fontWeight="400" fontSize={"13px"} >{status}</Text>
                         </HStack>
                     </Td>
@@ -159,11 +215,11 @@ export default function TableRow({ type, name, email, department, classLevel, on
                           
                         </HStack>
                     </Td>
-                            <Td><Text color={"#667085"} textTransform={"capitalize"} fontWeight={"400"} fontSize={"13px"} >{schoolName}</Text></Td>
+                            {/* <Td><Text color={"#667085"} textTransform={"capitalize"} fontWeight={"400"} fontSize={"13px"} >{schoolName}</Text></Td> */}
                     <Td><Text fontWeight="400" color={"#667085"} fontSize={"13px"}>{fieldOfStudy}</Text></Td>
                     <Td>
-                        <HStack color={status === "approved" ? "#027A48": status === "pending" ? "#FFA30C": "#FD4739"}>
-                            <Box rounded="100%" w="8px" h="8px" bg={status === "approved" ? "#027A48": status === "pending" ? "#FFA30C": "#FD4739"}></Box>
+                        <HStack color={status === "APPROVED" ? "#027A48": status === "PENDING" ? "#FFA30C": "#FD4739"}>
+                            <Box rounded="100%" w="8px" h="8px" bg={status === "APPROVED" ? "#027A48": status === "PENDING" ? "#FFA30C": "#FD4739"}></Box>
                             <Text fontWeight="400" fontSize={"13px"} >{status}</Text>
                         </HStack>
                     </Td>

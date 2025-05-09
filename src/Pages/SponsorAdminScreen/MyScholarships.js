@@ -6,6 +6,7 @@ import { Text, Flex, HStack, Stack, VStack, Box, Center, Progress, Spacer, Icon,
 import { Tooltip as Tooltips } from '@chakra-ui/react';
 import DashboardCard from "../../Components/DashboardCard"
 import Button from "../../Components/Button"
+import Preloader from "../../Components/Preloader"
 import { HiOutlineUsers } from 'react-icons/hi'
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdOutlineCancel } from 'react-icons/md'
@@ -33,10 +34,12 @@ import scholarshipImage5 from "../../Asset/Image5.png"
 import scholarshipImage6 from "../../Asset/Image6.png"
 import scholarshipImage7 from "../../Asset/Image7.png"
 import scholarshipImage8 from "../../Asset/goldIcon.svg"
+import ShowToast from '../../Components/ToastNotification';
 import { createScholarshipApi } from "../../Utils/ApiCall";
 import { getActiveScholarships } from "../../Utils/ApiCall";
 import { getScholarshipsBySponsor } from "../../Utils/ApiCall";
-import { GetSponsorAdminStats } from "../../Utils/ApiCall";
+import { GetSponsorAdminStats, fundScholarshipApi } from "../../Utils/ApiCall";
+
 
 
 import {
@@ -66,8 +69,13 @@ export default function MyScholarships() {
   const [isOpen, setIsOpen] = useState(false);
   const [scholarships, setScholarships] = useState([]);
   const [sponsorScholarships, setSponsorScholarships] = useState([]);
+  const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
   const [error, setError] = useState(null);
   const [stats, setStats] = useState(null);
+  const [activeScholarshipCount, setActiveScholarshipCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+
   const [data, setData] = useState({
     scholarshipCount: 0,
   });
@@ -97,13 +105,12 @@ export default function MyScholarships() {
       const response = await createScholarshipApi(formData);
       console.log("Server Response:", response); // Debugging
 
-      toast({
-        title: "Scholarship Created",
-        description: "Scholarship has been successfully created!",
+      setShowToast({
+        show: true,
+        message: "Scholarship successfully created!",
         status: "success",
-        duration: 3000,
-        isClosable: true,
       });
+      setTimeout(() => setShowToast({ show: false }), 3000);
 
       setFormData({ name: "", purpose: "", motivation: "", amount: "0" });
       closeModal();
@@ -111,87 +118,110 @@ export default function MyScholarships() {
       console.error("❌ Error creating scholarship:", error);
       console.error("Server Response:", error.response?.data || "No response data");
 
-      toast({
-        title: "Error",
-        description: error.response?.data?.message || "Failed to create scholarship",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
+      setShowToast({ 
+        show: true, 
+        message: error.message || "Failed to create scholarship.", 
+        status: "error" 
       });
+      setTimeout(() => setShowToast({ show: false }), 3000);
     } finally {
       setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    const fetchScholarships = async () => {
-      try {
-        const data = await getActiveScholarships();
-        if (data.status) {
-          setScholarships(data.data.activeScholarship);
-        } else {
-          setError(data.message || "Failed to load scholarships");
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
 
+  const fetchScholarships = async () => {
+    try {
+      const data = await getActiveScholarships();
+      if (data.status) {
+        setScholarships(data.data.activeScholarship);
+        setActiveScholarshipCount(data.data.activeScholarship.length);
+      } else {
+        setError(data.message || "Failed to load scholarships");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setIsLoading(false);
+    }
+  };
+
+  const fundScholarship = async(Id) => {
+    try {
+      const data = await fundScholarshipApi(Id);
+      console.log("fundScholarship", data)
+      if(data.status === true){
+
+      }
+      window.location.assign("https://checkout.paystack.com/2ij8ulu20y5057y");
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setIsLoading(false);
+    }
+  }
+
+  const fetchScholarshipsBySponsor = async () => {
+    try {
+      const data = await getScholarshipsBySponsor();
+
+      if (data.status && Array.isArray(data.data)) {
+        setSponsorScholarships(data.data); // ✅ Set directly since `data` is an array
+      } else {
+        console.error("Unexpected response format:", data);
+        setError(data.message || "Failed to load scholarships");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setIsLoading(false);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      console.log("Fetching Dashboard Stats...");
+
+      const data = await GetSponsorAdminStats();
+      console.log("Fetched Dashboard Stats:", data);
+
+      if (data) {
+        setStats(data);
+        setData({
+          scholarshipCount: data.scholarshipCount,
+        });
+      } else {
+        console.error("Dashboard data is null or undefined.");
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error.message);
+    } finally {
+      setLoading(false);
+      setIsLoading(false);
+    }
+  };
+  
+  
+
+  useEffect(() => {
+    
     fetchScholarships();
-  }, []);
-
-  useEffect(() => {
-    const fetchScholarshipsBySponsor = async () => {
-      try {
-        const data = await getScholarshipsBySponsor();
-
-        if (data.status && Array.isArray(data.data)) {
-          setSponsorScholarships(data.data); // ✅ Set directly since `data` is an array
-        } else {
-          console.error("Unexpected response format:", data);
-          setError(data.message || "Failed to load scholarships");
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchScholarshipsBySponsor();
-  }, []);
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log("Fetching Dashboard Stats...");
-
-        const data = await GetSponsorAdminStats();
-        console.log("Fetched Dashboard Stats:", data);
-
-        if (data) {
-          setStats(data);
-          setData({
-            scholarshipCount: data.scholarshipCount,
-          });
-        } else {
-          console.error("Dashboard data is null or undefined.");
-        }
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [isOpen]);
+
+  if (isLoading) return <Preloader message="Fetching scholarships..." />;
 
   return (
     <MainLayout>
+    {showToast.show && (
+        <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
+      )}
       <HStack justifyContent="space-between" w="100%">
         <Box w="80%">
           <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">My Scholarships <Box as="span" color="#667085" fontSize="18px" fontWeight="400">({data.scholarshipCount})</Box></Text>
@@ -205,19 +235,24 @@ export default function MyScholarships() {
         </Box>
       </HStack>
 
-      <Modal isOpen={isOpen} onClose={closeModal}>
+      <Modal isOpen={isOpen} onClose={closeModal} >
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create Scholarship</ModalHeader>
+        <ModalContent maxW="537px">
+          <ModalHeader px="25px" pt="23px">
+          <Text fontSize="19px">Create Scholarship</Text>
+          <Text fontSize="14px" color="#6B7280" fontWeight="400" >Fill in the details below to create a scholarship.</Text>
+          </ModalHeader>
           <ModalBody>
             <FormControl mb={4}>
-              <FormLabel>Scholarship Name</FormLabel>
-              <Input name="name" value={formData.name} onChange={handleChange} placeholder="Enter scholarship name" />
+              <FormLabel fontSize="14px">Scholarship Name</FormLabel>
+              <Input name="name" fontSize="13px" color="#ADB4BF" value={formData.name} onChange={handleChange} placeholder="e.g Operation helping students" />
             </FormControl>
             <FormControl mb={4}>
-              <FormLabel>Purpose of Scholarship</FormLabel>
+              <FormLabel fontSize="14px">Purpose of Scholarship</FormLabel>
               <Select
-                name="purpose"
+              name="purpose"
+                fontSize="13px" 
+                color="#ADB4BF"
                 value={formData.purpose}
                 onChange={handleChange}
                 placeholder="Select Purpose"
@@ -230,27 +265,28 @@ export default function MyScholarships() {
               </Select>
             </FormControl>
             <FormControl mb={4}>
-              <FormLabel>Motivation</FormLabel>
-              <Input name="motivation" value={formData.motivation} onChange={handleChange} placeholder="What motivates you to sponsor students?" />
+              <FormLabel fontSize="14px">Motivation</FormLabel>
+              <Input name="motivation" fontSize="13px" color="#ADB4BF" value={formData.motivation} onChange={handleChange} placeholder="What motivates you to sponsor students?" />
             </FormControl>
             <FormControl mb={4}>
-              <FormLabel>Amount</FormLabel>
-              <Input name="amount" value={formData.amount} onChange={handleChange} placeholder="Amount" />
+              <FormLabel fontSize="14px">Amount</FormLabel>
+              <Input name="amount" fontSize="13px" color="#ADB4BF" value={formData.amount} onChange={handleChange} placeholder="Amount" />
             </FormControl>
 
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={closeModal} mr={3}>Cancel</Button>
-            <Button colorScheme="blue" onClick={handleSubmit} isLoading={loading}>Create</Button>
+          <ModalFooter gap="10px">
+            <Button onClick={closeModal} w="80px" background="white" color="green" border="1px solid green" mr={3}>Cancel</Button>
+            <Button  w="173px" onClick={handleSubmit} isLoading={loading}>Create Scholarship</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
 
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["10px", "10px", "18px", "18px"]} rounded='10px'>
         <Tabs>
-          <TabList overflowX={"auto"} overflowY={"hidden"}>
-            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Active Scholarships ({data.scholarshipCount})</Tab>
-            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Awaiting Funding ({data.scholarshipCount})</Tab>
+          <TabList overflowX={"auto"} overflowY={"hidden"} _focus={{outline: "none"}}>
+            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} _focus={{outline: "none"}} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Paid Scholarships (0) </Tab>
+            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} _focus={{outline: "none"}} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Active Scholarships ({activeScholarshipCount}) </Tab>
+            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "400" }} _focus={{outline: "none"}} fontSize={"13px"} fontWeight={"400"} lineHeight={"20px"}>Awaiting Funding ({data.scholarshipCount})</Tab>
           </TabList>
 
           <TabIndicator mt='-1.5px' height='2px' bg='green' borderRadius='1px' />
@@ -374,7 +410,7 @@ export default function MyScholarships() {
 
                         {/* Action Buttons */}
                         <HStack>
-                          <Button px="50px" color="#39996B" background="white">
+                          <Button px="50px" color="#39996B" background="white" onClick={() => fundScholarship(scholarship.id)} >
                             Fund Scholarship
                           </Button>
                           <Button px="30px" onClick={() => router("/sponsor-admin/discoverstudents")}>
@@ -387,9 +423,9 @@ export default function MyScholarships() {
                         {scholarship.students.length > 0 ? (
                           scholarship.students.slice(0, 2).map((student, idx) => (
                             <HStack key={idx} bg="#E8F2ED" p="8px" rounded="31px">
-                              <Avatar size="sm" name={student.name} />
+                              <Avatar size="sm" name={student.full_name} />
                               <Text color="#101828" fontSize="13px" fontWeight="500">
-                                {student.name}
+                                {student.full_name}
                               </Text>
                             </HStack>
                           ))
@@ -407,22 +443,74 @@ export default function MyScholarships() {
 
 
 
-                <Stack borderWidth="1px" rounded="11px" py="12px" pl="8px" pr="16px" spacing="10px">
-                  <HStack justifyContent="space-between">
-                    <HStack>
-                      <Box bg="#39996B" w="3px" h="35px" rounded="3px"></Box>
-                      <Stack>
-                        <Text color="#1F2937" fontSize="14px" fontWeight="600">NextGen Scholars Fund <Box as="span" display="inline-flex" my={"auto"}><BsThreeDots /></Box></Text>
-                        <Text color="#767F8E" fontSize="12px" fontWeight="400">Date Created: Oct 6th, 9:00AM</Text>
-                      </Stack>
-                    </HStack>
+                
+              </Stack>
+            </TabPanel>
+            
+            <TabPanel>
+              <Stack spacing="20px">
+                {sponsorScholarships.length > 0 ? (
+                  sponsorScholarships.map((scholarship, index) => (
+                    <Stack
+                      key={scholarship.id || index}
+                      borderWidth="1px"
+                      rounded="11px"
+                      py="12px"
+                      pl="8px"
+                      pr="16px"
+                      spacing="10px"
+                    >
+                      {/* Scholarship Info */}
+                      <HStack justifyContent="space-between">
+                        <HStack>
+                          <Box bg="#39996B" w="3px" h="61px" rounded="3px"></Box>
+                          <Stack>
+                            <Text color="#1F2937" fontSize="14px" fontWeight="600">
+                              {scholarship.name || "Unnamed Scholarship"}{" "}
+                              <Box as="span" display="inline-flex" my="auto">
+                                <BsThreeDots />
+                              </Box>
+                            </Text>
+                            <Text color="#767F8E" fontSize="12px" fontWeight="400">
+                              Date Created: {scholarship.created_at ? new Date(scholarship.created_at).toLocaleDateString() : "N/A"}
+                            </Text>
+                          </Stack>
+                        </HStack>
 
-                    <HStack>
-                      <Button px="50px" color="#39996B" background="white" disabled={true}>Fund Scholarship</Button>
-                      <Button px="30px">Add Student</Button>
-                    </HStack>
-                  </HStack>
-                </Stack>
+                        {/* Action Buttons */}
+                        <HStack>
+                          
+                          <Button px="30px" onClick={() => router("/sponsor-admin/discoverstudents")}>
+                            Add Student
+                          </Button>
+                        </HStack>
+                      </HStack>
+
+                      <HStack>
+                        {scholarship.students.length > 0 ? (
+                          scholarship.students.slice(0, 2).map((student, idx) => (
+                            <HStack key={idx} bg="#E8F2ED" p="8px" rounded="31px">
+                              <Avatar size="sm" name={student.full_name} />
+                              <Text color="#101828" fontSize="13px" fontWeight="500">
+                                {student.full_name}
+                              </Text>
+                            </HStack>
+                          ))
+                        ) : null}
+                      </HStack>
+
+                      
+                    </Stack>
+                  ))
+                ) : (
+                  <Text fontSize="14px" fontWeight="500" color="#767F8E">
+                    No scholarships available.
+                  </Text>
+                )}
+
+
+
+                
               </Stack>
             </TabPanel>
           </TabPanels>
