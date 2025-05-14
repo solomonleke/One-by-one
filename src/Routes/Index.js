@@ -41,6 +41,13 @@ import FundingRecords from '../Pages/FundAdminUserScreen/FundingRecords'
 import LandingPage from '../Pages/LandingPage/Index'
 import AboutUs from '../Pages/LandingPage/AboutUs'
 import GetInvolved from '../Pages/LandingPage/GetInvolved'
+import SuperAdmin from '../Pages/SuperAdmin/Index'
+import SuperAdminReports from '../Pages/SuperAdmin/ReportsAndAnalytics'
+import SuperAdminScholarships from '../Pages/SuperAdmin/Scholarships'
+import SuperAdminSchools from '../Pages/SuperAdmin/Schools'
+import SuperAdminStudents from '../Pages/SuperAdmin/Students'
+import SuperAdminUserManagement from '../Pages/SuperAdmin/UserManagement'
+import SuperAdminSettings from '../Pages/SuperAdmin/Settings'
 
 
 export default function IndexRoutes() {
@@ -111,11 +118,20 @@ export default function IndexRoutes() {
           <Route path='/fund-admin/student-management/student-profile' element={<StudentProfile />} />
           <Route path='/fund-admin/settings' element={<Settings />} />
 
-  {/* fund admin routes */}
+  {/* landing page routes */}
           <Route path='/' element={<LandingPage />} />
           <Route path='/about-us' element={<AboutUs />} />
           <Route path='/get-involved' element={<GetInvolved />} />
-         
+
+
+      {/* super admin routes */}
+      <Route path='/super-admin' element={<SuperAdmin />} />
+      <Route path='/super-admin-reports' element={<SuperAdminReports />} />
+      <Route path='/super-admin-scholarships' element={<SuperAdminScholarships />} />
+      <Route path='/super-admin-schools' element={<SuperAdminSchools />} />
+      <Route path='/super-admin-students' element={<SuperAdminStudents />} />
+      <Route path='/super-admin-user-management' element={<SuperAdminUserManagement />} />
+      <Route path='/super-admin-settings' element={<SuperAdminSettings />} />
         </Routes>
       </BrowserRouter> 
     </StudentProvider>

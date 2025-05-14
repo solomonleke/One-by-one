@@ -10,6 +10,7 @@ const Links = [
     { name: 'About us', path: '/about-us' },
     { name: 'Get involved', path: '/get-involved' },
     { name: 'Contact us', path: '/contact-us' },
+    { name: 'Super Admin', path: '/super-admin' },
   ];
   
   
