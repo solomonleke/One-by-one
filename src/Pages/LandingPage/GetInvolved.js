@@ -144,18 +144,18 @@ export default function GetInvolved() {
 >
   {[
     {
-      title: "sponsor",
+      title: "Sponsor",
       description: `Every student we support is one step closer to achieving their biggest dreams. Your generosity helps provide the essential resources they need to excel in school and far beyond.`,
       bgImage: `url(${Vector})`,
       bg: "#D8FFEC",
-      action: "start sponsoring",
+      action: "Start Sponsoring",
     },
     {
       title: "School Admin",
       description: `Every student we support is one step closer to achieving their biggest dreams. Your generosity helps provide the essential resources they need to excel in school and far beyond.`,
       bgImage: `url(${Group})`,
       bg: "#D8FFEC",
-      action: "start partnering",
+      action: "Start Partnering",
       label: { text: "Partner role", color: "#FFBC4F", bg: "#FFF7EA" },
     },
     {
@@ -163,7 +163,7 @@ export default function GetInvolved() {
       description: `Every student we support is one step closer to achieving their biggest dreams. Your generosity helps provide the essential resources they need to excel in school and far beyond.`,
       bgImage: `url(${Group1})`,
       bg: "#D8FFEC",
-      action: "start volunteering",
+      action: "Start Volunteering",
       label: { text: "Volunteer role", color: "#FFBC4F", bg: "#FFF7EA" },
     },
     {
@@ -171,7 +171,7 @@ export default function GetInvolved() {
       description: `Every student we support is one step closer to achieving their biggest dreams. Your generosity helps provide the essential resources they need to excel in school and far beyond.`,
       bgImage: `url(${Group2})`,
       bg: "#D8FFEC",
-      action: "start volunteering",
+      action: "Start Volunteering",
       label: { text: "Volunteer role", color: "#FFBC4F", bg: "#FFF7EA" },
     },
   ].map((role, i) => (
