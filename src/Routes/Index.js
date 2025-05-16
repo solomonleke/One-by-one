@@ -49,6 +49,7 @@ import SuperAdminStudents from '../Pages/SuperAdmin/Students'
 import SuperAdminUserManagement from '../Pages/SuperAdmin/UserManagement'
 import SuperAdminSettings from '../Pages/SuperAdmin/Settings'
 import ScrollToTop from '../Components/ScrollToTop'
+import ContactUs from '../Pages/LandingPage/ContactUs'
 
 
 export default function IndexRoutes() {
@@ -124,6 +125,7 @@ export default function IndexRoutes() {
           <Route path='/' element={<LandingPage />} />
           <Route path='/about-us' element={<AboutUs />} />
           <Route path='/get-involved' element={<GetInvolved />} />
+          <Route path='/contact-us' element={<ContactUs />} />
 
 
       {/* super admin routes */}
