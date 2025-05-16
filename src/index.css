@@ -36,6 +36,12 @@ code {
   padding-right: 5px;
 }
 
+.verys{
+  padding-top: 8px;
+  width: 10%;
+  padding-right: 5px;
+}
+
 .uploadVerification {
   display: none;
   cursor: pointer;

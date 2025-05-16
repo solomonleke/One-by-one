@@ -7,13 +7,14 @@ import { IoMdMenu } from "react-icons/io";
 
 
 const Links = [
-  { name: 'Home', path: '/' },
-  { name: 'About us', path: '/about-us' },
-  { name: 'Get involved', path: '/get-involved' },
-  { name: 'Contact us', path: '/contact-us' },
-];
-
-
+    { name: 'Home', path: '/' },
+    { name: 'About us', path: '/about-us' },
+    { name: 'Get involved', path: '/get-involved' },
+    { name: 'Contact us', path: '/contact-us' },
+    { name: 'Super Admin', path: '/super-admin' },
+  ];
+  
+  
 
 const NavLink = ({ name, path, onClose }) => (
   <Link
