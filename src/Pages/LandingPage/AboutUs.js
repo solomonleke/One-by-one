@@ -37,6 +37,7 @@ import ChildrenImage from "../../Asset/ChildrenImage.png"
 import { PiShootingStar } from "react-icons/pi";
 import studentImg from "../../Asset/studentImg.png"
 import { FaArrowRightLong } from "react-icons/fa6";
+import WhoWeAre from '../../LandingPageComponents/WhoWeAre';
 
 
 export default function AboutUs() {
@@ -45,34 +46,7 @@ export default function AboutUs() {
 
     return (
         <MainLayout>
-            <Box py="105px" px="50px">
-                <Text fontSize={{ base: "30px", md: "50px" }} fontWeight="600" color="black" >
-                    Who We{" "}
-                    <Text as="span" color="#8C9492">
-                        Are
-                    </Text>
-                </Text>
-                <Text fontSize={{ base: "14px", md: "17px" }} color="#71717A">
-                    One by One is built on a simple but powerful idea: every student deserves the chance to succeed, no matter their background.
-                    We connect bright, determined students from underserved communities with scholarships, mentorship, and the resources they need
-                    to thrive. With the support of our dedicated volunteers and generous sponsors, we’ve created a platform that bridges the gap
-                    between potential and opportunity. Through personalized connections, we’re not just funding education—we’re changing lives,
-                    one student at a time."
-                </Text>
-
-                <Box
-                    mt="50px"
-                    display="flex"
-                    flexWrap="wrap"
-                    justifyContent="center"
-                    gap="25px"
-                >
-                    <Image src={Image0} maxW={{ base: "100%", sm: "45%", md: "22%" }} w="100%" />
-                    <Image src={Image1} maxW={{ base: "100%", sm: "45%", md: "22%" }} w="100%" />
-                    <Image src={Image2} maxW={{ base: "100%", sm: "45%", md: "22%" }} w="100%" />
-                    <Image src={Image3} maxW={{ base: "100%", sm: "45%", md: "22%" }} w="100%" />
-                </Box>
-            </Box>
+            <WhoWeAre />
 
             <Box bg="#091C13" align="center" justifyContent="center" py="80px" px="60px">
                 <Box align="center" justifyContent="center" display={{ base: "grid", md: "flex" }}>
@@ -109,17 +83,17 @@ export default function AboutUs() {
                 </Text>
             </Box>
 
-            <Box align="center"  justifyContent="center" bg="#E5FFF3" py={{base:"100px", md: "135px"}} px={{base:"50px", md: "60px", lg: "140px"}} >
+            <Box align="center"  justifyContent="center" bg="#E5FFF3" py={{base:"100px", md: "135px"}} px={{base:"30px", md: "40px", lg: "100px"}} >
 
-            <Text  fontSize={{base:"23px", md:"50px"}} fontWeight="700" textAlign="center">
+            <Text  fontSize={{base:"23px", md:"50px"}} fontWeight="700" textAlign="center" mb={{base:"30px", md:"50px"}} >
               onebyOne’s{" "}
               <Text as="span" color="#8C9492">
                 Values
               </Text>
             </Text>
 
-            <Grid display={{base: "grid", md: "flex"}} w="auto" justifyContents="center" alignItems="center" gap="18px" templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} border="1px solid" mt="40px">
-              <Box mx="auto" justifyContents="center" w={{ base: "300px", md: "357px" }} alignItems="center" borderRadius="30px"  >
+            <Grid display="grid" w="100%"   gap="18px" templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} >
+              <Box mx="auto" justifyContents="center" maxW={{ base: "300px", md: "357px" }} alignItems="center" borderRadius="30px"  >
                 <VStack textAlign="center" bg="#B7EED4" borderRadius="30px" justifyContent="center" h="168px"  align="center" >
                 <PiShootingStar fontSize="42px" />
                 </VStack>
@@ -130,7 +104,7 @@ export default function AboutUs() {
                 and new ideas
                 </Text>
               </Box>
-              <Box mx="auto" justifyContents="center" w={{ base: "300px", md: "357px" }} alignItems="center" maxW="357px"     borderRadius="30px"  >
+              <Box mx="auto" justifyContents="center" maxW={{ base: "300px", md: "357px" }} alignItems="center"      borderRadius="30px"  >
                 <VStack textAlign="center" bg="#B7EED4" borderRadius="30px" justifyContent="center" h="168px"  align="center" >
                 <LuPenTool fontSize="42px" />
                 </VStack>
@@ -140,7 +114,7 @@ export default function AboutUs() {
                 design has a story, and every user interaction is an opportunity to create a meaningful experience.
                 </Text>
               </Box>
-              <Box mx="auto" justifyContents="center" w={{ base: "300px", md: "357px" }} alignItems="center" maxW="357px" borderRadius="30px"  >
+              <Box mx="auto" justifyContents="center" maxW={{ base: "300px", md: "357px" }} alignItems="center"  borderRadius="30px"  >
                 <VStack textAlign="center" bg="#B7EED4" borderRadius="30px" justifyContent="center" h="168px"  align="center" >
                 <PiShootingStar fontSize="42px" />
                 </VStack>

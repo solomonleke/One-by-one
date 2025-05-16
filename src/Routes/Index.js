@@ -48,6 +48,7 @@ import SuperAdminSchools from '../Pages/SuperAdmin/Schools'
 import SuperAdminStudents from '../Pages/SuperAdmin/Students'
 import SuperAdminUserManagement from '../Pages/SuperAdmin/UserManagement'
 import SuperAdminSettings from '../Pages/SuperAdmin/Settings'
+import ScrollToTop from '../Components/ScrollToTop'
 
 
 export default function IndexRoutes() {
@@ -62,6 +63,7 @@ export default function IndexRoutes() {
   return (
     <StudentProvider>
       <BrowserRouter>
+      <ScrollToTop />
         <Routes>
           {/* school admin routes */}
           <Route path='/school-admin' element={<Index />} />
