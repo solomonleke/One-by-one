@@ -41,6 +41,8 @@ import FundingRecords from '../Pages/FundAdminUserScreen/FundingRecords'
 import LandingPage from '../Pages/LandingPage/Index'
 import AboutUs from '../Pages/LandingPage/AboutUs'
 import GetInvolved from '../Pages/LandingPage/GetInvolved'
+import ContactUs from '../Pages/LandingPage/ContactUs'
+import ScrollToTop from '../Components/ScrollToTop'
 
 
 export default function IndexRoutes() {
@@ -55,6 +57,7 @@ export default function IndexRoutes() {
   return (
     <StudentProvider>
       <BrowserRouter>
+      <ScrollToTop />
         <Routes>
           {/* school admin routes */}
           <Route path='/school-admin' element={<Index />} />
@@ -115,6 +118,7 @@ export default function IndexRoutes() {
           <Route path='/' element={<LandingPage />} />
           <Route path='/about-us' element={<AboutUs />} />
           <Route path='/get-involved' element={<GetInvolved />} />
+          <Route path='/contact-us' element={<ContactUs />} />
          
         </Routes>
       </BrowserRouter> 

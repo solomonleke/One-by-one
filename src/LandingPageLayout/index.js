@@ -9,11 +9,11 @@ export default function MainLayout({ children, bgColor = "gray.gray500", color =
       
 
       <Box pos={"relative"} direction={["column-reverse", "column-reverse", "column-reverse", "column-reverse", "row"]} justifyContent="space-between" alignItems={"flex-start"}>
-        <Box zIndex="10"  >
+        <Box >
           <Navigation active={active} showNav={showNav}  borderRight={borderRight} />
         </Box>
 
-        <Box width={['100%']}   >
+        <Box width={['100%']} zIndex="900" pt={{ base: "65px", md: "63px" }}  >
           <Box >
             {children}
           </Box>
