@@ -88,56 +88,57 @@ export default function GetInvolved() {
             <WaysToContribute />
 
 
-            <Box bg="white" p={{ base: "30px", md: "120px" }}>
-                <Box maxW="7xl" mx="auto" >
-                    <Text color="orange.400" fontWeight="bold" fontSize={{ base: "13px", md: "15px" }} mb={2}>
-                        FREQUENTLY ASKED QUESTIONS
-                    </Text>
-                    <Heading as="h2" fontSize={{ base: "25px", md: "50px" }} mb={8}>
-                        Here’s The Answers For{' '}
-                        <Box as="span" color="gray.500">
-                            Your Questions
-                        </Box>
-                    </Heading>
-
-                    <Flex direction={['column', null, 'row']} gap={8} bg="#E5FFF3" borderRadius={{ base: "20px", md: "40px" }} pt={{ base: "20px", md: "60px" }} pl={{ base: "0px", md: "60px" }} >
-                        {/* FAQ Accordion */}
-                        <Box flex="1" bg="green.50" borderRadius="lg">
-                            <Accordion allowToggle>
-                                {faqItems.map((item, index) => (
-                                    <AccordionItem key={index} mb={4}>
-                                        <h2>
-                                            <AccordionButton _expanded={{ bg: 'green.100' }} fontSize={{ base: "13px", md: "18px" }}>
-                                                <Box flex="1" textAlign="left" fontWeight="bold">
-                                                    {item.question}
-                                                </Box>
-                                                <AccordionIcon />
-                                            </AccordionButton>
-                                        </h2>
-                                        <AccordionPanel pb={4} color="gray.600" fontSize={{ base: "12px", md: "18px" }}>
-                                            {item.answer}
-                                        </AccordionPanel>
-                                    </AccordionItem>
-                                ))}
-                            </Accordion>
-                        </Box>
-
-                        {/* Image */}
-                        <Box flex="1" display="flex" alignItems="center" justifyContent="center">
-                            <Box overflow="hidden">
-                                <Image
-                                    src={studentImg}
-                                    alt="Happy student"
-                                    objectFit="cover"
-                                    width="100%"
-                                    height="100%"
-                                    maxH="500px"
-                                />
-                            </Box>
-                        </Box>
-                    </Flex>
+            <Box bg="white" py={{ base: "30px", md: "120px" }} px={{ base: "20px", lg: "30px" }} >
+            <Box maxW="7xl" mx="auto" >
+              <Text color="orange.400" fontWeight="bold" fontSize={{ base: "13px", md: "15px" }} mb={2}>
+                FREQUENTLY ASKED QUESTIONS
+              </Text>
+              <Heading as="h2" fontSize={{ base: "25px", md: "50px" }} mb={8}>
+                Here’s The Answers For{' '}
+                <Box as="span" color="gray.500">
+                  Your Questions
                 </Box>
+              </Heading>
+
+              <Flex direction={['column', null, 'row']} gap={4} bg="#E5FFF3" borderRadius={{ base: "20px", md: "40px" }} pt={{ base: "20px", md: "60px" }} pl={{ base: "0px", md: "60px" }} >
+                {/* FAQ Accordion */}
+                <Box flex="1" bg="green.50" borderRadius="lg">
+                  <Accordion allowToggle>
+                    {faqItems.map((item, index) => (
+                      <AccordionItem key={index} mb={4}>
+                        <h2>
+                          <AccordionButton _expanded={{ bg: 'green.100' }} fontSize={{ base: "12px", md: "13px", lg: "18px" }}>
+                            <Box flex="1" textAlign="left" fontWeight="bold">
+                              {item.question}
+                            </Box>
+                            <AccordionIcon />
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel pb={4} color="gray.600" fontSize={{ base: "12px", md: "12px", lg: "18px" }}>
+                          {item.answer}
+                        </AccordionPanel>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </Box>
+
+                {/* Image */}
+                <Box flex="1 0" display="flex"  alignItems={{base: "center", smd: "flex-end"}} justifyContent={{base: "center", smd: "flex-end"}}>
+                  <Box overflow="hidden">
+                    <Image
+                      src={studentImg}
+                      alt="Happy student"
+                      objectFit="cover"
+                      width="100%"
+                      maxW="100%"
+                      height="100%"
+                      maxH="500px"
+                    />
+                  </Box>
+                </Box>
+              </Flex>
             </Box>
+          </Box>
             <BeTheChange />
         </MainLayout>
     );

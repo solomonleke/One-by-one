@@ -52,9 +52,10 @@ export default function ContactUs() {
 )}
 
             <Stack
-                direction={{ md: "column", lg: "row" }}
+                direction={{ base: "column", md: "row" }}
                 bg="#E5FFF3"
-                p={10}
+                py={10}
+                px={{ base: "20px", lg: "30px" }}
                 spacing={10}
                 align="flex-start"
                 justify="flex-start"
@@ -62,8 +63,8 @@ export default function ContactUs() {
                 flexWrap="wrap"
             >
                 {/* Left Section */}
-                <VStack align="flex-start" flex={1} spacing={6} maxW="529px" w="100%">
-                    <Text fontSize={{ base: "29px", md: "49px", lg: "59px" }} fontWeight="600" color="black" letterSpacing="-2px" lineHeight={{ base: "30px", md: "67px" }}>
+                <VStack align="flex-start" flex={1} spacing={6} maxW={{base: "100%", md: "480px", lg: "529px"}}  w="100%">
+                    <Text fontSize={{ base: "29px", smd: "29px", md: "39px", lg: "59px" }} fontWeight="600" color="black" letterSpacing="-2px" lineHeight={{ base: "30px", md: "67px" }}>
                         Get In Touch <Text as="span" color="#8C9492">With Us</Text>
                     </Text>
                     <Text fontSize={{ base: "14px", md: "15px", lg: "17px" }} color="#71717A" lineHeight={{ base: "20px", md: "28px" }}>
@@ -73,7 +74,7 @@ export default function ContactUs() {
                     </Text>
 
                     <Box>
-                        <Text fontSize={{ base: "17px", md: "23px" }} letterSpacing="-2px" fontWeight="600" mb={2}>Want To Reach Out Directly?</Text>
+                        <Text fontSize={{ base: "17px", md: "19px", lg: "23px" }} letterSpacing="-2px" fontWeight="600" mb={2}>Want To Reach Out Directly?</Text>
                         <SimpleGrid columns={{ base: 1, sm: 1 }} spacing={4}>
                             <Flex
                                 align="center"
@@ -98,12 +99,12 @@ export default function ContactUs() {
                                         <MdEmail color="#39996B" fontSize={{ base: "12px", md: "24" }} />
                                     </Box>
                                     <Box>
-                                        <Text fontSize={{ base: "13px", md: "16px" }} color="#A1A1AACC" letterSpacing="-1px">Email</Text>
-                                        <Text fontSize={{ base: "12px", md: "15px" }} color="#7F7F85" letterSpacing="-1px">contact@email.com</Text>
+                                        <Text fontSize={{ base: "13px", md: "14px", lg: "16px" }} color="#A1A1AACC" letterSpacing="-1px">Email</Text>
+                                        <Text fontSize={{ base: "12px", md: "13px", lg: "15px" }} color="#7F7F85" letterSpacing="-1px">contact@email.com</Text>
                                     </Box>
                                 </Flex>
 
-                                <Divider orientation="vertical" border="1px solid #C5EFDB" height="40px" />
+                                <Divider display={{ base: "grid", md: "none", lg: "grid"}} orientation="vertical" border="1px solid #C5EFDB" height="40px" />
 
                                 <Flex align="center" gap={3}>
                                     <Box
@@ -118,8 +119,8 @@ export default function ContactUs() {
                                         <FaPhone color="#39996B" fontSize={{ base: "12px", md: "24" }} />
                                     </Box>
                                     <Box>
-                                        <Text fontSize={{ base: "13px", md: "16px" }} color="#A1A1AACC" letterSpacing="-1px">Phone</Text>
-                                        <Text fontSize={{ base: "12px", md: "15px" }} color="#7F7F85" letterSpacing="-1px">(234) 564 - 6788</Text>
+                                        <Text fontSize={{ base: "13px", md: "14px", lg: "16px" }} color="#A1A1AACC" letterSpacing="-1px">Phone</Text>
+                                        <Text fontSize={{ base: "12px", md: "13px", lg: "15px" }} color="#7F7F85" letterSpacing="-1px">(234) 564 - 6788</Text>
                                     </Box>
                                 </Flex>
                             </Flex>
@@ -127,7 +128,7 @@ export default function ContactUs() {
                     </Box>
 
                     <Box>
-                        <Text fontWeight="600" fontSize={{ base: "15px", md: "23px" }} letterSpacing="-2px" mb="20px">Follow Us:</Text>
+                        <Text fontWeight="600" fontSize={{ base: "15px", md: "18px", lg: "23px" }} letterSpacing="-2px" mb="20px">Follow Us:</Text>
                         <HStack spacing={{ base: "20px", md: "30px" }} mb={{ base: "20px", md: "0" }} >
                             <Link href="#"><Icon as={FaFacebookF} color="#39996B" _hover={{transform: "scale(1.3)", transition: "transform 0.2s ease-in-out"}} boxSize={{ base: 4, md: 5 }} /></Link>
                             <Link href="#"><Icon as={FaXTwitter} color="#39996B"  _hover={{transform: "scale(1.3)", transition: "transform 0.2s ease-in-out"}} boxSize={{ base: 4, md: 5 }} /></Link>
@@ -144,34 +145,35 @@ export default function ContactUs() {
                     rounded="2xl"
                     shadow="md"
                     w="100%"
-                    maxW={{ md: "100%",lg: "612px" }}
+                    flex="1 1 0"
+                    maxW={{ base: "100%", md: "550px",lg: "640px" }}
                     mr="auto"  // Pushes right edge inward
                 >
                     <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} mb={4}>
                         <FormControl>
-                            <FormLabel fontSize={{ base: "13px", md: "16px" }}>First Name</FormLabel>
-                            <Input fontSize={{ base: "13px", md: "16px" }} placeholder="First name" />
+                            <FormLabel fontSize={{ base: "13px", md: "14px", lg: "16px" }}>First Name</FormLabel>
+                            <Input fontSize={{ base: "13px", md: "14px", lg: "16px" }} placeholder="First name" />
                         </FormControl>
 
                         <FormControl>
-                            <FormLabel fontSize={{ base: "13px", md: "16px" }}>Last Name</FormLabel>
-                            <Input fontSize={{ base: "13px", md: "16px" }} placeholder="Last name" />
+                            <FormLabel fontSize={{ base: "13px", md: "14px", lg: "16px" }}>Last Name</FormLabel>
+                            <Input fontSize={{ base: "13px", md: "14px", lg: "16px" }} placeholder="Last name" />
                         </FormControl>
                     </SimpleGrid>
 
                     <FormControl mb={4}>
-                        <FormLabel fontSize={{ base: "13px", md: "16px" }}>Email</FormLabel>
-                        <Input fontSize={{ base: "13px", md: "16px" }} placeholder="your@email.com" type="email" />
+                        <FormLabel fontSize={{ base: "13px", md: "14px", lg: "16px" }}>Email</FormLabel>
+                        <Input fontSize={{ base: "13px", md: "14px", lg: "16px" }} placeholder="your@email.com" type="email" />
                     </FormControl>
 
                     <FormControl mb={4}>
-                        <FormLabel fontSize={{ base: "13px", md: "16px" }}>Phone</FormLabel>
+                        <FormLabel fontSize={{ base: "13px", md: "14px", lg: "16px" }}>Phone</FormLabel>
                         <Input placeholder="+234 812-123-4567" type="tel" />
                     </FormControl>
 
                     <FormControl mb={6}>
-                        <FormLabel fontSize={{ base: "13px", md: "16px" }}>Message</FormLabel>
-                        <Textarea fontSize={{ base: "13px", md: "16px" }} placeholder="Write your message..." rows={4} />
+                        <FormLabel fontSize={{ base: "13px", md: "14px", lg: "16px" }}>Message</FormLabel>
+                        <Textarea fontSize={{ base: "13px", md: "14px", lg: "16px" }} placeholder="Write your message..." rows={4} />
                     </FormControl>
 
                     <Button

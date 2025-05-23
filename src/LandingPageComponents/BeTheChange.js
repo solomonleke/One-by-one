@@ -35,7 +35,7 @@ export default function BeTheChange() {
           justify="center"
           position="relative"
           overflow="hidden"
-          px={8}
+          px={{ base: "20px", lg: "30px" }}
           py={20}
           bg="#17422D"
           color="white"
@@ -46,7 +46,7 @@ export default function BeTheChange() {
                 alt="Decorative Flower"
                 position="absolute"
                 bottom={{ base: "0", md: "0" }}
-                left={{ base: "-40px", md: "-40px" }}
+                left={{ base: "-50px", md: "-40px" }}
                 w={{ base: "120px", md: "220px" }}
                 zIndex="500"
                 pointerEvents="none"
@@ -56,7 +56,7 @@ export default function BeTheChange() {
                 alt="Decorative Flower"
                 position="absolute"
                 bottom={{ base: "0", md: "0" }}
-                right={{ base: "-40px", md: "-40px" }}
+                right={{ base: "-50px", md: "-40px" }}
                 w={{ base: "120px", md: "220px" }}
                 zIndex="500"
                 pointerEvents="none"

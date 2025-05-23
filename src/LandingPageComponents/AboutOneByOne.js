@@ -18,7 +18,7 @@ export default function AboutOneByOne() {
     const navigate = useNavigate();
 
   return (
-    <Box position="relative" bg="white" py={20} px={8} overflow="hidden">
+    <Box position="relative" bg="white" py={20} px={{ base: "20px", lg: "30px" }} overflow="hidden">
       {/* Decorative flower image */}
       <Image
         src={AboutProp}

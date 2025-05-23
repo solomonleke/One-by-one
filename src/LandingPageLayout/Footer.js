@@ -36,7 +36,7 @@ const Footer = () => {
         mb={10}
       >
         {/* Logo and Mission */}
-        <GridItem >
+        <GridItem  >
           <Flex align="center" mb={4}>
             <Image src={FooterLogo} width={{ base: "170px", md: "204px" }} onClick={() => navigate("/")} />
 
@@ -50,7 +50,7 @@ const Footer = () => {
 
         {/* Navigation Links */}
         
-        <GridItem alignItems={{ base: "flex-start", md: "flex-end" }} display="flex" flexDirection="column" >
+        <GridItem alignItems={{ base: "center", md: "flex-end" }} textAlign="center" display="flex" flexDirection="column" >
           <Heading fontSize="16px" mb={3}>Navigation</Heading>
           <Stack spacing={2}>
             <Link onClick={() => navigate("/")} fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">Home</Link>
@@ -60,8 +60,8 @@ const Footer = () => {
           </Stack>
         </GridItem>
 
-        <GridItem alignItems={{ base: "flex-start", md: "flex-end" }} display="flex" flexDirection="column" >
-          <Heading fontSize="16px" mb={3}>Make An Impact</Heading>
+        <GridItem  alignItems={{ base: "center", md: "flex-end" }} textAlign="center" display="flex" flexDirection="column" >
+          <Heading fontSize="16px" mr={{ base: "none", lg: "5px"}} mb={3}>Make An Impact</Heading>
           <Stack spacing={2}>
             <Link href="#" fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">Become A Sponsor</Link>
             <Link href="#" fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">School Admin</Link>
@@ -70,8 +70,8 @@ const Footer = () => {
           </Stack>
         </GridItem>
 
-        <GridItem alignItems={{ base: "flex-start", md: "flex-end" }} display="flex" flexDirection="column" p="0">
-          <Heading fontSize="16px" mb={3}>Help</Heading>
+        <GridItem  alignItems={{ base: "center", md: "flex-end" }} textAlign="center" display="flex" flexDirection="column" p="0">
+          <Heading fontSize="16px" mr={{ base: "none", md: "30px"}} mb={3}>Help</Heading>
           <Stack spacing={2}>
             <Link href="#" fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">Privacy Policy</Link>
             <Link href="#" fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">Legal Docs</Link>
@@ -85,7 +85,7 @@ const Footer = () => {
   direction={{ base: "column", md: "row" }}
   justify="space-between"
   mx="auto"
-  align={{ base: "flex-start", md: "center" }}
+  align="center"
   py="30px"
   borderTop="1px solid #172F24"
   borderBottom="1px solid #172F24"

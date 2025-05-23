@@ -31,7 +31,7 @@ export default function WaysToContribute() {
             position="relative"
             overflow="hidden"
             gap={10}
-            px={{ base: 4, md: 8 }}
+            px={{ base: "20px", lg: "30px" }}
             py={{ base: 10, md: 20 }}
             bg="white"
             color="white"
@@ -56,15 +56,14 @@ export default function WaysToContribute() {
                 zIndex="500"
                 pointerEvents="none"
             />
-            
+
             {/* Header Text */}
             <Stack
-  w="100%"
-  align="flex-start"
-  textAlign="left"
-  px={{ base: "10px", md: "50px" }} // Match grid padding
-  mb="30px" // Optional: add spacing from the grid below
->
+                w="100%"
+                align="flex-start"
+                textAlign="left"
+                mb="30px"
+            >
                 <Text fontSize="15px" w="fit-content" color="#FAA51C" fontWeight="700">
                     ways to contribute
                 </Text>
@@ -78,9 +77,8 @@ export default function WaysToContribute() {
 
             {/* Role Cards */}
             <SimpleGrid
-                columns={{ base: 1, md: 2 }}
+                columns={{ base: 1, smd: 2, md: 2 }}
                 spacing="20px"
-                px={{ base: "10px", md: "50px" }}
                 maxW="100%"
             >
                 {[
