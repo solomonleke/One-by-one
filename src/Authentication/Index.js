@@ -52,3 +52,13 @@ export const isFundAdmin = () => {
     }
 
 };
+
+export const isSuperAdmin = () => {
+   
+    if (role === "SUPER-ADMIN") {
+        return true
+    } else {
+        return false
+    }
+
+};

@@ -325,6 +325,23 @@ export default function TableRow({ type, name, email, studentIds, department, cl
                     </>
                 )
             }
+
+{
+                type === "super-admin-recent-disbursement" && (
+                    <>
+                        <Td fontSize="13px" fontWeight="500" color="#101828">{fundedStudents}</Td>
+                        <Td fontSize="13px" fontWeight="400" color="#101828">{amount}</Td>
+                        <Td fontSize="13px" fontWeight="400" color="#101828">{transactionId}</Td>
+                        <Td fontSize="13px" fontWeight="400" color="#101828">{date}</Td>
+                        <Td fontSize="13px" fontWeight="400" color="#101828">{paymentMethod}</Td>
+                        <Td>
+                            <HStack bg={status === "COMPLETED" ? "#ECFDF3" : status === "PENDING" ? "#FFA30C" : "#FD4739"} rounded="16px" py="2px" pl="6px" pr="8px">
+                                <Text fontWeight="500" fontSize={"12px"} color={status === "COMPLETED" ? "#027A48" : status === "PENDING" ? "#FFA30C" : "#FD4739"}>{status}</Text>
+                            </HStack>
+                        </Td>
+                    </>
+                )
+            }
         </Tr>
     )
 }
