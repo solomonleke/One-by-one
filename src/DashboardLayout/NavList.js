@@ -1,12 +1,12 @@
 import {HiOutlineUsers} from "react-icons/hi"
-import { isActive, isSchoolAdmin,isScholarshipAdmin, isSponsorAdmin, isFundAdmin } from "../Authentication/Index"
-import { GoGear } from "react-icons/go"
+import { isActive, isSchoolAdmin,isScholarshipAdmin, isSponsorAdmin, isFundAdmin, isSuperAdmin } from "../Authentication/Index"
+import { GoGear, GoReport } from "react-icons/go"
 import { ReactComponent as Scholarship } from "../Asset/scholarship.svg";
 import { RxDashboard } from "react-icons/rx"
 import { IoBriefcaseOutline, IoSchoolOutline } from "react-icons/io5"
 import { FaSchool } from "react-icons/fa"
-import { PiStudent } from "react-icons/pi"
-import { BiHistory } from "react-icons/bi"
+import { PiStudent, PiUser } from "react-icons/pi"
+import { BiHistory, BiUser } from "react-icons/bi"
 import { TbCurrencyNaira } from "react-icons/tb"
 import { VscHistory } from "react-icons/vsc"
 export const NavList =(location)=>{
@@ -212,6 +212,55 @@ const checkLeaderboardActive= ()=>{
         link: "/fund-admin/settings",
         active: isActive(location, "/fund-admin/funding-history"),
         display: isFundAdmin()
+    },
+    {
+        name: "dashboard",
+        icon: <RxDashboard/>,
+        link: "/super-admin",
+        active: isActive(location, "/super/admin"),
+        display: isSuperAdmin()
+    },
+    {
+        name: "schools",
+        icon: <IoSchoolOutline/>,
+        link: "/super-admin/schools",
+        active: isActive(location, "/super/admin/schools"),
+        display: isSuperAdmin()
+    },
+    {
+        name: "students",
+        icon: <PiStudent/>,
+        link: "/super-admin/students",
+        active: isActive(location, "/super/admin/students"),
+        display: isSuperAdmin()
+    },
+    {
+        name: "scholarships",
+        icon: <Scholarship/>,
+        link: "/super-admin/scholarships",
+        active: isActive(location, "/super/admin/scholarships"),
+        display: isSuperAdmin()
+    },
+    {
+        name: "user management",
+        icon: <PiUser/>,
+        link: "/super-admin/user-management",
+        active: isActive(location, "/super/admin/user-management"),
+        display: isSuperAdmin()
+    },
+    {
+        name: "reports & analytics",
+        icon: <GoReport/>,
+        link: "/super-admin/reports",
+        active: isActive(location, "/super/admin/reports"),
+        display: isSuperAdmin()
+    },
+    {
+        name: "settings",
+        icon: <GoGear/>,
+        link: "/super-admin/settings",
+        active: isActive(location, "/super/admin/settings"),
+        display: isSuperAdmin()
     },
    
     

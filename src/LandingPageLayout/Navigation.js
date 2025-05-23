@@ -27,7 +27,7 @@ const NavLink = ({ name, path, onClose }) => (
     fontWeight="500"
     rounded="md"
     _hover={{ textDecoration: 'none', color: '#39996B' }}
-    onClick={onClose} // call onClose to close the dropdown on click
+    onClick={onClose}
   >
     {name}
   </Link>
