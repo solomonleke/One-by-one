@@ -36,7 +36,7 @@ export default function GetInvolvedHero() {
     return (
         <Box
                 py={{ base: "60px", md: "105px" }}
-                px={{ base: "20px", sm: "30px", md: "50px" }}
+                px={{ base: "20px", lg: "30px" }}
                 align="center"
                 position="relative" 
                 overflow="hidden"

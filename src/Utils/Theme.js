@@ -5,6 +5,15 @@ const theme = extendTheme({
     heading: "'Inter', sans-serif",
     body: "'Inter', sans-serif",
   },
+
+   breakpoints : {
+    sm: "30em",       // 480px — base
+    smd: "40em",      // 640px — ✨ your new intermediate
+    md: "48em",       // 768px
+    lg: "62em",       // 992px
+    xl: "80em",       // 1280px
+  },
+
   colors: {
     blue: {
       blue500: '#211f5c',
@@ -47,6 +56,8 @@ const theme = extendTheme({
     white: '#FFFFFF',
     black: '#292F33',
   },
+
+  
   initialColorMode: 'light',
   useSystemColorMode: false,
 });

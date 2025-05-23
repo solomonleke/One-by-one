@@ -48,28 +48,29 @@ export default function AboutUs() {
         <MainLayout>
             <WhoWeAre />
 
-            <Box bg="#091C13" align="center" justifyContent="center" py="80px" px="60px">
-                <Box align="center" justifyContent="center" display={{ base: "grid", md: "flex" }}>
-                    <Box >
-                        <Box display={{ base: "grid", md: "flex" }} gap="10px">
-                            <VStack borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p={{ base: "20px", md: "30px" }}  >
-                                <Text fontSize={{ base: "30px", md: "48px" }} fontWeight="600" color="#98ACA3">100+</Text>
-                                <Text fontSize={{ base: "14px", md: "17px" }} fontWeight="400" color="white" >students mentored</Text>
-                            </VStack>
-                            <VStack borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p="30px"  >
-                                <Text fontSize={{ base: "30px", md: "48px" }} fontWeight="600" color="#98ACA3">50+</Text>
-                                <Text fontSize={{ base: "14px", md: "17px" }} fontWeight="400" color="white" >partnered schools</Text>
-                            </VStack>
-                            <VStack borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p="30px"  >
-                                <Text fontSize={{ base: "30px", md: "48px" }} fontWeight="600" color="#98ACA3">160+</Text>
-                                <Text fontSize={{ base: "14px", md: "17px" }} fontWeight="400" color="white" >sponsored students</Text>
-                            </VStack>
-                        </Box>
-                    </Box>
+            <Box bg="#091C13" align="center" justifyContent="center" py="80px"   >
+            <Box align="center"  justifyContent="center" px={{ base: "20px", lg: "30px" }} display={{ base: "block", md: "flex" }} alignItems="center">
+              
+              <Box >
+                <Box  display={["block", "block","flex","flex","flex"]} alignItems="center" justifyContent="center" gap="10px">
+                  <Box  borderRadius="15px" mb={{ base: "20px", md: "none" }}  borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p={{ base: "20px", md: "30px" }}  >
+                    <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">100+</Text>
+                    <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >students mentored</Text>
+                  </Box>
+                  <Box borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p="30px"  >
+                    <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">50+</Text>
+                    <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >partnered schools</Text>
+                  </Box>
+                  <Box borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p="30px"  >
+                    <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">160+</Text>
+                    <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >sponsored students</Text>
+                  </Box>
                 </Box>
+              </Box>
             </Box>
+          </Box>
 
-            <Box py="105px" px="50px">
+            <Box py="105px" px={{ base: "20px", lg: "30px" }}>
                 <Text fontSize={{ base: "30px", md: "50px" }} fontWeight="600" color="black" >
                     Our{" "}
                     <Text as="span" color="#8C9492">
@@ -83,7 +84,7 @@ export default function AboutUs() {
                 </Text>
             </Box>
 
-            <Box align="center"  justifyContent="center" bg="#E5FFF3" py={{base:"100px", md: "135px"}} px={{base:"30px", md: "40px", lg: "100px"}} >
+            <Box align="center"  justifyContent="center" bg="#E5FFF3" py={{base:"100px", md: "135px"}} px={{ base: "20px", lg: "30px" }} >
 
             <Text  fontSize={{base:"23px", md:"50px"}} fontWeight="700" textAlign="center" mb={{base:"30px", md:"50px"}} >
               onebyOne’s{" "}
@@ -92,8 +93,8 @@ export default function AboutUs() {
               </Text>
             </Text>
 
-            <Grid display="grid" w="100%"   gap="18px" templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} >
-              <Box mx="auto" justifyContents="center" maxW={{ base: "300px", md: "357px" }} alignItems="center" borderRadius="30px"  >
+            <Grid  w="100%" justifyContent="space-between"   gap="18px" templateColumns={{ base: "1fr", smd: "repeat(2, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} >
+              <Box mx="auto" justifyContents="center"  alignItems="center" borderRadius="30px"  >
                 <VStack textAlign="center" bg="#B7EED4" borderRadius="30px" justifyContent="center" h="168px"  align="center" >
                 <PiShootingStar fontSize="42px" />
                 </VStack>
@@ -104,7 +105,7 @@ export default function AboutUs() {
                 and new ideas
                 </Text>
               </Box>
-              <Box mx="auto" justifyContents="center" maxW={{ base: "300px", md: "357px" }} alignItems="center"      borderRadius="30px"  >
+              <Box mx="auto" justifyContents="center"  alignItems="center"      borderRadius="30px"  >
                 <VStack textAlign="center" bg="#B7EED4" borderRadius="30px" justifyContent="center" h="168px"  align="center" >
                 <LuPenTool fontSize="42px" />
                 </VStack>
@@ -114,7 +115,7 @@ export default function AboutUs() {
                 design has a story, and every user interaction is an opportunity to create a meaningful experience.
                 </Text>
               </Box>
-              <Box mx="auto" justifyContents="center" maxW={{ base: "300px", md: "357px" }} alignItems="center"  borderRadius="30px"  >
+              <Box mx="auto" justifyContents="center"  alignItems="center"  borderRadius="30px"  >
                 <VStack textAlign="center" bg="#B7EED4" borderRadius="30px" justifyContent="center" h="168px"  align="center" >
                 <PiShootingStar fontSize="42px" />
                 </VStack>

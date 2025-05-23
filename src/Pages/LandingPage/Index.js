@@ -18,6 +18,8 @@ import {
   Wrap,
   useColorModeValue,
   grid,
+  Grid,
+  GridItem,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom'
 import { FaArrowRight } from 'react-icons/fa';
@@ -87,6 +89,33 @@ export default function LandingPage() {
     },
   ];
 
+  const roles = [
+    {
+      title: 'Sponsor',
+      description: 'Support a student’s future directly.',
+      icon: <PiHandCoins fontSize="35px" color="#39996B" />,
+      label: null,
+    },
+    {
+      title: 'School Admin',
+      description: 'Work with us to identify students in need.',
+      icon: <RiUserSettingsLine fontSize="35px" color="#39996B" />,
+      label: { text: 'Partner role', color: '#FFBC4F', bg: '#FFF7EA' },
+    },
+    {
+      title: 'Scholarship Admin',
+      description: 'Match students with opportunities.',
+      icon: <PiHandCoins fontSize="35px" color="#39996B" />,
+      label: { text: 'Volunteer role', color: '#FFBC4F', bg: '#FFF7EA' },
+    },
+    {
+      title: 'Fund Admin',
+      description: 'Manage funds and ensure transparency.',
+      icon: <RiUserSettingsLine fontSize="35px" color="#39996B" />,
+      label: { text: 'Volunteer role', color: '#FFBC4F', bg: '#FFF7EA' },
+    },
+  ];
+
   return (
     <MainLayout>
       <Box>
@@ -95,7 +124,7 @@ export default function LandingPage() {
           direction={{ base: 'column', md: 'row' }}
           align="center"
           justify="center"
-          px={8}
+          px={{ base: "20px", lg: "30px" }}
           py={20}
           bg="#082A26"
           color="white"
@@ -135,8 +164,8 @@ export default function LandingPage() {
         <Box >
           <AboutOneByOne />
           <Values />
-          <Box bg="#091C13" align="center" justifyContent="center" py="80px" px="60px">
-            <Box align="center" justifyContent="center" display={{ base: "grid", md: "flex" }}>
+          <Box bg="#091C13" align="center" justifyContent="center" py="80px"   >
+            <Box align="center"  justifyContent="center" px={{ base: "20px", lg: "30px" }} display={{ base: "block", md: "flex" }} alignItems="center">
               <Text fontSize={{ base: "20px", md: "30px", lg: "50px" }} fontWeight="700" textAlign="center" mr={{ base: "none", md: "50px", lg: "150px" }} mb={{ base: "20px", md: "none" }}>
                 Our{" "}
                 <Text as="span" color="#8C9492">
@@ -144,158 +173,135 @@ export default function LandingPage() {
                 </Text>
               </Text>
               <Box >
-                <Box display={{ base: "grid", md: "flex" }} gap="10px">
-                  <VStack borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p={{ base: "20px", md: "30px" }}  >
+                <Box  display={["block", "block","flex","flex","flex"]} alignItems="center" justifyContent="center" gap="10px">
+                  <Box  borderRadius="15px" mb={{ base: "20px", md: "none" }}  borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p={{ base: "20px", md: "30px" }}  >
                     <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">100+</Text>
                     <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >students mentored</Text>
-                  </VStack>
-                  <VStack borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p="30px"  >
+                  </Box>
+                  <Box borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p="30px"  >
                     <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">50+</Text>
                     <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >partnered schools</Text>
-                  </VStack>
-                  <VStack borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p="30px"  >
+                  </Box>
+                  <Box borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p="30px"  >
                     <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">160+</Text>
                     <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >sponsored students</Text>
-                  </VStack>
+                  </Box>
                 </Box>
               </Box>
             </Box>
           </Box>
           <YourHelp />
-          <Box bg="#091C13" color="white" py={{ base: "80px", md: "120px" }} px={{ base: "20px", md: "60px" }}>
-            <Flex
-              direction={{ base: 'column', md: 'row' }}
-              justify="space-between"
-              align={{ base: "center", md: "start" }}
-              alignContent={{ base: "center", md: "start" }}
-              gap="40px"
+          <Box bg="#091C13" color="white" py={{ base: '80px', md: '120px' }} px={{ base: '20px', md: '30px' }}>
+      <Grid
+        templateColumns={{ base: '1fr', lg: '1fr 1fr' }}
+        gap="40px"
+        alignItems="start"
+      >
+        {/* Left Content */}
+        <Stack spacing={6} >
+          <Text fontSize={{ base: '12px', md: '15px' }} color="#FAA51C" fontWeight="700">
+            Join the movement
+          </Text>
+          <Text fontSize={{ base: '30px', md: '50px' }} fontWeight="600" lineHeight="1.2">
+            Be part of the{' '}
+            <Text as="span" color="#8C9492">
+              Change
+            </Text>
+          </Text>
+          <Text fontSize={{ base: '14px', md: '18px' }} color="#71717A" maxW="500px">
+            Our mission thrives because of people like you—dedicated volunteers and sponsors who make education possible for disadvantaged students.
+          </Text>
+          <Button
+            bg="#39996B"
+            color="white"
+            fontWeight="500"
+            fontSize={{ base: '13px', md: '16px' }}
+            px="28px"
+            py="10px"
+            maxW="fit-content"
+            rightIcon={<FaArrowRightLong />}
+            _hover={{ bg: 'transparent', color: 'white', border: '1px solid white' }}
+            onClick={() => router('/get-involved')}
+          >
+            Learn more about our roles
+          </Button>
+        </Stack>
+
+        {/* Right Grid Role Cards */}
+        <Grid
+          templateColumns={{ base: '1fr', sm: '1fr 1fr' }}
+          gap="20px"
+        >
+          {roles.map((role, i) => (
+            <GridItem
+              key={i}
+              bg="white"
+              color="#2E2B24"
+              borderRadius="30px"
+              boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)"
+              p="25px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
+              minH="230px"
             >
-              {/* Left Side Content */}
-              <Stack maxW="600px" spacing={6} align={{ base: "center", md: "start" }} textAlign={{ base: "center", md: "left" }}>
-                <Text fontSize={{ base: "12px", md: "15px" }} color="#FAA51C" fontWeight="700">
-                  Join the movement
-                </Text>
-                <Text fontSize={{ base: "30px", md: "50px" }} fontWeight="600" lineHeight="1.2">
-                  Be part of the{" "}
-                  <Text as="span" color="#8C9492">
-                    Change
-                  </Text>
-                </Text>
-                <Text fontSize={{ base: "14px", md: "18px" }} color="#71717A" maxW="500px">
-                  Our mission thrives because of people like you—dedicated volunteers and sponsors who make education possible for disadvantaged students.
-                </Text>
-                <Button
-                  bg="#39996B"
-                  color="white"
-                  fontWeight="500"
-                  fontSize={{ base: "13px", md: "16px" }}
-                  px="28px"
-                  py="10px"
-                  maxW="fit-content"
-                  rightIcon={<FaArrowRightLong />}
-                  _hover={{ bg: "transparent", color: "white", border: "1px solid white" }}
-                  onClick={() => {
-                    router("/get-involved")
-                  }}
+              <HStack justifyContent="space-between" mb="15px">
+                {role.icon}
+                <Box
+                  fontSize="28px"
+                  color="#71717A"
+                  transition="transform 0.2s ease-in-out"
+                  _hover={{ transform: 'scale(1.5)' }}
+                  cursor="pointer"
+                  onClick={() => router('/get-involved')}
                 >
-                  Learn more about our roles
+                  <FaArrowRight />
+                </Box>
+              </HStack>
+              <VStack align="start" spacing={3}>
+                <HStack justify="space-between" w="full">
+                  <Text fontSize={{ base: '14px', md: '18px' }} fontWeight="600">
+                    {role.title}
+                  </Text>
+                  {role.label && (
+                    <Text
+                      fontSize={{ base: '8px', md: '10px' }}
+                      px="6px"
+                      border="0.6px solid"
+                      borderColor={role.label.color}
+                      color={role.label.color}
+                      borderRadius="4px"
+                      bg={role.label.bg}
+                      w="fit-content"
+                    >
+                      {role.label.text}
+                    </Text>
+                  )}
+                </HStack>
+                <Text fontSize={{ base: '12px', md: '15px' }} color="#71717A">
+                  {role.description}
+                </Text>
+                <Spacer />
+                <Button
+                  size="sm"
+                  variant="outline"
+                  color="#39996B"
+                  borderColor="#39996B"
+                  _hover={{ bg: '#39996B', color: 'white', border: '1px solid white' }}
+                  fontSize={{ base: '10px', md: '14px' }}
+                  mt="auto"
+                >
+                  Get Started
                 </Button>
-              </Stack>
-
-              {/* Role Cards */}
-              <Wrap spacing="20px" justify={{ base: "center", md: "start" }} maxW="700px">
-                {[
-                  {
-                    title: "Sponsor",
-                    description: "Support a student’s future directly.",
-                    icon: <PiHandCoins fontSize="35px" color="#39996B" />,
-                    label: null,
-                  },
-                  {
-                    title: "School Admin",
-                    description: "Work with us to identify students in need.",
-                    icon: <RiUserSettingsLine fontSize="35px" color="#39996B" />,
-                    label: { text: "Partner role", color: "#FFBC4F", bg: "#FFF7EA" },
-                  },
-                  {
-                    title: "Scholarship Admin",
-                    description: "Match students with opportunities.",
-                    icon: <PiHandCoins fontSize="35px" color="#39996B" />,
-                    label: { text: "Volunteer role", color: "#FFBC4F", bg: "#FFF7EA" },
-                  },
-                  {
-                    title: "Fund Admin",
-                    description: "Manage funds and ensure transparency.",
-                    icon: <RiUserSettingsLine fontSize="35px" color="#39996B" />,
-                    label: { text: "Volunteer role", color: "#FFBC4F", bg: "#FFF7EA" },
-                  },
-                ].map((role, i) => (
-                  <Box
-                    key={i}
-                    w={{ base: "250px", md: "300px" }}
-                    maxH="250px"
-                    bg="white"
-                    borderRadius="30px"
-                    boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)"
-                    p="25px"
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="space-between"
-                  >
-                    <HStack justifyContent="space-between" mb="15px">
-                      {role.icon}
-                      <Box
-                        fontSize="28px"
-                        color="#71717A"
-                        transition="transform 0.2s ease-in-out"
-                        _hover={{ transform: "scale(1.5)" }}
-                        cursor="pointer"
-                        onClick={() => router("/get-involved")}
-                      >
-                        <FaArrowRight />
-                      </Box>
-                    </HStack>
-                    <VStack align="start" spacing={3}>
-                      <Flex justify="space-between" w="full" align="center">
-                        <Text fontSize={{ base: "14px", md: "18px" }} fontWeight="600" color="#2E2B24">
-                          {role.title}
-                        </Text>
-                        {role.label && (
-                          <Text
-                            fontSize={{ base: "8px", md: "10px" }}
-                            px="6px"
-                            border="0.6px solid"
-                            borderColor={role.label.color}
-                            color={role.label.color}
-                            borderRadius="4px"
-                            bg={role.label.bg}
-                            w="fit-content"
-                          >
-                            {role.label.text}
-                          </Text>
-                        )}
-                      </Flex>
-                      <Text fontSize={{ base: "12px", md: "15px" }} color="#71717A">{role.description}</Text>
-                      <Spacer />
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        color="#39996B"
-                        borderColor="#39996B"
-                        _hover={{ bg: "#39996B", color: "white", border: "1px solid white" }} fontSize={{ base: "10px", md: "14px" }}
-                        mt="auto"
-                      >
-                        Get Started
-                      </Button>
-                    </VStack>
-                  </Box>
-                ))}
-              </Wrap>
-            </Flex>
-          </Box>
+              </VStack>
+            </GridItem>
+          ))}
+        </Grid>
+      </Grid>
+    </Box>
 
 
-          <Box bg="white" p={{ base: "30px", md: "120px" }}>
+          <Box bg="white" py={{ base: "30px", md: "120px" }} px={{ base: "20px", lg: "30px" }} >
             <Box maxW="7xl" mx="auto" >
               <Text color="orange.400" fontWeight="bold" fontSize={{ base: "13px", md: "15px" }} mb={2}>
                 FREQUENTLY ASKED QUESTIONS
@@ -307,21 +313,21 @@ export default function LandingPage() {
                 </Box>
               </Heading>
 
-              <Flex direction={['column', null, 'row']} gap={8} bg="#E5FFF3" borderRadius={{ base: "20px", md: "40px" }} pt={{ base: "20px", md: "60px" }} pl={{ base: "0px", md: "60px" }} >
+              <Flex direction={['column', null, 'row']} gap={4} bg="#E5FFF3" borderRadius={{ base: "20px", md: "40px" }} pt={{ base: "20px", md: "60px" }} pl={{ base: "0px", md: "60px" }} >
                 {/* FAQ Accordion */}
                 <Box flex="1" bg="green.50" borderRadius="lg">
                   <Accordion allowToggle>
                     {faqItems.map((item, index) => (
                       <AccordionItem key={index} mb={4}>
                         <h2>
-                          <AccordionButton _expanded={{ bg: 'green.100' }} fontSize={{ base: "13px", md: "18px" }}>
+                          <AccordionButton _expanded={{ bg: 'green.100' }} fontSize={{ base: "12px", md: "13px", lg: "18px" }}>
                             <Box flex="1" textAlign="left" fontWeight="bold">
                               {item.question}
                             </Box>
                             <AccordionIcon />
                           </AccordionButton>
                         </h2>
-                        <AccordionPanel pb={4} color="gray.600" fontSize={{ base: "12px", md: "18px" }}>
+                        <AccordionPanel pb={4} color="gray.600" fontSize={{ base: "12px", md: "12px", lg: "18px" }}>
                           {item.answer}
                         </AccordionPanel>
                       </AccordionItem>
@@ -330,13 +336,14 @@ export default function LandingPage() {
                 </Box>
 
                 {/* Image */}
-                <Box flex="1" display="flex" alignItems="center" justifyContent="center">
+                <Box flex="1 0" display="flex"  alignItems={{base: "center", smd: "flex-end"}} justifyContent={{base: "center", smd: "flex-end"}}>
                   <Box overflow="hidden">
                     <Image
                       src={studentImg}
                       alt="Happy student"
                       objectFit="cover"
                       width="100%"
+                      maxW="100%"
                       height="100%"
                       maxH="500px"
                     />

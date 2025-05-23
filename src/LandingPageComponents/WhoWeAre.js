@@ -34,14 +34,14 @@ import WhoWeAreImg from "../Asset/WhoWeAre.png";
 
 export default function WhoWeAre() {
     return (
-        <Box position="relative" zIndex="900" overflow="hidden" py={{ base: "30px", md: "70px" }} px="50px">
+        <Box position="relative" zIndex="900" overflow="hidden" py={{ base: "30px", md: "70px" }} px={{ base: "20px", lg: "30px" }}>
         <Image
                 src={WhoWeAreImg}
                 alt="Decorative Flower"
                 position="absolute"
                 bottom={{ base: "0", md: "0" }}
                 left={{ base: "-20px", md: "0" }}
-                w={{ base: "180px", md: "150px" }}
+                w={{ base: "180px", md: "100px" }}
                 zIndex="900"
                 pointerEvents="none"
             />
@@ -63,7 +63,8 @@ export default function WhoWeAre() {
                     mt="50px"
                     display="flex"
                     flexWrap="wrap"
-                    justifyContent="center"
+                    w="100%"
+                    justifyContent="space-between"
                     gap="25px"
                 >
                     <Image src={Image0} maxW={{ base: "100%", sm: "45%", md: "22%" }} w="100%" />
