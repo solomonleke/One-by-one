@@ -107,7 +107,7 @@ export default function GetInvolved() {
                     {faqItems.map((item, index) => (
                       <AccordionItem key={index} mb={4}>
                         <h2>
-                          <AccordionButton _expanded={{ bg: 'green.100' }} fontSize={{ base: "12px", md: "13px", lg: "18px" }}>
+                          <AccordionButton _focus={{ boxShadow: 'none' }} _expanded={{ bg: 'green.100' }} fontSize={{ base: "12px", md: "13px", lg: "18px" }}>
                             <Box flex="1" textAlign="left" fontWeight="bold">
                               {item.question}
                             </Box>

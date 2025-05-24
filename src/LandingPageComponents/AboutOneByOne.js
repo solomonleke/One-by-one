@@ -63,6 +63,7 @@ export default function AboutOneByOne() {
               px="28px"
               py="10px"
               color="#ffff"
+              _focus={{ boxShadow: 'none' }}
               rightIcon={<FaArrowRightLong />}
               _hover={{ bg: "transparent", color: "#39996B", border: "1px solid #39996B"}}
               onClick={() => {

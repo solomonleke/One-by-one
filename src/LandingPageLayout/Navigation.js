@@ -4,6 +4,8 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import logo from "../Asset/whiteLogo.svg"
 import { MdClose } from "react-icons/md";
 import { IoMdMenu } from "react-icons/io";
+import { useOutsideClick } from '@chakra-ui/react';
+import { useRef } from 'react';
 
 
 const Links = [
@@ -26,6 +28,7 @@ const NavLink = ({ name, path, onClose }) => (
     color="#54565A"
     fontWeight="500"
     rounded="md"
+    _focus={{ boxShadow: 'none' }}
     _hover={{ textDecoration: 'none', color: '#39996B' }}
     onClick={onClose}
   >
@@ -36,6 +39,13 @@ const NavLink = ({ name, path, onClose }) => (
 export default function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
+
+  const menuRef = useRef();
+
+useOutsideClick({
+  ref: menuRef,
+  handler: () => onClose(), // your function to close the dropdown
+});
 
 
   return (
@@ -59,10 +69,10 @@ export default function Header() {
           </HStack>
         </Box>
         <Box gap={4} display={{ base: 'none', md: 'flex' }} alignItems="center">
-          <Button w={{ md: "80px", lg: "113.5px" }} fontSize={{ md: "12px", lg: "16px" }} border="1px" bg="transparent" color="#39996B" _hover={{ bg: "#39996B", color: "white", border: "1px solid white" }} onClick={() => {
+          <Button _focus={{ boxShadow: 'none' }} w={{ md: "80px", lg: "113.5px" }} fontSize={{ md: "12px", lg: "16px" }} border="1px" bg="transparent" color="#39996B" _hover={{ bg: "#39996B", color: "white", border: "1px solid white" }} onClick={() => {
             navigate("/sign-in")
           }} >Login</Button>
-          <Button w={{ md: "80px", lg: "113.5px" }} fontSize={{ md: "12px", lg: "16px" }} border="1px" bg="#39996B" color="#ffff" _hover={{ bg: "transparent", color: "#39996B", border: "1px solid #39996B" }} onClick={() => {
+          <Button _focus={{ boxShadow: 'none' }} w={{ md: "80px", lg: "113.5px" }} fontSize={{ md: "12px", lg: "16px" }} border="1px" bg="#39996B" color="#ffff" _hover={{ bg: "transparent", color: "#39996B", border: "1px solid #39996B" }} onClick={() => {
             navigate("/sign-up")
           }} >Sign in</Button>
         </Box>
@@ -87,6 +97,7 @@ export default function Header() {
       {isOpen && (
         <Box
           p={4}
+          ref={menuRef}
           display={{ md: 'none' }}
           position="absolute"
           textAlign="center"
@@ -97,16 +108,16 @@ export default function Header() {
           boxShadow="md"
           w="100%"
         >
-          <Stack as="nav" spacing={2} fontWeight="600" mb="10px">
+          <Stack as="nav" spacing={2}  fontWeight="600" mb="10px">
             {Links.map((link) => (
-              <NavLink key={link.name} name={link.name} path={link.path} onClose={onClose} />
+              <NavLink  key={link.name} name={link.name} path={link.path} onClose={onClose} />
             ))}
           </Stack>
           <Box gap="10px" alignItems="center">
-            <Button w="100%" mb="10px" border="1px" bg="transparent" color="#39996B" onClick={() => {
+            <Button _focus={{ boxShadow: 'none' }} w="100%" mb="10px" border="1px" bg="transparent" color="#39996B" onClick={() => {
               navigate("/sign-in")
             }} _hover={{ bg: "#39996B", color: "white", border: "1px solid white" }}>Login</Button>
-            <Button w="100%" border="1px" bg="#39996B" color="#ffff" onClick={() => {
+            <Button _focus={{ boxShadow: 'none' }} w="100%" border="1px" bg="#39996B" color="#ffff" onClick={() => {
               navigate("/sign-up")
             }} _hover={{ bg: "transparent", color: "#39996B", border: "1px solid #39996B" }} >Sign in</Button>
           </Box>

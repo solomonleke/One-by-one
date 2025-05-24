@@ -21,8 +21,11 @@ import Group2 from "../Asset/Group2.png"
 import Vector from "../Asset/Vector.png"
 import ContributeImgRight from "../Asset/ContributeImgRight.png";
 import ContributeImgLeft from "../Asset/ContributeImgLeft.png";
+import { useNavigate } from 'react-router-dom';
 
 export default function WaysToContribute() {
+
+    const navigate = useNavigate();
     return (
         <Flex
             direction="column"
@@ -162,10 +165,12 @@ export default function WaysToContribute() {
                             <Button
                                 size="sm"
                                 variant="outline"
+                                _focus={{ boxShadow: 'none' }}
                                 color="#39996B"
                                 borderColor="#39996B"
                                 _hover={{ bg: "#39996B", color: "white" }}
                                 fontSize={{ base: "13px", md: "14px" }}
+                                onClick={() => navigate("/sign-up")}
                             >
                                 {role.action}
                             </Button>

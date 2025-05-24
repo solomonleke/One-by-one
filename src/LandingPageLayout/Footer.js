@@ -63,19 +63,19 @@ const Footer = () => {
         <GridItem  alignItems={{ base: "center", md: "flex-end" }} textAlign="center" display="flex" flexDirection="column" >
           <Heading fontSize="16px" mr={{ base: "none", lg: "5px"}} mb={3}>Make An Impact</Heading>
           <Stack spacing={2}>
-            <Link href="#" fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">Become A Sponsor</Link>
-            <Link href="#" fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">School Admin</Link>
-            <Link href="#" fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">Scholarship Admin</Link>
-            <Link href="#" fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">Fund Admin</Link>
+            <Link  fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373"  onClick={() => navigate('/sign-up')}>Become A Sponsor</Link>
+            <Link  fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373"  onClick={() => navigate('/sign-up')}>School Admin</Link>
+            <Link  fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373"  onClick={() => navigate('/sign-up')}>Scholarship Admin</Link>
+            <Link  fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373"  onClick={() => navigate('/sign-up')}>Fund Admin</Link>
           </Stack>
         </GridItem>
 
         <GridItem  alignItems={{ base: "center", md: "flex-end" }} textAlign="center" display="flex" flexDirection="column" p="0">
           <Heading fontSize="16px" mr={{ base: "none", md: "30px"}} mb={3}>Help</Heading>
           <Stack spacing={2}>
-            <Link href="#" fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">Privacy Policy</Link>
-            <Link href="#" fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">Legal Docs</Link>
-            <Link href="#" fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">Cookie Policy</Link>
+            <Link  fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">Privacy Policy</Link>
+            <Link  fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">Legal Docs</Link>
+            <Link  fontSize={{ base: "12px", md: "13px", lg: "15px" }} fontWeight="500" color="#737373">Cookie Policy</Link>
           </Stack>
         </GridItem>
       </Grid>
