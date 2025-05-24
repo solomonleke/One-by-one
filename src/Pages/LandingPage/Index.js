@@ -54,7 +54,7 @@ const Feature = ({ title, text, icon }) => (
 export default function LandingPage() {
 
 
-  const router = useNavigate();
+  const navigate = useNavigate();
 
   const faqItems = [
     {
@@ -148,11 +148,11 @@ export default function LandingPage() {
               Join us in making a lasting impact by supporting deserving students through personalized scholarships and mentorship.
             </Text>
             <Flex gap="10px" w="100%" maxW={{ base: "100%", md: "358px" }} alignItems="center" display={{ base: 'grid', md: 'flex' }}>
-              <Button w={{ base: '100%', md: "171px" }} bg="white" fontSize="14px" px="28px" py="10px" color="#2E2B24" _hover={{ bg: "transparent", color: "white", border: "1px solid" }} onClick={() => {
-                router("/sign-in")
+              <Button _focus={{ boxShadow: 'none' }} w={{ base: '100%', md: "171px" }} bg="white" fontSize="14px" px="28px" py="10px" color="#2E2B24" _hover={{ bg: "transparent", color: "white", border: "1px solid" }} onClick={() => {
+                navigate("/sign-in")
               }} >sponsor a student</Button>
-              <Button w={{ base: '100%', md: "171px" }} border="1px" bg="transparent" fontSize="14px" px="28px" py="10px" color="#ffff" _hover={{ bg: "white", color: "#2E2B24", border: "none" }} onClick={() => {
-                router("/sign-in")
+              <Button _focus={{ boxShadow: 'none' }} w={{ base: '100%', md: "171px" }} border="1px" bg="transparent" fontSize="14px" px="28px" py="10px" color="#ffff" _hover={{ bg: "white", color: "#2E2B24", border: "none" }} onClick={() => {
+                navigate("/sign-in")
               }} >Start Volunteering</Button>
             </Flex>
           </Stack>
@@ -220,8 +220,9 @@ export default function LandingPage() {
             py="10px"
             maxW="fit-content"
             rightIcon={<FaArrowRightLong />}
+            _focus={{ boxShadow: 'none' }}
             _hover={{ bg: 'transparent', color: 'white', border: '1px solid white' }}
-            onClick={() => router('/get-involved')}
+            onClick={() => navigate('/get-involved')}
           >
             Learn more about our roles
           </Button>
@@ -253,7 +254,7 @@ export default function LandingPage() {
                   transition="transform 0.2s ease-in-out"
                   _hover={{ transform: 'scale(1.5)' }}
                   cursor="pointer"
-                  onClick={() => router('/get-involved')}
+                  onClick={() => navigate('/get-involved')}
                 >
                   <FaArrowRight />
                 </Box>
@@ -287,9 +288,11 @@ export default function LandingPage() {
                   variant="outline"
                   color="#39996B"
                   borderColor="#39996B"
+                  _focus={{ boxShadow: 'none' }}
                   _hover={{ bg: '#39996B', color: 'white', border: '1px solid white' }}
                   fontSize={{ base: '10px', md: '14px' }}
                   mt="auto"
+                  onClick={() => { navigate("/sign-up")}}
                 >
                   Get Started
                 </Button>
@@ -320,7 +323,7 @@ export default function LandingPage() {
                     {faqItems.map((item, index) => (
                       <AccordionItem key={index} mb={4}>
                         <h2>
-                          <AccordionButton _expanded={{ bg: 'green.100' }} fontSize={{ base: "12px", md: "13px", lg: "18px" }}>
+                          <AccordionButton _focus={{ boxShadow: 'none' }}  _expanded={{ bg: 'green.100' }} fontSize={{ base: "12px", md: "13px", lg: "18px" }}>
                             <Box flex="1" textAlign="left" fontWeight="bold">
                               {item.question}
                             </Box>

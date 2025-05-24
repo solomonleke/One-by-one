@@ -179,6 +179,7 @@ export default function ContactUs() {
                     <Button
                         bg="#39996B"
                         color="white"
+                        _focus={{ boxShadow: 'none' }}
                         rightIcon={<span>&rarr;</span>}
                         w="full"
                         _hover={{ bg: "transparent", color: "#39996B", border: "1px solid #39996B" }}

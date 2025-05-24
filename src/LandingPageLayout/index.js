@@ -13,7 +13,7 @@ export default function MainLayout({ children, bgColor = "gray.gray500", color =
           <Navigation active={active} showNav={showNav}  borderRight={borderRight} />
         </Box>
 
-        <Box width={['100%']} zIndex="900" pt={{ base: "65px", md: "63px" }}  >
+        <Box width={['100%']} zIndex="900" pt={{ base: "60px", md: "60px" }}  >
           <Box >
             {children}
           </Box>

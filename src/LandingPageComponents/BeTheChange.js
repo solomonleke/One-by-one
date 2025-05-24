@@ -19,15 +19,13 @@ import {
     useColorModeValue,
     grid,
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom'
-import { FaArrowRight } from 'react-icons/fa';
-import { FaHandHoldingHeart } from "react-icons/fa6";
-import { LuHeartHandshake } from "react-icons/lu";
-import { PiHandHeartBold, PiPlant, PiHandCoins } from "react-icons/pi";
-import ChildrenImage from "../Asset/ChildrenImage.png"
+
 import HelpImg from "../Asset/HelpImg.png";
+import { useNavigate } from 'react-router-dom';
 
 export default function BeTheChange() {
+
+  const navigate = useNavigate();
     return (
         <Flex
           direction={{ base: 'column', md: 'row' }}
@@ -74,8 +72,8 @@ export default function BeTheChange() {
             It takes just one person to spark a lifetime of opportunities and hope for a student. Are you ready to be the one who makes that difference?
             </Text>
             <Box display={{base: "grid", md: "flex"}} gap="10px" w={{base: "100%", md: "358px"}} alignItems="center">
-              <Button w={{base: "100%", md: "171px"}} bg="white" fontSize={{base:"12px", md:"14px"}} px="28px" py="10px" color="#2E2B24" _hover={{ bg: "transparent", color: "white", border: "1px solid white" }}>sponsor a student</Button>
-              <Button w={{base: "100%", md: "171px"}} border="1px" bg="transparent" fontSize={{base:"12px", md:"14px"}} px="28px" py="10px" color="#ffff" _hover={{ bg: "white", color: "#2E2B24" }}>Start Volunteering</Button>
+              <Button _focus={{ boxShadow: 'none' }} w={{base: "100%", md: "171px"}} bg="white" fontSize={{base:"12px", md:"14px"}} px="28px" py="10px" color="#2E2B24" _hover={{ bg: "transparent", color: "white", border: "1px solid white" }} onClick={() => navigate('/sign-up')}>sponsor a student</Button>
+              <Button _focus={{ boxShadow: 'none' }} w={{base: "100%", md: "171px"}} border="1px" bg="transparent" fontSize={{base:"12px", md:"14px"}} px="28px" py="10px" color="#ffff" _hover={{ bg: "white", color: "#2E2B24" }} onClick={() => navigate('/sign-up')}>Start Volunteering</Button>
             </Box>
           </Stack>
 
