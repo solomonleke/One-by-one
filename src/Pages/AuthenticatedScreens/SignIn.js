@@ -57,6 +57,9 @@ export default function SignIn() {
           }else if(result.user.role === "FUND-ADMIN"){
             
             router("/fund-admin");
+          }else if(result.user.role === "SUPER-ADMIN"){
+            
+            router("/super-admin");
           }
         }, 2000);
         } else {

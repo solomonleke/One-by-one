@@ -150,7 +150,7 @@ export default function LandingPage() {
             <Flex gap="10px" w="100%" maxW={{ base: "100%", md: "358px" }} alignItems="center" display={{ base: 'grid', md: 'flex' }}>
               <Button _focus={{ boxShadow: 'none' }} w={{ base: '100%', md: "171px" }} bg="white" fontSize="14px" px="28px" py="10px" color="#2E2B24" _hover={{ bg: "transparent", color: "white", border: "1px solid" }} onClick={() => {
                 navigate("/sign-in")
-              }} >sponsor a student</Button>
+              }} >Sponsor a student</Button>
               <Button _focus={{ boxShadow: 'none' }} w={{ base: '100%', md: "171px" }} border="1px" bg="transparent" fontSize="14px" px="28px" py="10px" color="#ffff" _hover={{ bg: "white", color: "#2E2B24", border: "none" }} onClick={() => {
                 navigate("/sign-in")
               }} >Start Volunteering</Button>

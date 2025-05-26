@@ -40,7 +40,7 @@ export default function Values() {
         pointerEvents="none"
       />
             <Text fontSize={{ base: "23px", md: "50px" }} fontWeight="700" textAlign="center">
-                onebyOne’s{" "}
+                OneByOne’s{" "}
                 <Text as="span" color="#8C9492">
                     Values
                 </Text>

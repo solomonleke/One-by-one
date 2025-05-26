@@ -217,49 +217,49 @@ const checkLeaderboardActive= ()=>{
         name: "dashboard",
         icon: <RxDashboard/>,
         link: "/super-admin",
-        active: isActive(location, "/super/admin"),
+        active: isActive(location, "/super-admin"),
         display: isSuperAdmin()
     },
     {
         name: "schools",
         icon: <IoSchoolOutline/>,
-        link: "/super-admin/schools",
-        active: isActive(location, "/super/admin/schools"),
+        link: "/super-admin-schools",
+        active: isActive(location, "/super-admin-schools"),
         display: isSuperAdmin()
     },
     {
         name: "students",
         icon: <PiStudent/>,
-        link: "/super-admin/students",
-        active: isActive(location, "/super/admin/students"),
+        link: "/super-admin-students",
+        active: isActive(location, "/super-admin-students"),
         display: isSuperAdmin()
     },
     {
         name: "scholarships",
         icon: <Scholarship/>,
-        link: "/super-admin/scholarships",
-        active: isActive(location, "/super/admin/scholarships"),
+        link: "/super-admin-scholarships",
+        active: isActive(location, "/super-admin-scholarships"),
         display: isSuperAdmin()
     },
     {
         name: "user management",
         icon: <PiUser/>,
-        link: "/super-admin/user-management",
-        active: isActive(location, "/super/admin/user-management"),
+        link: "/super-admin-user-management",
+        active: isActive(location, "/super-admin-user-management"),
         display: isSuperAdmin()
     },
     {
         name: "reports & analytics",
         icon: <GoReport/>,
-        link: "/super-admin/reports",
-        active: isActive(location, "/super/admin/reports"),
+        link: "/super-admin-reports",
+        active: isActive(location, "/super-admin-reports"),
         display: isSuperAdmin()
     },
     {
         name: "settings",
         icon: <GoGear/>,
-        link: "/super-admin/settings",
-        active: isActive(location, "/super/admin/settings"),
+        link: "/super-admin-settings",
+        active: isActive(location, "/super-admin-settings"),
         display: isSuperAdmin()
     },
    

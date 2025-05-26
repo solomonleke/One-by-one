@@ -87,7 +87,7 @@ export default function AboutUs() {
             <Box align="center"  justifyContent="center" bg="#E5FFF3" py={{base:"100px", md: "135px"}} px={{ base: "20px", lg: "30px" }} >
 
             <Text  fontSize={{base:"23px", md:"50px"}} fontWeight="700" textAlign="center" mb={{base:"30px", md:"50px"}} >
-              onebyOne’s{" "}
+            OneByOne’s{" "}
               <Text as="span" color="#8C9492">
                 Values
               </Text>
