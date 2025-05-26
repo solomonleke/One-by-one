@@ -235,7 +235,7 @@ export default function Index() {
         textTransform="capitalize"
         lineHeight="25.41px"
       >
-        Welcome back, {userName || "User"}.
+        Welcome back, {firstName || "User"}.
       </Text>
 
       <Flex

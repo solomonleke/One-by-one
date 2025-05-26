@@ -255,7 +255,7 @@ export default function Scholarships() {
               spacing="16px"
             >
               {/* Scholarship Details */}
-              <HStack justifyContent="space-between" w="100%" gap="10px">
+              <HStack justifyContent="space-between" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} w="100%" gap="10px">
                 <HStack>
                   <Box bg="#39996B" w="3px" h="33px" rounded="3px"></Box>
                   <Stack>
@@ -289,7 +289,7 @@ export default function Scholarships() {
               <Box borderBottom="1px solid #E0E0E0" />
 
               {/* Awardees & View Funding History */}
-              <HStack justifyContent="space-between" alignItems="center">
+              <HStack justifyContent="space-between" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} alignItems="center">
                 <HStack display="flex" flexWrap="wrap" mt="10px" gap="2px">
                   {scholarship.students.length > 0 ? (
                     <>
