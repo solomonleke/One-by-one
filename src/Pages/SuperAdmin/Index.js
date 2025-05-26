@@ -15,7 +15,8 @@ import {
   Spacer,
   useColorModeValue,
   grid,
-  Icon
+  Icon,
+  Circle
 } from '@chakra-ui/react'
 import { FiTrendingUp } from 'react-icons/fi';
 import { Tooltip as Tooltips } from '@chakra-ui/react';
@@ -42,8 +43,11 @@ import { GetSchoolAdminDashboardGraphDataApi } from "../../Utils/ApiCall";
 import { GetStudentStatsApi, UpdateStudentProfile, DeleteStudentProfile } from "../../Utils/ApiCall";
 import moment from "moment";
 import ShowToast from "../../Components/ToastNotification"
+import Leaderboard from "./Leaderboard"
 import Preloader from "../../Components/Preloader"
 
+import scholarshipImage8 from "../../Asset/goldIcon.svg"
+import { ReactComponent as Sarah } from '../../Asset/sarah.svg';
 
 import {
   Table,
@@ -55,6 +59,7 @@ import {
   useDisclosure,
   Input,
   Stack,
+  Avatar,
   MenuList,
   MenuItem,
   MenuButton,
@@ -124,6 +129,21 @@ export default function Index() {
     { month: 'Dec', amount: 36000 },
   ];
 
+  const trendsData = [
+    { month: 'Jan', schools: 220, students: 100 },
+    { month: 'Feb', schools: 210, students: 110 },
+    { month: 'Mar', schools: 230, students: 120 },
+    { month: 'Apr', schools: 200, students: 105 },
+    { month: 'May', schools: 250, students: 130 },
+    { month: 'Jun', schools: 210, students: 150 },
+    { month: 'Jul', schools: 230, students: 125 },
+    { month: 'Aug', schools: 230, students: 90 },
+    { month: 'Sep', schools: 240, students: 100 },
+    { month: 'Oct', schools: 230, students: 110 },
+    { month: 'Nov', schools: 220, students: 95 },
+    { month: 'Dec', schools: 220, students: 110 },
+  ];
+
   const disbursedData = [
     {
       fundedStudents: "Philip Amakiri",
@@ -158,7 +178,7 @@ export default function Index() {
       status: "COMPLETED"
     }
   ]
-  
+
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload?.length) {
       return (
@@ -170,12 +190,34 @@ export default function Index() {
     return null;
   };
 
+  const TrendsCustomTooltip = ({ active, payload }) => {
+    if (active && payload?.length) {
+      return (
+        <Box bg="white" p="10px" borderRadius="md" boxShadow="sm">
+          <Text fontSize="sm"><strong>{payload[0].name}</strong></Text>
+          {payload.map((entry, index) => (
+            <Text key={index} fontSize="sm" color={entry.color}>
+              {entry.name}: {entry.value}
+            </Text>
+          ))}
+        </Box>
+      );
+    }
+    return null;
+  };
+
+  const randomAvatarUrl = `https://i.pravatar.cc/300?img=${Math.floor(Math.random() * 70) + 1}`;
+
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+
   useEffect(() => {
+
     const storedName = JSON.parse(localStorage.getItem('onlineUser'));
     if (storedName) {
-      setUserName(`${storedName.firstName}`);
+      setFirstName(`${storedName.firstName}`);
+      setLastName(`${storedName.lastName}`);
     }
-
   }, []);
 
 
@@ -185,260 +227,331 @@ export default function Index() {
 
 
   return (
-<MainLayout>
-  <Text
-    color="#1F2937"
-    fontWeight="700"
-    fontSize={{ base: "20px", md: "24px" }}
-    textTransform="capitalize"
-    lineHeight="25.41px"
-  >
-    Welcome back, {userName || "User"}.
-  </Text>
-
-  <Flex
-    mt="20px"
-    direction={{ base: "column", xl: "row" }}
-    gap="30px"
-    w="100%"
-    alignItems="stretch"
-    flexWrap="wrap"
-  >
-    {/* Left Box */}
-    <Box
-      w={{ base: "100%", xl: "566px" }}
-      flexShrink={0}
-      display="flex"
-      flexDir="column"
-      gap="6px"
-      justifyContent="center"
-      rounded="11px"
-      py="15px"
-      px="23px"
-      backgroundSize="contain, contain, cover"
-      backgroundRepeat="no-repeat, no-repeat, no-repeat"
-      backgroundPosition="left center, right center, center"
-      sx={{
-        backgroundImage: `url(${leftBg}), url(${priceBg}), linear-gradient(90.1deg, #20553C 0.09%, #C4EF4B 101.03%)`,
-      }}
-    >
-      <Text fontSize="14px" color="#FFFFFFC7" fontWeight="500">Available Balance</Text>
+    <MainLayout>
       <Text
-        fontSize={{ base: "32px", md: "39.63px" }}
-        color="#ffffff"
-        fontWeight="800"
-        letterSpacing="1px"
+        color="#1F2937"
+        fontWeight="700"
+        fontSize={{ base: "20px", md: "24px" }}
+        textTransform="capitalize"
+        lineHeight="25.41px"
       >
-        <Box as="span" fontSize="20px" color="#ffffff" fontWeight="700">₦</Box>
-        {availableBalance}
+        Welcome back, {userName || "User"}.
       </Text>
-      <Button
-        w="220px"
-        border="none"
-        color="#4C515C"
-        background="#fff"
-        fontWeight="500"
-        fontSize="14px"
-        rightIcon={<IoArrowForward color="#4C515C" />}
-        mt="10px"
-      >
-        Disbursement Records
-      </Button>
-    </Box>
 
-    {/* Right Grid */}
-    <SimpleGrid
-      columns={{ base: 1, xl: 2 }}
-      spacing="20px"
-      flex="1"
-    >
-      {[
-        {
-          title: "Total Schools",
-          total: 26,
-          icon: FaSchool,
-          navText: "See All",
-        },
-        {
-          title: "Total Students",
-          total: 40,
-          icon: FaSchool,
-          navText: "See All",
-        },
-        {
-          title: "Total Students Sponsored",
-          total: 16,
-          icon: FaSchool,
-          navText: "See All",
-        },
-        {
-          title: "Total Funds Disbursed",
-          total: '₦450,184 ',
-          icon: FaSchool,
-          navText: "See All",
-        },
-      ].map((role, i) => (
+      <Flex
+        mt="20px"
+        direction={{ base: "column", xl: "row" }}
+        gap="30px"
+        w="100%"
+        alignItems="stretch"
+        flexWrap="wrap"
+      >
+        {/* Left Box */}
         <Box
-          key={i}
-          w="100%"
-          borderRadius="10px"
-          border="1px solid #EDEFF2"
-          boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)"
-          p="20px"
+          w={{ base: "100%", xl: "566px" }}
+          flexShrink={0}
           display="flex"
-          flexDirection="column"
-          justifyContent="space-between"
-          gap="10px"
+          flexDir="column"
+          gap="6px"
+          justifyContent="center"
+          rounded="11px"
+          py="15px"
+          px="23px"
+          backgroundSize="contain, contain, cover"
+          backgroundRepeat="no-repeat, no-repeat, no-repeat"
+          backgroundPosition="left center, right center, center"
+          sx={{
+            backgroundImage: `url(${leftBg}), url(${priceBg}), linear-gradient(90.1deg, #20553C 0.09%, #C4EF4B 101.03%)`,
+          }}
         >
-          <Stack spacing="8px">
-            <HStack justifyContent="space-between" align="flex-start">
-              <HStack>
-                <role.icon color="#39996B" />
-                <Text fontSize="14px" fontWeight="500" color="#4C515C">{role.title}</Text>
-              </HStack>
-              <Text fontSize="20px" fontWeight="600" color="#2F2F2F">{role.total}</Text>
-            </HStack>
-            <Box height="1px" bg="#EDEFF2" />
-            <HStack spacing="4px" cursor="pointer">
-              <Text fontSize="13px" fontWeight="600" color="#39996B">{role.navText}</Text>
-              <IoArrowForward color="#39996B" />
-            </HStack>
-          </Stack>
-        </Box>
-      ))}
-    </SimpleGrid>
-  </Flex>
-
-  <Flex
-  mt="20px"
-  direction={{ base: "column", lg: "row" }}
-  gap="30px"
-  w="100%"
-  alignItems="stretch"
->
-      <Box
-        bg="white"
-        borderRadius="10px"
-        p="20px"
-        w={{ base: "100%", lg: "60%" }}  // Full width on small, 60% on large+
-      >
-        <HStack justify="space-between" mb="10px">
-          <Tooltips
-            bg="#fff"
-            color="#667085"
-            p="12px"
-            lineHeight="20px"
-            fontSize="13px"
-            fontWeight="400"
-            label="See how student statuses have changed month over month. Use filters to view trends by approval, pending, or rejection status."
-            placement="top-end"
+          <Text fontSize="14px" color="#FFFFFFC7" fontWeight="500">Available Balance</Text>
+          <Text
+            fontSize={{ base: "32px", md: "39.63px" }}
+            color="#ffffff"
+            fontWeight="800"
+            letterSpacing="1px"
           >
-            <HStack spacing="5px">
-              <Text color={"#1F2937"} fontWeight="600" fontSize="17px">
-                Fund Disbursements Overtime
-              </Text>
-              <IoInformationCircleOutline />
-            </HStack>
-          </Tooltips>
+            <Box as="span" fontSize="20px" color="#ffffff" fontWeight="700">₦</Box>
+            {availableBalance}
+          </Text>
+          <Button
+            w="220px"
+            border="none"
+            color="#4C515C"
+            background="#fff"
+            fontWeight="500"
+            fontSize="14px"
+            rightIcon={<IoArrowForward color="#4C515C" />}
+            mt="10px"
+          >
+            Disbursement Records
+          </Button>
+        </Box>
 
-          <HStack>
-            <Text fontWeight="700" fontSize="24px" color="#2F2F2F">
-              ₦134,000
-            </Text>
-            <HStack spacing="4px">
-              <HStack spacing="4px" bg="#C0FFE1" rounded="166.58px" p="3.33px" border="0.83px solid #95C7AF">
-              <Icon as={FiTrendingUp} color="#00715D"/>
-              <Text fontSize="sm" color="#00715D" fontWeight="500">
-                12%
-              </Text>
+        {/* Right Grid */}
+        <SimpleGrid
+          columns={{ base: 1, xl: 2 }}
+          spacing="20px"
+          flex="1"
+        >
+          {[
+            {
+              title: "Total Schools",
+              total: 26,
+              icon: FaSchool,
+              navText: "See All",
+            },
+            {
+              title: "Total Students",
+              total: 40,
+              icon: FaSchool,
+              navText: "See All",
+            },
+            {
+              title: "Total Students Sponsored",
+              total: 16,
+              icon: FaSchool,
+              navText: "See All",
+            },
+            {
+              title: "Total Funds Disbursed",
+              total: '₦450,184 ',
+              icon: FaSchool,
+              navText: "See All",
+            },
+          ].map((role, i) => (
+            <Box
+              key={i}
+              w="100%"
+              borderRadius="10px"
+              border="1px solid #EDEFF2"
+              boxShadow="0px 4px 20px rgba(0, 0, 0, 0.1)"
+              p="20px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
+              gap="10px"
+            >
+              <Stack spacing="8px">
+                <HStack justifyContent="space-between" flexWrap={["wrap", "wrap", "wrap", "wrap"]} align="flex-start">
+                  <HStack>
+                    <role.icon color="#39996B" />
+                    <Text fontSize="14px" fontWeight="500" color="#4C515C">{role.title}</Text>
+                  </HStack>
+                  <Text fontSize="20px" fontWeight="600" color="#2F2F2F">{role.total}</Text>
+                </HStack>
+                <Box height="1px" bg="#EDEFF2" />
+                <HStack spacing="4px" cursor="pointer">
+                  <Text fontSize="13px" fontWeight="600" color="#39996B">{role.navText}</Text>
+                  <IoArrowForward color="#39996B" />
+                </HStack>
+              </Stack>
+            </Box>
+          ))}
+        </SimpleGrid>
+      </Flex>
+
+      <Flex
+        mt="20px"
+        direction={{ base: "column", lg: "row" }}
+        gap="30px"
+        w="100%"
+        alignItems="stretch"
+      >
+        <Box
+          bg="white"
+          borderRadius="10px"
+          p="20px"
+          w={{ base: "100%", lg: "60%" }}  // Full width on small, 60% on large+
+        >
+          <HStack justify="space-between" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} mb="10px">
+            <Tooltips
+              bg="#fff"
+              color="#667085"
+              p="12px"
+              lineHeight="20px"
+              fontSize="13px"
+              fontWeight="400"
+              label="See how student statuses have changed month over month. Use filters to view trends by approval, pending, or rejection status."
+              placement="top-end"
+            >
+              <HStack spacing="5px">
+                <Text color={"#1F2937"} fontWeight="600" fontSize="17px">
+                  Fund Disbursements Overtime
+                </Text>
+                <IoInformationCircleOutline />
               </HStack>
-              <Text fontSize="sm" color="gray.500">
-                vs last month
+            </Tooltips>
+
+            <HStack>
+              <Text fontWeight="700" fontSize="24px" color="#2F2F2F">
+                ₦134,000
               </Text>
+              <HStack spacing="4px">
+                <HStack spacing="4px" bg="#C0FFE1" rounded="166.58px" p="3.33px" border="0.83px solid #95C7AF">
+                  <Icon as={FiTrendingUp} color="#00715D" />
+                  <Text fontSize="sm" color="#00715D" fontWeight="500">
+                    12%
+                  </Text>
+                </HStack>
+                <Text fontSize="sm" color="gray.500">
+                  vs last month
+                </Text>
+              </HStack>
             </HStack>
           </HStack>
-        </HStack>
 
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-            <YAxis tickFormatter={(val) => `₦${val / 1000}k`} />
-            <Tooltip content={<CustomTooltip />} />
-            <Line
-              type="monotone"
-              dataKey="amount"
-              stroke="#1B9A59"
-              strokeWidth={2}
-              dot={{ stroke: "#1B9A59", strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </Box>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+              <YAxis tickFormatter={(val) => `₦${val / 1000}k`} />
+              <Tooltip content={<CustomTooltip />} />
+              <Line
+                type="monotone"
+                dataKey="amount"
+                stroke="#1B9A59"
+                strokeWidth={2}
+                dot={{ stroke: "#1B9A59", strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </Box>
 
-      {/* Table Container */}
-      <Box
-        w={{ base: "100%", lg: "40%" }}
-        overflowX="auto"
-        bg="#FFFFFF"
-        border="1px solid #EDEFF2"
-        rounded="10px"
-        px="19px"
-        pt="20px"
-        pb="32px"       
-      >
-        <HStack justifyContent="space-between" pb="15px">
-          <Text fontSize="17px" fontWeight="600" color="#1F2937">Recent Disbursements</Text>
-          <HStack spacing="4px" cursor="pointer">
+        {/* Table Container */}
+        <Box
+          w={{ base: "100%", lg: "40%" }}
+          overflowX="auto"
+          bg="#FFFFFF"
+          border="1px solid #EDEFF2"
+          rounded="10px"
+          px="19px"
+          pt="20px"
+          pb="32px"
+        >
+          <HStack justifyContent="space-between" pb="15px">
+            <Text fontSize="17px" fontWeight="600" color="#1F2937">Recent Disbursements</Text>
+            <HStack spacing="4px" cursor="pointer">
               <Text fontSize="13px" fontWeight="600" color="#39996B">See All</Text>
               <IoArrowForward color="#39996B" />
             </HStack>
-        </HStack>
-        <TableContainer rounded="7px" border="1px solid #EDEFF2">
-          <Table variant="simple" minWidth="600px" bg="#fff" rounded="7px">
-            <Thead bg="gray.100">
-              <Tr bg="gray.100">
-                <Th fontSize="13px" textTransform="capitalize" color="#2F2F2F" fontWeight="500">
-                  funded students
-                </Th>
-                <Th fontSize="13px" textTransform="capitalize" color="#2F2F2F" fontWeight="500">
-                  amount
-                </Th>
-                <Th fontSize="13px" textTransform="capitalize" color="#2F2F2F" fontWeight="500">
-                  transaction id
-                </Th>
-                <Th fontSize="13px" textTransform="capitalize" color="#2F2F2F" fontWeight="500">
-                  date
-                </Th>
-                <Th fontSize="13px" textTransform="capitalize" color="#2F2F2F" fontWeight="500">
-                  payment method
-                </Th>
-                <Th fontSize="13px" textTransform="capitalize" color="#2F2F2F" fontWeight="500">
-                  status
-                </Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {disbursedData.map((item, index) => (
-                <TableRow
-                  key={index}
-                  type="super-admin-recent-disbursement"
-                  fundedStudents={item.fundedStudents}
-                  amount={item.amount}
-                  transactionId={item.transactionId}
-                  date={item.date}
-                  paymentMethod={item.paymentMethod}
-                  status={item.status}
-                />
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
-      </Box>
-    </Flex>
+          </HStack>
+          <TableContainer rounded="7px" border="1px solid #EDEFF2">
+            <Table variant="simple" minWidth="600px" bg="#fff" rounded="7px">
+              <Thead bg="gray.100">
+                <Tr bg="gray.100">
+                  <Th fontSize="13px" textTransform="capitalize" color="#2F2F2F" fontWeight="500">
+                    funded students
+                  </Th>
+                  <Th fontSize="13px" textTransform="capitalize" color="#2F2F2F" fontWeight="500">
+                    amount
+                  </Th>
+                  <Th fontSize="13px" textTransform="capitalize" color="#2F2F2F" fontWeight="500">
+                    transaction id
+                  </Th>
+                  <Th fontSize="13px" textTransform="capitalize" color="#2F2F2F" fontWeight="500">
+                    date
+                  </Th>
+                  <Th fontSize="13px" textTransform="capitalize" color="#2F2F2F" fontWeight="500">
+                    payment method
+                  </Th>
+                  <Th fontSize="13px" textTransform="capitalize" color="#2F2F2F" fontWeight="500">
+                    status
+                  </Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {disbursedData.map((item, index) => (
+                  <TableRow
+                    key={index}
+                    type="super-admin-recent-disbursement"
+                    fundedStudents={item.fundedStudents}
+                    amount={item.amount}
+                    transactionId={item.transactionId}
+                    date={item.date}
+                    paymentMethod={item.paymentMethod}
+                    status={item.status}
+                  />
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </Flex>
 
-</MainLayout>
+      <Flex
+        mt="20px"
+        direction={{ base: "column", lg: "row" }}
+        gap={{ base: "20px", lg: "30px" }}
+        w="100%"
+        alignItems="stretch"
+        flexWrap="wrap"
+      >
+        {/* Left Section - Leaderboard */}
+        <Leaderboard />
+
+        {/* Right Section - Trends Over Time */}
+        <Box
+          bg="white"
+          borderRadius="10px"
+          p={{ base: "16px", md: "20px" }}
+          w={{ base: "100%", lg: "50%" }}
+          flex="1"
+        >
+          <Stack spacing={3}>
+            <Text fontSize="md" fontWeight="bold">
+              Trends Over Time:{" "}
+              <Text as="span" color="gray.600">Schools & Students</Text>
+            </Text>
+
+            <HStack spacing={4} flexWrap="wrap">
+              <HStack>
+                <Circle size="10px" bg="#39996B" />
+                <Text fontSize="sm" fontWeight="medium">Approved Schools</Text>
+                <Text fontSize="sm" color="#39996B">+78%</Text>
+              </HStack>
+              <HStack>
+                <Circle size="10px" bg="#3FC8E4" />
+                <Text fontSize="sm" fontWeight="medium">Approved Students</Text>
+                <Text fontSize="sm" color="#3FC8E4">+21%</Text>
+              </HStack>
+            </HStack>
+          </Stack>
+
+          <Box mt={6} w="100%" h={{ base: "250px", md: "300px" }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={trendsData}>
+                <CartesianGrid stroke="#f0f0f0" vertical={false} />
+                <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} domain={[0, 500]} />
+                <Tooltip content={<TrendsCustomTooltip />} />
+                <Line
+                  type="monotone"
+                  dataKey="schools"
+                  stroke="#1B9A59"
+                  name="Approved Schools"
+                  strokeWidth={2}
+                  dot={{ r: 3 }}
+                  activeDot={{ r: 6 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="students"
+                  stroke="#00B5D8"
+                  name="Approved Students"
+                  strokeWidth={2}
+                  dot={{ r: 3 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </Box>
+        </Box>
+      </Flex>
+
+
+    </MainLayout>
 
 
 

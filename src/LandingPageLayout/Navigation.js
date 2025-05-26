@@ -13,7 +13,6 @@ const Links = [
     { name: 'About us', path: '/about-us' },
     { name: 'Get involved', path: '/get-involved' },
     { name: 'Contact us', path: '/contact-us' },
-    { name: 'Super Admin', path: '/super-admin' },
   ];
   
   
@@ -62,7 +61,7 @@ useOutsideClick({
       <Flex h={16} w="100%" alignItems="center" justifyContent="space-between" zIndex="1000">
         <Image   src={logo} width="120px" onClick={() => navigate("/")} />
         <Box>
-          <HStack gap={{ md: "6px", lg: "32px" }} alignItems="center" display={{ base: 'none', md: 'flex' }}>
+          <HStack gap={{ md: "6px", lg: "32px" }} alignItems="center" justifyContent="center" display={{ base: 'none', md: 'flex' }}>
             {Links.map((link) => (
               <NavLink key={link.name} name={link.name} path={link.path} />
             ))}
@@ -74,7 +73,7 @@ useOutsideClick({
           }} >Login</Button>
           <Button _focus={{ boxShadow: 'none' }} w={{ md: "80px", lg: "113.5px" }} fontSize={{ md: "12px", lg: "16px" }} border="1px" bg="#39996B" color="#ffff" _hover={{ bg: "transparent", color: "#39996B", border: "1px solid #39996B" }} onClick={() => {
             navigate("/sign-up")
-          }} >Sign in</Button>
+          }} >Sign Up</Button>
         </Box>
         <IconButton
   icon={isOpen ? <MdClose size="24px" /> : <IoMdMenu size="24px" />}
@@ -119,7 +118,7 @@ useOutsideClick({
             }} _hover={{ bg: "#39996B", color: "white", border: "1px solid white" }}>Login</Button>
             <Button _focus={{ boxShadow: 'none' }} w="100%" border="1px" bg="#39996B" color="#ffff" onClick={() => {
               navigate("/sign-up")
-            }} _hover={{ bg: "transparent", color: "#39996B", border: "1px solid #39996B" }} >Sign in</Button>
+            }} _hover={{ bg: "transparent", color: "#39996B", border: "1px solid #39996B" }} >Sign Up</Button>
           </Box>
         </Box>
       )}

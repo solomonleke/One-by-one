@@ -41,7 +41,7 @@ export default function AboutOneByOne() {
       >
         <Stack maxW="661px" align="left" textAlign="left">
           <Text fontSize="15px" w="fit-content" color="#FAA51C" fontWeight="700">
-            about one by one
+            About one by one
           </Text>
           <Text fontSize={{ base: "25px", md: "35px",  lg: "50px" }} fontWeight="600" color="black">
             Transforming Lives Through{" "}
@@ -69,7 +69,7 @@ export default function AboutOneByOne() {
               onClick={() => {
                 navigate("/about-us")}}
             >
-              learn more about us
+              Learn more about us
             </Button>
           </Flex>
         </Stack>
