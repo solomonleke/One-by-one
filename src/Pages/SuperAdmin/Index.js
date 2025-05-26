@@ -230,8 +230,8 @@ export default function Index() {
     <MainLayout>
       <Text
         color="#1F2937"
-        fontWeight="700"
-        fontSize={{ base: "20px", md: "24px" }}
+        fontWeight="600"
+        fontSize={{ base: "20px", md: "21px" }}
         textTransform="capitalize"
         lineHeight="25.41px"
       >
