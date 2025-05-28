@@ -103,7 +103,7 @@ export default function Leaderboard() {
     borderWidth="1px"
     h={{ base: "auto", md: "425px" }}
     maxH="425px"
-    overflowY={{ base: "scroll", md: "scroll", sm: "scroll" }}
+    overflowY="scroll"
     py="21px"
     px="22px"
     w={{ base: "100%", lg: "50%" }}
