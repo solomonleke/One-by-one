@@ -48,6 +48,9 @@ import SuperAdminSchools from '../Pages/SuperAdmin/Schools'
 import SuperAdminStudents from '../Pages/SuperAdmin/Students'
 import SuperAdminUserManagement from '../Pages/SuperAdmin/UserManagement'
 import SuperAdminSettings from '../Pages/SuperAdmin/Settings'
+import StudentProfile3 from '../Pages/SuperAdmin/StudentProfile'
+import SchoolProfile3 from '../Pages/SuperAdmin/SchoolProfile'
+import AdminProfile from '../Pages/SuperAdmin/AdminProfile'
 import ScrollToTop from '../Components/ScrollToTop'
 import ContactUs from '../Pages/LandingPage/ContactUs'
 
@@ -136,6 +139,8 @@ export default function IndexRoutes() {
       <Route path='/super-admin-students' element={<SuperAdminStudents />} />
       <Route path='/super-admin-user-management' element={<SuperAdminUserManagement />} />
       <Route path='/super-admin-settings' element={<SuperAdminSettings />} />
+      <Route path='/super-admin-students-profile' element={<StudentProfile3 />} />
+      <Route path='/super-admin-admin-profile' element={<AdminProfile />} />
         </Routes>
       </BrowserRouter> 
     </StudentProvider>
