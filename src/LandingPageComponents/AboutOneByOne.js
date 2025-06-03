@@ -32,6 +32,7 @@ export default function AboutOneByOne() {
       />
 
       <Flex
+      
         direction={{ base: 'column', md: 'row' }}
         align="left"
         justify="left"
@@ -39,24 +40,24 @@ export default function AboutOneByOne() {
         position="relative"
         zIndex="1"
       >
-        <Stack maxW="661px" align="left" textAlign="left">
-          <Text fontSize="15px" w="fit-content" color="#FAA51C" fontWeight="700">
+        <Stack maxW={{base: "100%", lg: "661px"}}    >
+          <Text fontSize="15px"  w="fit-content" alignSelf={{base: "center", md: "start"}} color="#FAA51C" fontWeight="700">
             About one by one
           </Text>
-          <Text fontSize={{ base: "25px", md: "35px",  lg: "50px" }} fontWeight="600" color="black">
+          <Text fontSize={{ base: "25px", md: "35px",  lg: "50px" }} textAlign={{base: "center", md: "start"}} fontWeight="600" color="black">
             Transforming Lives Through{" "}
             <Text as="span" color="#8C9492">
               Education & Mentorship
             </Text>
           </Text>
-          <Text fontSize={{ base: "10px", md: "17px" }} color="#71717A" w={{ base: "300px", md: "350px",  lg: "500px" }}>
+          <Text fontSize={{ base: "10px", md: "17px" }} textAlign={{base: "center", md: "start"}} color="#71717A" w={{ base: "100%", md: "350px",  lg: "500px" }}>
             At One by One, we believe in the power of individual impact. Our
             mission is simple: to connect promising students from
             underserved communities with sponsors and mentors who can change their lives.
           </Text>
           <Flex>
             <Button
-              w={{ base: "150px", md: "171px" }}
+              w={{ base: "100%", md: "171px" }}
               bg="#39996B"
               fontWeight="400"
               fontSize={{ base: "12px", md: "14px" }}
@@ -76,6 +77,7 @@ export default function AboutOneByOne() {
 
         <Image
           src={AboutUsImg}
+          alignSelf={{base: "center", md: "start"}}
           alt="About Us"
           w={{ base: "300px", md: "350px", lg: "400px" }}
           h={{ base: "300px", md: "350px", lg: "400px" }}

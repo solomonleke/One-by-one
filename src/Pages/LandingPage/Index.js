@@ -198,27 +198,27 @@ export default function LandingPage() {
         alignItems="start"
       >
         {/* Left Content */}
-        <Stack spacing={6} >
-          <Text fontSize={{ base: '12px', md: '15px' }} color="#FAA51C" fontWeight="700">
+        <Stack spacing={6}  >
+          <Text fontSize={{ base: '12px', md: '15px' }} alignSelf={{base: "center", lg: "start"}} color="#FAA51C" fontWeight="700">
             Join the movement
           </Text>
-          <Text fontSize={{ base: '30px', md: '50px' }} fontWeight="600" lineHeight="1.2">
+          <Text fontSize={{ base: '30px', md: '50px' }} fontWeight="600" lineHeight="1.2" textAlign={{base: "center", lg: "start"}}>
             Be part of the{' '}
             <Text as="span" color="#8C9492">
               Change
             </Text>
           </Text>
-          <Text fontSize={{ base: '14px', md: '18px' }} color="#71717A" maxW="500px">
+          <Text fontSize={{ base: '14px', md: '18px' }} color="#71717A" maxW={{base: "100%", lg:"500px"}} textAlign={{base: "center", lg: "start"}}>
             Our mission thrives because of people like you—dedicated volunteers and sponsors who make education possible for disadvantaged students.
           </Text>
           <Button
+          maxW={{base: "100%", lg: "275px"}}
             bg="#39996B"
             color="white"
             fontWeight="500"
             fontSize={{ base: '13px', md: '16px' }}
             px="28px"
             py="10px"
-            maxW="fit-content"
             rightIcon={<FaArrowRightLong />}
             _focus={{ boxShadow: 'none' }}
             _hover={{ bg: 'transparent', color: 'white', border: '1px solid white' }}
