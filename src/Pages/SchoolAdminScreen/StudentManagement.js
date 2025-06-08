@@ -39,6 +39,9 @@ import {
   ModalBody,
   ModalFooter,
   ModalCloseButton,
+  SimpleGrid,
+  FormControl,
+  FormLabel,
 } from '@chakra-ui/react'
 
 export default function StudentManagement() {
@@ -58,6 +61,8 @@ export default function StudentManagement() {
 
   const [MainData, setMainData] = useState([])
   const [FilterData, setFilterData] = useState([])
+  const [totalStudentsCount, setTotalStudentsCount] = useState(0);
+
 
 
   // Pagination settings to follow
@@ -328,26 +333,27 @@ export default function StudentManagement() {
   // Search Filter settings to follow end here
 
   const getallStudent = async () => {
-
     try {
-      const result = await GetAllStudentApi(CurrentPage, PostPerPage)
-
-      console.log("getallStudent", result)
-
+      const result = await GetAllStudentApi(CurrentPage, PostPerPage);
+      console.log("getallStudent", result);
+  
       if (result.status === 200) {
-        setMainData(result.data.data.students)
-        setFilterData(result.data.data.students)
-        setTotalPage(result.data.data.totalPages)
+        setMainData(result.data.data.students);
+        setFilterData(result.data.data.students);
+        setFilteredData(result.data.data.students)
+        setTotalStudentsCount(result.data.data.totalCount);
+        const totalPosts = result.data.data.totalPages * PostPerPage;
+        setTotalPage(totalPosts);
       }
-      console.log("students", result.data.data.students)
+  
+      console.log("students", result.data.data.students);
     } catch (e) {
-
-      console.log("error", e.message)
+      console.log("error", e.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-
-  }
+  };
+  
 
   const fetchStudentStats = async () => {
     try {
@@ -692,158 +698,167 @@ export default function StudentManagement() {
             </Table>
           </TableContainer>
 
-          <Modal isOpen={isEditModalOpen} onClose={onCloseEdit} scrollBehavior={"inside"}>
-            <ModalOverlay />
-            {showToast.show && (
-              <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
-            )}
-            <ModalContent maxW="80%" height="80vh">
-              <ModalHeader>Edit Student Details</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Stack spacing={4}>
-                  <Input
-                    name="full_name"
-                    placeholder="Full Name"
-                    value={editedData.full_name || ""}
-                    onChange={handleChange}
-                  />
+          <Modal isOpen={isEditModalOpen} onClose={onCloseEdit} scrollBehavior="inside">
+  <ModalOverlay />
+  {showToast.show && (
+    <ShowToast
+      message={showToast.message}
+      status={showToast.status}
+      show={showToast.show}
+      duration={showToast.duration}
+    />
+  )}
+  <ModalContent maxW="80%" height="80vh">
+    <ModalHeader>Edit Student Details</ModalHeader>
+    <ModalCloseButton />
+    <ModalBody>
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+        <FormControl>
+          <FormLabel>Full Name</FormLabel>
+          <Input name="full_name" value={editedData.full_name || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="email"
-                    placeholder="Email"
-                    value={editedData.email || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Email</FormLabel>
+          <Input name="email" value={editedData.email || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="dob"
-                    placeholder="Date of Birth"
-                    value={editedData.dob || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Date of Birth</FormLabel>
+          <Input name="dob" value={editedData.dob || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="gender"
-                    placeholder="Gender"
-                    value={editedData.gender || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Gender</FormLabel>
+          <Input name="gender" value={editedData.gender || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="phone_number"
-                    placeholder="Phone Number"
-                    value={editedData.phone_number || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Phone Number</FormLabel>
+          <Input name="phone_number" value={editedData.phone_number || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="guardian_phone_number"
-                    placeholder="Guardian Phone Number"
-                    value={editedData.guardian_phone_number || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Guardian Phone Number</FormLabel>
+          <Input name="guardian_phone_number" value={editedData.guardian_phone_number || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="address"
-                    placeholder="Address"
-                    value={editedData.address || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Address</FormLabel>
+          <Input name="address" value={editedData.address || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="city"
-                    placeholder="City"
-                    value={editedData.city || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>City</FormLabel>
+          <Input name="city" value={editedData.city || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="state"
-                    placeholder="State"
-                    value={editedData.state || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>State</FormLabel>
+          <Input name="state" value={editedData.state || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="department"
-                    placeholder="Department"
-                    value={editedData.department || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Department</FormLabel>
+          <Input name="department" value={editedData.department || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="class_level"
-                    placeholder="Class Level"
-                    value={editedData.class_level || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Class Level</FormLabel>
+          <Input name="class_level" value={editedData.class_level || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="intended_field_of_study"
-                    placeholder="Intended Field Of Study"
-                    value={editedData.intended_field_of_study || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Intended Field of Study</FormLabel>
+          <Input name="intended_field_of_study" value={editedData.intended_field_of_study || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="class_performance"
-                    placeholder="Class Performance"
-                    value={editedData.class_performance || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Class Performance</FormLabel>
+          <Input name="class_performance" value={editedData.class_performance || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="subjects"
-                    placeholder="Subjects"
-                    value={editedData.subjects || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Subjects</FormLabel>
+          <Input name="subjects" value={editedData.subjects || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="student_interest"
-                    placeholder="Student Interest"
-                    value={editedData.student_interest || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Student Interest</FormLabel>
+          <Input name="student_interest" value={editedData.student_interest || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="scholarship_need"
-                    placeholder="Scholarship Need"
-                    value={editedData.scholarship_need || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Scholarship Need</FormLabel>
+          <Input name="scholarship_need" value={editedData.scholarship_need || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="higher_education_goals"
-                    placeholder="Higher Education Goals"
-                    value={editedData.higher_education_goals || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Higher Education Goals</FormLabel>
+          <Input name="higher_education_goals" value={editedData.higher_education_goals || ""} onChange={handleChange} />
+        </FormControl>
 
-                  <Input
-                    name="career_goals"
-                    placeholder="Career Goals"
-                    value={editedData.career_goals || ""}
-                    onChange={handleChange}
-                  />
+        <FormControl>
+          <FormLabel>Career Goals</FormLabel>
+          <Input name="career_goals" value={editedData.career_goals || ""} onChange={handleChange} />
+        </FormControl>
+      </SimpleGrid>
+    </ModalBody>
 
-                </Stack>
-              </ModalBody>
-              <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={handleSave}>
-                  Save
-                </Button>
-                <Button onClick={onCloseEdit}>Cancel</Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
+    <ModalFooter>
+      <Flex
+        direction={{ base: "column", md: "row" }}
+        w="100%"
+        gap={4}
+        justify="flex-end"
+        align="center"
+      >
+        <Button
+        variant="outline"
+        _focus={{ boxShadow: 'none' }}
+  background="#39996B"
+  color="white"
+  border="1px solid #39996B"
+  onClick={handleSave}
+  _hover={{
+    background: "transparent",
+    color: "#39996B",
+    border: "1px solid #39996B",
+  }}
+>
+  Save
+</Button>
 
-          <Pagination
-            currentPage={CurrentPage}
-            totalPosts={TotalPage}
-            paginate={paginate}
-          />
+
+        <Button
+        variant="outline"
+        _focus={{ boxShadow: 'none' }}
+          color="#39996B"
+  background="transparent"
+  border="1px solid #39996B"
+          onClick={onCloseEdit}
+          _hover={{
+    background: "#39996B",
+    color: "white",
+    border: "1px solid #39996B",
+  }}          
+        >
+          Cancel
+        </Button>
+      </Flex>
+    </ModalFooter>
+  </ModalContent>
+</Modal>
+
+
+
+<Pagination
+  totalPosts={TotalPage}
+  postsPerPage={PostPerPage}
+  currentPage={CurrentPage}
+  paginate={paginate}
+/>
+
         </Box>
       </Box>
       <RemoveNotification isOpen={isOpenModal} onClose={() => closeRemoveModal()} onClick={() => {

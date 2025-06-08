@@ -89,24 +89,31 @@ export default function Students() {
   const [essayPercentage, setEssayPercentage] = useState(0);
 
 
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+   // Pagination settings to follow
+   console.log("currentpage", CurrentPage);
+ 
+   //get current post
+   //change page
+   const paginate = (pageNumber) => {
+     setCurrentPage(pageNumber);
+   };
+ 
+   // Pagination settings to follow end here
 
 
 
-  const GetAllScholarshipStudent = async (status) => {
-    console.log(" status:", status);
-
-
+   const GetAllScholarshipStudent = async (status) => {
+    console.log("Fetching students, status:", status);
+  
     try {
-      const result = await GetAllScholarshipStudentsApi(CurrentPage, PostPerPage, status, search)
-      console.log("getallscholarshipStudents", result)
-
-
-      if (result.status === 200 && result.data.data?.students?.length > 0) {
-        const Students = result.data.data.students;
-        setTotalPage(result.data.data.totalPages);
+      const result = await GetAllScholarshipStudentsApi(CurrentPage, PostPerPage, status, search);
+      console.log("API Result:", result);
+  
+      if (result.status === 200) {
+        const Students = result.data.data?.students || [];
+        const totalPages = result.data.data?.totalPages || 0;
+        setTotalPage(totalPages);
+  
         if (status === "PENDING") {
           setPendingStudents(Students);
         } else if (status === "APPROVED") {
@@ -115,22 +122,19 @@ export default function Students() {
           setRejectedStudents(Students);
         }
       } else {
-        if (status === "PENDING") {
-          setPendingStudents([]);
-        } else if (status === "APPROVED") {
-          setApprovedStudents([]);
-        } else if (status === "REJECTED") {
-          setRejectedStudents([]);
-        }
+        console.warn("No data for status:", status);
+        if (status === "PENDING") setPendingStudents([]);
+        if (status === "APPROVED") setApprovedStudents([]);
+        if (status === "REJECTED") setRejectedStudents([]);
       }
+  
     } catch (e) {
-
-      console.log("error", e.message)
+      console.error("GetAllScholarshipStudent error:", e.message);
     } finally {
       setIsLoading(false);
     }
-
-  }
+  };
+  
 
 
 
@@ -169,6 +173,7 @@ export default function Students() {
 
 
   const ApproveStudent = async (student_id) => {
+    
     try {
       const result = await ApproveStudentApi(student_id, status, essayPercentage);
       
@@ -327,6 +332,7 @@ export default function Students() {
                               email={item.email}
                               fieldOfStudy={item.intended_field_of_study}
                               status={item.verification_status}
+                              isLoading={loading}
                               buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
                               onButtonClick={() => ApproveStudent(item.id)}
                             />
@@ -446,10 +452,11 @@ export default function Students() {
                   </Table>
 
                   <Pagination
-                    currentPage={CurrentPage}
-                    totalPosts={TotalPage}
-                    paginate={paginate}
-                  />
+  totalPosts={TotalPage}
+  postsPerPage={PostPerPage}
+  currentPage={CurrentPage}
+  paginate={paginate}
+/>
                 </TableContainer>
               </Box>
             </TabPanel>

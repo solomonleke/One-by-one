@@ -63,7 +63,7 @@ export default function NavBar({ showSearch = true }) {
 
     const nav = useNavigate()
     return (
-        <Flex borderLeft="1px solid #EDEFF2" pos="sticky" top="0" bgColor={"white"} alignItems={"center"} justifyContent={"space-between"} zIndex={"10"} px="24px" py="15.6px" borderBottom={"1px solid #EDEFF2"}>
+        <Flex borderLeft="1px solid #EDEFF2"  pos="sticky" top="0" bgColor={"white"} alignItems={"center"} justifyContent={"space-between"} zIndex={"100"} px="24px" py="15.6px" borderBottom={"1px solid #EDEFF2"}>
 
             {
                 showSearch === false && (
