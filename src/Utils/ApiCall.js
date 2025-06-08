@@ -923,30 +923,48 @@ export const getScholarshipsBySponsor = async () => {
   }
 };
 
+// apiCall.js
 export const fundScholarshipApi = async (Id) => {
-  console.log("Funding Scholarship with ID:", Id);
-  
-try{
-  let config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: `${baseUrl}/sponsor-admin/fund-scholarship/${Id}`,
-    headers: {
-      'Authorization': `Bearer ${token}`
+  console.log("🚀 Funding Scholarship with ID:", Id);
+
+  try {
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${baseUrl}/sponsor-admin/fund-scholarship/${Id}`,
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    };
+
+    const response = await axios.request(config);
+    console.log("✅ Funding response data:", response.data);
+
+    if (response.data.status === true) {
+      return response.data;
+    } else {
+      console.error(" Backend returned failure status:", response.data);
+      throw new Error(response.data.message || "Could not generate payment link.");
     }
-  };
 
-  const response = await axios.request(config)
-  console.log("Funding response:", response.data);
-  if(response.data.status === true){
-    return response.data
-  };
-} catch {
-
-}
-  
-  
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code outside of 2xx
+      console.error(" API call failed - response error:");
+      console.error("Status:", error.response.status);
+      console.error("Data:", error.response.data);
+      console.error("Headers:", error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response received
+      console.error(" API call failed - no response received:", error.request);
+    } else {
+      // Something happened in setting up the request
+      console.error(" API call setup error:", error.message);
+    }
+    throw error;
+  }
 };
+
 
 
 
