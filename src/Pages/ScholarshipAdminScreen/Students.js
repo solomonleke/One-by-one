@@ -87,6 +87,7 @@ export default function Students() {
   const [rejectedStudents, setRejectedStudents] = useState([]);
   const { student_id } = useParams()
   const [essayPercentage, setEssayPercentage] = useState(0);
+  const [loadingStudentId, setLoadingStudentId] = useState(null);
 
 
    // Pagination settings to follow
@@ -172,7 +173,11 @@ export default function Students() {
 
 
 
-  const ApproveStudent = async (student_id) => {
+  const ApproveStudent = async (item, student_id) => {
+    // setLoading(true);
+
+    const studentId = item.id;
+        setLoadingStudentId(studentId);
     
     try {
       const result = await ApproveStudentApi(student_id, status, essayPercentage);
@@ -204,6 +209,8 @@ export default function Students() {
       console.log("error", e.message);
     } finally {
       setIsLoading(false);
+      setLoadingStudentId(null); // Reset loading
+
     }
   } 
 
@@ -332,7 +339,7 @@ export default function Students() {
                               email={item.email}
                               fieldOfStudy={item.intended_field_of_study}
                               status={item.verification_status}
-                              isLoading={loading}
+                              loading={loadingStudentId === item.id}
                               buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
                               onButtonClick={() => ApproveStudent(item.id)}
                             />
@@ -385,6 +392,8 @@ export default function Students() {
                               email={item.email}
                               fieldOfStudy={item.intended_field_of_study}
                               status={item.verification_status}
+                              loading={loadingStudentId === item.id}
+
                               buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
                               onButtonClick={() => ApproveStudent(item.id)}
                             />
@@ -436,6 +445,8 @@ export default function Students() {
                               email={item.email}
                               fieldOfStudy={item.intended_field_of_study}
                               status={item.verification_status}
+                              loading={loadingStudentId === item.id}
+
                               buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
                               onButtonClick={() => ApproveStudent(item.id)}
                             />

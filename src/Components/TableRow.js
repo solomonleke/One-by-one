@@ -13,7 +13,7 @@ import { IoMdOpen } from "react-icons/io";
 import { GoDotFill } from "react-icons/go";
 import eventBus from './eventBus';
 
-export default function TableRow({ type, name, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools }) {
+export default function TableRow({ type, name, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools, isLoading, loading }) {
     const router = useNavigate()
 
 
@@ -195,7 +195,7 @@ export default function TableRow({ type, name, email, studentIds, department, cl
                             </HStack>
                         </Td>
                         <Td>
-                            <Button onClick={onButtonClick} background={buttonText === "Revoke Approval" ? "white" : buttonText === "Unreject" ? "white" : "greenn.greenn400"} color={buttonText === "Revoke Approval" ? "greenn.greenn400" : buttonText === "Unreject" ? "greenn.greenn400" : "#fff"}>{buttonText}</Button>
+                            <Button onClick={onButtonClick}  isLoading={loading} background={buttonText === "Revoke Approval" ? "white" : buttonText === "Unreject" ? "white" : "greenn.greenn400"} color={buttonText === "Revoke Approval" ? "greenn.greenn400" : buttonText === "Unreject" ? "greenn.greenn400" : "#fff"}>{buttonText}</Button>
                         </Td>
                     </>
 
@@ -224,7 +224,7 @@ export default function TableRow({ type, name, email, studentIds, department, cl
                             </HStack>
                         </Td>
                         <Td>
-                            <Button onClick={onButtonClick} background={buttonText === "Reject" ? "white" : buttonText === "Unreject" ? "white" : "greenn.greenn400"} color={buttonText === "Reject" ? "greenn.greenn400" : buttonText === "Unreject" ? "greenn.greenn400" : "#fff"}>{buttonText}</Button>
+                            <Button onClick={onButtonClick} isLoading={loading} background={buttonText === "Reject" ? "white" : buttonText === "Unreject" ? "white" : "greenn.greenn400"} color={buttonText === "Reject" ? "greenn.greenn400" : buttonText === "Unreject" ? "greenn.greenn400" : "#fff"}>{buttonText}</Button>
                         </Td>
                     </>
 
