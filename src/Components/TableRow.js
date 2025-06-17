@@ -14,7 +14,8 @@ import { GoDotFill } from "react-icons/go";
 import eventBus from './eventBus';
 
 
-export default function TableRow({ type, name, email, studentIds, isLoading, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools, isLoading, loading }) {
+
+export default function TableRow({ type, name, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools, isLoading, loading }) {
 
     const router = useNavigate()
 
