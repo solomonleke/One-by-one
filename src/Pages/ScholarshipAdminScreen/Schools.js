@@ -140,6 +140,7 @@ export default function Schools() {
 
 
     useEffect(() => {
+        
     }, []);
 
     const filterBy = (type) => {

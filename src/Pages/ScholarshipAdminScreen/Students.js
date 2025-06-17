@@ -76,12 +76,9 @@ export default function Students() {
   const [StartDate, setStartDate] = useState("");
   const [EndDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
-  const [CurrentPage, setCurrentPage] = useState(1);
-  const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
-  const [TotalPage, setTotalPage] = useState("");
   const [status, setStatus] = useState("PENDING");
   const [search, setSearch] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [pendingStudents, setPendingStudents] = useState([]);
   const [approvedStudents, setApprovedStudents] = useState([]);
   const [rejectedStudents, setRejectedStudents] = useState([]);
@@ -89,9 +86,19 @@ export default function Students() {
   const [essayPercentage, setEssayPercentage] = useState(0);
 
 
+  // Pagination settings to follow
+  const [CurrentPage, setCurrentPage] = useState(1);
+  const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
+  const [TotalPage, setTotalPage] = useState("");
+ 
+
+  //get current post
+  //change page
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  // Pagination settings to follow end here
 
 
 
@@ -104,7 +111,7 @@ export default function Students() {
       console.log("getallscholarshipStudents", result)
 
 
-      if (result.status === 200 && result.data.data?.students?.length > 0) {
+      if (result.status === 200) {
         const Students = result.data.data.students;
         setTotalPage(result.data.data.totalPages);
         if (status === "PENDING") {
@@ -127,7 +134,7 @@ export default function Students() {
 
       console.log("error", e.message)
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
 
   }
@@ -135,15 +142,17 @@ export default function Students() {
 
 
   const FetchPending = () => {
-    if (pendingStudents.length === 0) GetAllScholarshipStudent("PENDING")
+   
+      GetAllScholarshipStudent("PENDING")
   }
 
   const FetchApproved = () => {
-    if (pendingStudents.length === 0) GetAllScholarshipStudent("APPROVED")
+    
+      GetAllScholarshipStudent("APPROVED")
   }
 
   const FetchRejected = () => {
-    if (pendingStudents.length === 0) GetAllScholarshipStudent("REJECTED")
+       GetAllScholarshipStudent("REJECTED")
   }
 
   
@@ -168,9 +177,10 @@ export default function Students() {
 
 
 
-  const ApproveStudent = async (student_id) => {
+  const ApproveStudent = async (student_id, STATUS) => {
+      setIsLoading(true);
     try {
-      const result = await ApproveStudentApi(student_id, status, essayPercentage);
+      const result = await ApproveStudentApi(student_id, {status: STATUS, essayPercentage: essayPercentage});
       
       console.log("approved student", result);
       
@@ -181,6 +191,10 @@ export default function Students() {
       });
 
       if (result.status === 200) {
+          setIsLoading(false);
+        if(STATUS === "APPROVED"){
+          GetAllScholarshipStudent("PENDING")
+        }
         setIsLoading(true);
         setShowToast({
           show: true,
@@ -190,6 +204,7 @@ export default function Students() {
         setTimeout(() => setShowToast({ show: false }), 3000);
       }
     } catch (e) {
+        setIsLoading(false);
       setShowToast({
         show: true,
         message: "Error Approving Student!!! ",
@@ -204,11 +219,10 @@ export default function Students() {
 
 
   useEffect(() => {
+
     GetAllScholarshipStudent("PENDING");
   
-    GetAllScholarshipStudent("APPROVED");
   
-    GetAllScholarshipStudent("REJECTED");
   }, [CurrentPage, PostPerPage, search]);
 
 
@@ -316,7 +330,7 @@ export default function Students() {
                       </Tr>
                     </Thead>
                     <Tbody>
-
+                      {/* pending student table */}
                       {
                         pendingStudents.length > 0 ? (
                           pendingStudents.map((item, i) => (
@@ -325,10 +339,11 @@ export default function Students() {
                               type={"scholarship-admin-students"}
                               name={item.full_name}
                               email={item.email}
+                              isLoading={isLoading}
                               fieldOfStudy={item.intended_field_of_study}
                               status={item.verification_status}
                               buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
-                              onButtonClick={() => ApproveStudent(item.id)}
+                              onButtonClick={() => ApproveStudent(item.id,"APPROVED")}
                             />
                           ))
                         ) : (
@@ -342,12 +357,13 @@ export default function Students() {
 
                   </Table>
 
+                </TableContainer>
+
                   <Pagination
                     currentPage={CurrentPage}
                     totalPosts={TotalPage}
                     paginate={paginate}
                   />
-                </TableContainer>
               </Box>
             </TabPanel>
 
@@ -360,7 +376,6 @@ export default function Students() {
                     <Thead bg="#F9FAFB">
                       <Tr >
                         <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
-                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">school name</Th>
                         <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">field of study</Th>
                         <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">status</Th>
                         <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
@@ -368,10 +383,10 @@ export default function Students() {
                       </Tr>
                     </Thead>
                     <Tbody>
-
+                      {/* approved student table */}
                       {
                         approvedStudents.length > 0 ? (
-                          pendingStudents.map((item, i) => (
+                          approvedStudents.map((item, i) => (
                             <TableRow
                               key={i}
                               type={"scholarship-admin-students"}

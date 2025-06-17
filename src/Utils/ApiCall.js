@@ -398,17 +398,17 @@ export const ApproveSchoolApi = async (schoolId, status, note) => {
 };
 
 
-export const ApproveStudentApi = (status, essayPercentage) => {
-  const { student_id } = useParams();
+export const ApproveStudentApi = (id,payload) => {
  
   let config = {
     method: "PATCH",
     maxBodyLength: Infinity,
-    url: `${baseUrl}/scholarship-admin/approve-student/${student_id}`,
+    url: `${baseUrl}/scholarship-admin/approve-student/${id}`,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
     },
+    data: JSON.stringify(payload)
     
   };
 
