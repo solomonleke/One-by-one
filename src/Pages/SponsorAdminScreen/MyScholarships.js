@@ -148,22 +148,28 @@ export default function MyScholarships() {
     }
   };
 
-  const fundScholarship = async(Id) => {
-    try {
-      const data = await fundScholarshipApi(Id);
-      console.log("fundScholarship", data)
-      if(data.status === true){
+  // Component
+// Component
+const [loadingId, setLoadingId] = React.useState(null);
 
-      }
-      window.location.assign("https://checkout.paystack.com/2ij8ulu20y5057y");
-
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-      setIsLoading(false);
+const fundScholarship = async (Id) => {
+  try {
+    setLoadingId(Id);  // mark this scholarship as loading
+    const data = await fundScholarshipApi(Id);
+    if (data.status === true && data.paymentLink) {
+      window.location.assign(data.paymentLink);
+    } else {
+      throw new Error("Payment link not received.");
     }
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoadingId(null);  // reset loading state for this scholarship
   }
+};
+
+
+  
 
   const fetchScholarshipsBySponsor = async () => {
     try {
@@ -231,7 +237,7 @@ export default function MyScholarships() {
         <Spacer />
 
         <Box w="20%">
-          <Button onClick={openModal}><Box as="span" display="inline-flex" pr="6px"><FaPlus /></Box>Create Scholarship</Button>
+          <Button onClick={openModal}><Box as="span" display="inline-flex" pr="6px" isLoading={loading} ><FaPlus /></Box>Create Scholarship</Button>
         </Box>
       </HStack>
 
@@ -410,9 +416,17 @@ export default function MyScholarships() {
 
                         {/* Action Buttons */}
                         <HStack>
-                          <Button px="50px" color="#39996B" background="white" onClick={() => fundScholarship(scholarship.id)} >
-                            Fund Scholarship
-                          </Button>
+                        <Button
+  px="50px"
+  color="#39996B"
+  background="white"
+  onClick={() => fundScholarship(scholarship.id)}
+  isLoading={loadingId === scholarship.id}  // only loading for clicked button
+  loadingText="Funding"
+>
+  Fund Scholarship
+</Button>
+
                           <Button px="30px" onClick={() => router("/sponsor-admin/discoverstudents")}>
                             Add Student
                           </Button>

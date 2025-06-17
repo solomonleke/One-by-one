@@ -84,6 +84,8 @@ export default function Students() {
   const [rejectedStudents, setRejectedStudents] = useState([]);
   const { student_id } = useParams()
   const [essayPercentage, setEssayPercentage] = useState(0);
+  const [loadingStudentId, setLoadingStudentId] = useState(null);
+
 
 
   // Pagination settings to follow
@@ -102,11 +104,13 @@ export default function Students() {
 
 
 
-  const GetAllScholarshipStudent = async (status) => {
-    console.log(" status:", status);
 
 
+   const GetAllScholarshipStudent = async (status) => {
+    console.log("Fetching students, status:", status);
+  
     try {
+
       const result = await GetAllScholarshipStudentsApi(CurrentPage, PostPerPage, status, search)
       console.log("getallscholarshipStudents", result)
 
@@ -114,6 +118,7 @@ export default function Students() {
       if (result.status === 200) {
         const Students = result.data.data.students;
         setTotalPage(result.data.data.totalPages);
+
         if (status === "PENDING") {
           setPendingStudents(Students);
         } else if (status === "APPROVED") {
@@ -122,22 +127,19 @@ export default function Students() {
           setRejectedStudents(Students);
         }
       } else {
-        if (status === "PENDING") {
-          setPendingStudents([]);
-        } else if (status === "APPROVED") {
-          setApprovedStudents([]);
-        } else if (status === "REJECTED") {
-          setRejectedStudents([]);
-        }
+        console.warn("No data for status:", status);
+        if (status === "PENDING") setPendingStudents([]);
+        if (status === "APPROVED") setApprovedStudents([]);
+        if (status === "REJECTED") setRejectedStudents([]);
       }
+  
     } catch (e) {
-
-      console.log("error", e.message)
+      console.error("GetAllScholarshipStudent error:", e.message);
     } finally {
       // setIsLoading(false);
     }
-
-  }
+  };
+  
 
 
 
@@ -177,8 +179,10 @@ export default function Students() {
 
 
 
+
   const ApproveStudent = async (student_id, STATUS) => {
       setIsLoading(true);
+
     try {
       const result = await ApproveStudentApi(student_id, {status: STATUS, essayPercentage: essayPercentage});
       
@@ -214,6 +218,8 @@ export default function Students() {
       console.log("error", e.message);
     } finally {
       setIsLoading(false);
+      setLoadingStudentId(null); // Reset loading
+
     }
   } 
 
@@ -342,6 +348,7 @@ export default function Students() {
                               isLoading={isLoading}
                               fieldOfStudy={item.intended_field_of_study}
                               status={item.verification_status}
+                              loading={loadingStudentId === item.id}
                               buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
                               onButtonClick={() => ApproveStudent(item.id,"APPROVED")}
                             />
@@ -394,6 +401,8 @@ export default function Students() {
                               email={item.email}
                               fieldOfStudy={item.intended_field_of_study}
                               status={item.verification_status}
+                              loading={loadingStudentId === item.id}
+
                               buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
                               onButtonClick={() => ApproveStudent(item.id)}
                             />
@@ -445,6 +454,8 @@ export default function Students() {
                               email={item.email}
                               fieldOfStudy={item.intended_field_of_study}
                               status={item.verification_status}
+                              loading={loadingStudentId === item.id}
+
                               buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
                               onButtonClick={() => ApproveStudent(item.id)}
                             />
@@ -461,10 +472,11 @@ export default function Students() {
                   </Table>
 
                   <Pagination
-                    currentPage={CurrentPage}
-                    totalPosts={TotalPage}
-                    paginate={paginate}
-                  />
+  totalPosts={TotalPage}
+  postsPerPage={PostPerPage}
+  currentPage={CurrentPage}
+  paginate={paginate}
+/>
                 </TableContainer>
               </Box>
             </TabPanel>

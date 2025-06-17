@@ -89,10 +89,7 @@ export default function DiscoverStudents() {
   console.log("currentpage", CurrentPage);
   const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
 
-
   //get current post
-  
-
   //change page
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -154,6 +151,8 @@ export default function DiscoverStudents() {
         setFilteredData(result.data.data.students)
         setTotalPage(result.data.data.totalPages)
         setTotalStudentsCount(result.data.data.totalCount);
+        const totalPosts = result.data.data.totalPages * PostPerPage;
+        setTotalPage(totalPosts);
       }
     } catch (e) {
 
@@ -619,11 +618,12 @@ export default function DiscoverStudents() {
         </Box>
 
         <Pagination
-          totalPosts={TotalPage}
-          currentPage={CurrentPage}
-          // postsPerPage={PostPerPage}
-          paginate={paginate}
-        />
+  totalPosts={TotalPage}
+  postsPerPage={PostPerPage}
+  currentPage={CurrentPage}
+  paginate={paginate}
+/>
+        
       </Box>
       <ProfileUpdateNotification isOpen={OpenModal} onClose={() => setOpenModal(false)} />
     </MainLayout>

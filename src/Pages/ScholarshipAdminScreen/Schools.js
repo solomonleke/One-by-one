@@ -195,56 +195,62 @@ export default function Schools() {
     //         setLoading(false);
     //     }
     // }
+    const [loadingSchoolId, setLoadingSchoolId] = useState(null);
+
 
     const ApproveSchool = async (item, status) => {
+        setLoading(true);
         const schoolId = item.id;
+        setLoadingSchoolId(schoolId);
 
         let newStatus = "APPROVED";
-      
+
         if (item.account_verified === "APPROVED") {
-          newStatus = "REJECTED";
+            newStatus = "REJECTED";
         } else if (item.account_verified === "REJECTED") {
-          newStatus = "APPROVED";
+            newStatus = "APPROVED";
         }
         console.log("")
-      
+
         try {
             const result = await ApproveSchoolApi(schoolId, newStatus, note, status)
-      
-          console.log("approved school", result);
-      
-          if (result.status === 200 || result.data?.status === 200 || result.data?.status === true) {
+
+            console.log("approved school", result);
+
+            if (result.status === 200 || result.data?.status === 200 || result.data?.status === true) {
+                setShowToast({
+                    show: true,
+                    message: `School ${newStatus}`,
+                    status: "success",
+                });
+                setTimeout(() => setShowToast({ show: false }), 3000);
+
+                // 🔁 Force refresh all lists regardless of current tab
+                GetAllScholarshipSchool("PENDING");
+                GetAllScholarshipSchool("APPROVED");
+                GetAllScholarshipSchool("REJECTED");
+            }
+        } catch (e) {
             setShowToast({
-              show: true,
-              message: `School ${newStatus}`,
-              status: "success",
+                show: true,
+                message: e.message || "Error changing status!",
+                status: "error",
             });
             setTimeout(() => setShowToast({ show: false }), 3000);
-      
-             // 🔁 Force refresh all lists regardless of current tab
-            GetAllScholarshipSchool("PENDING");
-            GetAllScholarshipSchool("APPROVED");
-            GetAllScholarshipSchool("REJECTED");
-          }
-        } catch (e) {
-          setShowToast({
-            show: true,
-            message: e.message || "Error changing status!",
-            status: "error",
-          });
-          setTimeout(() => setShowToast({ show: false }), 3000);
-          console.log("error", e.message);
+            console.log("error", e.message);
         } finally {
-          setLoading(false);
+            setLoading(false);
+            setLoadingSchoolId(null); // Reset loading
+
         }
-      };
-      
+    };
+
 
     return (
         <MainLayout>
-        {showToast.show && (
-        <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
-      )}
+            {showToast.show && (
+                <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
+            )}
             <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Schools <Box as='span' color="#667085" fontWeight="600" fontSize="19px">({pendingSchools.length + approvedSchools.length + rejectedSchools.length})</Box></Text>
             <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>View and manage school approval requests. Quickly review pending applications and take necessary actions like approving or rejecting.</Text>
 
@@ -346,14 +352,25 @@ export default function Schools() {
                                                     pendingSchools.map((item, i) => (
 
                                                         <TableRow
+                                                            key={item.id}
                                                             type={"scholarship-admin-schools"}
                                                             schoolName={item.school_name}
                                                             email={item.principal_email}
                                                             submissionDate={item.created_at}
                                                             status={item.account_verified}
-                                                            buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Reject"}
+                                                            buttonText={
+                                                                item.account_verified === "PENDING"
+                                                                    ? "Approve"
+                                                                    : item.account_verified === "APPROVED"
+                                                                        ? "Reject"
+                                                                        : item.account_verified === "REJECTED"
+                                                                            ? "Unreject"
+                                                                            : "Reject"
+                                                            }
+                                                            loading={loadingSchoolId === item.id} // ✅ Per-row loading
                                                             onButtonClick={() => ApproveSchool(item)}
                                                         />
+
                                                     ))
                                                 ) : (
                                                     <Text textAlign="center" py={5} ml="20px">
@@ -402,6 +419,8 @@ export default function Schools() {
                                                             email={item.principal_email}
                                                             submissionDate={item.created_at}
                                                             status={item.account_verified}
+                                                            loading={loadingSchoolId === item.id} // ✅ Per-row loading
+
                                                             buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Reject"}
                                                             onButtonClick={() => ApproveSchool(item)}
                                                         />
@@ -452,6 +471,8 @@ export default function Schools() {
                                                             email={item.principal_email}
                                                             submissionDate={item.created_at}
                                                             status={item.account_verified}
+                                                            loading={loadingSchoolId === item.id} // ✅ Per-row loading
+
                                                             buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Reject"}
                                                             onButtonClick={() => ApproveSchool(item)}
                                                         />
