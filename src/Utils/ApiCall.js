@@ -182,6 +182,42 @@ export const ResetPasswordApi = (Payload, Token) => {
     });
 };
 
+
+export const GoogleSignInApi = (Payload) => {
+  let data = JSON.stringify(Payload);
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/auth/google-login`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: data,
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+      console.log("Response data:", response.data);
+      if (response.data.token) {
+        localStorage.setItem('authToken', response.data.token);
+      }
+      return response.data; // Return only response data
+    })
+    .catch((error) => {
+      console.log("Error response:", error.response?.data);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response?.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
 export const SignInApi = (Payload) => {
   let data = JSON.stringify(Payload);
   let config = {
