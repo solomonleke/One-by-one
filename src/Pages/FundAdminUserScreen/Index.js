@@ -12,32 +12,16 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import TableRow from "../../Components/TableRow"
+import { GetFundAdminMetricsApi } from "../../Utils/ApiCall";
 
 export default function Dashboard() {
   const navigate = useNavigate();
 
   const [userName, setUserName] = useState('');
 
-  useEffect(() => {
-    var reloadCount = localStorage.getItem("reloadCount");
-    if (!reloadCount) {
-      localStorage.setItem('reloadCount', + parseInt(1))
 
-    }
-    if (reloadCount < 2) {
-      localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
-      setTimeout(() =>
-        window.location.reload(1), 2000)
-    } else {
-      localStorage.removeItem('reloadCount');
-    }
 
-    const storedName = JSON.parse(localStorage.getItem('onlineUser'));
-    if (storedName) {
-      setUserName(`${storedName.firstName}`);
-    }
-  }, []);
-
+  
   const dashboardData = {
     availableBalance: "₦200,158.32",
     totalStudentsFunded: 16,
@@ -56,6 +40,9 @@ export default function Dashboard() {
   const [Approved, setApproved] = useState(true)
   const [Pending, setPending] = useState(false)
   const [Rejected, setRejected] = useState(false)
+  const [metrics, setMetrics] = useState(0);
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState("");
 
   const Data = [
     { name: "JAN", students: 140 },
@@ -103,6 +90,26 @@ export default function Dashboard() {
 
   ]
 
+  const fetchMetrics = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await GetFundAdminMetricsApi();
+      console.log("Metrics response:", response.data);
+      setMetrics(response.data?.data || {});
+    } catch (err) {
+      setError(err.message || "Error fetching metrics");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMetrics();
+  }, [metrics]);
+  
+
   const fontSize = useBreakpointValue({ base: "12px", md: "14px", lg: "16px" });
   const iconSize = useBreakpointValue({ base: "16px", md: "18px", lg: "22px" });
 
@@ -118,7 +125,7 @@ export default function Dashboard() {
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
           <Stat pt="15px" paddingBottom="15px" pl="23px" pr="23px" bgGradient="linear(to-r, #20553C, #C4EF4B)" borderRadius="md" gap={18}>
             <StatLabel color="white">Available Balance</StatLabel>
-            <StatNumber fontSize="40px" color="white">{dashboardData.availableBalance}</StatNumber>
+            <StatNumber fontSize="40px" color="white"> ₦{Number(metrics?.totalDisbursed || 0).toLocaleString()}</StatNumber>
             <Button size="sm" mt={2} w="170px" p="10px 24px" h="40px" fontSize="14px" textColor="#39996B" onClick={() => navigate("/fund-admin/funding-records")} >Funding Records <Icon as={IoIosArrowForward} boxSize={5} ml={2} /></Button>
           </Stat>
 

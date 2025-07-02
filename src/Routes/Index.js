@@ -10,6 +10,7 @@ import RoleSelection from '../Pages/AuthenticatedScreens/RoleSelection'
 import Index from '../Pages/SchoolAdminScreen/Index'
 import SchoolProfile from '../Pages/SchoolAdminScreen/SchoolProfile'
 import StudentManagement from '../Pages/SchoolAdminScreen/StudentManagement'
+import RequestFunds from '../Pages/SchoolAdminScreen/RequestFunds'
 import Settings from '../Pages/SchoolAdminScreen/Settings'
 import AddNewStudents from '../Pages/SchoolAdminScreen/AddNewStudents'
 import StudentProfile from '../Pages/SchoolAdminScreen/StudentProfile'
@@ -72,6 +73,7 @@ export default function IndexRoutes() {
           {/* school admin routes */}
           <Route path='/school-admin' element={<Index />} />
           <Route path='/school-admin/student-management' element={<StudentManagement />} />
+          <Route path='/school-admin/request-funds' element={<RequestFunds />} />
           <Route path='/school-admin/school-profile' element={<SchoolProfile />} />
           <Route path='/school-admin/settings' element={<Settings />} />
           <Route path='/AddStudents' element={<AddNewStudents />} />

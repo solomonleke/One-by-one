@@ -183,16 +183,16 @@ export default function FundedStudents(){
         {/* Pagination Controls */}
         <Flex mt="15px" justify="space-between" align="center" border="1px solid #EDEFF2" borderRadius="7px" padding="12px 24px">
     {/* Previous Button */}
-    <Button 
+    {/* <Button 
       leftIcon={<GoArrowLeft />} 
       variant="outline" 
       borderRadius="8px"
     >
       {useBreakpointValue({ base: "", md: "Previous" })}
-    </Button>
+    </Button> */}
   
     {/* Pagination Numbers */}
-    <Flex gap={2}>
+    {/* <Flex gap={2}>
       {useBreakpointValue({
         base: [1, 2, 3, "...", 10],  // Fewer numbers on small screens
         md: [1, 2, 3, "...", 8, 9, 10] // More numbers on larger screens
@@ -201,16 +201,16 @@ export default function FundedStudents(){
           {num}
         </Button>
       ))}
-    </Flex>
+    </Flex> */}
   
     {/* Next Button */}
-    <Button 
+    {/* <Button 
       rightIcon={<GoArrowRight />} 
       variant="outline" 
       borderRadius="8px"
     >
       {useBreakpointValue({ base: "", md: "Next" })}
-    </Button>
+    </Button> */}
   </Flex>
       </Box>
       </MainLayout>

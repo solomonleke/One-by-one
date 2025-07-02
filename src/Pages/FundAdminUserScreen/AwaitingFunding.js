@@ -26,7 +26,7 @@ import InputX from "../../Components/InputX"
 import { BiSearch } from "react-icons/bi"; 
 import Pagination from "../../Components/Pagination";
 import { configuration } from "../../Utils/Helpers";
-import { GetAllStudentApi } from "../../Utils/ApiCall";
+import { GetAllRequestFundsApi  } from "../../Utils/ApiCall";
 
 
 const students = [
@@ -46,10 +46,14 @@ const students = [
 export default function FundingTable() {
  
   // Pagination settings to follow
-const [CurrentPage, setCurrentPage] = useState(1);
-console.log("currentpage", CurrentPage);
-const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
+const [currentPage, setCurrentPage] = useState(1);
+console.log("currentpage", currentPage);
+const [postPerPage, setPostPerPage] = useState(configuration.sizePerPage);
 const [TotalPage, setTotalPage] = useState("");
+const [FundRequests, setFundRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [pageNo, setPageNo] = useState(1);
 
 //get current post
 //change page
@@ -59,36 +63,35 @@ const paginate = (pageNumber) => {
 
 // Pagination settings to follow end here
 
-const getallStudent = async () => {
-
+const fetchFundRequests = async () => {
+  setLoading(true);
+  setError('');
   try {
-      const result = await GetAllStudentApi(CurrentPage, PostPerPage)
-
-      console.log("getallStudent", result)
-
-      if (result.status === 200) {
-          students(result.data.data.students)
-          setTotalPage(result.data.data.totalPages)
-      }
-  } catch (e) {
-
-      console.log("error", e.message)
+    const response = await GetAllRequestFundsApi(pageNo, currentPage, postPerPage, false); // false = unfunded only
+    console.log("response", response);
+    setFundRequests(response.data?.data.requests || []); // adjust depending on API response structure
+    setTotalPage(response.data.data.totalPages || []); // adjust depending on API response structure
+    const totalPosts = response.data.totalPages * postPerPage;
+      setTotalPage(totalPosts);
+  } catch (err) {
+    setError(err.message || 'Something went wrong');
+  } finally {
+    setLoading(false);
   }
-
-}
+};
 
 
 useEffect(() => {
 
-  getallStudent()
+  fetchFundRequests()
 
-}, [CurrentPage]);
+}, [pageNo]);
 
   return (
     <MainLayout>
       <Box p={6}>
       <Text fontSize="21px" fontWeight="bold" color="#101828">
-  Awaiting Funding <span style={{ color: "#667085", fontWeight:"400" }}>(32)</span>
+  Awaiting Funding <span style={{ color: "#667085", fontWeight:"400" }}>({FundRequests.length})</span>
 </Text>
         <Text mb={4}>Explore a diverse pool of students and their academic aspirations.</Text>
 
@@ -129,53 +132,64 @@ useEffect(() => {
               </Tr>
             </Thead>
             <Tbody>
-              { students.map((student, index) => (
-                <TableRow
-                 key={index}
-                 type="awaiting-funding"
-                 student={student}
-                 name={student.name}
-                 school={student.school}
-                 guardian={student.guardian}
-                 schoolBank={student.schoolBank}
-                 BankAcc={student.BankAcc}
-                 guardianBank={student.guardianBank}
-                 GuardianBankAcc={student.schoolBank}
-                 tuition={student.tuition}
-                  />
-                  
-                
-              ))}
-            </Tbody>
+  {FundRequests.map((student, index) => {
+    const parsedSchoolAccount =
+      student.school_account_number &&
+      typeof student.school_account_number === "string"
+        ? JSON.parse(student.school_account_number)
+        : null;
+
+    const parsedGuardianAccount =
+      student.guardian_account_number &&
+      typeof student.guardian_account_number === "string"
+        ? JSON.parse(student.guardian_account_number)
+        : null;
+
+    return (
+      <TableRow
+        key={index}
+        type="awaiting-funding"
+        name={student.student_name}
+        school={student.school_name}
+        guardian={student.guardian_name}
+        schoolBank={
+          parsedSchoolAccount
+            ? `${parsedSchoolAccount.bank} - ${parsedSchoolAccount.account_name} `
+            : "No details"
+        }
+        BankAcc={parsedSchoolAccount?.account_number || "N/A"}
+        guardianBank={
+          parsedGuardianAccount
+            ? `${parsedGuardianAccount.bank} - ${parsedGuardianAccount.account_name} `
+            : "No details"
+        }
+        GuardianBankAcc={parsedGuardianAccount?.account_number || "N/A"}
+        tuition={student.fees_amount}
+      />
+    );
+  })}
+</Tbody>
+
+
           </Table>
         </TableContainer>
 
         {/* Pagination Controls */}
         <Flex mt="15px" justify="space-between" align="center" border="1px solid #EDEFF2" borderRadius="7px" padding="12px 24px">
           {/* Previous Button */}
-          <Button
-            leftIcon={<GoArrowLeft />}
-            variant="outline"
-            borderRadius="8px"
-          >
-            {useBreakpointValue({ base: "", md: "Previous" })}
-          </Button>
+          
 
           {/* Pagination Numbers */}
-          <Pagination
-                        currentPage={CurrentPage}
-                        totalPosts={TotalPage}
-                        paginate={paginate}
-                    />
+          
+                    <Pagination
+          totalPosts={TotalPage}
+          postsPerPage={postPerPage}
+          currentPage={currentPage}
+          paginate={paginate}
+        />
 
           {/* Next Button */}
-          <Button
-            rightIcon={<GoArrowRight />}
-            variant="outline"
-            borderRadius="8px"
-          >
-            {useBreakpointValue({ base: "", md: "Next" })}
-          </Button>
+         
         </Flex>
       </Box>
     </MainLayout>
