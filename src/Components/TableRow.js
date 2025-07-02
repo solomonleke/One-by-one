@@ -15,7 +15,7 @@ import eventBus from './eventBus';
 
 
 
-export default function TableRow({ type, name, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools, isLoading, loading }) {
+export default function TableRow({ type, stationary, total, name, request, requestId, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools, isLoading, loading }) {
 
     const router = useNavigate()
 
@@ -147,6 +147,7 @@ export default function TableRow({ type, name, email, studentIds, department, cl
                         </Td>
                         <Td><Text fontWeight="400" fontSize={"13px"} >{classLevel}</Text></Td>
                         <Td><Text fontWeight="400" fontSize={"13px"} textTransform={"capitalize"}>{essayScore}</Text></Td>
+                        <Td><Text fontWeight="400" fontSize={"13px"} textTransform={"capitalize"}>{request}</Text></Td>
                         <Td><Text fontWeight="400" fontSize={"13px"}>{amount}</Text></Td>
                         <Td>
                             <Menu isLazy>
@@ -162,7 +163,7 @@ export default function TableRow({ type, name, email, studentIds, department, cl
                                             <Text>View Profile</Text>
                                         </HStack>
                                     </MenuItem>
-                                    <MenuItem onClick={() => handleOpenModal(studentIds)} textTransform="capitalize" fontWeight={"500"} _hover={{ color: "#2F2F2F", fontWeight: "400", bg: "#E8FFF4" }}>
+                                    <MenuItem onClick={() => onOpen(requestId)} textTransform="capitalize" fontWeight={"500"} _hover={{ color: "#2F2F2F", fontWeight: "400", bg: "#E8FFF4" }}>
                                         <HStack fontSize="14px">
 
                                             <Text >Add to Scholarship</Text>
@@ -345,6 +346,44 @@ export default function TableRow({ type, name, email, studentIds, department, cl
                             </HStack>
                         </Td>
                     </>
+                )
+            }
+            {
+                type === "fund-request" && (
+                    <>
+                        <Td><Text color={"#101828"} fontWeight={"500"} fontSize={"13px"} >{name}</Text></Td>
+                        <Td><Text color={"#101828"} textTransform={"capitalize"} fontWeight={"500"} fontSize={"13px"}>{amount}</Text></Td>
+
+
+                        <Td><Text fontWeight="400" fontSize={"13px"} >{stationary}</Text></Td>
+                        <Td><Text fontWeight="400" fontSize={"13px"}>{total}</Text></Td>
+                        <Td><Text fontWeight="400" fontSize={"13px"}>{date}</Text></Td>
+                        <Td>
+                            <Menu isLazy>
+                                <MenuButton as={Box}>
+
+                                    <Flex justifyContent="center" color="#000000" fontSize="16px"><BsThreeDots /></Flex>
+                                </MenuButton>
+                                <MenuList >
+
+                                    <MenuItem onClick={onEdit} textTransform="capitalize" fontWeight={"500"} color='#2F2F2F' _hover={{ color: "#2F2F2F", fontWeight: "400", bg: "#E8FFF4" }}>
+                                        <HStack fontSize="14px">
+
+                                            <Text>Edit</Text>
+                                        </HStack>
+                                    </MenuItem>
+                                    <MenuItem onClick={onRemove} textTransform="capitalize" fontWeight={"500"} color='#FF4040' _hover={{ color: "#FF4040", fontWeight: "400", bg: "#E8FFF4" }}>
+                                        <HStack fontSize="14px">
+
+                                            <Text >Remove Student</Text>
+                                        </HStack>
+                                    </MenuItem>
+
+                                </MenuList>
+                            </Menu>
+                        </Td>
+                    </>
+
                 )
             }
             {

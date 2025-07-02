@@ -43,6 +43,11 @@ export default function AddNewStudents() {
         studentPhone: "",
         email: "",
         guardianPhone: "",
+        guardianName: "",
+        guardianAccountName: "",
+        guardianAccountNumber: "",
+        guardianBankName: "",
+        guardianBankCode: "",
         state: "",
         city: "",
         zipCode: "",
@@ -53,7 +58,7 @@ export default function AddNewStudents() {
         subjects: "",
         essay: "",
         intendedFieldOfStudy: "",
-        studentInterests: "",
+        studentInterest: "",
         higherEducationGoals: "",
         careerGoals: "",
         scholarshipNeed: "",
@@ -80,14 +85,16 @@ export default function AddNewStudents() {
     const [Loading, setLoading] = useState(false);
 
     const handlePayload = (e) => {
-
-        setPayload({ ...payload, [e.target.id]: e.target.value })
-
-        if(e.target.id === "studentInterests"){
-            setStudentInterest([...StudentInterest, e.target.value])
+        const value = String(e.target.value); // 👈 force value to string
+        const id = e.target.id;
+      
+        setPayload({ ...payload, [id]: value });
+      
+        if (id === "studentInterest") {
+          setStudentInterest((prev) => [...prev, value]);
         }
-
-    }
+      };
+      
 
     const removeItem = (item)=>{
         const updatedProcedureArr = StudentInterest.filter(id => id !== item);
@@ -99,10 +106,13 @@ export default function AddNewStudents() {
     const Submit = async () => {
 
         setLoading(true)
-        try {
 
-            const result = await CreateStudentApi({...payload, studentInterests: StudentInterest})
-
+            try {
+                const result = await CreateStudentApi({
+                  ...payload,
+                  studentInterest: StudentInterest.join(', '), // ✅ convert array to string
+                });
+            
             if (result.status === 201) {
                 setLoading(false)
                 setShowToast({ show: true, message: "Student Created Successfully", status: "success" })
@@ -313,6 +323,11 @@ export default function AddNewStudents() {
                                 </Stack>
                                 <Input label='Phone Number' placeholder='+234' onChange={handlePayload} value={payload.studentPhone} id='studentPhone' />
                                 <Input label='Guardian’s Phone Number (Optional)' placeholder='+234' onChange={handlePayload} value={payload.guardianPhone} id='guardianPhone' />
+                                <Input label='Guardian’s Name (Optional)' placeholder='Enter Guardians Name' onChange={handlePayload} value={payload.guardianName} id='guardianName' />
+                                <Input label='Guardian’s Account Name (Optional)' placeholder='Enter Guardians Account Name' onChange={handlePayload} value={payload.guardianAccountName} id='guardianAccountName' />
+                                <Input label='Guardian’s Account Number (Optional)' placeholder='Enter Guardians Account Number' onChange={handlePayload} value={payload.guardianAccountNumber} id='guardianAccountNumber' />
+                                <Input label='Guardian’s Bank Name (Optional)' placeholder='Enter Guardians Bank Name' onChange={handlePayload} value={payload.guardianBankName} id='guardianBankName' />
+                                <Input label='Guardian’s Bank Code (Optional)' placeholder='Enter Guardians Bank Code' onChange={handlePayload} value={payload.guardianBankCode} id='guardianBankCode' />
                                 <Input label='Email Address' placeholder='Provide the student’s email address' onChange={handlePayload} value={payload.email} id='email' />
 
                                 <Input label='State' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.state} id='state' />
@@ -477,8 +492,8 @@ export default function AddNewStudents() {
                                         _placeholder={{ color: "red" }}
                                         color="#ADB4BF"
                                         onChange={handlePayload}
-                                        value={payload.studentInterests}
-                                        id='studentInterests'
+                                        value={payload.studentInterest}
+                                        id='studentInterest'
 
                                         placeholder="Select tags associated with the student’s main area of interest"
                                     >
@@ -743,6 +758,24 @@ export default function AddNewStudents() {
                                         onClick={() => updateReview("Gender", payload.gender, "gender")}
 
                                     />
+                                    <ReviewCard
+                                        title="guardianName"
+                                        value={payload.guardianName}
+                                        onClick={() => updateReview("guardianName", payload.guardianName, "guardianName")}
+
+                                    />
+                                    <ReviewCard
+                                        title="guardianAccountName"
+                                        value={payload.guardianAccountName}
+                                        onClick={() => updateReview("guardianAccountName", payload.guardianAccountName, "guardianName")}
+
+                                    />
+                                    <ReviewCard
+                                        title="guardianBankCode"
+                                        value={payload.guardianBankCode}
+                                        onClick={() => updateReview("guardianBankCode", payload.guardianBankCode, "guardianName")}
+
+                                    />
 
                                     <ReviewCard
                                         title="state"
@@ -782,6 +815,7 @@ export default function AddNewStudents() {
                                         onClick={() => updateReview("Residental Address", payload.address, "address")}
 
                                     />
+                                    
 
 
                                 </Stack>
@@ -814,10 +848,11 @@ export default function AddNewStudents() {
 
                                     <ReviewCard
                                         title="field of interest"
-                                        value={payload.studentInterests}
-                                        onClick={() => updateReview("Field Of Interest", payload.studentInterests, "studentInterests")}
-
+                                        value={payload.studentInterest}
+                                        onClick={() => updateReview("Field Of Interest", payload.studentInterest, "studentInterest")}
                                     />
+
+                                    
 
                                     <ReviewCard
                                         title="scholarship neeed"

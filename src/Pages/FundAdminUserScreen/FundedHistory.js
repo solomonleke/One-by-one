@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -14,10 +14,27 @@ import {
 } from "@chakra-ui/react";
 import MainLayout from "../../DashboardLayout";
 import TableRow from "../../Components/TableRow"
+import { configuration } from "../../Utils/Helpers";
+import { GetAllFundingHistoryApi } from "../../Utils/ApiCall"; // Adjust path as needed
+import Pagination from "../../Components/Pagination";
 
 
 
 export default function FundedHistory(){
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [pageNo, setPageNo] = useState(1);
+  const [TotalPage, setTotalPage] = useState("");
+  const noItems = 10;
+  const [error, setError] = useState("");
+  const [CurrentPage, setCurrentPage] = useState(1);
+  const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
+
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+};
+  
 
   const students = [
     {
@@ -45,6 +62,28 @@ export default function FundedHistory(){
       status: "Completed",
     }
 ]
+
+const fetchFundingHistory = async () => {
+  setLoading(true);
+  setError("");
+
+  try {
+    const response = await GetAllFundingHistoryApi(pageNo, PostPerPage);
+    console.log("API funding history response:", response.data);
+    setHistory(response.data.data.funds || []);
+    setTotalPage(response.data.data.totalPages || []); // adjust depending on API response structure
+    const totalPosts = response.data.totalPages * PostPerPage;
+      setTotalPage(totalPosts);
+  } catch (err) {
+    setError(err.message || "Error fetching data");
+  } finally {
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  fetchFundingHistory();
+}, [pageNo, CurrentPage, PostPerPage]);
     
   return (
       <MainLayout>
@@ -64,17 +103,17 @@ export default function FundedHistory(){
               </Tr>
             </Thead>
             <Tbody>
-              {students.map((student, index) => (
+              {history.map((student, index) => (
                 
                   <TableRow
                     key={index}
                     type="funded-history"
-                    fundedStudents={student.fundedStudents}
-                    amount={student.amount}
-                    transactionId={student.transactionId}
-                    date={student.date}
-                    paymentMethod={student.paymentMethod}
-                    status={student.status}
+                    fundedStudents={student.student_name}
+                    amount={student.funding_amount}
+                    transactionId={student.trx_id}
+                    date={student.funding_date}
+                    paymentMethod={student.payment_method}
+                    status={student.funding_status}
                   />
 
                 
@@ -82,6 +121,13 @@ export default function FundedHistory(){
             </Tbody>
           </Table>
         </TableContainer>
+
+        <Pagination
+          totalPosts={TotalPage}
+          postsPerPage={PostPerPage}
+          currentPage={CurrentPage}
+          paginate={paginate}
+        />
   
       </Box>
       </MainLayout>

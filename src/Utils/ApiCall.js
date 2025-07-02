@@ -1030,6 +1030,182 @@ export const AddStudentToScholarshipApi = async (scholarshipId, studentIds) => {
   }
 };
 
+export const requestFundApi = async ({ studentId, type, amount }) => {
+  try {
+    const config = {
+      method: "POST",
+      url: `${baseUrl}/school-admin/request-fund/${studentId}`,
+      data: { type, amount },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const response = await axios.request(config);
+    console.log("✅ Fund Request Sent:", response.data);
+
+    // ✅ Fix: Accept either 200 or 201, and flexible status structure
+    if ((response.status === 201 || response.status === 200) && response.data?.message) {
+      return response.data;
+    } else {
+      throw new Error("Unexpected API response format");
+    }
+  } catch (error) {
+    console.error("❌ Failed to request fund:", error);
+
+    if (error.response) {
+      const { data, status } = error.response;
+      console.error(`Server Error [${status}]:`, data);
+      throw new Error(data?.message || `Server responded with status ${status}`);
+    } else if (error.request) {
+      throw new Error("No response from server. Please check your internet connection.");
+    } else {
+      throw new Error(error.message);
+    }
+  }
+};
+
+export const getAllFundRequestsApi = async (pageNo, PostPerPage) => {
+  try {
+    const config = {
+      method: "GET",
+      url: `${baseUrl}/school-admin/request-fund?pageNo=${pageNo}&noItems=${PostPerPage}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const response = await axios.request(config);
+    const requests = response.data?.data?.requestss;
+
+    if (!Array.isArray(requests)) {
+      throw new Error("Unexpected response format: 'requestss' is not an array");
+    }
+
+    return requests;
+  } catch (error) {
+    console.error("❌ Failed to fetch fund requests:", error);
+    throw error;
+  }
+};
+
+
+export const getAllSponsorStudentsApi = async (pageNo, PostPerPage) => {
+  try {
+    const config = {
+      method: "GET",
+      url: `${baseUrl}/sponsor-admin/all-students?pageNo=${pageNo}&noItems=${PostPerPage}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const response = await axios.request(config);
+    console.log("✅ Sponsor Students Retrieved:", response.data);
+
+    // Return just the student list or the full data depending on what you need
+    return response.data;
+  } catch (error) {
+    console.error("❌ Failed to fetch sponsor students:", error);
+
+    if (error.response) {
+      const { data, status } = error.response;
+      console.error(`Server Error [${status}]:`, data);
+      throw new Error(data?.message || `Server responded with status ${status}`);
+    } else if (error.request) {
+      throw new Error("No response from server. Please check your internet connection.");
+    } else {
+      throw new Error(error.message);
+    }
+  }
+};
+
+export const GetAllRequestFundsApi = (pageNo, postPerPage, funded = false) => {
+  const config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/fund-admin/get-all-request-funds?pageNo=${pageNo}&noItems=${postPerPage}&funded=${funded}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`, // Make sure `token` is defined in this scope
+    },
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response?.data) {
+        throw new Error(JSON.stringify(error.response.data));
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
+
+export const GetAllFundingHistoryApi = (pageNo, postPerPage) => {
+  const config = {
+    method: "GET",
+    url: `${baseUrl}/fund-admin/get-all-funding-history?pageNo=${pageNo}&noItems=${postPerPage}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  return axios
+    .request(config)
+    .then((response) => response)
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response?.data) {
+        throw new Error(JSON.stringify(error.response.data));
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error("Unknown Error");
+      }
+    });
+};
+
+export const GetFundAdminMetricsApi = () => {
+  const config = {
+    method: "GET",
+    url: `${baseUrl}/fund-admin/metrics`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`, // ensure `token` is defined properly
+    },
+  };
+  console.log("Calling metrics API at:", config.url);
+
+
+  return axios
+    .request(config)
+    .then((response) => response)
+    .catch((error) => {
+      console.log("Metrics API error", error);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else {
+        throw new Error(error.message || "Unknown error");
+      }
+    });
+};
+
 
 
 

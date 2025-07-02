@@ -181,7 +181,9 @@ export default function Students() {
 
 
   const ApproveStudent = async (student_id, STATUS) => {
-      setIsLoading(true);
+    setLoadingStudentId(student_id); // ✅ only this student's button shows loading
+      
+      
 
     try {
       const result = await ApproveStudentApi(student_id, {status: STATUS, essayPercentage: essayPercentage});
@@ -206,7 +208,28 @@ export default function Students() {
           status: "success",
         });
         setTimeout(() => setShowToast({ show: false }), 3000);
-      }
+        if(STATUS === "REJECTED"){
+          GetAllScholarshipStudent("APPROVED")
+        }
+        setIsLoading(true);
+        setShowToast({
+          show: true,
+          message: "Rejected Student!!!",
+          status: "success",
+        });
+        setTimeout(() => setShowToast({ show: false }), 3000);
+        if(STATUS === "APPROVED"){
+          GetAllScholarshipStudent("REJECTED")
+        }
+        setIsLoading(true);
+        setShowToast({
+          show: true,
+          message: "Approved Student!!!",
+          status: "success",
+        });
+        setTimeout(() => setShowToast({ show: false }), 3000);
+        
+      } 
     } catch (e) {
         setIsLoading(false);
       setShowToast({
@@ -345,11 +368,10 @@ export default function Students() {
                               type={"scholarship-admin-students"}
                               name={item.full_name}
                               email={item.email}
-                              isLoading={isLoading}
                               fieldOfStudy={item.intended_field_of_study}
                               status={item.verification_status}
-                              loading={loadingStudentId === item.id}
-                              buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
+                              isLoading={loadingStudentId === item.id}
+                              buttonText={item.verification_status === "PENDING" ? "Approve" : item.verification_status === "APPROVED" ? "Reject" : item.verification_status === "REJECTED" ? "Unreject" : "Approve"}
                               onButtonClick={() => ApproveStudent(item.id,"APPROVED")}
                             />
                           ))
@@ -401,10 +423,9 @@ export default function Students() {
                               email={item.email}
                               fieldOfStudy={item.intended_field_of_study}
                               status={item.verification_status}
-                              loading={loadingStudentId === item.id}
-
-                              buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
-                              onButtonClick={() => ApproveStudent(item.id)}
+                              isLoading={loadingStudentId === item.id}
+                              buttonText={item.verification_status === "PENDING" ? "Approve" : item.verification_status === "APPROVED" ? "Reject" : item.verification_status === "REJECTED" ? "Unreject" : "Approve"}
+                              onButtonClick={() => ApproveStudent(item.id, "REJECTED")}
                             />
                           ))
                         ) : (
@@ -435,7 +456,6 @@ export default function Students() {
                     <Thead bg="#F9FAFB">
                       <Tr >
                         <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
-                        <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">school name</Th>
                         <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">field of study</Th>
                         <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">status</Th>
                         <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
@@ -446,7 +466,7 @@ export default function Students() {
 
                       {
                         rejectedStudents.length > 0 ? (
-                          pendingStudents.map((item, i) => (
+                          rejectedStudents.map((item, i) => (
                             <TableRow
                               key={i}
                               type={"scholarship-admin-students"}
@@ -454,10 +474,9 @@ export default function Students() {
                               email={item.email}
                               fieldOfStudy={item.intended_field_of_study}
                               status={item.verification_status}
-                              loading={loadingStudentId === item.id}
-
-                              buttonText={item.account_verified === "PENDING" ? "Approve" : item.account_verified === "APPROVED" ? "Reject" : item.account_verified === "REJECTED" ? "Unreject" : "Approve"}
-                              onButtonClick={() => ApproveStudent(item.id)}
+                              isLoading={loadingStudentId === item.id}
+                              buttonText={item.verification_status === "PENDING" ? "Approve" : item.verification_status === "APPROVED" ? "Reject" : item.verification_status === "REJECTED" ? "Unreject" : "Approve"}
+                              onButtonClick={() => ApproveStudent(item.id, "APPROVED")}
                             />
                           ))
                         ) : (
@@ -487,4 +506,3 @@ export default function Students() {
     </MainLayout>
   )
 }
-

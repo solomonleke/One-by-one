@@ -101,6 +101,13 @@ const checkLeaderboardActive= ()=>{
         display: isSchoolAdmin()
     },
     {
+        name: "Requested Funds",
+        icon: <TbCurrencyNaira />,
+        link: "/school-admin/request-funds",
+        active: isActive(location, "/school-admin/request-funds"),
+        display: isSchoolAdmin()
+    },
+    {
         name: "school profile",
         icon: <IoBriefcaseOutline/>,
         link: "/school-admin/school-profile",
