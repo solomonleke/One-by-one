@@ -240,15 +240,15 @@ export default function TableRow({ type, stationary, total, name, request, reque
             {
                 type === "awaiting-funding" && (
                     <>
-                        <Td>
+                        <Td fontSize="13px">
                             <Flex align="center">
-                                <Avatar size="sm" name={name} mr={2} />
+                                <Avatar size="sm"  name={name} mr={2} />
                                 {name}
                             </Flex>
                         </Td>
-                        <Td>{school}</Td>
-                        <Td>{guardian}</Td>
-                        <Td>
+                        <Td fontSize="13px">{school}</Td>
+                        <Td fontSize="13px">{guardian}</Td>
+                        <Td fontSize="13px">
                             <Box display="flex" flexDirection="column">
                                 <Flex align="center" justify="space-between" w="full">
                                     <Text>{schoolBank}</Text>
@@ -258,7 +258,7 @@ export default function TableRow({ type, stationary, total, name, request, reque
                                 <Text fontSize="sm">Acc: {BankAcc}</Text>
                             </Box>
                         </Td>
-                        <Td>
+                        <Td fontSize="13px">
                             <Box display="flex" flexDirection="column">
                                 <Flex align="center" justify="space-between" w="full">
                                     <Text>{guardianBank}</Text>
@@ -268,7 +268,39 @@ export default function TableRow({ type, stationary, total, name, request, reque
                                 <Text fontSize="sm">Acc: {GuardianBankAcc}</Text>
                             </Box>
                         </Td>
-                        <Td >{tuition}</Td>
+                        <Td fontSize="13px">{tuition}</Td>
+                    </>
+                )
+            }
+            {
+                type === "funded-students" && (
+                    <>
+                        <Td fontSize="13px">
+                            <Flex align="center">
+                                <Avatar size="sm" name={name} mr={2} />
+                                {name}
+                            </Flex>
+                        </Td>
+                        <Td fontSize="13px">{school}</Td>
+                        <Td fontSize="13px">{classLevel}</Td>
+                        <Td fontSize="13px">{guardian}</Td>
+                        <Td fontSize="13px">{tuition}</Td>
+                        <Td fontSize="13px">
+                            <Box
+                                fontSize="12px"
+                                fontWeight="bold"
+                                bg={status === "Pending" ? "#FFF7EB" : "#C0FFE1"}
+                                borderRadius="16px"
+                                p="4px 8px"
+                                display="inline-flex"
+                                alignItems="center"
+                                ml="5px"
+                                color={status === "Pending" ? "#FFA30C" : "#027A48"}
+                            >
+                                <Icon as={GoDotFill} boxSize={3} mr={1} /> {status}
+                            </Box>
+                        </Td> 
+                        <Td fontSize="13px">{stationary}</Td>
                     </>
                 )
             }
@@ -453,18 +485,18 @@ export default function TableRow({ type, stationary, total, name, request, reque
                         <Td>
                             <Box
                                 fontSize="12px"
-                                fontWeight="500"
-                                bg="#ECFDF3"
+                                fontWeight="bold"
+                                bg={status === "PENDING" ? "#FFF7EB" : "#C0FFE1"}
                                 borderRadius="16px"
-                                p="2px 8px"
+                                p="4px 8px"
                                 display="inline-flex"
                                 alignItems="center"
                                 ml="5px"
-                                color="#027A48"
+                                color={status === "PENDING" ? "#FFA30C" : "#027A48"}
                             >
                                 <Icon as={GoDotFill} boxSize={3} mr={1} /> {status}
                             </Box>
-                        </Td>
+                        </Td> 
                         <Td>
                             <Menu isLazy>
                                 <MenuButton as={Box}>

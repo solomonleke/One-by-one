@@ -50,6 +50,8 @@ import {
   ModalFooter,
   ModalCloseButton,
 } from '@chakra-ui/react'
+import { getAllActiveScholarships } from "../../Utils/ApiCall";
+
 
 
 export default function Scholarships() {
@@ -90,10 +92,13 @@ export default function Scholarships() {
     status: ""
   })
 
+  const [loading, setLoading] = useState(false);
+  const [scholarships, setScholarships] = useState([]);
+  const [sponsorScholarships, setSponsorScholarships] = useState([]);
+  const [activeScholarshipCount, setActiveScholarshipCount] = useState(0);
 
-  if (isLoading) {
-    return (<Preloader message="Loading..." />)
-  }
+
+  
 
   const dummyScholarships = [
     {
@@ -220,6 +225,35 @@ export default function Scholarships() {
       students: [],
     },
   ];
+
+  const fetchScholarships = async () => {
+    try {
+      const data = await getAllActiveScholarships(); // now returns `res.data`
+      console.log("Scholarships data:", data);
+  
+      // ✅ Update here
+      if (Array.isArray(data.scholarships)) {
+        setScholarships(data.scholarships);
+        setActiveScholarshipCount(data.scholarships.length);
+      } else {
+        setError("Scholarship data is not in expected format");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setIsLoading(false);
+    }
+  };
+  
+
+  useEffect(() => {
+    fetchScholarships();
+  }, []);
+  
+  if (isLoading) {
+    return (<Preloader message="Loading..." />)
+  }
 
 
   return (

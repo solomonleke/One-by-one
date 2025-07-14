@@ -1123,7 +1123,7 @@ export const getAllSponsorStudentsApi = async (pageNo, PostPerPage) => {
   }
 };
 
-export const GetAllRequestFundsApi = (pageNo, postPerPage, funded = false) => {
+export const GetAllRequestFundsApi = (pageNo, postPerPage, funded) => {
   const config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -1206,6 +1206,109 @@ export const GetFundAdminMetricsApi = () => {
     });
 };
 
+
+export const GetAllSuperAdminSchoolsApi = (pageNo, noItems, status) => {
+ 
+ 
+  let config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/super-admin/all-schools?pageNo=${pageNo}&noItems=${noItems}&status=${status}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+     
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
+export const GetAllSuperAdminStudentsApi = (pageNo, noItems, status) => {
+ 
+ 
+  let config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/super-admin/all-students?pageNo=${pageNo}&noItems=${noItems}&status=${status}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+     
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
+export const getAllActiveScholarships = async () => {
+  try {
+    const config = {
+      method: "GET",
+      url: `${baseUrl}/super-admin/all-scholarships`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Include token if provided
+      },
+    };
+
+    const response = await axios.request(config);
+    console.log("getAllActiveScholarships raw response:", response); // Add this
+
+    // Check if response is valid
+    if (response.status === 200 && response.data?.status === true && Array.isArray(response.data?.data?.activeScholarship)) {
+      return response.data; // ✅ Return full response, including metadata
+    } else {
+      throw new Error("Unexpected API response format");
+    }
+  } catch (error) {
+    console.error("❌ Error fetching active scholarships:", error);
+
+    if (error.response) {
+      const { data, status } = error.response;
+      console.error(`Server Error [${status}]:`, data);
+      throw new Error(data?.message || `Server responded with status ${status}`);
+    } else if (error.request) {
+      throw new Error("No response from server. Please check your internet connection.");
+    } else {
+      throw new Error(error.message);
+    }
+  }
+};
 
 
 

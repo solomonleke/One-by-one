@@ -13,10 +13,11 @@ import { PiStudent } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import TableRow from "../../Components/TableRow"
 import { GetFundAdminMetricsApi } from "../../Utils/ApiCall";
+import Preloader from "../../Components/Preloader"
+
 
 export default function Dashboard() {
   const navigate = useNavigate();
-
   const [userName, setUserName] = useState('');
 
 
@@ -98,6 +99,8 @@ const [error, setError] = useState("");
       const response = await GetFundAdminMetricsApi();
       console.log("Metrics response:", response.data);
       setMetrics(response.data?.data || {});
+      setLoading(false);
+
     } catch (err) {
       setError(err.message || "Error fetching metrics");
     } finally {
@@ -107,12 +110,14 @@ const [error, setError] = useState("");
 
   useEffect(() => {
     fetchMetrics();
-  }, [metrics]);
+  }, []);
   
+
 
   const fontSize = useBreakpointValue({ base: "12px", md: "14px", lg: "16px" });
   const iconSize = useBreakpointValue({ base: "16px", md: "18px", lg: "22px" });
 
+  // if (loading) return <Preloader message="Loading..." />;
 
 
   return (
@@ -125,7 +130,8 @@ const [error, setError] = useState("");
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
           <Stat pt="15px" paddingBottom="15px" pl="23px" pr="23px" bgGradient="linear(to-r, #20553C, #C4EF4B)" borderRadius="md" gap={18}>
             <StatLabel color="white">Available Balance</StatLabel>
-            <StatNumber fontSize="40px" color="white"> ₦{Number(metrics?.totalDisbursed || 0).toLocaleString()}</StatNumber>
+            <StatNumber fontSize="40px" color="white"> ₦{Number(metrics?.availableFunds
+ || 0).toLocaleString()}</StatNumber>
             <Button size="sm" mt={2} w="170px" p="10px 24px" h="40px" fontSize="14px" textColor="#39996B" onClick={() => navigate("/fund-admin/funding-records")} >Funding Records <Icon as={IoIosArrowForward} boxSize={5} ml={2} /></Button>
           </Stat>
 
@@ -139,7 +145,7 @@ const [error, setError] = useState("");
                     <PiStudent style={{ marginRight: "8px", width: iconSize, height: iconSize, color: "#39996B" }} />
                     Total Students Funded
                   </StatLabel>
-                  <StatNumber fontSize={fontSize}>{dashboardData.totalStudentsFunded}</StatNumber>
+                  <StatNumber fontSize={fontSize}>{metrics.totalStudentsFunded}</StatNumber>
                 </Flex>
               </Stat>
 
@@ -150,7 +156,7 @@ const [error, setError] = useState("");
                     <TbCurrencyNaira style={{ marginRight: "8px", width: iconSize, height: iconSize, color: "#39996B" }} />
                     Total Disbursements
                   </StatLabel>
-                  <StatNumber fontSize={fontSize}>{dashboardData.totalDisbursements}</StatNumber>
+                  <StatNumber fontSize={fontSize}>{metrics.totalDisbursed}</StatNumber>
                 </Flex>
               </Stat>
 

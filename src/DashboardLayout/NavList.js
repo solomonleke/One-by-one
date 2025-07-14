@@ -217,7 +217,7 @@ const checkLeaderboardActive= ()=>{
         name: "settings",
         icon: <GoGear/>,
         link: "/fund-admin/settings",
-        active: isActive(location, "/fund-admin/funding-history"),
+        active: isActive(location, "/fund-admin/settings"),
         display: isFundAdmin()
     },
     {
