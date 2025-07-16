@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -10,6 +10,11 @@ import {
   Tbody,
   Tr,
   Th,
+  TabPanels,
+  TabPanel,
+  Tabs,
+  TabList,
+  Tab,
   Td,
   Button,
   Stack,
@@ -25,12 +30,23 @@ import InputX from "../../Components/InputX"
 import Pagination from "../../Components/Pagination";
 import TableRow from "../../Components/TableRow"
 import { IoIosSearch } from "react-icons/io";
+import { configuration } from "../../Utils/Helpers";
+import { GetAllSuperAdminSchoolsApi } from "../../Utils/ApiCall";
+
 
 
 export default function Schools() {
   const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [CurrentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const [TotalPage, setTotalPage] = useState("");
+  const [pendingSchools, setPendingSchools] = useState([]);
+  const [approvedSchools, setApprovedSchools] = useState([]);
+  const [rejectedSchools, setRejectedSchools] = useState([]);
+  const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
+  const [status, setStatus] = useState("PENDING");
+
+
 
   const schoolsData = [
     {
@@ -115,106 +131,266 @@ export default function Schools() {
     },
   ];
 
+  const GetAllSchool = async (status) => {
+    try {
+      const result = await GetAllSuperAdminSchoolsApi(CurrentPage, PostPerPage, status);
+      console.log("getallSchools", result);
+
+
+
+      if (result.status === 200 && result.data.data?.schools?.length > 0) {
+        const schools = result.data.data.schools;
+        setTotalPage(result.data.data.totalPages);
+        if (status === "PENDING") {
+          setPendingSchools(schools);
+        } else if (status === "APPROVED") {
+          setApprovedSchools(schools);
+        } else if (status === "REJECTED") {
+          setRejectedSchools(schools);
+        }
+      } else {
+        if (status === "PENDING") {
+          setPendingSchools([]);
+        } else if (status === "APPROVED") {
+          setApprovedSchools([]);
+        } else if (status === "REJECTED") {
+          setRejectedSchools([]);
+        }
+      }
+    } catch (e) {
+      console.log("error", e.message);
+    }
+  };
+  const totalSchools = pendingSchools.length + approvedSchools.length + rejectedSchools.length;
+
+
 
 
 
   // Filter students first
-const filteredSchools = schoolsData.filter((school) =>
-  school.name.toLowerCase().includes(search.toLowerCase())
-);
 
-// Then paginate the filtered list
-const indexOfLastItem = currentPage * itemsPerPage;
-const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-const currentItems = filteredSchools.slice(indexOfFirstItem, indexOfLastItem);
 
-// Handle page change
-const paginate = (pageNumber) => {
-  setCurrentPage(pageNumber);
-};
+  // Handle page change
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  useEffect(() => {
+    GetAllSchool(status)
+  }, [status, CurrentPage]);
 
   return (
     <MainLayout>
       <Box p={6}>
         <Text fontSize="21px" fontWeight="600" color="#101828" mb="28px">
-          Schools <span style={{ color: "#667085", fontWeight: "400" }}>(34)</span>
+          Schools <span style={{ color: "#667085", fontWeight: "400" }}>({totalSchools})</span>
         </Text>
 
         <Box border="1px solid #E7E9EC" py="20px" px="31px" borderRadius="10px">
-          <Flex justifyContent="space-between" flexWrap="wrap">
-            <Flex alignItems="center" flexWrap='wrap' bg="#fff" border="1px solid #E7E9EC" rounded='7px' py="3.5px" px="5px" cursor="pointer" mt={["10px", "10px", "0px", "0px"]}>
+          <Tabs
+            index={["PENDING", "APPROVED", "REJECTED"].indexOf(status)}
+            onChange={(index) => setStatus(["PENDING", "APPROVED", "REJECTED"][index])}
+            isFitted
+            variant="unstyled"
+          >
+            <Flex justifyContent="space-between" flexWrap="wrap" alignItems="center">
+              <TabList border="1px solid #E7E9EC" rounded="7px" mt={["10px", "10px", "0px", "0px"]}>
+                <Tab
+                  fontWeight="500"
+                  fontSize="13px"
+                  py="8.5px"
+                  px="12px"
+                  _selected={{ color: "blue.500" }}
+                >
+                  Pending Approval ({pendingSchools.length})
+                </Tab>
+                <Tab
+                  fontWeight="500"
+                  fontSize="13px"
+                  py="8.5px"
+                  px="12px"
+                  _selected={{ color: "blue.500" }}
+                >
+                  Approved ({approvedSchools.length})
+                </Tab>
+                <Tab
+                  fontWeight="500"
+                  fontSize="13px"
+                  py="8.5px"
+                  px="12px"
+                  _selected={{ color: "blue.500" }}
+                >
+                  Rejected ({rejectedSchools.length})
+                </Tab>
+              </TabList>
 
-
-              <Box borderRight="1px solid #EDEFF2" pr="5px" >
-                <Text py='8.5px' px="12px" bg="transparent" rounded="7px" color={"#1F2937"} fontWeight={"500"} fontSize={"13px"}>Pending Approval (7)</Text>
+              <Box
+                p="10px"
+                bg="transparent"
+                border="1px solid #E3E5E8"
+                borderRadius="7px"
+                display="inline-flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <IoIosSearch fontSize="17px" />
               </Box>
-              <Box borderRight="1px solid #EDEFF2" pr="5px" >
-                <Text py='8.5px' px="12px" bg="transparent" rounded="7px" color={"#1F2937"} fontWeight={"500"} fontSize={"13px"}>Approved (25)</Text>
-              </Box>
-              <Box pr="5px" >
-                <Text py='8.5px' px="12px" bg="transparent" rounded="7px" color={"#1F2937"} fontWeight={"500"} fontSize={"13px"}>Rejected (2)</Text>
-              </Box>
-
             </Flex>
 
-            <Box
-              p="10px"
-              bg="transparent"
-              border="1px solid #E3E5E8"
-              borderRadius="7px"
-              display="inline-flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <IoIosSearch fontSize="17px" />
-            </Box>
 
+            <TabPanels>
+              <TabPanel>
+                <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px", "8px", "18px", "18px"]} rounded='10px'>
+                  <TableContainer border="1px solid #EDEFF2" borderRadius="7px" mt="15px">
+                    <Table variant="simple">
+                      <Thead>
+                        <Tr>
+                          <Th>Name</Th>
+                          <Th>Principal</Th>
+                          <Th>Approved Students</Th>
+                          <Th>State</Th>
+                          <Th>City</Th>
+                          <Th>Submission Date</Th>
+                          <Th>Actions</Th>
 
-          </Flex>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {
+                          pendingSchools.length > 0 ? (
+                            pendingSchools.map((item, i) => (
 
+                              <TableRow
+                                key={i}
+                                type="super-admin-schools"
+                                name={item.schoolName}
+                                email={item.schoolEmail}
+                                principal={item.principalName}
+                                approvedStudents={item.approvedStudents}
+                                state={item.state}
+                                city={item.city}
+                                submissionDate={item.submissionDate}
+                              />
 
-          <TableContainer border="1px solid #EDEFF2" borderRadius="7px" mt="15px">
-            <Table variant="simple">
-              <Thead>
-                <Tr>
-                  <Th>Name</Th>
-                  <Th>Principal</Th>
-                  <Th>Approved Students</Th>
-                  <Th>State</Th>
-                  <Th>City</Th>
-                  <Th>Submission Date</Th>
-                  <Th>Actions</Th>
+                            ))
+                          ) : (
+                            <Text textAlign="center" py={5} ml="20px">
+                              No Pending Schools found.
+                            </Text>
+                          )
+                        }
 
-                </Tr>
-              </Thead>
-              <Tbody>
-                {currentItems.map((item, index) => (
-                  <TableRow
-                    key={index}
-                    type="super-admin-schools"
-                    name={item.name}
-                    email={item.email}
-                    principal={item.principal}
-                    approvedStudents={item.approvedStudents}
-                    state={item.state}
-                    city={item.city}
-                    submissionDate={item.submissionDate}
-                  />
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                      </Tbody>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              </TabPanel>
+              <TabPanel>
+                <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px", "8px", "18px", "18px"]} rounded='10px'>
+                  <TableContainer border="1px solid #EDEFF2" borderRadius="7px" mt="15px">
+                    <Table variant="simple">
+                      <Thead>
+                        <Tr>
+                          <Th>Name</Th>
+                          <Th>Principal</Th>
+                          <Th>Approved Students</Th>
+                          <Th>State</Th>
+                          <Th>City</Th>
+                          <Th>Submission Date</Th>
+                          <Th>Actions</Th>
+
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {
+                          approvedSchools.length > 0 ? (
+                            approvedSchools.map((item, i) => (
+
+                              <TableRow
+                                key={i}
+                                type="super-admin-schools"
+                                name={item.schoolName}
+                                email={item.schoolEmail}
+                                principal={item.principalName}
+                                approvedStudents={item.approvedStudents}
+                                state={item.state}
+                                city={item.city}
+                                submissionDate={item.submissionDate}
+                              />
+
+                            ))
+                          ) : (
+                            <Text textAlign="center" py={5} ml="20px">
+                              No Pending Schools found.
+                            </Text>
+                          )
+                        }
+
+                      </Tbody>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              </TabPanel>
+              <TabPanel>
+                <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px", "8px", "18px", "18px"]} rounded='10px'>
+                  <TableContainer border="1px solid #EDEFF2" borderRadius="7px" mt="15px">
+                    <Table variant="simple">
+                      <Thead>
+                        <Tr>
+                          <Th>Name</Th>
+                          <Th>Principal</Th>
+                          <Th>Approved Students</Th>
+                          <Th>State</Th>
+                          <Th>City</Th>
+                          <Th>Submission Date</Th>
+                          <Th>Actions</Th>
+
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {
+                          rejectedSchools.length > 0 ? (
+                            rejectedSchools.map((item, i) => (
+
+                              <TableRow
+                                key={i}
+                                type="super-admin-schools"
+                                name={item.schoolName}
+                                email={item.schoolEmail}
+                                principal={item.principalName}
+                                approvedStudents={item.approvedStudents}
+                                state={item.state}
+                                city={item.city}
+                                submissionDate={item.submissionDate}
+                              />
+
+                            ))
+                          ) : (
+                            <Text textAlign="center" py={5} ml="20px">
+                              No Pending Schools found.
+                            </Text>
+                          )
+                        }
+
+                      </Tbody>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              </TabPanel>
+
+            </TabPanels>
+          </Tabs>
+
         </Box>
 
 
         <Pagination
-        totalPosts={filteredSchools.length}
-        postsPerPage={itemsPerPage}
-        currentPage={currentPage}
-        paginate={paginate}
-      />
+          currentPage={CurrentPage}
+          totalPosts={TotalPage}
+          paginate={paginate}
+        />
       </Box>
-    </MainLayout>
+    </MainLayout >
   );
 };
 
