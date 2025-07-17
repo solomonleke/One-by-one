@@ -16,6 +16,7 @@ import {
   Flex,
   Button,
   useBreakpointValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { CiCircleInfo } from "react-icons/ci";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
@@ -27,6 +28,7 @@ import { BiSearch } from "react-icons/bi";
 import Pagination from "../../Components/Pagination";
 import { configuration } from "../../Utils/Helpers";
 import { GetAllRequestFundsApi  } from "../../Utils/ApiCall";
+import PaymentModal from "../../Components/PaymentModal";
 
 
 const students = [
@@ -54,6 +56,8 @@ const [FundRequests, setFundRequests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [pageNo, setPageNo] = useState(1);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
 //get current post
 //change page
@@ -79,6 +83,11 @@ const fetchFundRequests = async () => {
     setLoading(false);
   }
 };
+
+const OpenFundModal = (item)=>{
+  setSelectedStudent(item);
+  onOpen();
+}
 
 
 useEffect(() => {
@@ -129,6 +138,7 @@ useEffect(() => {
                 </Th>
 
                 <Th>Tuition Fee</Th>
+                <Th>Take Action</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -152,6 +162,7 @@ useEffect(() => {
         name={student.student_name}
         school={student.school_name}
         guardian={student.guardian_name}
+        onClick={()=>OpenFundModal(student)}
         schoolBank={
           parsedSchoolAccount
             ? `${parsedSchoolAccount.bank} - ${parsedSchoolAccount.account_name} `
@@ -192,8 +203,13 @@ useEffect(() => {
          
         </Flex>
       </Box>
+      {selectedStudent && (
+        <PaymentModal
+          isOpen={isOpen}
+          onClose={onClose}
+          student={selectedStudent}
+        />
+      )}
     </MainLayout>
   );
 };
-
-

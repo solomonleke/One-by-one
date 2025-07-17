@@ -1,6 +1,6 @@
 // Custom helper functions
 
 export const configuration = {
-    sizePerPage: 10,
+    sizePerPage: 2,
 
 }

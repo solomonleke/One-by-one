@@ -158,7 +158,7 @@ export default function SignIn() {
           setShowToast({
             show: true,
             message: "You are yet to complete registration. Kindly select the role you want to register as.",
-            status: "success",
+            status: "warning",
           });
 
           router(`/role-selection/${result.accessToken}`);

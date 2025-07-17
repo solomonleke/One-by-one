@@ -853,7 +853,8 @@ export default function StudentManagement() {
 
 
 <Pagination
-  totalPosts={TotalPage}
+  // totalPosts={TotalPage}
+  totalPosts={stats.totalStudents}
   postsPerPage={PostPerPage}
   currentPage={CurrentPage}
   paginate={paginate}

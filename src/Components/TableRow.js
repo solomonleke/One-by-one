@@ -269,6 +269,26 @@ export default function TableRow({ type, stationary, total, name, request, reque
                             </Box>
                         </Td>
                         <Td fontSize="13px">{tuition}</Td>
+                        <Td>
+                            <Menu isLazy>
+                                <MenuButton as={Box}>
+
+                                    <Flex justifyContent="center" color="#000000" fontSize="16px"><BsThreeDots /></Flex>
+                                </MenuButton>
+                                <MenuList >
+
+                                    <MenuItem onClick={onClick} textTransform="capitalize" fontWeight={"500"} color='#2F2F2F' _hover={{ color: "#2F2F2F", fontWeight: "400", bg: "#E8FFF4" }}>
+                                        <HStack fontSize="14px">
+
+                                            <Text>Fund Account</Text>
+                                        </HStack>
+                                    </MenuItem>
+                                 
+
+                                </MenuList>
+                            </Menu>
+                        </Td>
+
                     </>
                 )
             }
