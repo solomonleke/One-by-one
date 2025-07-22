@@ -502,6 +502,109 @@ export const GetScholarshipDashboardDetailsApi = () => {
     });
 };
 
+
+export const GetSuperAdminDashboardDetailsApi = () => {
+ 
+ 
+  let config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/super-admin/dashboard-metrics`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+     
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
+export const GetSuperAdminFinancialReportsApi = () => {
+ 
+ 
+  let config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/super-admin/financial-metrics`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+     
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
+export const GetPlatformOverviewApi = () => {
+ 
+ 
+  let config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/super-admin/platform-overview`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+     
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
 export const GetScholarshipDashboardGraphDataApi = () => {
  
  

@@ -26,6 +26,7 @@ import { CgSearch } from "react-icons/cg";
 import { configuration } from "../../Utils/Helpers";
 import { IoFilter } from "react-icons/io5";
 import moment from "moment";
+import { GetSuperAdminFinancialReportsApi, GetPlatformOverviewApi } from "../../Utils/ApiCall";
 import ShowToast from "../../Components/ToastNotification"
 import Preloader from "../../Components/Preloader"
 import ApplicationStatusChart from "./ApplicationStatusChart";
@@ -103,17 +104,6 @@ export default function ReportAndAnalytics() {
     { month: 'Nov', amount: 30000 },
     { month: 'Dec', amount: 36000 },
   ];
-
-    const data = {
-      labels: ['Tuition Fees', 'Stationaries'],
-      datasets: [
-        {
-          data: [30, 70],
-          backgroundColor: ['#114D3A', '#4CB97A'],
-          borderWidth: 0,
-        },
-      ],
-    };
   
     const options = {
       responsive: true,
@@ -209,6 +199,103 @@ export default function ReportAndAnalytics() {
     message: "",
     status: ""
   })
+
+    const [financialReportsDetails, setFinancialReportsDetails] = useState({});
+    const [allocationBreakDown, setAllocationBreakDown] = useState({});
+    const [platformOverview, setPlatformOverview] = useState({});
+    const [schoolMetrics, setSchoolMetrics] = useState({});
+    const [studentMetrics, setStudentMetrics] = useState({});
+    const [userMetrics, setUserMetrics] = useState({});
+  
+    const GetFinancialReportsDetails = async () => {
+  
+      try {
+        const response = await GetSuperAdminFinancialReportsApi()
+  
+        console.log("getFinancialReportsDetails", response)
+  
+        setFinancialReportsDetails(response.data.data)
+        setAllocationBreakDown(response.data.data.allocationBreakDown)
+  
+  
+      } catch (e) {
+  
+        console.log("error", e.message)
+      }
+  
+    }
+
+
+
+const GetPlatformOverview = async () => {
+  try {
+    const response = await GetPlatformOverviewApi();
+
+    console.log("getPlatformOverviewDetails", response);
+
+    setPlatformOverview(response.data.data);
+
+    // Handle schoolMetrics
+    const schoolMetricsArray = response?.data?.data?.schoolMetrics || [];
+
+    const formattedSchoolMetrics = schoolMetricsArray.reduce((acc, curr) => {
+      const key = curr.status?.toUpperCase();
+      acc[key] = curr.count;
+      return acc;
+    }, {});
+    setSchoolMetrics(formattedSchoolMetrics);
+    console.log("Formatted schoolMetrics:", formattedSchoolMetrics);
+
+    // Handle studentMetrics
+    const studentMetricsArray = response?.data?.data?.studentMetrics || [];
+
+    const formattedStudentMetrics = studentMetricsArray.reduce((acc, curr) => {
+      const key = curr.status?.toUpperCase();
+      acc[key] = curr.count;
+      return acc;
+    }, {});
+    setStudentMetrics(formattedStudentMetrics);
+    console.log("Formatted studentMetrics:", formattedStudentMetrics);
+
+// User Metrics
+const userMetricsArray = response?.data?.data?.userMetrics || [];
+
+const formattedUserMetrics = userMetricsArray.reduce((acc, curr) => {
+  if (!curr.type) return acc; // skip null or undefined types
+  const key = curr.type.toUpperCase();
+  acc[key] = curr.count;
+  return acc;
+}, {});
+
+setUserMetrics(formattedUserMetrics);
+console.log("Formatted userMetrics:", formattedUserMetrics);
+
+  } catch (e) {
+    console.log("error", e.message);
+  }
+};
+
+
+console.log("school metrics", schoolMetrics);
+console.log("user metrics", userMetrics);
+
+      const data = {
+      labels: ['Tuition Fees', 'Stationaries'],
+      datasets: [
+        {
+          data: [allocationBreakDown.tuitionFees, allocationBreakDown.stationeryFees],
+          backgroundColor: ['#114D3A', '#4CB97A'],
+          borderWidth: 0,
+        },
+      ],
+    };
+  
+    useEffect(() => {
+  
+      GetFinancialReportsDetails()
+      GetPlatformOverview()
+  
+    }, []);
   
   
   if(isLoading) {
@@ -281,7 +368,7 @@ export default function ReportAndAnalytics() {
           <Box as="span" fontSize="20px" color="#ffffff" fontWeight="700">
             ₦
           </Box>
-          {fundsRaised}
+          {financialReportsDetails.totalFundsRaised ? financialReportsDetails.totalFundsRaised.toLocaleString() : "0"}
         </Text>
         <Button
           w="220px"
@@ -327,7 +414,7 @@ export default function ReportAndAnalytics() {
           <Box as="span" fontSize="20px" color="#ffffff" fontWeight="700">
             ₦
           </Box>
-          {availableBalance}
+          {financialReportsDetails.availableFunds ? financialReportsDetails.availableFunds.toLocaleString() : "0"}
         </Text>
         <Button
           w="220px"
@@ -464,21 +551,22 @@ export default function ReportAndAnalytics() {
         spacing="20px"
         w="100%"
       >
-        <PlatformOverviewCard name="Total Active Users" amount="220" />
-        <PlatformOverviewCard name="Total Schools" amount="33" />
-        <PlatformOverviewCard name="Total Students" amount="44" />
-        <PlatformOverviewCard name="Total Students Sponsored" amount="16" />
-        <PlatformOverviewCard name="Approved Students" amount="212" />
-        <PlatformOverviewCard name="Pending Students" amount="53" />
-        <PlatformOverviewCard name="Rejected Students" amount="99" />
-        <PlatformOverviewCard name="Approved Schools" amount="82" />
-        <PlatformOverviewCard name="Pending Schools" amount="34" />
-        <PlatformOverviewCard name="Rejected Schools" amount="13" />
-        <PlatformOverviewCard name="Total Funds Disbursed" amount="₦800,000" />
-        <PlatformOverviewCard name="School Admins" amount="46" />
-        <PlatformOverviewCard name="Scholarship Admins" amount="56" />
-        <PlatformOverviewCard name="Sponsors" amount="16" />
-        <PlatformOverviewCard name="Fund Admins" amount="16" />
+        <PlatformOverviewCard name="Total Active Users" amount={platformOverview.totalActiveUsers} />
+        <PlatformOverviewCard name="Total Schools" amount={platformOverview.totalSchools} />
+        <PlatformOverviewCard name="Total Students" amount={platformOverview.totalStudents} />
+        <PlatformOverviewCard name="Total Students Sponsored" amount={platformOverview.totalStudentsSponsored} />
+        <PlatformOverviewCard name="Approved Students" amount={studentMetrics.APPROVED} />
+        <PlatformOverviewCard name="Pending Students" amount={studentMetrics.PENDING} />
+        <PlatformOverviewCard name="Rejected Students" amount={studentMetrics.REJECTED} />
+        <PlatformOverviewCard name="Approved Schools" amount={schoolMetrics.APPROVED} />
+        <PlatformOverviewCard name="Pending Schools" amount={schoolMetrics.PENDING} />
+        <PlatformOverviewCard name="Rejected Schools" amount={schoolMetrics.REJECTED} />
+        <PlatformOverviewCard name="Total Funds Disbursed" amount={`₦${platformOverview.totalFundsDisbursed}`} />
+        <PlatformOverviewCard name="School Admins" amount={userMetrics["SCHOOL-ADMIN"]} />
+        <PlatformOverviewCard name="Scholarship Admins" amount={userMetrics["SCHOLARSHIP-ADMIN"]} />
+        <PlatformOverviewCard name="Sponsors" amount={userMetrics["SPONSOR"]} />
+        <PlatformOverviewCard name="Fund Admins" amount={userMetrics["FUND-ADMIN"]} />
+        <PlatformOverviewCard name="Super Admins" amount={userMetrics["SUPER-ADMIN"]} />
       </SimpleGrid>
     </Box>
 

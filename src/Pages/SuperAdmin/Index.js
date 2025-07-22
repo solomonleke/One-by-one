@@ -38,7 +38,7 @@ import TableRow from "../../Components/TableRow"
 import { CgSearch } from "react-icons/cg";
 import { configuration } from "../../Utils/Helpers";
 import { IoFilter } from "react-icons/io5";
-import { GetAllStudentApi } from "../../Utils/ApiCall";
+import { GetAllStudentApi, GetSuperAdminDashboardDetailsApi } from "../../Utils/ApiCall";
 import { GetSchoolAdminDashboardGraphDataApi } from "../../Utils/ApiCall";
 import { GetStudentStatsApi, UpdateStudentProfile, DeleteStudentProfile } from "../../Utils/ApiCall";
 import moment from "moment";
@@ -75,8 +75,6 @@ import {
 
 
 export default function Index() {
-
-  const availableBalance = "200,158.32"
 
   const [All, setAll] = useState(true)
   const [Approved, setApproved] = useState(false)
@@ -220,6 +218,31 @@ export default function Index() {
     }
   }, []);
 
+  const [superAdminDetails, setSuperAdminDetails] = useState({});
+
+  const GetSuperAdminDashboardDetails = async () => {
+
+    try {
+      const response = await GetSuperAdminDashboardDetailsApi()
+
+      console.log("getSuperAdminDashboardDetails", response)
+
+      setSuperAdminDetails(response.data.data)
+
+
+    } catch (e) {
+
+      console.log("error", e.message)
+    }
+
+  }
+
+  useEffect(() => {
+
+    GetSuperAdminDashboardDetails()
+
+  }, []);
+
 
   if (isLoading) {
     return (<Preloader message="Loading..." />)
@@ -272,7 +295,7 @@ export default function Index() {
             letterSpacing="1px"
           >
             <Box as="span" fontSize="20px" color="#ffffff" fontWeight="700">₦</Box>
-            {availableBalance}
+            {superAdminDetails.availableFunds ? superAdminDetails.availableFunds.toLocaleString() : "0.00"}
           </Text>
           <Button
             w="220px"
@@ -297,28 +320,35 @@ export default function Index() {
           {[
             {
               title: "Total Schools",
-              total: 26,
+              total: superAdminDetails.totalSchools ? superAdminDetails.totalSchools.toLocaleString() : "0",
               icon: FaSchool,
               navText: "See All",
             },
             {
               title: "Total Students",
-              total: 40,
+              total: superAdminDetails.totalStudents ? superAdminDetails.totalStudents.toLocaleString() : "0",
               icon: FaSchool,
               navText: "See All",
             },
             {
               title: "Total Students Sponsored",
-              total: 16,
+              total: superAdminDetails.totalStudentsSponsored ? superAdminDetails.totalStudentsSponsored.toLocaleString() : "0",
               icon: FaSchool,
               navText: "See All",
             },
             {
               title: "Total Funds Disbursed",
-              total: '₦450,184 ',
+              total: (
+                superAdminDetails.fundsDisbursed === "0" ||
+                superAdminDetails.fundsDisbursed === "0.00" ||
+                superAdminDetails.fundsDisbursed === "Undefined" ||
+                superAdminDetails.fundsDisbursed === undefined
+              )
+                ? "₦0.00"
+                : `₦${superAdminDetails.fundsDisbursed}`,
               icon: FaSchool,
               navText: "See All",
-            },
+            }
           ].map((role, i) => (
             <Box
               key={i}
