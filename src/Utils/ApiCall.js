@@ -1413,6 +1413,80 @@ export const getAllActiveScholarships = async () => {
   }
 };
 
+export const getAllAdmins = async (adminType, pageNo, postPerPage) => {
+  try {
+    const response = await axios.get(
+      `${baseUrl}/super-admin/user-management`,
+      {
+        params: {
+          type: adminType,
+          pageNo: String(pageNo),
+          noItems: String(postPerPage),
+        },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Unexpected response from server");
+    }
+  } catch (error) {
+    console.error("❌ Error fetching admins:", error);
+    if (error.response) {
+      throw new Error(error.response.data?.message || "Server responded with an error");
+    } else if (error.request) {
+      throw new Error("No response from server");
+    } else {
+      throw new Error(error.message);
+    }
+  }
+};
+
+
+
+
+export const initiateFundingApi = async (id, type = "stationery") => {
+  console.log("🚀 Initiating funding for ID:", id, "Type:", type);
+
+  try {
+    const config = {
+      method: 'post',
+      url: `${baseUrl}/fund-admin/initiate-funding/${id}`,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      data: {
+        type
+      }
+    };
+
+    const response = await axios.request(config);
+    console.log("✅ Funding initiated:", response.data);
+
+    if (response.data.status === true) {
+      return response.data;
+    } else {
+      throw new Error(response.data.message || "Funding initiation failed.");
+    }
+
+  } catch (error) {
+    if (error.response) {
+      console.error("❌ API response error:", error.response.data);
+    } else if (error.request) {
+      console.error("❌ No response from API:", error.request);
+    } else {
+      console.error("❌ API call error:", error.message);
+    }
+    throw error;
+  }
+};
+
 
 
 

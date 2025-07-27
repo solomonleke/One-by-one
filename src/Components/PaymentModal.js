@@ -16,12 +16,14 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-const PaymentModal = ({ isOpen, onClose, student }) => {
+const PaymentModal = ({ isOpen, onClose, student, onSubmit  }) => {
   const [reason, setReason] = useState("");
   const toast = useToast();
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-    if (!reason) {
+
+  const handleSubmit = async () => {
+    if (!reason.trim()) {
       toast({
         title: "Reason for payment is required.",
         status: "error",
@@ -31,21 +33,38 @@ const PaymentModal = ({ isOpen, onClose, student }) => {
       return;
     }
 
-    console.log("Payment Details:", {
-      student: student,
-      reason: reason,
-    });
+    setLoading(true);
 
-    toast({
-      title: "Payment submitted.",
-      description: "Check the console for payment details.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
+    try {
+      const paymentPayload = {
+        student,
+        reason,
+      };
 
-    onClose();
+      await onSubmit(paymentPayload); // expected to be a promise
+      toast({
+        title: "Payment initiated.",
+        description: "The payment process has started.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      setReason(""); // Reset reason
+      onClose();     // Close modal
+    } catch (error) {
+      toast({
+        title: "Payment failed.",
+        description: error?.message || "Something went wrong during payment.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -104,7 +123,8 @@ const PaymentModal = ({ isOpen, onClose, student }) => {
           <Button colorScheme="blue" mr={3} onClick={onClose}>
             Close
           </Button>
-          <Button variant="ghost" onClick={handleSubmit}>
+          <Button variant="ghost" onClick={handleSubmit} isLoading={loading}
+>
             Submit Payment
           </Button>
         </ModalFooter>

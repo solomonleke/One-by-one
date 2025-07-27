@@ -17,19 +17,26 @@ import TableRow from "../../Components/TableRow"
 import { configuration } from "../../Utils/Helpers";
 import { GetAllFundingHistoryApi } from "../../Utils/ApiCall"; // Adjust path as needed
 import Pagination from "../../Components/Pagination";
+import Preloader from "../../Components/Preloader"
+import ShowToast from "../../Components/ToastNotification"
 
 
 
 export default function FundedHistory(){
   const [history, setHistory] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [pageNo, setPageNo] = useState(1);
   const [TotalPage, setTotalPage] = useState("");
   const noItems = 10;
   const [error, setError] = useState("");
   const [CurrentPage, setCurrentPage] = useState(1);
   const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [showToast, setShowToast] = useState({
+    show: false,
+    message: "",
+    status: ""
+  })
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -68,7 +75,7 @@ const fetchFundingHistory = async () => {
   setError("");
 
   try {
-    const response = await GetAllFundingHistoryApi(pageNo, PostPerPage);
+    const response = await GetAllFundingHistoryApi(CurrentPage, PostPerPage);
     console.log("API funding history response:", response.data);
     setHistory(response.data.data.funds || []);
     setTotalPage(response.data.data.totalPages || []); // adjust depending on API response structure
@@ -83,10 +90,18 @@ const fetchFundingHistory = async () => {
 
 useEffect(() => {
   fetchFundingHistory();
-}, [pageNo, CurrentPage, PostPerPage]);
+}, [CurrentPage, PostPerPage]);
+
+
+if (loading) {
+  return (<Preloader message="Loading..." />)
+}
     
   return (
       <MainLayout>
+      {showToast.show && (
+        <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
+      )}
       <Box p={6}>
         <Text fontSize="21px" fontWeight="bold">Funding History</Text>
         <Text mb={4} fontSize="14px">Keep track of your financial contributions with detailed records. Review past transactions, monitor disbursements, and ensure your impact is well-documented.</Text>
