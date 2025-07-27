@@ -27,8 +27,10 @@ import InputX from "../../Components/InputX"
 import { BiSearch } from "react-icons/bi"; 
 import Pagination from "../../Components/Pagination";
 import { configuration } from "../../Utils/Helpers";
-import { GetAllRequestFundsApi  } from "../../Utils/ApiCall";
+import { GetAllRequestFundsApi, initiateFundingApi  } from "../../Utils/ApiCall";
 import PaymentModal from "../../Components/PaymentModal";
+import Preloader from "../../Components/Preloader"
+import ShowToast from "../../Components/ToastNotification"
 
 
 const students = [
@@ -53,11 +55,29 @@ console.log("currentpage", currentPage);
 const [postPerPage, setPostPerPage] = useState(configuration.sizePerPage);
 const [TotalPage, setTotalPage] = useState("");
 const [FundRequests, setFundRequests] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [pageNo, setPageNo] = useState(1);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showToast, setShowToast] = useState({
+    show: false,
+    message: "",
+    status: ""
+  })
+
+
+const handleInitiateFunding = async (id) => {
+  try {
+    const response = await initiateFundingApi(id, "stationery");
+    console.log("🎉 Funding successful:", response);
+    // maybe show toast or update UI
+  } catch (error) {
+    console.error("💥 Funding failed:", error.message);
+    // show error message
+  }
+};
 
 //get current post
 //change page
@@ -96,8 +116,17 @@ useEffect(() => {
 
 }, [pageNo]);
 
+if (loading) {
+  return (<Preloader message="Loading..." />)
+}
+
+
+
   return (
     <MainLayout>
+    {showToast.show && (
+        <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
+      )}
       <Box p={6}>
       <Text fontSize="21px" fontWeight="bold" color="#101828">
   Awaiting Funding <span style={{ color: "#667085", fontWeight:"400" }}>({FundRequests.length})</span>
@@ -106,14 +135,6 @@ useEffect(() => {
 
         <Flex justify="space-between" align="center">
           <InputX label="Search Students" maxW="600px" />
-          <Flex justify="space-between" align="center" gap={4} marginLeft={4}>
-            <Button display="flex" variant="outline" w="48px" h="48px" borderRadius="full">
-              <GoArrowLeft />
-            </Button>
-            <Button display="flex" variant="outline" w="48px" h="48px" borderRadius="full">
-              <GoArrowRight />
-            </Button>
-          </Flex>
         </Flex>
 
 
@@ -204,12 +225,14 @@ useEffect(() => {
         </Flex>
       </Box>
       {selectedStudent && (
-        <PaymentModal
-          isOpen={isOpen}
-          onClose={onClose}
-          student={selectedStudent}
-        />
-      )}
+  <PaymentModal
+    isOpen={isOpen}
+    onClose={onClose}
+    student={selectedStudent}
+    onSubmit={() => handleInitiateFunding(selectedStudent.id)} // <-- pass function here
+  />
+)}
+
     </MainLayout>
   );
 };

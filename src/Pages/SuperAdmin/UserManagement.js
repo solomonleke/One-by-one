@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -27,341 +27,27 @@ import Pagination from "../../Components/Pagination";
 import TableRow from "../../Components/TableRow"
 import { IoIosSearch } from "react-icons/io";
 import { IoFilter } from "react-icons/io5";
+import { configuration } from "../../Utils/Helpers";
+import { getAllAdmins } from "../../Utils/ApiCall";
 
 
 
 export default function UserManagement() {
   const [search, setSearch] = useState("");
+  const [admins, setAdmins] = useState([]);
+  const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
+  const [TotalPage, setTotalPage] = useState("");
+
+  const [scholarshipAdmins, setScholarshipAdmins] = useState([]);
+  const [fundAdmins, setFundAdmins] = useState([]);
+  const [sponsorAdmins, setSponsorAdmins] = useState([]);
+  const [schoolAdmins, setSchoolAdmins] = useState([]);  
   const [selectedTab, setSelectedTab] = useState("school"); // Tabs: 'school', 'scholarship', 'sponsor', 'fund'
 
 
-  const students = [
-    {
-      name: "Ruth Wakil",
-      email: "philipamakiri@gmail.com",
-      school: "Legendary Scholars Academy",
-      city: "Okota",
-      state: "Lagos",
-      status: "Disabled",
-      dateJoined: "11/27/2024 21:19",
-    },
-    {
-      name: "Andrew Maudubuchi",
-      email: "davidfolarin@gmail.com",
-      school: "Queen’s College",
-      city: "Abeokuta",
-      state: "Ogun",
-      status: "Active",
-      dateJoined: "12/02/2024 12:14",
-    },
-    {
-      name: "Joseph Diongoli",
-      email: "timothysalisu@gmail.com",
-      school: "Federal Government College",
-      city: "Batsari",
-      state: "Katsina",
-      status: "Active",
-      dateJoined: "12/02/2024 12:32",
-    },
-    {
-      name: "David Nwankwo",
-      email: "peterusman@gmail.com",
-      school: "Mayflower School",
-      city: "Oogobo",
-      state: "Osun",
-      status: "Active",
-      dateJoined: "12/09/2024 00:37",
-    },
-    {
-      name: "Martha Murtala",
-      email: "estherwakili@gmail.com",
-      school: "Chrisland College",
-      city: "Eli-osa",
-      state: "Lagos",
-      status: "Active",
-      dateJoined: "12/16/2024 14:48",
-    },
-    {
-      name: "Stephen Fubara",
-      email: "simonogan@gmail.com",
-      school: "Christ The King College",
-      city: "Ikeja",
-      state: "Lagos",
-      status: "Active",
-      dateJoined: "12/17/2024 19:45",
-    },
-    {
-      name: "Andrew Diongoli",
-      email: "estherabubakar@gmail.com",
-      school: "Corona Secondary School",
-      city: "Portharcourt",
-      state: "Rivers",
-      status: "Active",
-      dateJoined: "12/22/2024 07:25",
-    },
-    {
-      name: "Hannah Alamina",
-      email: "philipezekee@gmail.com",
-      school: "Adesoye College",
-      city: "Ikotun",
-      state: "Lagos",
-      status: "Active",
-      dateJoined: "12/23/2024 16:51",
-    },
-  ];
-
-  const scholarship = [
-
-    {
-      "name": "Andrew Maduabuchi",
-      "email": "davidtosin@gmail.com",
-      "approvedStudents": 15,
-      "approvedSchools": 6,
-      "city": "Okota",
-      "state": "Lagos",
-      "status": "Disabled",
-      "dateJoined": "11/27/2024 21:19"
-    },
-    {
-      "name": "Joseph Diongoli",
-      "email": "timothysalli@gmail.com",
-      "approvedStudents": 17,
-      "approvedSchools": 4,
-      "city": "Abedukuta",
-      "state": "Ogun",
-      "status": "Active",
-      "dateJoined": "12/02/2024 12:14"
-    },
-    {
-      "name": "Ruth Wakili",
-      "email": "philipomakin@gmail.com",
-      "approvedStudents": 4,
-      "approvedSchools": 9,
-      "city": "Batsari",
-      "state": "Kastina",
-      "status": "Active",
-      "dateJoined": "12/02/2024 12:32"
-    },
-    {
-      "name": "Martha Murtala",
-      "email": "estherwakili@gmail.com",
-      "approvedStudents": 6,
-      "approvedSchools": 12,
-      "city": "Osogbo",
-      "state": "OSun",
-      "status": "Active",
-      "dateJoined": "12/09/2024 00:33"
-    },
-    {
-      "name": "David Nwankwo",
-      "email": "peterianian@gmail.com",
-      "approvedStudents": 9,
-      "approvedSchools": 23,
-      "city": "Eti-osa",
-      "state": "Lagos",
-      "status": "Active",
-      "dateJoined": "12/16/2024 16:48"
-    },
-    {
-      "name": "Andrew Diongoli",
-      "email": "estherabuzubaker@gmail.com",
-      "approvedStudents": 13,
-      "approvedSchools": 4,
-      "city": "Ikeja",
-      "state": "Lagos",
-      "status": "Active",
-      "dateJoined": "12/17/2024 19:45"
-    },
-    {
-      "name": "Stephen Fubara",
-      "email": "simonogan@gmail.com",
-      "approvedStudents": 33,
-      "approvedSchools": 12,
-      "city": "Portharcourt",
-      "state": "Rivers",
-      "status": "Active",
-      "dateJoined": "12/22/2024 07:29"
-    },
-    {
-      "name": "Hannah Alamina",
-      "email": "philipike@gmail.com",
-      "approvedStudents": 6,
-      "approvedSchools": 21,
-      "city": "Ikotun",
-      "state": "Lagos",
-      "status": "Active",
-      "dateJoined": "12/23/2024 16:51"
-    }
-  ]
-
-
-  const sponsor = [
-    {
-      name: "Joseph Diongoli",
-      email: "timothysalisu@gmail.com",
-      scholarshipsCreated: 15,
-      fundedScholarships: 4,
-      studentsFunded: 6,
-      city: "Okota",
-      state: "Lagos",
-      status: "Active",
-      dateJoined: "11/27/2024 21:19",
-    },
-    {
-      name: "Andrew Maudubuchi",
-      email: "davidfolarin@gmail.com",
-      scholarshipsCreated: 4,
-      fundedScholarships: 6,
-      studentsFunded: 13,
-      city: "Abeokuta",
-      state: "Ogun",
-      status: "Active",
-      dateJoined: "12/02/2024 12:14",
-    },
-    {
-      name: "Ruth Wakil",
-      email: "philipamakiri@gmail.com",
-      scholarshipsCreated: 9,
-      fundedScholarships: 9,
-      studentsFunded: 8,
-      city: "Batsari",
-      state: "Katsina",
-      status: "Active",
-      dateJoined: "12/02/2024 12:32",
-    },
-    {
-      name: "David Nwankwo",
-      email: "peterusman@gmail.com",
-      scholarshipsCreated: 17,
-      fundedScholarships: 23,
-      studentsFunded: 6,
-      city: "Oogobo",
-      state: "Osun",
-      status: "Active",
-      dateJoined: "12/09/2024 00:37",
-    },
-    {
-      name: "Martha Murtala",
-      email: "estherwakili@gmail.com",
-      scholarshipsCreated: 13,
-      fundedScholarships: 12,
-      studentsFunded: 4,
-      city: "Eli-osa",
-      state: "Lagos",
-      status: "Active",
-      dateJoined: "12/16/2024 14:48",
-    },
-    {
-      name: "Stephen Fubara",
-      email: "simonogan@gmail.com",
-      scholarshipsCreated: 6,
-      fundedScholarships: 12,
-      studentsFunded: 11,
-      city: "Ikeja",
-      state: "Lagos",
-      status: "Active",
-      dateJoined: "12/17/2024 19:45",
-    },
-    {
-      name: "Hannah Alamina",
-      email: "philipezekee@gmail.com",
-      scholarshipsCreated: 6,
-      fundedScholarships: 4,
-      studentsFunded: 4,
-      city: "Portharcourt",
-      state: "Rivers",
-      status: "Active",
-      dateJoined: "12/22/2024 07:25",
-    },
-    {
-      name: "Andrew Diongoli",
-      email: "estherabubakar@gmail.com",
-      scholarshipsCreated: 33,
-      fundedScholarships: 21,
-      studentsFunded: 7,
-      city: "Ikotun",
-      state: "Lagos",
-      status: "Active",
-      dateJoined: "12/23/2024 16:51",
-    },
-  ];
-
-  const funded = [
-    {
-      "name": "Joseph Diongoli",
-      "email": "timothysall@gmail.com",
-      "fundedStudents": 15,
-      "city": "Oketa",
-      "state": "Lagos",
-      "status": "Active",
-      "dateJoined": "11/27/2024 21:19"
-    },
-    {
-      "name": "Andrew Maduabuchi",
-      "email": "davidfolarin@gmail.com",
-      "fundedStudents": 4,
-      "city": "Abedukuta",
-      "state": "Ogun",
-      "status": "Active",
-      "dateJoined": "12/02/2024 12:14"
-    },
-    {
-      "name": "Ruth Wakili",
-      "email": "philipamakin@gmail.com",
-      "fundedStudents": 9,
-      "city": "Batsari",
-      "state": "Kastina",
-      "status": "Active",
-      "dateJoined": "12/02/2024 12:32"
-    },
-    {
-      "name": "David Nwankwo",
-      "email": "peterianian@gmail.com",
-      "fundedStudents": 17,
-      "city": "Osogbo",
-      "state": "OSun",
-      "status": "Active",
-      "dateJoined": "12/09/2024 00:37"
-    },
-    {
-      "name": "Martha Murtala",
-      "email": "estherwakili@gmail.com",
-      "fundedStudents": 13,
-      "city": "Eti-osa",
-      "state": "Lagos",
-      "status": "Active",
-      "dateJoined": "12/16/2024 16:48"
-    },
-    {
-      "name": "Stephen Fubara",
-      "email": "simonogan@gmail.com",
-      "fundedStudents": 6,
-      "city": "Ikeja",
-      "state": "Lagos",
-      "status": "Active",
-      "dateJoined": "12/17/2024 19:45"
-    },
-    {
-      "name": "Hannah Alamina",
-      "email": "philipozoskie@gmail.com",
-      "fundedStudents": 6,
-      "city": "Portharcourt",
-      "state": "Rivers",
-      "status": "Active",
-      "dateJoined": "12/22/2024 07:25"
-    },
-    {
-      "name": "Andrew Diongoli",
-      "email": "estherabuzubaker@gmail.com",
-      "fundedStudents": 33,
-      "city": "Ikotun",
-      "state": "Lagos",
-      "status": "Active",
-      "dateJoined": "12/23/2024 16:51"
-    }
-  ]
+  
 
   const handleTabSwitch = (tab) => {
     setSelectedTab(tab);
@@ -369,55 +55,72 @@ export default function UserManagement() {
     setSearch("");
   };
 
-  const filteredByTab = students.filter((student) => student.role === selectedTab);
-  const filteredStudents = filteredByTab.filter((student) =>
-    student.name.toLowerCase().includes(search.toLowerCase())
-  );
+  // const filteredByTab = students.filter((student) => student.role === selectedTab);
+  // const filteredStudents = filteredByTab.filter((student) =>
+  //   student.name.toLowerCase().includes(search.toLowerCase())
+  // );
 
 
-  const getPaginatedData = () => {
-    const dataMap = {
-      school: students,
-      scholarship: scholarship,
-      sponsor: sponsor,
-      fund: funded,
-    };
-
   
-    // Step 1: Get the relevant data by tab
-    const dataToFilter = dataMap[selectedTab] || [];
-  
-    // Step 2: Filter by search
-    const filteredData = search.trim()
-      ? dataToFilter.filter((item) =>
-          Object.values(item).some((value) =>
-            String(value).toLowerCase().includes(search.toLowerCase())
-          )
-        )
-      : dataToFilter;
-  
-    // Step 3: Paginate
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const paginatedItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-  
-    return {
-      paginatedItems,
-      totalItems: filteredData.length,
-    };
-  };
-  const { paginatedItems, totalItems } = getPaginatedData();
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  const fetchAdmins = async (adminType, setState, currentPage , postPerPage) => {
+    try {
+      const result = await getAllAdmins(adminType, currentPage, postPerPage);
+      console.log(`${adminType.toUpperCase()} Data:`, result);
+  
+      // only update TotalPage for the selected tab
+      if (
+        (adminType === "SCHOOL-ADMIN" && selectedTab === "school") ||
+        (adminType === "SCHOLARSHIP-ADMIN" && selectedTab === "scholarship") ||
+        (adminType === "FUND-ADMIN" && selectedTab === "fund") ||
+        (adminType === "SPONSOR" && selectedTab === "sponsor")
+      ) {
+        setTotalPage(result.data.totalPages);
+      }
+  
+      const dataToSet =
+        adminType === "SCHOOL-ADMIN"
+          ? result.data.schools
+          : result.data.admins;
+  
+      setState(dataToSet);
+    } catch (err) {
+      console.error(`Error fetching ${adminType}:`, err.message);
+      setError(err.message);
+    }
+  };
+  
+  
+  
+  
+
+  useEffect(() => {
+    console.log("Selected Tab:", selectedTab);
+    if (selectedTab === "school") {
+      fetchAdmins("SCHOOL-ADMIN", setSchoolAdmins, currentPage, PostPerPage);
+    } else if (selectedTab === "scholarship") {
+      fetchAdmins("SCHOLARSHIP-ADMIN", setScholarshipAdmins, currentPage, PostPerPage);
+    } else if (selectedTab === "fund") {
+      fetchAdmins("FUND-ADMIN", setFundAdmins, currentPage, PostPerPage);
+    } else if (selectedTab === "sponsor") {
+      fetchAdmins("SPONSOR", setSponsorAdmins, currentPage, PostPerPage);
+    }
+  }, [selectedTab, currentPage, PostPerPage]);
+  
+  
+  
+  
 
 
   return (
     <MainLayout>
       <Box p={6}>
         <Text fontSize="21px" fontWeight="600" color="#101828" mb="28px">
-          Users <span style={{ color: "#667085", fontWeight: "400" }}>(59)</span>
+          Users <span style={{ color: "#667085", fontWeight: "400" }}>({schoolAdmins.length + scholarshipAdmins.length + fundAdmins.length + sponsorAdmins.length})</span>
         </Text>
 
         <Box border="1px solid #E7E9EC" py="20px" px="31px" borderRadius="10px">
@@ -601,13 +304,13 @@ export default function UserManagement() {
 
               {selectedTab === "school" && (
                 <Tbody>
-                  {paginatedItems.map((item, index) => (
+                  {schoolAdmins.map((item, index) => (
                     <TableRow
                       key={index}
                       type="super-admin-user-management"
-                      name={item.name}
+                      name={`${item.firstName} ${item.lastName}`}
                       email={item.email}
-                      schoolName={item.school}
+                      schoolName={item.schoolName}
                       city={item.city}
                       state={item.state}
                       status={item.status}
@@ -619,14 +322,14 @@ export default function UserManagement() {
               )}
               {selectedTab === "scholarship" && (
                 <Tbody>
-                  {paginatedItems.map((item, index) => (
+                  {scholarshipAdmins.map((item, index) => (
                     <TableRow
                       key={index}
                       type="super-admin-scholarship"
-                      name={item.name}
+                      name={`${item.firstName} ${item.lastName}`}
                       email={item.email}
-                      approvedStudents={item.approvedStudents}
-                      approvedSchools={item.approvedSchools}
+                      approvedStudents={item.totalStudents}
+                      approvedSchools={item.totalSchools}
                       city={item.city}
                       state={item.state}
                       status={item.status}
@@ -638,15 +341,15 @@ export default function UserManagement() {
 
               {selectedTab === "sponsor" && (
                 <Tbody>
-                  {paginatedItems.map((item, index) => (
+                  {sponsorAdmins.map((item, index) => (
                     <TableRow
                       key={index}
                       type="super-admin-sponsor"
-                      name={item.name}
+                      name={`${item.firstName} ${item.lastName}`}
                       email={item.email}
-                      scholarshipsCreated={item.scholarshipsCreated}
+                      scholarshipsCreated={item.totalScholarships}
                       fundedScholarships={item.fundedScholarships}
-                      studentsFunded={item.studentsFunded}
+                      studentsFunded={item.totalStudents}
                       city={item.city}
                       state={item.state}
                       status={item.status}
@@ -658,11 +361,11 @@ export default function UserManagement() {
 
               {selectedTab === "fund" && (
                 <Tbody>
-                  {paginatedItems.map((item, index) => (
+                  {fundAdmins.map((item, index) => (
                     <TableRow
                       key={index}
                       type="super-admin-fund"
-                      name={item.name}
+                      name={`${item.firstName} ${item.lastName}`}
                       email={item.email}
                       studentsFunded={item.fundedStudents}
                       city={item.city}
@@ -678,12 +381,14 @@ export default function UserManagement() {
         </Box>
 
 
+        
+
         <Pagination
-  totalPosts={totalItems}
-  postsPerPage={itemsPerPage}
+  totalPages={TotalPage}   // ✅ clearer and correct
   currentPage={currentPage}
-  paginate={(page) => setCurrentPage(page)}
+  paginate={paginate}
 />
+
 
 
 

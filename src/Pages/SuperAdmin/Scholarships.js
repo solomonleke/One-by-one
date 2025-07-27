@@ -228,13 +228,12 @@ export default function Scholarships() {
 
   const fetchScholarships = async () => {
     try {
-      const data = await getAllActiveScholarships(); // now returns `res.data`
-      console.log("Scholarships data:", data);
+      const scholarships = await getAllActiveScholarships(); // Now an array
+      console.log("Fetched scholarships:", scholarships);
   
-      // ✅ Update here
-      if (Array.isArray(data.scholarships)) {
-        setScholarships(data.scholarships);
-        setActiveScholarshipCount(data.scholarships.length);
+      if (Array.isArray(scholarships)) {
+        setScholarships(scholarships);
+        setActiveScholarshipCount(scholarships.length);
       } else {
         setError("Scholarship data is not in expected format");
       }
@@ -246,10 +245,10 @@ export default function Scholarships() {
     }
   };
   
-
   useEffect(() => {
     fetchScholarships();
   }, []);
+  
   
   if (isLoading) {
     return (<Preloader message="Loading..." />)
@@ -267,16 +266,16 @@ export default function Scholarships() {
         mb="20px"
       >
         Active Scholarships 
-        <Box as="span" color="#667085" fontSize="18px" fontWeight="400"> ({dummyScholarships.length})</Box>
+        <Box as="span" color="#667085" fontSize="18px" fontWeight="400"> ({scholarships.length})</Box>
       </Text>
 
-      {dummyScholarships.length > 0 ? (
+      {scholarships.length > 0 ? (
         <SimpleGrid
           columns={{ base: 1, sm: 1, md: 1, lg: 1, xl: 2, "2xl": 2 }}
           spacing="20px"
           w="100%"
         >
-          {dummyScholarships.map((scholarship, index) => (
+          {scholarships.map((scholarship, index) => (
             <Stack
               key={scholarship.id || index}
               borderWidth="1px"

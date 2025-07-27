@@ -43,6 +43,9 @@ export default function Schools() {
   const [pendingStudents, setPendingStudents] = useState([]);
   const [approvedStudents, setApprovedStudents] = useState([]);
   const [rejectedStudents, setRejectedStudents] = useState([]);
+  const [pendingCount, setPendingCount] = useState(0);
+const [approvedCount, setApprovedCount] = useState(0);
+const [rejectedCount, setRejectedCount] = useState(0);
   const [CurrentPage, setCurrentPage] = useState(1);
   const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
   const [status, setStatus] = useState("PENDING");
@@ -62,29 +65,25 @@ export default function Schools() {
 
       if (result.status === 200 && result.data.data?.students?.length > 0) {
         const students = result.data.data.students;
-        const totalPosts = result.data.data.totalItems;
-        setTotalPage(totalPosts);
+        setTotalPage(result.data.totalItems); // ✅ correct
+        const count = result.data.data.totalItems;
+
         if (status === "PENDING") {
           setPendingStudents(students);
+          setPendingCount(count);
         } else if (status === "APPROVED") {
           setApprovedStudents(students);
+          setApprovedCount(count);
         } else if (status === "REJECTED") {
           setRejectedStudents(students);
-        }
-      } else {
-        if (status === "PENDING") {
-          setPendingStudents([]);
-        } else if (status === "APPROVED") {
-          setApprovedStudents([]);
-        } else if (status === "REJECTED") {
-          setRejectedStudents([]);
+          setRejectedCount(count);
         }
       }
     } catch (e) {
       console.log("error", e.message);
     }
   };
-  const totalStudents = pendingStudents.length + approvedStudents.length + rejectedStudents.length;
+const totalStudents = pendingCount + approvedCount + rejectedCount;
 
 
 
@@ -95,8 +94,10 @@ export default function Schools() {
   };
 
   useEffect(() => {
+    setCurrentPage(1);
     GetAllStudents(status);
-  }, [CurrentPage, PostPerPage]);
+  }, [status]);
+  
 
 
 
@@ -316,6 +317,7 @@ export default function Schools() {
           totalPosts={TotalPage}
           paginate={paginate}
         />
+        
       </Box>
     </MainLayout>
   );
