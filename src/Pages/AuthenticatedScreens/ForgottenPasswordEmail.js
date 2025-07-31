@@ -61,7 +61,7 @@ export default function ForgottenPasswordEmail() {
                 />
             )}
 
-            <Box px={["3%", "15%"]} mt="74px">
+            <Box px={["3%", "15%"]} mt={"40px"}>
                 <VStack align="start" spacing="22px">
                     <EnvelopeIcon />
                     <VStack alignItems={"start"}>

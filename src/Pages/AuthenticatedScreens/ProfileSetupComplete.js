@@ -10,7 +10,7 @@ export default function ProfileSetupComplete() {
     const router = useNavigate();
     return (
         <AuthenticatedWrapper>
-            <Box px={["3%", "15%"]} mt="74px">
+            <Box px={["3%", "15%"]} mt={"40px"}>
                 <Box display="flex" flexDirection="column" gap="25px">
                     <VerifyIcon />
 
