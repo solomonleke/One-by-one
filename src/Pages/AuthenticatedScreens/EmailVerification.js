@@ -82,7 +82,7 @@ export default function EmailVerification() {
       }
        {/* end here  */}
 
-            <Box px={["3%", "15%"]} mt={"74px"}>
+            <Box px={["3%", "15%"]} mt={"40px"}>
                 <Box display="flex" flexDirection="column" gap="25px">
                     <EnvelopeIcon />
 
@@ -97,7 +97,7 @@ export default function EmailVerification() {
                         Verify Your Email Address
                     </Text>
 
-                    <Text fontSize="small" fontWeight="medium" style={{ color: "#6B7280", lineHeight: "24px" }}>We’ve sent a verification link to {email}. <br /> Please check your inbox and click the link to verify your email <br /> before continuing.</Text>
+                    <Text fontSize="small" fontWeight="medium" style={{ color: "#6B7280", lineHeight: "24px" }}>We’ve sent a verification link to <Box as='span' fontWeight="bold" fontSize="medium" color="#222">{email}</Box>. <br /> Please check your inbox and click the link to verify your email <br /> before continuing.</Text>
 
                     <Button onClick={ResendVerification} isLoading={Loading}>Resend</Button>
 

@@ -69,7 +69,7 @@ export default function RoleSelection() {
 
         )
       }
-            <Box px={["3%", "15%"]} mt={"74px"} display="flex" flexDirection="column" gap="10px">
+            <Box px={["3%", "15%"]} mt={"40px"} display="flex" flexDirection="column" gap="10px">
                 <Text
                     textTransform="capitalize"
                     fontWeight="700"

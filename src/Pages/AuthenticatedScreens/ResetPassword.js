@@ -64,7 +64,7 @@ export default function ResetPassword() {
             {showToast.show && (
                 <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
             )}
-            <Box px={["3%", "15%"]} mt="74px">
+            <Box px={["3%", "15%"]} mt={"40px"}>
                 <VStack alignItems={"start"} spacing={"70px"}>
                     <VStack align="start" spacing="22px">
                         <VStack alignItems={"start"}>

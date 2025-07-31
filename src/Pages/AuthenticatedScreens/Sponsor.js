@@ -108,7 +108,7 @@ const Sponsor = () => {
 
         )
       }
-      <Box px={["3%", "15%"]} mt="74px">
+      <Box px={["3%", "15%"]} mt={"40px"}>
         <Box mt="62px" position="relative" overflow="hidden">
           <motion.div
             key={currentView}

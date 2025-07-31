@@ -85,7 +85,7 @@ export default function ForgotPassword() {
                 />
             )}
 
-            <Box px={["3%", "15%"]} mt="74px">
+            <Box px={["3%", "15%"]} mt={"40px"}>
                 <VStack spacing={"70px"} alignItems={"start"}>
                     <VStack align="start" spacing="22px">
                         <FaArrowLeft

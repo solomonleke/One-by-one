@@ -23,6 +23,10 @@ export default function SchoolAdminSignup() {
     const [Payload, setPayload] = useState({
         userType: "SCHOOL-ADMIN",
         schoolName: "",
+        schoolBankName: "",
+        schoolAccountNumber: "",
+        schoolAccountName: "",
+        schoolBankCode: "",
         schoolEmail: "",
         address: "",
         city: "",
@@ -128,7 +132,7 @@ export default function SchoolAdminSignup() {
 
                 )
             }
-            <Box px={["3%", "15%"]} mt="74px">
+            <Box px={["3%", "15%"]} mt={"40px"}>
                 {/* Step Content */}
                 <Box mt="62px" position="relative" overflow="hidden">
                     <Box cursor={"pointer"} fontSize={"35px"}>
@@ -171,6 +175,10 @@ export default function SchoolAdminSignup() {
                                     />
                                     <Input label="School Email" type="email" onChange={handlePayload} value={Payload.schoolEmail} id="schoolEmail" />
                                     <Input label="School Address" type="text" onChange={handlePayload} value={Payload.address} id="address" />
+                                    <Input label="School Bank Name" type="text" onChange={handlePayload} value={Payload.schoolBankName} id="schoolBankName" />
+                                    <Input label="School Account Number" type="text" onChange={handlePayload} value={Payload.schoolAccountNumber} id="schoolAccountNumber" />
+                                    <Input label="school Account Name" type="text" onChange={handlePayload} value={Payload.schoolAccountName} id="schoolAccountName" />
+                                    <Input label="School Bank Code" type="text" onChange={handlePayload} value={Payload.schoolBankCode} id="schoolBankCode" />
                                     <Input label="City" type="text" onChange={handlePayload} value={Payload.city} id="city" />
                                     <Input label="Local Government" type="text" onChange={handlePayload} value={Payload.localGovernment} id="localGovernment" />
                                     <Input label="State" type="text" onChange={handlePayload} value={Payload.state} id="state" />
@@ -201,7 +209,7 @@ export default function SchoolAdminSignup() {
                                     <HStack spacing="4">
                                         <Button px="30px" disabled="true">Back</Button>
                                         <Button px="30px" onClick={secondPage}
-                                            disabled={Payload.schoolName !== "" && Payload.address !== "" && Payload.state !== "" && Payload.city !== "" &&
+                                            disabled={Payload.schoolName !== "" && Payload.address !== "" && Payload.schoolBankName !== "" && Payload.schoolAccountNumber !== "" && Payload.schoolAccountName !== "" && Payload.schoolBankCode !== "" && Payload.state !== "" && Payload.city !== "" &&
                                                 Payload.zipCode !== "" && Payload.classCapacity !== "" && Payload.aboutSchool !== "" && Payload.reason !== "" && Payload.schoolEmail !== "" ? false : true
                                             }>Next</Button>
                                     </HStack>

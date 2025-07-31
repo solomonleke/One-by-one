@@ -4,8 +4,12 @@ import BackgroundImage from "../../../Asset/onebyone.svg";
 import Logo from "../../../Asset/onebyonelogo.svg";
 import Footer from "./Footer";
 import { motion } from "framer-motion";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import Button from "../../../Components/Button";
 
 export default function AuthenticatedWrapper({ children }) {
+  const router = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
     {
@@ -29,19 +33,30 @@ export default function AuthenticatedWrapper({ children }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 10000); // Change slide every 2 seconds
+    }, 10000);
 
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval);
   }, [slides.length]);
 
-  const handleSlideChange = (index) => {
-    setCurrentSlide(index);
-  };
+  const handleSlideChange = (index) => setCurrentSlide(index);
 
   return (
     <Flex minHeight="100vh" flexWrap="wrap">
       {/* Left Content Section */}
-      <Box w={["100%", "100%", "50%", "50%"]} pb="64px">
+      <Box w={["100%", "100%", "50%", "50%"]} pb="64px" px={[4, 8, 12]} position="relative">
+        {/* Back Button */}
+        <Box px={["3%", "15%"]} pt="100px" onClick={() => router("/")}>
+          <Button
+            w={["50%", "30%", "20%"]} // 50% width on mobile, 30% on tablet, 20% on desktop
+            leftIcon={<Box as={IoArrowBackCircleOutline} boxSize={["20px", "22px", "24px"]} />}
+            fontSize={["sm", "md", "md"]} // smaller font on mobile
+            colorScheme="green"
+            variant="solid"
+          >
+            Home
+          </Button>
+        </Box>
+
         {children}
         <Footer />
       </Box>
@@ -69,8 +84,8 @@ export default function AuthenticatedWrapper({ children }) {
         >
           {/* School Logo */}
           <Box mb="4">
-        
-            <Image src={Logo} w="150px" h="150px" pos="fixed" left= "750px" bottom="210px" />
+
+            <Image src={Logo} w="150px" cursor="pointer" h="150px" pos="fixed" left="750px" bottom="210px" onClick={() => router("/")} />
           </Box>
           <Flex
             flexDirection="column"

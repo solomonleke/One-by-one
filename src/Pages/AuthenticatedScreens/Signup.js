@@ -120,7 +120,7 @@ export default function Signup() {
       }
 
 
-      <Box px={["3%", "15%"]} mt={"74px"}>
+      <Box px={["3%", "15%"]} mt={"40px"}>
         <Text
           textTransform={"capitalize"}
           fontWeight={"700"}
