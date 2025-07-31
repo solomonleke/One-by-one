@@ -14,7 +14,7 @@ import { act } from "react-dom/test-utils";
 import { AiOutlineMail } from "react-icons/ai";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-export default function Input({
+const Input = React.forwardRef(({
   id = "",
   val = false,
   label = "",
@@ -36,7 +36,7 @@ export default function Input({
   leftIcon,
   iconColor = "#fff",
   ...rest
-}) {
+}, ref) => {
   const [active, setActive] = useState(rest.value);
   // const [value, setValue] = useState(val);
 
@@ -74,6 +74,7 @@ export default function Input({
           children={<Box pos={"relative"} color={active ? borderColor: iconColor} top="4.5px" fontSize={"20px"}>{leftIcon}</Box>}
         /> */}
           <InputBox
+            ref={ref}
             // borderColor={Colors.red}
             onChange={onChange}
             {...rest}
@@ -132,4 +133,6 @@ export default function Input({
       )}
     </FormControl>
   );
-}
+});
+
+export default Input;
