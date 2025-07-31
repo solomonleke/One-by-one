@@ -67,6 +67,7 @@ export default function StudentManagement() {
 
   // Pagination settings to follow
   const [CurrentPage, setCurrentPage] = useState(1);
+  const [status, setStatus] = useState(null)
   console.log("currentpage", CurrentPage);
   const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
   const [TotalPage, setTotalPage] = useState("");
@@ -109,44 +110,7 @@ export default function StudentManagement() {
 
   });
 
-  const filterAll = () => {
-    setAll(true);
-    setApproved(false);
-    setPending(false);
-    setRejected(false);
-
-    setFilterData(MainData);
-  };
-  const filterApproved = () => {
-    setAll(false);
-    setApproved(true);
-    setPending(false);
-    setRejected(false);
-
-    const filterData = MainData.filter((item) => item.verification_status === "APPROVED");
-    console.log("filterData", filterData, MainData);
-    setFilterData(filterData);
-  };
-  const filterPending = () => {
-    setAll(false);
-    setApproved(false);
-    setPending(true);
-    setRejected(false);
-
-    const filterData = MainData.filter((item) => item.verification_status === "PENDING");
-
-    setFilterData(filterData);
-  };
-  const filterRejected = () => {
-    setAll(false);
-    setApproved(false);
-    setPending(false);
-    setRejected(true);
-
-    const filterData = MainData.filter((item) => item.verification_status === "REJECTED");
-
-    setFilterData(filterData);
-  };
+  
 
   const handleChange = (e) => {
     setEditedData({ ...editedData, [e.target.name]: e.target.value });
@@ -332,16 +296,16 @@ export default function StudentManagement() {
 
   // Search Filter settings to follow end here
 
-  const getallStudent = async () => {
+  const getallStudent = async (status) => {
     try {
-      const result = await GetAllStudentApi(CurrentPage, PostPerPage);
+      const result = await GetAllStudentApi(CurrentPage, PostPerPage, status);
       console.log("getallStudent", result);
   
-      if (result.status === 200) {
+      if (result.status == 200) {
         setMainData(result.data.data.students);
         setFilterData(result.data.data.students);
         setFilteredData(result.data.data.students)
-        setTotalStudentsCount(result.data.data.totalCount);
+        setTotalStudentsCount(result.data.data.totalPages);
         const totalPosts = result.data.data.totalPages * PostPerPage;
         setTotalPage(totalPosts);
       }
@@ -352,6 +316,56 @@ export default function StudentManagement() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const filterAll = () => {
+    setAll(true);
+    setApproved(false);
+    setPending(false);
+    setRejected(false);
+    setCurrentPage(1);
+    getallStudent();
+    setStatus(null)
+    getallStudent(null);
+
+
+    setFilterData(MainData);
+  };
+  const filterApproved =  () => {
+    setAll(false);
+    setApproved(true);
+    setPending(false);
+    setRejected(false);
+    setCurrentPage(1);
+    setStatus("APPROVED")
+    getallStudent("APPROVED");
+
+
+    
+  };
+  const filterPending =  ()  => {
+    setAll(false);
+    setApproved(false);
+    setPending(true);
+    setRejected(false);
+    setCurrentPage(1);
+    setStatus("PENDING")
+    getallStudent("PENDING");
+
+
+    
+  };
+  const filterRejected = () => {
+    setAll(false);
+    setApproved(false);
+    setPending(false);
+    setRejected(true);
+    setCurrentPage(1);
+    setStatus("REJECTED")
+    getallStudent("REJECTED");
+
+
+    
   };
   
 
@@ -385,6 +399,17 @@ export default function StudentManagement() {
         setStats(data); // Update state with fetched stats
       }
     };
+
+    if(All === true){
+      getallStudent(null)
+    } else if (Approved === true) {
+      getallStudent("APPROVED")
+    } else if (Pending === true) {
+      getallStudent("PENDING")
+    } else if (Rejected === true) {
+      getallStudent("REJECTED")
+      
+    }
 
     loadStats();
 
@@ -854,7 +879,7 @@ export default function StudentManagement() {
 
 <Pagination
   // totalPosts={TotalPage}
-  totalPosts={stats.totalStudents}
+  totalPosts={totalStudentsCount}
   postsPerPage={PostPerPage}
   currentPage={CurrentPage}
   paginate={paginate}

@@ -509,22 +509,26 @@ const deleteStudentProfileBtn = async (student_Id) => {
         <DashboardCard
           icon={<HiOutlineUsers />}
           title='total student'
-          value={stats.totalStudents} 
+          value={stats.totalStudents}
+          navigateTo="/school-admin/student-management"
         />
         <DashboardCard
           icon={<IoMdCheckmarkCircleOutline />}
           title='approved'
           value={stats.approvedStudents}
+          navigateTo="/school-admin/student-management"
         />
         <DashboardCard
           icon={<RxTimer />}
           title='pending'
           value={stats.pendingStudents}
+          navigateTo="/school-admin/student-management"
         />
         <DashboardCard
           icon={<MdOutlineCancel />}
           title='rejected'
           value={stats.rejectedStudents}
+          navigateTo="/school-admin/student-management"
         />
       </Flex>
 

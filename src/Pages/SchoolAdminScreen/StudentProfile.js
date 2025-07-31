@@ -31,7 +31,7 @@ export default function StudentProfile() {
   const { student_Id } = useParams(); // Get student ID from URL params
   const [studentData, setStudentData] = useState(() => {
     const storedData = localStorage.getItem("studentData");
-    return storedData ? JSON.parse(storedData) : { full_name: "", email: "", profileImage: "", dob: "", gender: "", phone_number: "", guardian_phone_number: "", address: "", city: "", state: "", intended_field_of_study: "", class_level: "" , department: "", class_performance: "", subjects: "", scholarship_need: "", student_interest: "", higher_education_goals: "", career_goals: "" };
+    return storedData ? JSON.parse(storedData) : { full_name: "", email: "", profileImage: "", dob: "", gender: "", phone_number: "", guardian_phone_number: "", address: "", city: "", state: "", student_interest: [], class_level: "" , department: "", class_performance: "", subjects: "", scholarship_need: "", higher_education_goals: "", career_goals: "" };
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -94,7 +94,17 @@ const closeRemoveModal = () => {
           editedData[key] !== "" &&
           editedData[key] !== null
         ) {
-          updatedFields[key] = editedData[key];
+          if (key === "student_interest") {
+            // Convert string to array
+            updatedFields[key] = Array.isArray(editedData[key])
+              ? editedData[key]
+              : editedData[key]
+                  .split(",")
+                  .map((item) => item.trim())
+                  .filter((item) => item !== "");
+          } else {
+            updatedFields[key] = editedData[key];
+          }
         }
       }
   
@@ -114,6 +124,17 @@ const closeRemoveModal = () => {
       const res = await UpdateStudentProfile(student_Id, updatedFields);
       console.log("API Response: ", res);
   
+      // Ensure returned data is array
+      setStudentData({
+        ...res.student,
+        student_interest: Array.isArray(res.student.student_interest)
+          ? res.student.student_interest
+          : res.student.student_interest
+          ? res.student.student_interest.split(",").map((s) => s.trim())
+          : [],
+      });
+  
+      onCloseEdit();
       setShowToast({
         title: "Success",
         description: res.message || "Student updated successfully",
@@ -121,12 +142,8 @@ const closeRemoveModal = () => {
         duration: 3000,
         isClosable: true,
       });
-  
-      setStudentData(res.student);
-  
-      onCloseEdit(); // Close modal
     } catch (error) {
-      console.error("Error during save:", error); // Log the actual error
+      console.error("Error during save:", error);
       setShowToast({
         title: "Update Failed",
         description: error.message || "Something went wrong",
@@ -136,6 +153,7 @@ const closeRemoveModal = () => {
       });
     }
   };
+  
   
   
   
@@ -183,14 +201,21 @@ const closeRemoveModal = () => {
   const fetchStudentProfile = async () => {
     try {
       const response = await GetStudentProfile(student_Id);
-      console.log("response", response);
-      setStudentData(response); // Store student data
+      setStudentData({
+        ...response,
+        student_interest: Array.isArray(response.student_interest)
+          ? response.student_interest
+          : response.student_interest
+          ? response.student_interest.split(',').map(item => item.trim())
+          : []   // fallback if null or undefined
+      });
       setLoading(false);
     } catch (err) {
       setError(err.message || 'Failed to fetch student profile');
       setLoading(false);
     }
   };
+  
 
 
   useEffect(() => {

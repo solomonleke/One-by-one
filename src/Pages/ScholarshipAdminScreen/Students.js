@@ -82,6 +82,15 @@ export default function Students() {
   const [pendingStudents, setPendingStudents] = useState([]);
   const [approvedStudents, setApprovedStudents] = useState([]);
   const [rejectedStudents, setRejectedStudents] = useState([]);
+  const [currentPagePending, setCurrentPagePending] = useState(1);
+const [totalPending, setTotalPending] = useState(0);
+
+const [currentPageApproved, setCurrentPageApproved] = useState(1);
+const [totalApproved, setTotalApproved] = useState(0);
+
+const [currentPageRejected, setCurrentPageRejected] = useState(1);
+const [totalRejected, setTotalRejected] = useState(0);
+
   const { student_id } = useParams()
   const [essayPercentage, setEssayPercentage] = useState(0);
   const [loadingStudentId, setLoadingStudentId] = useState(null);
@@ -106,56 +115,38 @@ export default function Students() {
 
 
 
-   const GetAllScholarshipStudent = async (status) => {
-    console.log("Fetching students, status:", status);
-  
+  const GetAllScholarshipStudent = async (status, page) => {
     try {
-
-      const result = await GetAllScholarshipStudentsApi(CurrentPage, PostPerPage, status, search)
-      console.log("getallscholarshipStudents", result)
-
-
+      const result = await GetAllScholarshipStudentsApi(page, PostPerPage, status, search);
+  
       if (result.status === 200) {
         const Students = result.data.data.students;
-        setTotalPage(result.data.data.totalPages);
-
+        const total = result.data.data.totalItems; // <-- total items count (ask backend if not returned)
+  
         if (status === "PENDING") {
           setPendingStudents(Students);
+          setTotalPending(total);
         } else if (status === "APPROVED") {
           setApprovedStudents(Students);
+          setTotalApproved(total);
         } else if (status === "REJECTED") {
           setRejectedStudents(Students);
+          setTotalRejected(total);
         }
-      } else {
-        console.warn("No data for status:", status);
-        if (status === "PENDING") setPendingStudents([]);
-        if (status === "APPROVED") setApprovedStudents([]);
-        if (status === "REJECTED") setRejectedStudents([]);
       }
-  
     } catch (e) {
       console.error("GetAllScholarshipStudent error:", e.message);
-    } finally {
-      // setIsLoading(false);
     }
   };
   
+  
 
 
 
-  const FetchPending = () => {
-   
-      GetAllScholarshipStudent("PENDING")
-  }
+  const FetchPending = () => GetAllScholarshipStudent("PENDING", currentPagePending);
+const FetchApproved = () => GetAllScholarshipStudent("APPROVED", currentPageApproved);
+const FetchRejected = () => GetAllScholarshipStudent("REJECTED", currentPageRejected);
 
-  const FetchApproved = () => {
-    
-      GetAllScholarshipStudent("APPROVED")
-  }
-
-  const FetchRejected = () => {
-       GetAllScholarshipStudent("REJECTED")
-  }
 
   
   const filterBy = (type) => {
@@ -247,12 +238,23 @@ export default function Students() {
   } 
 
 
-  useEffect(() => {
+  useEffect(() => { 
+    GetAllScholarshipStudent("PENDING", currentPagePending); 
+  }, [currentPagePending]);
+  
+  useEffect(() => { 
+    GetAllScholarshipStudent("APPROVED", currentPageApproved); 
+  }, [currentPageApproved]);
+  
+  useEffect(() => { 
+    GetAllScholarshipStudent("REJECTED", currentPageRejected); 
+  }, [currentPageRejected]);
+  
 
-    GetAllScholarshipStudent("PENDING");
-  
-  
-  }, [CurrentPage, PostPerPage, search]);
+  useEffect(() => { GetAllScholarshipStudent("PENDING", currentPagePending); }, [currentPagePending]);
+useEffect(() => { GetAllScholarshipStudent("APPROVED", currentPageApproved); }, [currentPageApproved]);
+useEffect(() => { GetAllScholarshipStudent("REJECTED", currentPageRejected); }, [currentPageRejected]);
+
 
 
   if (loading) return <Preloader message="Fetching students..." />;
@@ -440,10 +442,12 @@ export default function Students() {
                   </Table>
 
                   <Pagination
-                    currentPage={CurrentPage}
-                    totalPosts={TotalPage}
-                    paginate={paginate}
-                  />
+  currentPage={currentPageApproved}
+  totalPosts={totalApproved}
+  postsPerPage={PostPerPage}
+  paginate={setCurrentPageApproved}
+/>
+
                 </TableContainer>
               </Box>
             </TabPanel>
@@ -491,11 +495,12 @@ export default function Students() {
                   </Table>
 
                   <Pagination
-  totalPosts={TotalPage}
+  currentPage={currentPageRejected}
+  totalPosts={totalRejected}
   postsPerPage={PostPerPage}
-  currentPage={CurrentPage}
-  paginate={paginate}
+  paginate={setCurrentPageRejected}
 />
+
                 </TableContainer>
               </Box>
             </TabPanel>

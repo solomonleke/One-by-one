@@ -270,13 +270,13 @@ export const fetchDataWithToken = async () => {
   }
 };
 
-export const GetAllStudentApi = (pageNo, postPerPage) => {
+export const GetAllStudentApi = (pageNo, postPerPage, status) => {
  
  
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
-    url: `${baseUrl}/school-admin/all-students?pageNo=${pageNo}&noItems=${postPerPage}`,
+    url: status === null ? `${baseUrl}/school-admin/all-students?pageNo=${pageNo}&noItems=${postPerPage}` : `${baseUrl}/school-admin/all-students?pageNo=${pageNo}&noItems=${postPerPage}&status=${status}`,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
@@ -657,6 +657,36 @@ export const GetAdminProfile = () => {
     .request(config)
     .then((response) => {
      
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
+export const GetScholarshipAdminProfileApi = () => {
+  let config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/scholarship-admin/admin-profile`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
       return response;
     })
     .catch((error) => {
@@ -1487,11 +1517,43 @@ export const initiateFundingApi = async (id, type = "stationery") => {
   }
 };
 
+export const UpdateSchoolProfile = async (updatedFields) => {
+  try {
+    console.log("Updating School Profile with fields:", updatedFields);
+    const response = await axios.patch(
+      `${baseUrl}/users/update-profile`,
+      updatedFields,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log("API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating school profile:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Something went wrong"
+    );
+  }
+};
 
+export const UploadProfilePicture = async (file) => {
+  const formData = new FormData();
+  formData.append("displayPicture", file);
 
+  const config = {
+    method: "POST",
+    url: `${baseUrl}/document-uploader/upload-profile-picture`,
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`, // if needed
+    },
+    data: formData,
+  };
 
-
-
-
-
-
+  const response = await axios.request(config);
+  return response.data; // should return uploaded file URL or success message
+};
