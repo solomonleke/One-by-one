@@ -12,6 +12,8 @@ import { TbFileMinus } from "react-icons/tb";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { FaRegFilePdf } from "react-icons/fa";
 import ShowToast from '../../Components/ToastNotification';
+import Preloader from "../../Components/Preloader"
+
 import {
   UploadDocumentApi,
   GetAdminStats,
@@ -160,6 +162,10 @@ export default function Settings() {
     fetchProfileAndDocuments();
   }, []);
 
+  if (loading) {
+    return (<Preloader message="Loading..." />)
+  }
+
   return (
     <MainLayout>
     {showToast.show && (
@@ -224,7 +230,7 @@ export default function Settings() {
                       </Box>
                       <Box w="70%">
                         <HStack spacing={"30px"}>
-                          <ProfilePicture />
+                          <ProfilePicture size="100px" />
                           <HStack borderWidth={"1px"} cursor={"pointer"} borderColor={"#39996B"} fontWeight={"500"} color={"#39996B"} borderRadius={"8px"} px={"20px"} py={"8px"}>
                             <Text>Edit</Text>
                             <Box as='span'><EditIcon display={"inline-block"} /></Box>

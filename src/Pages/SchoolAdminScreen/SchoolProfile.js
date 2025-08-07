@@ -6,6 +6,7 @@ import MainLayout from "../../DashboardLayout";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { MdWarningAmber } from "react-icons/md";
 import { AiOutlineStop } from "react-icons/ai";
+import Preloader from "../../Components/Preloader"
 import Button from "../../Components/Button";
 import LegalDocuments from "../../Components/LegalDocuments";
 import {
@@ -112,6 +113,10 @@ const fetchAdminProfile = async () => {
   
 
   const schoolEmail = `${adminData?.school_admin.school_name?.toLowerCase()}@gmail.com`;
+
+  if (loading) {
+    return (<Preloader message="Loading profile..." />)
+  }
 
   return (
     <MainLayout>
@@ -345,16 +350,16 @@ const fetchAdminProfile = async () => {
                 <Stack spacing={"14px"} mt="14px">
                   <ProfileCard
                     title="Bank account name"
-                    value={adminData?.school_admin.principal_title}
+                    value="nill"
                   />
                   <ProfileCard
                     title="Bank account number"
-                    value={adminData?.school_admin.principal_fullname}
+                    value="nill"
                   />
                   {/* <ProfileCard title="last name" value="doe" /> */}
                   <ProfileCard
                     title="Bank name"
-                    value={adminData?.school_admin.principal_email}
+                    value="nill"
                   />
                   {/* <ProfileCard
                     title="phone number"
