@@ -72,6 +72,7 @@ export default function Index() {
   const [ByDate, setByDate] = useState(false);
     const [StartDate, setStartDate] = useState("");
     const [EndDate, setEndDate] = useState("");
+    const [status, setStatus] = useState(null)
     const [CurrentPage, setCurrentPage] = useState(1);
     const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
     const [TotalPage, setTotalPage] = useState("");
@@ -216,11 +217,11 @@ export default function Index() {
       router(`/school-admin/student-management/student-profile/${student_Id}`);
     };
 
-    const getallStudent = async () => {
+    const getallStudent = async (status) => {
       console.log("CurrentPage:", CurrentPage, "PostPerPage:", PostPerPage);
 
       try {
-          const result = await GetAllStudentApi(CurrentPage, PostPerPage)
+          const result = await GetAllStudentApi(CurrentPage, PostPerPage, status)
 
           console.log("getallStudent", result)
 
@@ -363,7 +364,7 @@ const deleteStudentProfileBtn = async (student_Id) => {
 
   useEffect(() => {
 
-    getallStudent()
+    getallStudent(status)
 
 }, [CurrentPage]);
 
@@ -806,49 +807,49 @@ const deleteStudentProfileBtn = async (student_Id) => {
                             <Tbody>
 
 
-                            {(SearchInput === "" && (!FilterData || FilterData.length === 0)) ||
- (SearchInput !== "" && (!FilteredData || FilteredData.length === 0)) ? (
-  <Text textAlign="center" mt="32px" color="black">
-    *--No record found--*
-  </Text>
-) : SearchInput === "" ? (
-  FilterData?.map((item, i) => (
-    <TableRow
-      key={i}
-      type="school-admin"
-      name={item.full_name}
-      email={item.email}
-      department={item.department}
-      classLevel={item.class_level}
-      fieldOfStudy={item.intended_field_of_study}
-      status={item.verification_status}
-      date={moment(item.created_at).format("lll")}
-      onClick={() => handleStudentClick(item.id)}
-      onDelete={() => openRemoveModal(item.id)}
-      onEdit={() => handleOpenEditModal(item)}
-    />
-  ))
-) : (
-  FilteredData?.map((item, i) => (
-    <TableRow
-      key={i}
-      type="school-admin"
-      name={item.full_name}
-      email={item.email}
-      department={item.department}
-      classLevel={item.class_level}
-      fieldOfStudy={item.intended_field_of_study}
-      status={item.verification_status}
-      date={moment(item.created_at).format("lll")}
-      onClick={() => handleStudentClick(item.id)}
-      onDelete={() => openRemoveModal(item.id)}
-      onEdit={() => handleOpenEditModal(item)}
-    />
-  ))
-)}
+                {(SearchInput === "" && (!FilterData || FilterData.length === 0)) ||
+                  (SearchInput !== "" && (!FilteredData || FilteredData.length === 0)) ? (
+                  <Text textAlign="center" mt="32px" color="black">
+                    *--No record found--*
+                  </Text>
+                ) : SearchInput === "" ? (
+                  FilterData?.map((item, i) => (
+                    <TableRow
+                      key={i}
+                      type="school-admin"
+                      name={item.full_name}
+                      email={item.email}
+                      department={item.department}
+                      classLevel={item.class_level}
+                      fieldOfStudy={item.intended_field_of_study}
+                      status={item.verification_status}
+                      date={moment(item.created_at).format("lll")}
+                      onClick={() => handleStudentClick(item.id)}
+                      onDelete={() => openRemoveModal(item.id)}
+                      onEdit={() => handleOpenEditModal(item)}
+                    />
+                  ))
+                ) : (
+                  FilteredData?.map((item, i) => (
+                    <TableRow
+                      key={i}
+                      type="school-admin"
+                      name={item.full_name}
+                      email={item.email}
+                      department={item.department}
+                      classLevel={item.class_level}
+                      fieldOfStudy={item.intended_field_of_study}
+                      status={item.verification_status}
+                      date={moment(item.created_at).format("lll")}
+                      onClick={() => handleStudentClick(item.id)}
+                      onDelete={() => openRemoveModal(item.id)}
+                      onEdit={() => handleOpenEditModal(item)}
+                    />
+                  ))
+                )}
 
 
-                            </Tbody>
+              </Tbody>
 
                         </Table>
                     </TableContainer>

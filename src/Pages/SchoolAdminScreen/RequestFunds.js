@@ -60,7 +60,7 @@ export default function RequestFunds() {
 
   const router = useNavigate();
 
-
+const [status, setStatus] = useState("PENDING"); // State to manage the status filter
   const [MainData, setMainData] = useState([])
   const [FilterData, setFilterData] = useState([])
   const [totalStudentsCount, setTotalStudentsCount] = useState(0);
@@ -106,6 +106,7 @@ const [formData, setFormData] = useState({
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [fundRequests, setFundRequests] = useState([]);
+  
 
 
 
@@ -217,11 +218,14 @@ const [formData, setFormData] = useState({
       setLoading(false);
     
       // ✅ Get the server's message if available, else fallback
-      const serverMessage =
-        error?.response?.data?.message?.[0] || // If message is an array
+      let serverMessage =
         error?.response?.data?.message ||     // If message is a string
         "Failed to request fund";
   
+      if (serverMessage === 'Cannot Create another Fund Request as there is a request still processing for student') {
+        serverMessage = "The student has already been funded";
+      }
+
       console.error("❌ Request fund error:", serverMessage);
   
       setShowToast({
@@ -309,11 +313,10 @@ const [loading, setLoading] = useState(false);
 
   // Search Filter settings to follow end here
 
-  const getallStudent = async () => {
-    const postPerPage = 10; // ← manually set
+  const getallStudent = async (status) => {
   
     try {
-      const result = await GetAllStudentApi(CurrentPage, postPerPage);
+      const result = await GetAllStudentApi(CurrentPage, PostPerPage, status);
       console.log("📦 Raw API Response:", result);
 
   
@@ -326,7 +329,7 @@ const [loading, setLoading] = useState(false);
         setFilteredData(studentList);
         setTotalStudentsCount(result.data.data.totalCount);
   
-        const totalPosts = result.data.data.totalPages * postPerPage;
+        const totalPosts = result.data.data.totalPages * PostPerPage;
         setTotalPage(totalPosts);
       }
   
@@ -344,12 +347,15 @@ const [loading, setLoading] = useState(false);
 
 const selectedStudent = options.find(o => o.value === formData.student);
 
+const [totalRequests, setTotalRequests] = useState(0);
+
   
     const fetchFundRequests = async () => {
-      
+      const PostPerPage=10
       try {
         const data = await getAllFundRequestsApi(CurrentPage, PostPerPage);
         setFundRequests(data);
+        setTotalRequests(data.length)
         console.log( "Fund requests data:", data);
         console.log("All fund requests:", data.requests);
       } catch (error) {
@@ -364,9 +370,9 @@ const selectedStudent = options.find(o => o.value === formData.student);
 
   useEffect(() => {
     fetchFundRequests();
-    getallStudent()
+    getallStudent("APPROVED")
 
-  }, [CurrentPage]);
+  }, [CurrentPage, status]);
 
   if (isLoading) {
     return (<Preloader message="fetching students..." />)
@@ -378,13 +384,13 @@ const selectedStudent = options.find(o => o.value === formData.student);
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
       )}
       <HStack>
-        <Text color="#1F2937" fontWeight="600" fontSize="19px">Students</Text>
-        <Text color="#667085" fontWeight="400" fontSize="18px">({stats.totalStudents})</Text>
+        <Text color="#1F2937" fontWeight="600" fontSize="19px">Requests</Text>
+        <Text color="#667085" fontWeight="400" fontSize="18px">({totalRequests})</Text>
       </HStack>
-      <Text color="#686C75" mt="9px" fontWeight="400" fontSize="15px">View and manage all student profiles in one place. Quickly access approval statuses, track eligibility, and update details as needed.</Text>
+      <Text color="#686C75" mt="9px" fontWeight="400" fontSize="15px">View and manage all fund requests in one place.</Text>
 
       <Box bg="#fff" border="1px solid solidrgb(253, 207, 207)" mt="12px" py='17px' px={["18px", "18px"]} rounded='10px'>
-        <Flex justifyContent="space-between" flexWrap="wrap">
+        {/* <Flex justifyContent="space-between" flexWrap="wrap">
           <Flex alignItems="center" flexWrap='wrap' bg="#E8FFF4" rounded='7px' py="3.5px" px="5px" cursor="pointer" mt={["10px", "10px", "0px", "0px"]}>
 
             <Box borderRight="1px solid #EDEFF2" pr="5px" onClick={filterAll}>
@@ -588,7 +594,7 @@ const selectedStudent = options.find(o => o.value === formData.student);
             </HStack>
 
           </Flex>
-        </Flex>
+        </Flex> */}
 
         <Flex
           justifyContent="space-between"
@@ -642,16 +648,15 @@ const selectedStudent = options.find(o => o.value === formData.student);
 
           <Modal isOpen={isEditModalOpen} onClose={onCloseEdit} scrollBehavior="inside">
             <ModalOverlay />
+            <ModalContent maxW="80%" height="80vh">
             {showToast.show && (
               <ShowToast
-              zIndex={1000}
                 message={showToast.message}
                 status={showToast.status}
                 show={showToast.show}
                 duration={showToast.duration}
               />
             )}
-            <ModalContent maxW="80%" height="80vh">
               <ModalHeader>Request Funds</ModalHeader>
               <ModalCloseButton />
               <ModalBody overflow="visible">

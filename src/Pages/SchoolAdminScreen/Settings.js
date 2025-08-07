@@ -6,17 +6,19 @@ import { ReactComponent as EditIcon } from "../../Asset/editIcon.svg";
 import { ReactComponent as Warning } from "../../Asset/warning.svg";
 import { ReactComponent as Close } from "../../Asset/close.svg";
 import { ReactComponent as ProfilePicture } from "../../Asset/profileImage.svg"
-import { useBreakpointValue, Divider, Grid, Icon, Box, HStack, Text, Textarea, VStack, Flex, Tabs, Switch, Stack, TabList, Spacer, TabPanels, Tab, TabPanel, TabIndicator, Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody, Image, } from '@chakra-ui/react'
+import { useBreakpointValue, Divider, Grid, Icon, Box, HStack, Text, Textarea, VStack, Flex, Tabs, Switch, Stack, TabList, Spacer, TabPanels, Tab, TabPanel, TabIndicator, Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody, Image, ModalHeader, ModalFooter } from '@chakra-ui/react'
 import { VscCloudUpload } from "react-icons/vsc";
 import { TbFileMinus } from "react-icons/tb";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { FaRegFilePdf } from "react-icons/fa";
 import ShowToast from '../../Components/ToastNotification';
+import Preloader from "../../Components/Preloader"
+
 import {
   UploadDocumentApi,
   GetAdminStats,
   UpdateSchoolProfile,
-  UploadProfilePicture,
+  UploadAdminProfilePicture,
   GetAdminProfile,
 } from "../../Utils/ApiCall";
 
@@ -25,6 +27,7 @@ export default function Settings() {
 
   const isMobile = useBreakpointValue({ base: "100%", md: "500px", lg: "528px" });
   const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -142,6 +145,9 @@ export default function Settings() {
 
     } catch (error) {
       console.error("Failed to fetch profile", error);
+    } finally {
+      setLoading(false); // Stop loading after fetching profile
+      setIsLoading(false); // Set isLoading to false after fetching profile
     }
   };
 
@@ -155,7 +161,7 @@ export default function Settings() {
     try {
       // Upload profile picture first if a new one is selected
       if (profilePicture) {
-        const imageRes = await UploadProfilePicture(profilePicture);
+        const imageRes = await UploadAdminProfilePicture(profilePicture);
         console.log("Profile picture upload response:", imageRes);
       }
 
@@ -229,6 +235,10 @@ export default function Settings() {
     fetchProfile();
     fetchDocuments();
   }, []);
+
+  if (isLoading) {
+    return (<Preloader message="Loading..." />)
+  }
 
   return (
     <MainLayout>
@@ -322,7 +332,7 @@ export default function Settings() {
                           {/* Preview image (existing or uploaded) */}
                           <Image
                             src={profilePicturePreview || currentProfilePictureUrl}
-                            boxSize="60px"
+                            boxSize="100px"
                             borderRadius="full"
                             objectFit="cover"
                             cursor="pointer"
@@ -357,17 +367,24 @@ export default function Settings() {
                     </HStack>
 
                     {/* Modal for preview */}
-                    <Modal isOpen={profilePictureModal} onClose={handlePreviewClose} size="xl">
+                    <Modal isOpen={profilePictureModal} onClose={handlePreviewClose}  isCentered>
                       <ModalOverlay />
                       <ModalContent>
+                        <ModalHeader>Profile Picture</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody>
-                          <Image
-                            src={profilePicturePreview || currentProfilePictureUrl}
-                            width="100%"
-                            borderRadius="md"
-                          />
+                          <Flex justifyContent="center">
+                            <Image
+                              src={profilePicturePreview || currentProfilePictureUrl}
+                              width="100%"
+                              maxH="70vh"
+                              objectFit="contain"
+                              borderRadius="md"
+                            />
+                          </Flex>
                         </ModalBody>
+                        <ModalFooter>
+                        </ModalFooter>
                       </ModalContent>
                     </Modal>
 

@@ -127,27 +127,41 @@ export default function DocumentSection() {
         <Stack mt="18px" spacing="17px">
           {documents.map((doc) => (
             <HStack
-              key={doc.id}
-              p={2}
-              _hover={{ bg: "#E8FFF4", cursor: "pointer", fontWeight: "600" }}
-              onClick={() => handlePreview(doc)}
-            >
-              <Text fontSize="13px" fontWeight="400" color="#626974">
-                {DOCUMENT_NAME_MAP[doc.document_type] || doc.document_type}
-              </Text>
-              <Spacer />
-              <Text
-                fontWeight="500"
-                color={doc.status === "verified" ? "#027A48" : "#FF0000"}
-                bg={doc.status === "verified" ? "#ECFDF3" : "#FFE5E5"}
-                borderRadius="20px"
-                py="5px"
-                px="12px"
-                fontSize="12px"
-              >
-                {doc.status}
-              </Text>
-            </HStack>
+  key={doc.id}
+  p={2}
+  borderRadius="md"
+  _hover={{ bg: "#F9FAFB" }}
+>
+  <Text fontSize="13px" fontWeight="400" color="#626974">
+    {DOCUMENT_NAME_MAP[doc.document_type] || doc.document_type}
+  </Text>
+  <Spacer />
+  <Button
+    size="sm"
+    background="transparent"
+    color="greenn.greenn500"
+    border="1px solid green"
+    _hover={{
+                    background: "greenn.greenn500",
+                    color: "white",
+                  }}
+    onClick={() => handlePreview(doc)}
+  >
+    Preview
+  </Button>
+  <Text
+    fontWeight="500"
+    color={doc.status === "verified" ? "#027A48" : "#FF0000"}
+    bg={doc.status === "verified" ? "#ECFDF3" : "#FFE5E5"}
+    borderRadius="20px"
+    py="5px"
+    px="12px"
+    fontSize="12px"
+  >
+    {doc.status}
+  </Text>
+</HStack>
+
           ))}
         </Stack>
       )}

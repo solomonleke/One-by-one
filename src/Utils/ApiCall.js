@@ -1190,7 +1190,7 @@ export const requestFundApi = async ({ studentId, type, amount }) => {
     if (error.response) {
       const { data, status } = error.response;
       console.error(`Server Error [${status}]:`, data);
-      throw new Error(data?.message || `Server responded with status ${status}`);
+      throw error
     } else if (error.request) {
       throw new Error("No response from server. Please check your internet connection.");
     } else {
@@ -1541,6 +1541,24 @@ export const UpdateSchoolProfile = async (updatedFields) => {
 };
 
 export const UploadProfilePicture = async (file) => {
+  const formData = new FormData();
+  formData.append("displayPicture", file);
+
+  const config = {
+    method: "PATCH",
+    url: `${baseUrl}/document-uploader/upload-profile-picture-school-admin`,
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`, // if needed
+    },
+    data: formData,
+  };
+
+  const response = await axios.request(config);
+  return response.data; // should return uploaded file URL or success message
+};
+
+export const UploadAdminProfilePicture = async (file) => {
   const formData = new FormData();
   formData.append("displayPicture", file);
 
