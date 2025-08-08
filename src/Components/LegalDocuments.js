@@ -17,12 +17,19 @@ import {
   Image,
   Spinner,
   Center,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  IconButton,
+  Flex,
 } from "@chakra-ui/react";
-import { MdOutlineFileDownload } from "react-icons/md";
+import { MdOutlineFileDownload, MdZoomIn, MdZoomOut, MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 import { Document as PdfDocument, Page, pdfjs } from "react-pdf";
 import { GetAdminProfile } from "../Utils/ApiCall";
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+// Worker configuration for pdfjs-dist v5.4.54 - using unpkg CDN
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 const DOCUMENT_NAME_MAP = {
   certificate: "Certificate of Incorporation",
@@ -39,6 +46,10 @@ export default function DocumentSection() {
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [downloading, setDownloading] = useState(false);
   const [numPages, setNumPages] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [pdfError, setPdfError] = useState(null);
+  const [scale, setScale] = useState(1.0);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -76,7 +87,44 @@ export default function DocumentSection() {
   const handlePreview = (doc) => {
     setSelectedDoc(doc);
     setNumPages(null);
+    setCurrentPage(1);
+    setPdfError(null);
+    setPdfLoading(false);
+    setScale(1.0);
     onOpen();
+  };
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
+    setPdfLoading(false);
+    setPdfError(null);
+  };
+
+  const onDocumentLoadError = (error) => {
+    console.error('PDF load error:', error);
+    setPdfLoading(false);
+    setPdfError('Failed to load PDF. The document might be corrupted or inaccessible.');
+  };
+
+  const onDocumentLoadStart = () => {
+    setPdfLoading(true);
+    setPdfError(null);
+  };
+
+  const goToPreviousPage = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 1));
+  };
+
+  const goToNextPage = () => {
+    setCurrentPage(prev => Math.min(prev + 1, numPages || 1));
+  };
+
+  const zoomIn = () => {
+    setScale(prev => Math.min(prev + 0.2, 2.0));
+  };
+
+  const zoomOut = () => {
+    setScale(prev => Math.max(prev - 0.2, 0.5));
   };
 
   const handleDownload = async (url) => {
@@ -166,13 +214,27 @@ export default function DocumentSection() {
         </Stack>
       )}
 
-      {/* Modal for preview */}
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      {/* Enhanced Modal for preview */}
+      <Modal isOpen={isOpen} onClose={onClose} size="4xl">
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Document Preview</ModalHeader>
+        <ModalContent maxW="90vw" maxH="90vh">
+          <ModalHeader>
+            <Text fontSize="lg">Document Preview</Text>
+            {selectedDoc && (
+              <Text fontSize="sm" color="gray.600" mt={1}>
+                {DOCUMENT_NAME_MAP[selectedDoc.document_type] || selectedDoc.document_type}
+              </Text>
+            )}
+          </ModalHeader>
           <ModalCloseButton />
-          <ModalBody display="flex" justifyContent="center" flexDirection="column">
+          
+          <ModalBody 
+            display="flex" 
+            justifyContent="center" 
+            flexDirection="column"
+            p={4}
+            overflow="hidden"
+          >
             {selectedDoc &&
               (() => {
                 const url = selectedDoc.document_front_url;
@@ -180,40 +242,198 @@ export default function DocumentSection() {
 
                 if (lowerUrl.endsWith(".pdf")) {
                   return (
-                    <PdfDocument
-                      file={url}
-                      key={url}
-                      onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-                    >
-                      <Page pageNumber={1} width={600} />
-                    </PdfDocument>
+                    <Box>
+                      {/* PDF Controls */}
+                      {(numPages > 1 || pdfError) && (
+                        <Flex justify="space-between" align="center" mb={4} p={2} bg="gray.50" borderRadius="md">
+                          <Flex align="center" gap={2}>
+                            <IconButton
+                              icon={<MdNavigateBefore />}
+                              onClick={goToPreviousPage}
+                              isDisabled={currentPage <= 1 || pdfLoading}
+                              size="sm"
+                              aria-label="Previous page"
+                            />
+                            <Text fontSize="sm">
+                              Page {currentPage} of {numPages || '?'}
+                            </Text>
+                            <IconButton
+                              icon={<MdNavigateNext />}
+                              onClick={goToNextPage}
+                              isDisabled={currentPage >= (numPages || 1) || pdfLoading}
+                              size="sm"
+                              aria-label="Next page"
+                            />
+                          </Flex>
+                          
+                          <Flex align="center" gap={2}>
+                            <IconButton
+                              icon={<MdZoomOut />}
+                              onClick={zoomOut}
+                              isDisabled={scale <= 0.5 || pdfLoading}
+                              size="sm"
+                              aria-label="Zoom out"
+                            />
+                            <Text fontSize="sm">{Math.round(scale * 100)}%</Text>
+                            <IconButton
+                              icon={<MdZoomIn />}
+                              onClick={zoomIn}
+                              isDisabled={scale >= 2.0 || pdfLoading}
+                              size="sm"
+                              aria-label="Zoom in"
+                            />
+                          </Flex>
+                        </Flex>
+                      )}
+
+                      {/* PDF Content */}
+                      <Center flexDirection="column" minH="400px">
+                        {pdfLoading && (
+                          <Box textAlign="center">
+                            <Spinner size="lg" color="green.500" />
+                            <Text mt={2} fontSize="sm" color="gray.600">
+                              Loading PDF document...
+                            </Text>
+                          </Box>
+                        )}
+
+                        {pdfError && (
+                          <Alert status="error" borderRadius="md" maxW="500px">
+                            <AlertIcon />
+                            <Box>
+                              <AlertTitle>PDF Load Failed!</AlertTitle>
+                              <AlertDescription fontSize="sm">
+                                {pdfError}
+                                <br />
+                                <Button 
+                                  as="a" 
+                                  href={url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  size="sm" 
+                                  mt={2} 
+                                  colorScheme="blue"
+                                  variant="outline"
+                                >
+                                  Open in New Tab
+                                </Button>
+                              </AlertDescription>
+                            </Box>
+                          </Alert>
+                        )}
+
+                        {!pdfError && (
+                          <PdfDocument
+                            file={url}
+                            key={url}
+                            onLoadStart={onDocumentLoadStart}
+                            onLoadSuccess={onDocumentLoadSuccess}
+                            onLoadError={onDocumentLoadError}
+                            loading={
+                              <Box textAlign="center">
+                                <Spinner size="lg" color="green.500" />
+                                <Text mt={2} fontSize="sm" color="gray.600">
+                                  Loading PDF document...
+                                </Text>
+                              </Box>
+                            }
+                            options={{
+                              cMapUrl: 'https://unpkg.com/pdfjs-dist@5.4.54/cmaps/',
+                              cMapPacked: true,
+                            }}
+                          >
+                            <Page 
+                              pageNumber={currentPage} 
+                              scale={scale}
+                              loading={
+                                <Box textAlign="center" p={8}>
+                                  <Spinner size="md" color="green.500" />
+                                  <Text mt={2} fontSize="sm" color="gray.600">
+                                    Rendering page...
+                                  </Text>
+                                </Box>
+                              }
+                            />
+                          </PdfDocument>
+                        )}
+                      </Center>
+                    </Box>
                   );
                 } else if (lowerUrl.endsWith(".doc") || lowerUrl.endsWith(".docx")) {
                   return (
-                    <iframe
-                      src={`https://docs.google.com/gview?url=${encodeURIComponent(
-                        url
-                      )}&embedded=true`}
-                      width="100%"
-                      height="500px"
-                      title="Word Document Preview"
-                    />
+                    <Box>
+                      <iframe
+                        src={`https://docs.google.com/gview?url=${encodeURIComponent(
+                          url
+                        )}&embedded=true`}
+                        width="100%"
+                        height="600px"
+                        title="Word Document Preview"
+                        onError={() => {
+                          // Fallback for iframe errors
+                        }}
+                      />
+                      <Text fontSize="xs" color="gray.500" mt={2} textAlign="center">
+                        If the document doesn't load, try{" "}
+                        <Button
+                          as="a"
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          size="xs"
+                          variant="link"
+                          colorScheme="blue"
+                        >
+                          opening it in a new tab
+                        </Button>
+                      </Text>
+                    </Box>
                   );
                 } else {
                   return (
-                    <Image
-                      src={url}
-                      alt={selectedDoc.document_type}
-                      width="100%"
-                      height="auto"
-                    />
+                    <Center>
+                      <Image
+                        src={url}
+                        alt={selectedDoc.document_type}
+                        maxW="100%"
+                        maxH="600px"
+                        objectFit="contain"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'block';
+                        }}
+                      />
+                      <Box display="none" textAlign="center">
+                        <Alert status="warning" borderRadius="md" maxW="400px">
+                          <AlertIcon />
+                          <Box>
+                            <AlertTitle>Image Load Failed!</AlertTitle>
+                            <AlertDescription fontSize="sm">
+                              Unable to preview this image.{" "}
+                              <Button
+                                as="a"
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                size="sm"
+                                colorScheme="blue"
+                                variant="link"
+                              >
+                                View Original
+                              </Button>
+                            </AlertDescription>
+                          </Box>
+                        </Alert>
+                      </Box>
+                    </Center>
                   );
                 }
               })()}
           </ModalBody>
 
           {selectedDoc && (
-            <ModalFooter>
+            <ModalFooter borderTop="1px solid" borderColor="gray.200">
               <Button
                 color="#fff"
                 leftIcon={<MdOutlineFileDownload />}
@@ -227,8 +447,12 @@ export default function DocumentSection() {
                 isLoading={downloading}
                 loadingText="Downloading..."
                 onClick={() => handleDownload(selectedDoc.document_front_url)}
+                mr={3}
               >
                 Download
+              </Button>
+              <Button variant="outline" onClick={onClose}>
+                Close
               </Button>
             </ModalFooter>
           )}

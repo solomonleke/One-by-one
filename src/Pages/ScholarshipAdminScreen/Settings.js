@@ -27,6 +27,7 @@ export default function Settings() {
   const isMobile = useBreakpointValue({ base: "100%", md: "500px", lg: "528px" });
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
+  const [showVerificationWarning, setShowVerificationWarning] = useState(true);
   const initialFiles = {
     certificate: null,
     tin: null,
@@ -111,6 +112,17 @@ export default function Settings() {
   const [profilePicture, setProfilePicture] = useState(null);
   const [profilePicturePreview, setProfilePicturePreview] = useState("");
   const [currentProfilePictureUrl, setCurrentProfilePictureUrl] = useState("");
+
+  // Function to check if all documents are uploaded
+  const areAllDocumentsUploaded = () => {
+    const requiredDocuments = ['certificate', 'tin', 'educationApproval', 'schoolCert', 'idFront', 'idBack'];
+    return requiredDocuments.every(docType => files[docType] && files[docType].url);
+  };
+
+  // Function to handle closing the verification warning
+  const handleCloseVerificationWarning = () => {
+    setShowVerificationWarning(false);
+  };
 
   const fetchProfileAndDocuments = async () => {
     try {
@@ -383,15 +395,17 @@ export default function Settings() {
             <Text fontSize={"13px"} fontWeight={"400"} color={"#626974"}>Manage and upload the required documents to complete your school’s verification process.</Text>
             </Stack>
 
-            <Box backgroundColor={"#FFF7EB"} py={"14px"} px={"20px"} rounded={"6px"} border={"1px solid #FFA30C80"} id='close'>
-              <HStack justifyContent={"space-between"}>
-              <HStack>
-               <Warning />
-              <Text fontSize={"14px"} fontWeight={"400"} color={"#FFA30C"}>Your school cannot be verified until all required documents are uploaded. Ensure the following documents below are uploaded</Text>
-              </HStack>
-              <Close cursor={"pointer"} id='closer'/>
-              </HStack>
-            </Box>
+            {showVerificationWarning && !areAllDocumentsUploaded() && (
+              <Box backgroundColor={"#FFF7EB"} py={"14px"} px={"20px"} rounded={"6px"} border={"1px solid #FFA30C80"} id='close'>
+                <HStack justifyContent={"space-between"}>
+                <HStack>
+                 <Warning />
+                <Text fontSize={"14px"} fontWeight={"400"} color={"#FFA30C"}>Your school cannot be verified until all required documents are uploaded. Ensure the following documents below are uploaded</Text>
+                </HStack>
+                <Close cursor={"pointer"} id='closer' onClick={handleCloseVerificationWarning} />
+                </HStack>
+              </Box>
+            )}
 
             <hr className="remove"/>
 
