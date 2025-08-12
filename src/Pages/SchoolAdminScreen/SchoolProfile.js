@@ -112,7 +112,7 @@ const fetchAdminProfile = async () => {
   }, []);
   
 
-  const schoolEmail = `${adminData?.school_admin.school_name?.toLowerCase()}@gmail.com`;
+  const schoolEmail = adminData?.school_admin?.school_name ? `${adminData.school_admin.school_name.toLowerCase()}@gmail.com` : "";
 
   if (loading) {
     return (<Preloader message="Loading profile..." />)
@@ -222,7 +222,7 @@ const fetchAdminProfile = async () => {
               pos="relative"
               left={["20px", "0px", "30px", "0px"]}
             >
-              {adminData?.school_admin.school_name}
+              {adminData?.school_admin?.school_name}
             </Text>
 
 <Box
@@ -288,19 +288,19 @@ const fetchAdminProfile = async () => {
                   <ProfileCard title="founding year" value="2016" />
                   <ProfileCard
                     title="address"
-                    value={adminData?.school_admin.school_address}
+                    value={adminData?.school_admin?.school_address}
                   />
                   <ProfileCard
                     title="city"
-                    value={adminData?.school_admin.city}
+                    value={adminData?.school_admin?.city}
                   />
                   <ProfileCard
                     title="state"
-                    value={adminData?.school_admin.state}
+                    value={adminData?.school_admin?.state}
                   />
                   <ProfileCard
                     title="zip code"
-                    value={adminData?.school_admin.zip_code}
+                    value={adminData?.school_admin?.zip_code}
                   />
                 </Stack>
               </Box>
@@ -317,24 +317,24 @@ const fetchAdminProfile = async () => {
                 <Stack spacing={"14px"} mt="14px">
                   <ProfileCard
                     title="title"
-                    value={adminData?.school_admin.principal_title}
+                    value={adminData?.school_admin?.principal_title}
                   />
                   <ProfileCard
                     title="first name"
-                    value={adminData?.school_admin.principal_fullname}
+                    value={adminData?.school_admin?.principal_fullname}
                   />
                   {/* <ProfileCard title="last name" value="doe" /> */}
                   <ProfileCard
                     title="email"
-                    value={adminData?.school_admin.principal_email}
+                    value={adminData?.school_admin?.principal_email}
                   />
                   <ProfileCard
                     title="phone number"
-                    value={adminData?.school_admin.principal_phone}
+                    value={adminData?.school_admin?.principal_phone}
                   />
                   <ProfileCard
                     title="NIN"
-                    value={adminData?.school_admin.account_verified}
+                    value={adminData?.school_admin?.account_verified}
                   />
                 </Stack>
               </Box>
@@ -400,7 +400,7 @@ const fetchAdminProfile = async () => {
                   lineHeight={"27px"}
                   color={"#626974"}
                 >
-                  {adminData?.school_admin.about_school}
+                  {adminData?.school_admin?.about_school}
                 </Text>
               </Box>
 
@@ -420,7 +420,7 @@ const fetchAdminProfile = async () => {
                   lineHeight={"27px"}
                   color={"#626974"}
                 >
-                  {adminData?.school_admin.class_capacity}
+                  {adminData?.school_admin?.class_capacity}
                 </Text>
               </Box>
 
