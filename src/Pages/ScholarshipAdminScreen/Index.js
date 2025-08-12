@@ -128,9 +128,22 @@ export default function ScholarshipAdmin() {
 
   }
 
-  useEffect(() => {
 
+  useEffect(() => {
     GetScholarshipDashboardDetails()
+
+    var reloadCount = localStorage.getItem("reloadCount");
+    if(!reloadCount){
+      localStorage.setItem('reloadCount', + parseInt(1))
+
+    }
+    if(reloadCount < 2) {
+      localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
+      setTimeout(() =>
+      window.location.reload(1), 2000)
+    } else {
+      localStorage.removeItem('reloadCount');
+    }
 
   }, []);
 

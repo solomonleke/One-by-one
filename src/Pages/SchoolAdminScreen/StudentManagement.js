@@ -423,12 +423,13 @@ export default function StudentManagement() {
     router(`/school-admin/student-management/student-profile/${student_Id}`);
   };
 
-  if (isLoading) {
-    return (<Preloader message="fetching students..." />)
-  }
-
+  
   return (
     <MainLayout>
+
+    {
+      isLoading && <Preloader  />
+    }
       {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
       )}

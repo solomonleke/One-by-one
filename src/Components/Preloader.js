@@ -20,7 +20,7 @@ const Preloader = ({ message = "Loading..." }) => {
             color="blue.500"
             size="xl"
           />
-          <Text fontSize="md" color="white">{message}</Text>
+          <Text fontSize="md" color="white">{"Please wait..."}</Text>
         </VStack>
       </Center>
     </Box>

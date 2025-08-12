@@ -34,18 +34,7 @@ export default function NavBar({ showSearch = true }) {
     const [lastName, setLastName] = useState('');
 
   useEffect(() => {
-    var reloadCount = localStorage.getItem("reloadCount");
-    if (!reloadCount) {
-      localStorage.setItem('reloadCount', + parseInt(1))
-
-    }
-    if (reloadCount < 2) {
-      localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
-      setTimeout(() =>
-        window.location.reload(1), 2000)
-    } else {
-      localStorage.removeItem('reloadCount');
-    }
+  
 
     const storedName = JSON.parse(localStorage.getItem('onlineUser'));
     if (storedName) {

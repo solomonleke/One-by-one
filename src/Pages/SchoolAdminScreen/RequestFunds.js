@@ -70,7 +70,7 @@ const [status, setStatus] = useState("PENDING"); // State to manage the status f
   // Pagination settings to follow
   const [CurrentPage, setCurrentPage] = useState(1);
   console.log("currentpage", CurrentPage);
-  const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
+  const [PostPerPage, setPostPerPage] = useState(1000);
   const [TotalPage, setTotalPage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [students, setStudents] = useState([]);
@@ -341,19 +341,21 @@ const [loading, setLoading] = useState(false);
     }
   };
   
-  const options = students
-  .filter(s => s.verification_status === "APPROVED")
+  const options = students.filter(s => s.verification_status === "APPROVED")
   .map(s => ({ label: s.full_name, value: s.id }));
 
-const selectedStudent = options.find(o => o.value === formData.student);
-
-const [totalRequests, setTotalRequests] = useState(0);
-
+  console.log("options", students);
   
-    const fetchFundRequests = async () => {
-      const PostPerPage=10
-      try {
-        const data = await getAllFundRequestsApi(CurrentPage, PostPerPage);
+  const selectedStudent = options.find(o => o.value === formData.student);
+  
+  const [totalRequests, setTotalRequests] = useState(0);
+  
+  
+  const fetchFundRequests = async () => {
+    const PostPerPage=10
+    try {
+      const data = await getAllFundRequestsApi(CurrentPage, PostPerPage);
+      
         setFundRequests(data);
         setTotalRequests(data.length)
         console.log( "Fund requests data:", data);
@@ -372,14 +374,15 @@ const [totalRequests, setTotalRequests] = useState(0);
     fetchFundRequests();
     getallStudent("APPROVED")
 
-  }, [CurrentPage, status]);
+  }, [CurrentPage]);
 
-  if (isLoading) {
-    return (<Preloader message="fetching students..." />)
-  }
+
 
   return (
     <MainLayout>
+    {
+      isLoading && <Preloader  />
+    }
       {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
       )}
@@ -663,6 +666,7 @@ const [totalRequests, setTotalRequests] = useState(0);
   <SimpleGrid spacing={4}>
     <FormControl>
       <FormLabel>Student</FormLabel>
+
       <ReactSelect
   name="student"
   placeholder="Select a student"
@@ -723,7 +727,7 @@ const [totalRequests, setTotalRequests] = useState(0);
             onClick={handleSave}
             _hover={{
               background: "transparent",
-              color: "#39996B",
+              color: "#111e18ff",
               border: "1px solid #39996B",
             }}
           >
