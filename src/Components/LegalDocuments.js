@@ -230,10 +230,9 @@ export default function DocumentSection() {
           
           <ModalBody 
             display="flex" 
-            justifyContent="center" 
             flexDirection="column"
             p={4}
-            overflow="hidden"
+            overflowY="auto"
           >
             {selectedDoc &&
               (() => {
@@ -242,7 +241,7 @@ export default function DocumentSection() {
 
                 if (lowerUrl.endsWith(".pdf")) {
                   return (
-                    <Box>
+                    <Box overflowX="auto">
                       {/* PDF Controls */}
                       {(numPages > 1 || pdfError) && (
                         <Flex justify="space-between" align="center" mb={4} p={2} bg="gray.50" borderRadius="md">

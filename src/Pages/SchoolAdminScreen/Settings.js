@@ -107,6 +107,24 @@ export default function Settings() {
     const ownerType = "ADMIN";
     const studentEmail = ownerType === "STUDENT" ? "student@example.com" : null;
 
+    // First, validate all files
+    const acceptedFileTypes = ["application/pdf", "image/jpeg", "image/png"];
+    for (const [key, fileData] of Object.entries(files)) {
+      if (fileData?.file) {
+        const fileType = fileData.file.type;
+        if (!acceptedFileTypes.includes(fileType)) {
+          setShowToast({
+            show: true,
+            message: `Invalid file type: ${fileData.file.name}. Please use PDF, JPG, or PNG.`,
+            status: "error",
+          });
+          setTimeout(() => setShowToast({ show: false }), 5000);
+          setLoading(false);
+          return;
+        }
+      }
+    }
+
     try {
       for (const [key, fileData] of Object.entries(files)) {
         if (fileData?.file) {
@@ -696,7 +714,7 @@ export default function Settings() {
                               ref={certificateInputRef}
                               id="certificateInput"
                               type="file"
-                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                              accept=".pdf,.jpg,.jpeg,.png"
                               display="none"
                               onChange={(e) => handleFileChange(e, "certificate")}
                             />
@@ -734,7 +752,7 @@ export default function Settings() {
                               ref={certificateInputRef}
                               id="certificateInput"
                               type="file"
-                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                              accept=".pdf,.jpg,.jpeg,.png"
                               display="none"
                               onChange={(e) => handleFileChange(e, "certificate")}
                             />
@@ -788,7 +806,7 @@ export default function Settings() {
                             ref={tinInputRef}
                             id="tinInput"
                             type="file"
-                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            accept=".pdf,.jpg,.jpeg,.png"
                             display="none"
                             onChange={(e) => handleFileChange(e, "tin")}
                           />
@@ -826,7 +844,7 @@ export default function Settings() {
                             ref={tinInputRef}
                             id="tinInput"
                             type="file"
-                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            accept=".pdf,.jpg,.jpeg,.png"
                             display="none"
                             onChange={(e) => handleFileChange(e, "tin")}
                           />
@@ -884,7 +902,7 @@ export default function Settings() {
                               ref={educationApprovalInputRef}
                               id="educationApprovalInput"
                               type="file"
-                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                              accept=".pdf,.jpg,.jpeg,.png"
                               display="none"
                               onChange={(e) => handleFileChange(e, "educationApproval")}
                             />
@@ -922,7 +940,7 @@ export default function Settings() {
                               ref={educationApprovalInputRef}
                               id="educationApprovalInput"
                               type="file"
-                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                              accept=".pdf,.jpg,.jpeg,.png"
                               display="none"
                               onChange={(e) => handleFileChange(e, "educationApproval")}
                             />
@@ -976,7 +994,7 @@ export default function Settings() {
                             ref={schoolCertInputRef}
                             id="schoolCertInput"
                             type="file"
-                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            accept=".pdf,.jpg,.jpeg,.png"
                             display="none"
                             onChange={(e) => handleFileChange(e, "schoolCert")}
                           />
@@ -1014,7 +1032,7 @@ export default function Settings() {
                             ref={schoolCertInputRef}
                             id="schoolCertInput"
                             type="file"
-                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            accept=".pdf,.jpg,.jpeg,.png"
                             display="none"
                             onChange={(e) => handleFileChange(e, "schoolCert")}
                           />
@@ -1080,7 +1098,7 @@ export default function Settings() {
                               ref={idFrontInputRef}
                               id="idFrontInput"
                               type="file"
-                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                              accept=".pdf,.jpg,.jpeg,.png"
                               display="none"
                               onChange={(e) => handleFileChange(e, "idFront")}
                             />
@@ -1118,7 +1136,7 @@ export default function Settings() {
                               ref={idFrontInputRef}
                               id="idFrontInput"
                               type="file"
-                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                              accept=".pdf,.jpg,.jpeg,.png"
                               display="none"
                               onChange={(e) => handleFileChange(e, "idFront")}
                             />
@@ -1172,7 +1190,7 @@ export default function Settings() {
                             ref={idBackInputRef}
                             id="idBackInput"
                             type="file"
-                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            accept=".pdf,.jpg,.jpeg,.png"
                             display="none"
                             onChange={(e) => handleFileChange(e, "idBack")}
                           />
@@ -1210,7 +1228,7 @@ export default function Settings() {
                             ref={idBackInputRef}
                             id="idBackInput"
                             type="file"
-                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            accept=".pdf,.jpg,.jpeg,.png"
                             display="none"
                             onChange={(e) => handleFileChange(e, "idBack")}
                           />
