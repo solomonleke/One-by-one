@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import MainLayout from '../../DashboardLayout';
 import Button from '../../Components/Button';
 import ProfileCard from '../../Components/ProfileCard';
@@ -13,9 +14,40 @@ import { useNavigate } from 'react-router-dom';
 import { IoChevronBackOutline, IoCloseOutline } from 'react-icons/io5';
 import { BsThreeDots } from 'react-icons/bs';
 import { FaSchoolFlag, FaCheck } from "react-icons/fa6";
+import { GetScholarshipSchoolProfileApi } from '../../Utils/ApiCall';
+import Preloader from '../../Components/Preloader';
 
 export default function SchoolProfile() {
     const router = useNavigate();
+    const { schoolId } = useParams();
+    const [schoolData, setSchoolData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSchoolProfile = async () => {
+            try {
+                const data = await GetScholarshipSchoolProfileApi(schoolId);
+                setSchoolData(data);
+            } catch (error) {
+                console.error("Failed to fetch school profile", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (schoolId) {
+            fetchSchoolProfile();
+        }
+    }, [schoolId]);
+
+    if (loading) {
+        return <Preloader message="Loading school profile..." />;
+    }
+
+    if (!schoolData) {
+        return <Text>School not found.</Text>;
+    }
+
     return (
         <MainLayout>
                   <Flex justifyContent="space-between" flexWrap="wrap">
@@ -55,8 +87,8 @@ export default function SchoolProfile() {
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["18px", "18px"]} rounded='10px' display="flex" flexDir="column" gap="20px">
         <HStack borderWidth="1px" rounded="10px" py="16px" px="17px" justifyContent="space-between" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="10px">
             <HStack>
-            <Avatar name="Legendary Scholars Academy"/>
-            <Text color="#2F2F2F" fontSize="21px" fontWeight="800">Legendary Scholars Academy</Text>
+            <Avatar name={schoolData.school_name}/>
+            <Text color="#2F2F2F" fontSize="21px" fontWeight="800">{schoolData.school_name}</Text>
             </HStack>
 
             <HStack>
@@ -81,13 +113,7 @@ export default function SchoolProfile() {
                   lineHeight={"27px"}
                   color={"#626974"}
                 >
-                  Legacy Scholars Academy, founded in 2005, is a nurturing
-                  educational institution dedicated to empowering students from
-                  underserved communities. Our mission is to foster academic
-                  excellence, leadership skills, and social responsibility. With
-                  a 90% university acceptance rate and top-tier performance in
-                  national exams, we prepare students for success and positive
-                  community impact.
+                  {schoolData.about_school}
                 </Text>
               </Box>
 
@@ -96,23 +122,23 @@ export default function SchoolProfile() {
 
                 <Box bg="#EAFEF4" rounded="10px" borderWidth="1px" borderColor="#D9E8E1" display="flex" flexDir="column" gap="50px" p="17px" pt="50px">
                     <HStack flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="50px">
-                    <Input label='Email' placeholder='LegacyScholarsAcademy@gmail.com' bg="white" ZIndex="-1"/>
+                    <Input label='Email' value={schoolData.school_email} isReadOnly />
 
-                    <Input label='Founding Year' placeholder='2016'/>
+                    <Input label='Founding Year' value={schoolData.founding_year} isReadOnly />
 
-                    <Input label='Address' placeholder='84 Balogun Road, Ago palace way'/>
+                    <Input label='Address' value={schoolData.address} isReadOnly />
                     </HStack>
 
                     <HStack flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="50px">
-                    <Input label='City' placeholder='Okota'/>
+                    <Input label='City' value={schoolData.city} isReadOnly />
 
-                    <Input label='State' placeholder='Lagos'/>
+                    <Input label='State' value={schoolData.state} isReadOnly />
 
-                    <Input label='Zip Code' placeholder='100001'/>
+                    <Input label='Zip Code' value={schoolData.zip_code} isReadOnly />
                     </HStack>
 
                     <HStack flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="50px">
-                    <Input label='School Capacity' placeholder='190'/>
+                    <Input label='School Capacity' value={schoolData.school_capacity} isReadOnly />
                     <Input placeholder='190' visibility="hidden"/>
                     <Input placeholder='190' visibility="hidden"/>
                     </HStack>
@@ -124,17 +150,17 @@ export default function SchoolProfile() {
 
                 <Box bg="#EAFEF4" rounded="10px" borderWidth="1px" borderColor="#D9E8E1" mb="20px" display="flex" flexDir="column" gap="50px" p="17px" pt="50px">
                     <HStack flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="50px">
-                    <Input label='Title' placeholder='Mr.' bg="white"/>
+                    <Input label='Title' value={schoolData.principal_title} isReadOnly />
 
-                    <Input label='First Name' placeholder='John'/>
+                    <Input label='First Name' value={schoolData.principal_first_name} isReadOnly />
 
-                    <Input label='Last Name' placeholder='Doe'/>
+                    <Input label='Last Name' value={schoolData.principal_last_name} isReadOnly />
                     </HStack>
 
                     <HStack flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="50px">
-                    <Input label='Email' placeholder='johndoe@gmail.com'/>
+                    <Input label='Email' value={schoolData.principal_email} isReadOnly />
 
-                    <Input label='Phone Number' placeholder='+234000000001'/>
+                    <Input label='Phone Number' value={schoolData.principal_phone_number} isReadOnly />
 
                     <Input placeholder='100001' visibility="hidden"/>
                     </HStack>

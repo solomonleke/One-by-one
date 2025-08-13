@@ -208,7 +208,7 @@ export default function TableRow({ type, stationary, total, name, request, reque
             {
                 type === "scholarship-admin-students" && (
                     <>
-                        <Td onClick={() => { router("/scholarship-admin/schools/student-profile") }}>
+                        <Td onClick={() => { router("/scholarship-admin/students/student-profile") }}>
                             <HStack cursor={"pointer"}>
                                 <Avatar name={name} size='sm' src='https://bit.ly/tioluwani-kolawole' />
                                 <Box>

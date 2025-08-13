@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import MainLayout from '../../DashboardLayout';
 import Button from '../../Components/Button';
 import ProfileCard from '../../Components/ProfileCard';
@@ -12,12 +13,42 @@ import { useNavigate } from 'react-router-dom';
 import { IoChevronBackOutline, IoCloseOutline } from 'react-icons/io5';
 import { BsThreeDots } from 'react-icons/bs';
 import { FaSchoolFlag, FaCheck } from "react-icons/fa6";
+import { GetScholarshipStudentProfileApi } from '../../Utils/ApiCall';
+import Preloader from '../../Components/Preloader';
 
 export default function StudentProfile() {
   const router = useNavigate();
+  const { studentId } = useParams();
+  const [studentData, setStudentData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const { isOpen: isRemoveModalOpen, onOpen: onOpenRemove, onClose: onCloseRemove } = useDisclosure();
+
+  useEffect(() => {
+    const fetchStudentProfile = async () => {
+      try {
+        const data = await GetScholarshipStudentProfileApi(studentId);
+        setStudentData(data);
+      } catch (error) {
+        console.error("Failed to fetch student profile", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (studentId) {
+      fetchStudentProfile();
+    }
+  }, [studentId]);
+
+  if (loading) {
+    return <Preloader message="Loading student profile..." />;
+  }
+
+  if (!studentData) {
+    return <Text>Student not found.</Text>;
+  }
 
   return (
     <MainLayout>
@@ -58,11 +89,11 @@ export default function StudentProfile() {
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py="17px" px={["8px", "8px", "18px", "18px"]} rounded="10px">
         <Flex justifyContent="space-between" flexWrap="wrap" gap="10px">
           <HStack spacing="14px" w={["100%", "100%", "70%", "70%"]}>
-            <Avatar name="Philip Amakiri" size="lg" src="https://bit.ly/sage-adebayo" />
+            <Avatar name={`${studentData.first_name} ${studentData.last_name}`} size="lg" src={studentData.picture} />
             <Stack spacing="10px">
               <HStack>
                 <Text color="#1F2937" fontSize="25px" fontWeight="700">
-                  Philip Amakiri
+                  {studentData.first_name} {studentData.last_name}
                 </Text>
                 <Menu isLazy>
                   <MenuButton as={Box}>
@@ -97,7 +128,7 @@ export default function StudentProfile() {
                 </Menu>
               </HStack>
               <Text color="#667085" fontSize="13px" fontWeight="400">
-                PhilipAmakiri@gmail.com
+                {studentData.email}
               </Text>
             </Stack>
           </HStack>
@@ -123,48 +154,48 @@ export default function StudentProfile() {
 
                   <ProfileCard
                     title="full name"
-                    value="Adeleke Solomon"
+                    value={`${studentData.first_name} ${studentData.last_name}`}
                   />
 
                   <ProfileCard
                     title="date of birth"
-                    value="22/04/2007"
+                    value={studentData.date_of_birth}
                   />
 
                   <ProfileCard
                     title="Gender"
-                    value="male"
+                    value={studentData.gender}
                   />
 
 
                   <ProfileCard
                     title="phone number"
-                    value="+234000000001"
+                    value={studentData.phone_number}
                   />
 
                   <ProfileCard
                     title="Guardian’s Phone number"
-                    value="N/A"
+                    value={studentData.guardian_phone_number}
                   />
 
                   <ProfileCard
                     title="address"
-                    value="84 Balogun Road, Ago palace way"
+                    value={studentData.address}
                   />
 
                   <ProfileCard
                     title="city"
-                    value="okota"
+                    value={studentData.city}
                   />
 
                   <ProfileCard
                     title="state"
-                    value="lagos"
+                    value={studentData.state}
                   />
 
                   <ProfileCard
                     title="zip code"
-                    value="100001"
+                    value={studentData.zip_code}
                   />
 
                 </Stack>
@@ -179,23 +210,19 @@ export default function StudentProfile() {
                 <Stack spacing={"14px"} mt="14px">
                   <ProfileCard
                     title="department"
-                    value="science"
+                    value={studentData.department}
                   />
                   <ProfileCard
                     title="class level"
-                    value="SS2"
-                  />
-                  <ProfileCard
-                    title="department"
-                    value="science"
+                    value={studentData.class_level}
                   />
                   <ProfileCard
                     title="class performance"
-                    value="98% average score"
+                    value={studentData.class_performance}
                   />
                   <ProfileCard
                     title="subject"
-                    value="Maths, eng, phy, geo, che, biology"
+                    value={studentData.subjects.join(', ')}
                   />
                 </Stack>
               </Box>
@@ -207,11 +234,11 @@ export default function StudentProfile() {
                 <Stack spacing={"14px"} mt="14px">
                   <ProfileCard
                     title="leadership roles"
-                    value="class captain, health prefect"
+                    value={studentData.leadership_roles.join(', ')}
                   />
                   <ProfileCard
                     title="extracurricular activities"
-                    value="health club"
+                    value={studentData.extracurricular_activities.join(', ')}
                   />
 
 
@@ -236,16 +263,16 @@ export default function StudentProfile() {
 
               <HStack bg="#fff" border="1px solid #EFEFEF" rounded={"8px"} py={"12px"} px={"16px"} justifyContent={"space-between"}>
                 <Text textTransform={"capitalize"} fontWeight={"500"} fontSize={"14px"} color={"#2F2F2F"}>intended field of study</Text>
-                <Text textTransform={"capitalize"} fontWeight={"600"} fontSize={"14px"} color={"#2F2F2F"}>nursing science</Text>
+                <Text textTransform={"capitalize"} fontWeight={"600"} fontSize={"14px"} color={"#2F2F2F"}>{studentData.intended_field_of_study}</Text>
               </HStack>
 
               <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
                 <ProfileHeading title="student’s field of interest" />
 
                 <HStack spacing="13px" mt="18px">
-                  <Text textTransform={"capitalize"} backgroundColor={"#D9FFED"} rounded={"8px"} py={"10px"} px={"16px"} cursor={"pointer"} textColor={"green"} fontWeight={"500"} fontSize={"14px"} letterSpacing={"-1%"} border={"1px solid #39996B7A"}>health and medicine</Text>
-                  <Text textTransform={"capitalize"} backgroundColor={"#D9FFED"} rounded={"8px"} py={"10px"} px={"16px"} cursor={"pointer"} textColor={"green"} fontWeight={"500"} fontSize={"14px"} letterSpacing={"-1%"} border={"1px solid #39996B7A"}>science</Text>
-                  <Text textTransform={"capitalize"} backgroundColor={"#D9FFED"} rounded={"8px"} py={"10px"} px={"16px"} cursor={"pointer"} textColor={"green"} fontWeight={"500"} fontSize={"14px"} letterSpacing={"-1%"} border={"1px solid #39996B7A"}>nursing process</Text>
+                  {studentData.field_of_interest.map((interest, index) => (
+                    <Text key={index} textTransform={"capitalize"} backgroundColor={"#D9FFED"} rounded={"8px"} py={"10px"} px={"16px"} cursor={"pointer"} textColor={"green"} fontWeight={"500"} fontSize={"14px"} letterSpacing={"-1%"} border={"1px solid #39996B7A"}>{interest}</Text>
+                  ))}
                 </HStack>
 
               </Box>
@@ -254,7 +281,7 @@ export default function StudentProfile() {
               <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
                 <ProfileHeading title="Higher education goals" />
 
-                <Text fontWeight={"400"} mt="18px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>Legacy Scholars Academy, founded in 2005, is a nurturing educational institution dedicated to empowering students from underserved communities. Our mission is to foster academic excellence, leadership skills, and social responsibility.</Text>
+                <Text fontWeight={"400"} mt="18px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>{studentData.higher_education_goals}</Text>
               </Box>
 
               <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
@@ -262,7 +289,7 @@ export default function StudentProfile() {
 
 
 
-                <Text fontWeight={"400"} mt="18px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>Legacy Scholars Academy, founded in 2005, is a nurturing educational institution dedicated to empowering students from underserved communities. Our mission is to foster academic excellence, leadership skills, and social responsibility.</Text>
+                <Text fontWeight={"400"} mt="18px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>{studentData.career_goals}</Text>
               </Box>
 
               <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
