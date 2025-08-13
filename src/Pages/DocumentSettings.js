@@ -10,7 +10,7 @@ import ShowToast from '../Components/ToastNotification';
 
 import {
   UploadDocumentApi,
-  GetAdminProfile,
+  GetUserProfile,
 } from "../Utils/ApiCall";
 
 export default function DocumentSettings() {
@@ -113,8 +113,8 @@ export default function DocumentSettings() {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const response = await GetAdminProfile();
-        const docs = (response?.data?.documents || []).filter(
+        const response = await GetUserProfile();
+        const docs = (response?.documents || []).filter(
           (doc) => doc.document_type
         );
 

@@ -1558,6 +1558,69 @@ export const UploadProfilePicture = async (file) => {
   return response.data; // should return uploaded file URL or success message
 };
 
+export const GetScholarshipSchoolProfileApi = async (schoolId) => {
+  const config = {
+    method: "GET",
+    url: `${baseUrl}/scholarship-admin/school-profile/${schoolId}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching school profile:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Something went wrong"
+    );
+  }
+};
+
+export const GetScholarshipStudentProfileApi = async (studentId) => {
+  const config = {
+    method: "GET",
+    url: `${baseUrl}/scholarship-admin/student-profile/${studentId}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching student profile:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Something went wrong"
+    );
+  }
+};
+
+export const GetUserProfile = async () => {
+  const config = {
+    method: "GET",
+    url: `${baseUrl}/users/profile`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Something went wrong"
+    );
+  }
+};
+
 export const UploadAdminProfilePicture = async (file) => {
   const formData = new FormData();
   formData.append("displayPicture", file);

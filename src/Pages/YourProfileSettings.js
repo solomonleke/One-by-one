@@ -10,7 +10,9 @@ import {
   GetAdminStats,
   UpdateSchoolProfile,
   UploadAdminProfilePicture,
+  GetUserProfile,
 } from "../Utils/ApiCall";
+import { isSchoolAdmin } from '../Authentication/Index';
 
 export default function YourProfileSettings() {
   const isMobile = useBreakpointValue({ base: "100%", md: "500px", lg: "528px" });
@@ -44,7 +46,7 @@ export default function YourProfileSettings() {
 
   const fetchProfile = async () => {
     try {
-      const data = await GetAdminStats(); // directly gets the data object
+      const data = await GetUserProfile(); // directly gets the data object
       console.log("Profile Data:", data);
 
         // correct field mapping
@@ -263,7 +265,7 @@ export default function YourProfileSettings() {
           </VStack>
         </VStack>
       </Box>
-{/*  isSchoolAdmin() && () */}
+      {isSchoolAdmin() && (
       <Box
         mt="12px"
         bg="#fff"
@@ -332,6 +334,7 @@ export default function YourProfileSettings() {
           </VStack>
         </VStack>
       </Box>
+      )}
 
       <Flex justifyContent="flex-end" alignItems="center" mt="20px">
         <Button
