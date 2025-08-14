@@ -244,13 +244,12 @@ export default function Index() {
   }, []);
 
 
-  if (isLoading) {
-    return (<Preloader message="Loading..." />)
-  }
-
 
   return (
     <MainLayout>
+          {
+            isLoading && <Preloader  />
+          }
       <Text
         color="#1F2937"
         fontWeight="600"

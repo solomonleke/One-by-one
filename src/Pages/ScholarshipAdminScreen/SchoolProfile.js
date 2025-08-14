@@ -40,16 +40,16 @@ export default function SchoolProfile() {
         }
     }, [schoolId]);
 
-    if (loading) {
-        return <Preloader message="Loading school profile..." />;
-    }
-
     if (!schoolData) {
         return <Text>School not found.</Text>;
     }
 
+
     return (
         <MainLayout>
+              {
+      loading && <Preloader  />
+    }
                   <Flex justifyContent="space-between" flexWrap="wrap">
         <HStack spacing="10px">
           <Text

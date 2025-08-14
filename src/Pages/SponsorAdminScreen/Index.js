@@ -189,9 +189,11 @@ export default function Index() {
     }
   }, []);
 
-  if (isLoading) return <Preloader  />;
   return (
     <MainLayout>
+          {
+            isLoading && <Preloader  />
+          }
       <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Welcome Back, {userName || "User"}.</Text>
       <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Track your impact and manage your scholarships with ease. Monitor funding trends and create opportunities to change lives.</Text>
 

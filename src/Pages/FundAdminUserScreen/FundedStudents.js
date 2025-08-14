@@ -43,10 +43,12 @@ export default function FundedStudents() {
     fetchFundRequests();
   }, [currentPage, postPerPage]);
 
-  if (loading) return <Preloader message="Loading..." />;
 
   return (
     <MainLayout>
+          {
+            loading && <Preloader  />
+          }
       {showToast.show && (
         <ShowToast
           message={showToast.message}

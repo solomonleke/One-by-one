@@ -1,7 +1,5 @@
 import { Box, Flex, VStack, Text, Image, useBreakpointValue } from "@chakra-ui/react";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import BackgroundImage from "../../../Asset/onebyone.svg";
-import Logo from "../../../Asset/onebyonelogo.svg";
 import Footer from "./Footer";
 import { motion } from "framer-motion";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
@@ -80,13 +78,17 @@ const SliderContent = React.memo(({ currentSlide, slides, handleSlideChange }) =
 export default function AuthenticatedWrapper({ children }) {
   const router = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  
+
+  // Public folder image paths
+  const backgroundImageUrl = "/onebyone.svg";
+  const logoUrl = "/onebyonelogo.svg";
+
   // Responsive values
   const isMobile = useBreakpointValue({ base: true, lg: false });
   const showRightSection = useBreakpointValue({ base: false, md: true });
   const logoSize = useBreakpointValue({ base: "80px", md: "120px", lg: "150px" });
   const buttonWidth = useBreakpointValue({ base: "60%", sm: "40%", md: "30%", lg: "25%" });
+
   const slides = useMemo(() => [
     {
       title: "Make a Difference Today",
@@ -105,27 +107,11 @@ export default function AuthenticatedWrapper({ children }) {
     },
   ], []);
 
-  // Preload critical images
-  useEffect(() => {
-    const preloadImages = () => {
-      // Use native browser Image constructor
-      const img1 = new window.Image();
-      const img2 = new window.Image();
-      
-      img1.onload = () => setImageLoaded(true);
-      img1.src = BackgroundImage;
-      img2.src = Logo;
-    };
-
-    preloadImages();
-  }, []);
-
   // Auto Slide with cleanup
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 8000); // Reduced to 8 seconds for better UX
-
+    }, 8000); 
     return () => clearInterval(interval);
   }, [slides.length]);
 
@@ -169,26 +155,14 @@ export default function AuthenticatedWrapper({ children }) {
 
         {children}
         
-        {/* Mobile slider - show when right section is hidden */}
-        {isMobile && (
-          <Box mt={8} px={4}>
-            <SliderContent 
-              currentSlide={currentSlide}
-              slides={slides}
-              handleSlideChange={handleSlideChange}
-            />
-          </Box>
-        )}
-        
         <Footer />
       </Box>
 
-      {/* Right Background Image Section - Desktop Only */}
+      {/* Right Background Image Section */}
       {showRightSection && (
         <Flex
           w={["100%", "100%", "50%"]}
-          bgImage={imageLoaded ? `url(${BackgroundImage})` : 'none'}
-          bgGradient={!imageLoaded ? "linear(to-br, green.400, green.600)" : "none"}
+          bgImage={`url(${backgroundImageUrl})`}
           bgPos="center"
           bgSize="cover"
           bgRepeat="no-repeat"
@@ -200,16 +174,16 @@ export default function AuthenticatedWrapper({ children }) {
           position="relative"
           minH="100vh"
         >
-          {/* School Logo - Responsive positioning */}
+          {/* School Logo */}
           <Box
             position="absolute"
-            top={["20%", "25%", "30%"]}
+            top={["20%", "25%", "50%"]}
             left="50%"
             transform="translateX(-50%)"
             zIndex={2}
           >
             <Image 
-              src={Logo} 
+              src={logoUrl} 
               w={logoSize}
               h={logoSize}
               cursor="pointer" 
@@ -224,7 +198,7 @@ export default function AuthenticatedWrapper({ children }) {
             />
           </Box>
 
-          {/* Slider Container - Responsive positioning */}
+          {/* Slider Container */}
           <Box
             position="absolute"
             bottom={["60px", "80px", "100px"]}

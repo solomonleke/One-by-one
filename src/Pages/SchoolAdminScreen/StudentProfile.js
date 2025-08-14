@@ -226,16 +226,15 @@ const closeRemoveModal = () => {
   }, []);
 
   
- 
-  if(loading) {
-    return ( <Preloader  />)
-  }
   if (error) return <Text color="red.500">{error}</Text>;
 
 
 
   return (
     <MainLayout>
+          {
+      loading && <Preloader  />
+    }
     {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
       )}

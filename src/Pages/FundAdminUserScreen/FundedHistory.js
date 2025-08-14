@@ -93,12 +93,12 @@ useEffect(() => {
 }, [CurrentPage, PostPerPage]);
 
 
-if (loading) {
-  return (<Preloader message="Loading..." />)
-}
     
   return (
       <MainLayout>
+            {
+              isLoading && <Preloader  />
+            }
       {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
       )}

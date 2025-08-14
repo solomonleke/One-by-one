@@ -70,10 +70,13 @@ export default function Dashboard() {
   const fontSize = useBreakpointValue({ base: "12px", md: "14px", lg: "16px" });
   const iconSize = useBreakpointValue({ base: "16px", md: "18px", lg: "22px" });
 
-  if (loading) return <Preloader message="Loading..." />;
+
 
   return (
     <MainLayout>
+          {
+            loading && <Preloader  />
+          }
       {showToast.show && (
         <ShowToast 
           message={showToast.message} 
