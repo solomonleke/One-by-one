@@ -14,6 +14,7 @@ import { CreateStudentApi } from "../../Utils/ApiCall";
 import ShowToast from "../../Components/ToastNotification";
 import UpdateReviewModal from '../../Components/UpdateReview'
 import { IoIosCloseCircle } from 'react-icons/io';
+import Preloader from '../../Components/Preloader'
 // import { StudentContext } from '../../Components/StudentContext'
 
 
@@ -170,7 +171,9 @@ export default function AddNewStudents() {
     const nav = useNavigate()
     return (
         <SubLayout showSearch={false} showNav={false} bgColor='#fff' borderRight={"none"}>
-
+                {
+                  Loading && <Preloader  />
+                }
             {
                 showToast.show && (
                     <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />

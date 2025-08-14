@@ -221,10 +221,13 @@ const fundScholarship = async (Id) => {
     fetchData();
   }, [isOpen]);
 
-  if (isLoading) return <Preloader message="Fetching scholarships..." />;
+
 
   return (
     <MainLayout>
+          {
+            isLoading && <Preloader  />
+          }
     {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
       )}

@@ -106,12 +106,12 @@ export default function YourProfileSettings() {
     fetchProfile();
   }, []);
 
-  if (isLoading) {
-    return (<Preloader message="Loading..." />)
-  }
 
   return (
     <>
+        {
+          isLoading && <Preloader  />
+        }
       {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
       )}

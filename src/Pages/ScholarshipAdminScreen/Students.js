@@ -257,11 +257,12 @@ useEffect(() => { GetAllScholarshipStudent("REJECTED", currentPageRejected); }, 
 
 
 
-  if (loading) return <Preloader message="Fetching students..." />;
-
 
   return (
     <MainLayout>
+          {
+            loading && <Preloader  />
+          }
       {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
       )}

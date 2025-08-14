@@ -297,14 +297,13 @@ console.log("user metrics", userMetrics);
   
     }, []);
   
-  
-  if(isLoading) {
-    return ( <Preloader message="Loading..." />)
-  }
 
 
   return (
 <MainLayout>
+      {
+        isLoading && <Preloader  />
+      }
   {/* Header */}
   <Flex
     direction={{ base: 'column', md: 'row' }}

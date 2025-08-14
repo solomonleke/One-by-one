@@ -114,12 +114,12 @@ const fetchAdminProfile = async () => {
 
   const schoolEmail = adminData?.school_admin?.school_name ? `${adminData.school_admin.school_name.toLowerCase()}@gmail.com` : "";
 
-  if (loading) {
-    return (<Preloader message="Loading profile..." />)
-  }
 
   return (
     <MainLayout>
+          {
+            loading && <Preloader  />
+          }
       <Box
         backgroundColor={"#fff"}
         p={"20px"}

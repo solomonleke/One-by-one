@@ -42,9 +42,6 @@ export default function StudentProfile() {
     }
   }, [studentId]);
 
-  if (loading) {
-    return <Preloader message="Loading student profile..." />;
-  }
 
   if (!studentData) {
     return <Text>Student not found.</Text>;
@@ -52,6 +49,9 @@ export default function StudentProfile() {
 
   return (
     <MainLayout>
+          {
+            loading && <Preloader  />
+          }
       <Flex justifyContent="space-between" flexWrap="wrap">
         <HStack spacing="10px">
           <Text

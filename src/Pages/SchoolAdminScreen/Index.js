@@ -443,11 +443,6 @@ const deleteStudentProfileBtn = async (student_Id) => {
 
     loadStats();
   }, []);
-  
-  
-  if(isLoading) {
-    return ( <Preloader message="Loading..." />)
-  }
 
   
 
@@ -500,6 +495,9 @@ const deleteStudentProfileBtn = async (student_Id) => {
 
   return (
     <MainLayout>
+          {
+            isLoading && <Preloader  />
+          }
 
       <Text color={"#1F2937"} fontWeight={"700"} fontSize={"24px"} textTransform="capitalize" lineHeight={"25.41px"}>Welcome back, {userName || "User"}!</Text>
 
@@ -532,6 +530,29 @@ const deleteStudentProfileBtn = async (student_Id) => {
           navigateTo="/school-admin/student-management"
         />
       </Flex>
+{/* 
+            <Flex mt="27px" justifyContent="space-between" flexWrap="wrap">
+        <DashboardCard
+          icon={<HiOutlineUsers color="#EE35D2" />}
+          title='total student'
+          value={stats.totalStudents} 
+        />
+        <DashboardCard
+          icon={<IoMdCheckmarkCircleOutline />}
+          title='approved'
+          value={stats.approvedStudents}
+        />
+        <DashboardCard
+          icon={<RxTimer color="#f59e0b" />}
+          title='pending'
+          value={stats.pendingStudents}
+        />
+        <DashboardCard
+          icon={<MdOutlineCancel color="red" />}
+          title='rejected'
+          value={stats.rejectedStudents}
+        />
+      </Flex> */}
 
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px="18px" rounded='10px'>
         <Flex justifyContent="space-between" flexWrap="wrap">

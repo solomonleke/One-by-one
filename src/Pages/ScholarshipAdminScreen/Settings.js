@@ -31,12 +31,13 @@ export default function Settings() {
     fetchProfile();
   }, []);
 
-  if (isLoading) {
-    return (<Preloader message="Loading..." />)
-  }
+
 
   return (
     <MainLayout>
+          {
+            isLoading && <Preloader  />
+          }
       {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
       )}
