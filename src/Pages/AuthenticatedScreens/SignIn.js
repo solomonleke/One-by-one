@@ -11,95 +11,7 @@ import { auth, provider, signInWithPopup } from "../../Authentication/Firebase";
 import { fetchDataWithToken } from '../../Utils/ApiCall';
 import ShowToast from '../../Components/ToastNotification';
 
-//  import { useGoogleLogin } from '@react-oauth/google'
-//  import { jwtDecode } from 'jwt-decode'
-//  import { GoogleAuth, LoginApi } from '../Utils/ApiCall'
-//  import { showToast } from '../Utils/Toast'
-//  import { useSelector } from "react-redux"
-//  export default function SignIn() {
-//      const { isOpen, onOpen, onClose } = useDisclosure()
-//      const IsLoggedIn = useSelector((state) => state.UserToken).token;
 
-//      const [Payload, setPayload] = useState({
-//          firstName: "",
-//          lastName: "",
-//          email: "",
-//          password: "",
-//          confirmPassword: ""
-//      });
-//      const handlePayload = (e) => {
-//          setPayload({ ...Payload, [e.target.id]: e.target.value })
-//      }
-//      const nav = useNavigate()
-
-//      const GetGoogleAuth = async (token)=>{
-//          try{
-//              let result = await GoogleAuth({accessToken : token})
-//              console.log("result",result)
-//              if(result.data.status){
-//                  showToast({
-//                      type: "success",
-//                      message: "Google Sign In Successful"
-//                  })
-//                  onOpen()
-//              }
-//          }
-//          catch(e){
-//                  console.log("error", e.message)
-//          }
-
-//      }
-//      const handleSignIn = async ()=>{
-//          if(Payload.email ==="" || Payload.password ===""){
-//              showToast({
-//                  type: "error",
-//                  message: "Please make sure all input fields are filled"
-//              })
-//              return
-//          }
-//          showToast({
-//              type: "info",
-//              message: "Please wait..."
-//          })
-//          try{
-//              let result = await LoginApi(Payload)
-//              console.log("result",result)
-//              if(result.data.status){
-//                  showToast({
-//                      type: "success",
-//                      message: "Login Successful"
-//                  })
-//                  onOpen()
-//              }
-//          }
-//          catch(e){
-//                  console.log("error", e.message)
-//                  showToast({
-//                      type: "error",
-//                      message: "Invalid email or password"
-//                  })
-//          }
-
-//      }
-//      const googleLogin = useGoogleLogin({
-//          onFailure: errorResponse => console.error,
-//          onSuccess: tokenResponse => {
-//              console.log("googletoken", tokenResponse.access_token)
-
-//              GetGoogleAuth(tokenResponse.access_token)
-//          },
-//          onError: error => console.log(error),
-//      });
-//      useEffect(() => {
-//          if(IsLoggedIn.length > 1){
-//              nav("/index")
-//              showToast({
-//                  type: "info",
-//                  message: "You are already signed in !"
-//              })
-//          }
-
-//      }, []);
 
 export default function SignIn() {
   const router = useNavigate();
@@ -179,39 +91,49 @@ export default function SignIn() {
       const result = await GoogleSignInApi({ accessToken: token });
       console.log("Google Sign-In response:", result);
 
-      if (result?.token) {
-        localStorage.setItem("authToken", result.token);
-        localStorage.setItem("onlineUser", JSON.stringify(result.user));
+    
+       if (result?.accessToken) {
 
-        const role = result.user?.role;
-        const roleRedirectMap = {
-          "SCHOOL-ADMIN": "/school-admin",
-          "SCHOLARSHIP-ADMIN": "/scholarship-admin",
-          "SPONSOR": "/sponsor-admin",
-          "FUND-ADMIN": "/fund-admin",
-          "SUPER-ADMIN": "/super-admin",
-        };
-        
-        const redirectPath = roleRedirectMap[role];
+        if (result.user.role !== null) {
+          localStorage.setItem("authToken", result.accessToken);
+          localStorage.setItem("onlineUser", JSON.stringify(result.user));
 
-        console.log("User role:", role);
-        console.log("Redirect path:", roleRedirectMap[role]);
+          setShowToast({
+            show: true,
+            message: "Login successful! Redirecting...",
+            status: "success",
+          });
 
+          setTimeout(() => {
+            setShowToast({ show: false });
+            if (result.user.role === "SCHOOL-ADMIN") {
 
-        setShowToast({
-          show: true,
-          message: "Login successful! Redirecting...",
-          status: "success",
-        });
+              router("/school-admin");
+            } else if (result.user.role === "SCHOLARSHIP-ADMIN") {
 
-        setTimeout(() => {
-          setShowToast({ show: false });
-          if (role) {
-            router(redirectPath || "/dashboard");
-          } else {
-            router(`/role-selection/${result.token}`);
-          }
-        }, 2000);
+              router("/scholarship-admin");
+            } else if (result.user.role === "SPONSOR") {
+
+              router("/sponsor-admin");
+            } else if (result.user.role === "FUND-ADMIN") {
+
+              router("/fund-admin");
+            } else if (result.user.role === "SUPER-ADMIN") {
+
+              router("/super-admin");
+            }
+          }, 2000);
+        } else {
+          setShowToast({
+            show: true,
+            message: "You are yet to complete registration. Kindly select the role you want to register as.",
+            status: "warning",
+          });
+
+          router(`/role-selection/${result.accessToken}`);
+        }
+      } else {
+        throw new Error("Invalid response format");
       }
     } catch (e) {
       console.error("Google Auth Error:", e);

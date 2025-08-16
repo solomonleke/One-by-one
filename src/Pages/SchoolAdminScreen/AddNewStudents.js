@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import SubLayout from '../../DashboardLayout/SubLayout'
 import { Text, Flex, HStack, SimpleGrid, VStack, Stack, Select, Box, Spacer } from '@chakra-ui/react'
 import Input from '../../Components/Input'
@@ -10,9 +10,10 @@ import { useNavigate } from 'react-router-dom';
 import { GiCheckMark } from "react-icons/gi";
 import { FaArrowLeft, FaCloudUploadAlt } from 'react-icons/fa'
 import { FiEdit2 } from "react-icons/fi";
-import { CreateStudentApi } from "../../Utils/ApiCall";
+import { CreateStudentApi, GetAllBanksApi, VerifyBanksApi } from "../../Utils/ApiCall";
 import ShowToast from "../../Components/ToastNotification";
 import UpdateReviewModal from '../../Components/UpdateReview'
+import SearchableInput from '../../Components/SearchableInput'
 import { IoIosCloseCircle } from 'react-icons/io';
 import Preloader from '../../Components/Preloader'
 // import { StudentContext } from '../../Components/StudentContext'
@@ -36,6 +37,8 @@ export default function AddNewStudents() {
 
 
     const [StudentInterest, setStudentInterest] = useState([])
+    const [Banks, setBanks] = useState([]);
+    const [isVerifying, setIsVerifying] = useState(false);
 
     const [payload, setPayload] = useState({
         fullName: "",
@@ -146,6 +149,76 @@ export default function AddNewStudents() {
 
     const [OpenModal, setOpenModal] = useState(false)
     const [OpenReviewModal, setOpenReviewModal] = useState(false)
+
+    const handleBankSelection = (bank) => {
+        setPayload({
+            ...payload,
+            guardianBankName: bank.name,
+            guardianBankCode: bank.code,
+        });
+    };
+
+    const GetAllBanks = async () => {
+        try {
+            const result = await GetAllBanksApi();
+            setBanks(result.data.data);
+        } catch (e) {
+            setShowToast({
+                show: true,
+                message: e.message,
+                status: "error",
+            });
+        }
+    };
+
+    const VerifyBankDetails = async () => {
+        if (payload.guardianAccountNumber.length === 10 && payload.guardianBankCode) {
+            setIsVerifying(true);
+            try {
+                const result = await VerifyBanksApi({
+                    account_number: payload.guardianAccountNumber,
+                    bank_code: payload.guardianBankCode,
+                });
+                if (result.data.status) {
+                    setPayload(prev => ({ ...prev, guardianAccountName: result.data.data.account_name }));
+                    setShowToast({
+                        show: true,
+                        message: "Account verified successfully",
+                        status: "success",
+                    });
+
+                     setTimeout(() => {
+                                setShowToast({ show: false });
+                              }, 3000);
+                } else {
+                    setShowToast({
+                        show: true,
+                        message: result.data.message,
+                        status: "error",
+                    });
+
+                     setTimeout(() => {
+                                setShowToast({ show: false });
+                              }, 3000);
+                }
+            } catch (e) {
+                setShowToast({ show: true, message: e.message, status: "error" });
+                 setTimeout(() => {
+                            setShowToast({ show: false });
+                          }, 3000);
+            } finally {
+                setIsVerifying(false);
+            }
+        }
+    };
+
+    useEffect(() => {
+        GetAllBanks();
+    }, []);
+
+    useEffect(() => {
+        VerifyBankDetails();
+    }, [payload.guardianAccountNumber, payload.guardianBankCode]);
 
     const [StudentDetails, setStudentDetails] = useState({
         view: true,
@@ -325,12 +398,17 @@ export default function AddNewStudents() {
                                     </Select>
                                 </Stack>
                                 <Input label='Phone Number' placeholder='+234' onChange={handlePayload} value={payload.studentPhone} id='studentPhone' />
-                                <Input label='Guardian’s Phone Number (Optional)' placeholder='+234' onChange={handlePayload} value={payload.guardianPhone} id='guardianPhone' />
-                                <Input label='Guardian’s Name (Optional)' placeholder='Enter Guardians Name' onChange={handlePayload} value={payload.guardianName} id='guardianName' />
-                                <Input label='Guardian’s Account Name (Optional)' placeholder='Enter Guardians Account Name' onChange={handlePayload} value={payload.guardianAccountName} id='guardianAccountName' />
-                                <Input label='Guardian’s Account Number (Optional)' placeholder='Enter Guardians Account Number' onChange={handlePayload} value={payload.guardianAccountNumber} id='guardianAccountNumber' />
-                                <Input label='Guardian’s Bank Name (Optional)' placeholder='Enter Guardians Bank Name' onChange={handlePayload} value={payload.guardianBankName} id='guardianBankName' />
-                                <Input label='Guardian’s Bank Code (Optional)' placeholder='Enter Guardians Bank Code' onChange={handlePayload} value={payload.guardianBankCode} id='guardianBankCode' />
+                                <Input label='Guardian’s Phone Number' placeholder='+234' onChange={handlePayload} value={payload.guardianPhone} id='guardianPhone' />
+                                <Input label='Guardian’s Name' placeholder='Enter Guardians Name' onChange={handlePayload} value={payload.guardianName} id='guardianName' />
+                                <SearchableInput
+                                    label="Guardian's Bank Name"
+                                    value={payload.guardianBankName}
+                                    onChange={(e) => handleBankSelection(e.target.value)}
+                                    options={Banks}
+                                    placeholder="Search for a bank"
+                                />
+                                <Input label='Guardian’s Account Number' placeholder='Enter Guardians Account Number' onChange={handlePayload} value={payload.guardianAccountNumber} id='guardianAccountNumber' />
+                                <Input label='Guardian’s Account Name' placeholder='Enter Guardians Account Name' onChange={handlePayload} value={payload.guardianAccountName} id='guardianAccountName' disabled={isVerifying || payload.guardianAccountName} />
                                 <Input label='Email Address' placeholder='Provide the student’s email address' onChange={handlePayload} value={payload.email} id='email' />
 
                                 <Input label='State' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.state} id='state' />

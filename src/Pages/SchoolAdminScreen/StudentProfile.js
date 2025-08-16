@@ -10,13 +10,15 @@ import { ReactComponent as NextArrow } from '../../Asset/nextArrow.svg';
 import { ReactComponent as Pdf } from '../../Asset/pdf.svg';
 import ShowToast from "../../Components/ToastNotification";
 import Preloader from "../../Components/Preloader";
-import { Box, HStack, Text, useDisclosure, Stack, Menu, MenuButton, MenuList, MenuItem, Avatar, Spacer, Flex, Modal,
+import {
+  Box, HStack, Text, useDisclosure, Stack, Menu, MenuButton, MenuList, MenuItem, Avatar, Spacer, Flex, Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  ModalCloseButton, } from '@chakra-ui/react';
+  ModalCloseButton,
+} from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { IoChevronBackOutline } from 'react-icons/io5';
 import { BsThreeDots } from 'react-icons/bs';
@@ -31,7 +33,7 @@ export default function StudentProfile() {
   const { student_Id } = useParams(); // Get student ID from URL params
   const [studentData, setStudentData] = useState(() => {
     const storedData = localStorage.getItem("studentData");
-    return storedData ? JSON.parse(storedData) : { full_name: "", email: "", profileImage: "", dob: "", gender: "", phone_number: "", guardian_phone_number: "", address: "", city: "", state: "", student_interest: [], class_level: "" , department: "", class_performance: "", subjects: "", scholarship_need: "", higher_education_goals: "", career_goals: "" };
+    return storedData ? JSON.parse(storedData) : { full_name: "", email: "", profileImage: "", dob: "", gender: "", phone_number: "", guardian_phone_number: "", address: "", city: "", state: "", student_interest: [], class_level: "", department: "", class_performance: "", subjects: "", scholarship_need: "", higher_education_goals: "", career_goals: "" };
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -39,14 +41,14 @@ export default function StudentProfile() {
   const { isOpen: isEditModalOpen, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
-const [data, setData] = useState({})
+  const [data, setData] = useState({})
 
   const [showToast, setShowToast] = useState({
     show: false,
     message: "",
     status: ""
   })
-  
+
   useEffect(() => {
     localStorage.setItem("studentData", JSON.stringify(studentData));
   }, [studentData]);
@@ -58,24 +60,24 @@ const [data, setData] = useState({})
 
   const [originalData, setOriginalData] = useState(null);
 
-// When opening the modal (e.g. in a useEffect or a handler)
-const handleOpenEditModal = (studentData) => {
-  console.log("Student data before opening modal: ", studentData);
-  setEditedData(studentData);      // Prefill form
-  setOriginalData(studentData);    // Save original for comparison
-  console.log("Edited Data on Modal Open: ", studentData);
-  onOpenEdit();                // Chakra modal handler
-};
+  // When opening the modal (e.g. in a useEffect or a handler)
+  const handleOpenEditModal = (studentData) => {
+    console.log("Student data before opening modal: ", studentData);
+    setEditedData(studentData);      // Prefill form
+    setOriginalData(studentData);    // Save original for comparison
+    console.log("Edited Data on Modal Open: ", studentData);
+    onOpenEdit();                // Chakra modal handler
+  };
 
-const openRemoveModal = (id) => {
-  setSelectedStudentId(id);
-  setIsOpenModal(true);
-};
+  const openRemoveModal = (id) => {
+    setSelectedStudentId(id);
+    setIsOpenModal(true);
+  };
 
-const closeRemoveModal = () => {
-  setSelectedStudentId(null);
-  setIsOpenModal(false);
-};
+  const closeRemoveModal = () => {
+    setSelectedStudentId(null);
+    setIsOpenModal(false);
+  };
 
 
   // const handleSave = () => {
@@ -87,7 +89,7 @@ const closeRemoveModal = () => {
   const handleSave = async () => {
     try {
       const updatedFields = {};
-  
+
       for (const key in editedData) {
         if (
           editedData[key] !== originalData[key] &&
@@ -99,17 +101,17 @@ const closeRemoveModal = () => {
             updatedFields[key] = Array.isArray(editedData[key])
               ? editedData[key]
               : editedData[key]
-                  .split(",")
-                  .map((item) => item.trim())
-                  .filter((item) => item !== "");
+                .split(",")
+                .map((item) => item.trim())
+                .filter((item) => item !== "");
           } else {
             updatedFields[key] = editedData[key];
           }
         }
       }
-  
+
       console.log("Updated Fields:", updatedFields);
-  
+
       if (Object.keys(updatedFields).length === 0) {
         setShowToast({
           title: "No changes",
@@ -120,20 +122,20 @@ const closeRemoveModal = () => {
         });
         return;
       }
-  
+
       const res = await UpdateStudentProfile(student_Id, updatedFields);
       console.log("API Response: ", res);
-  
+
       // Ensure returned data is array
       setStudentData({
         ...res.student,
         student_interest: Array.isArray(res.student.student_interest)
           ? res.student.student_interest
           : res.student.student_interest
-          ? res.student.student_interest.split(",").map((s) => s.trim())
-          : [],
+            ? res.student.student_interest.split(",").map((s) => s.trim())
+            : [],
       });
-  
+
       onCloseEdit();
       setShowToast({
         title: "Success",
@@ -153,12 +155,12 @@ const closeRemoveModal = () => {
       });
     }
   };
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
 
   const deleteStudentProfileBtn = async () => {
     setShowToast({
@@ -182,7 +184,7 @@ const closeRemoveModal = () => {
         setTimeout(() => setShowToast({ show: false }), 3000);
 
         setTimeout(() => {
-         
+
           setShowToast({
             show: false,
 
@@ -208,8 +210,8 @@ const closeRemoveModal = () => {
         student_interest: Array.isArray(response.student_interest)
           ? response.student_interest
           : response.student_interest
-          ? response.student_interest.split(',').map(item => item.trim())
-          : []   // fallback if null or undefined
+            ? response.student_interest.split(',').map(item => item.trim())
+            : []   // fallback if null or undefined
       });
       setLoading(false);
     } catch (err) {
@@ -217,27 +219,27 @@ const closeRemoveModal = () => {
       setLoading(false);
     }
   };
-  
+
 
 
   useEffect(() => {
 
-    
+
 
     fetchStudentProfile();
   }, []);
 
-  
+
   if (error) return <Text color="red.500">{error}</Text>;
 
 
 
   return (
     <MainLayout>
-          {
-      loading && <Preloader  />
-    }
-    {showToast.show && (
+      {
+        loading && <Preloader />
+      }
+      {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
       )}
       <Flex justifyContent="space-between" flexWrap="wrap">
@@ -277,177 +279,177 @@ const closeRemoveModal = () => {
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py="17px" px={["8px", "8px", "18px", "18px"]} rounded="10px">
         <Flex justifyContent="space-between" flexWrap="wrap">
           <HStack spacing="14px" w={["100%", "100%", "70%", "70%"]}>
-          <Avatar name={studentData?.full_name} size="lg" src={studentData?.profileImage} />
+            <Avatar name={studentData?.full_name} size="lg" src={studentData?.profileImage} />
             <Stack spacing="10px">
               <HStack>
                 <Text color="#1F2937" fontSize="25px" fontWeight="700">
                   {studentData?.full_name}
                 </Text>
                 <Menu isLazy>
-              <MenuButton as={Box}>
-                <Flex justifyContent="center" color="#000000" fontSize="16px">
-                  <BsThreeDots />
-                </Flex>
-              </MenuButton>
-              <MenuList>
-                <MenuItem
-                  onClick={() => handleOpenEditModal(studentData)}
-                  textTransform="capitalize"
-                  fontWeight="500"
-                  color="#2F2F2F"
-                  _hover={{ color: "#2F2F2F", fontWeight: "400", bg: "#E8FFF4" }}
-                >
-                  <HStack fontSize="14px">
-                    <Text>Edit</Text>
-                  </HStack>
-                </MenuItem>
-                <MenuItem
-                 onClick={() => openRemoveModal(student_Id)}
-                  textTransform="capitalize"
-                  fontWeight="500"
-                  color="#FF4040"
-                  _hover={{ color: "#FF4040", fontWeight: "400", bg: "#E8FFF4" }}
-                >
-                  <HStack fontSize="14px">
-                    <Text>Remove Student</Text>
-                  </HStack>
-                </MenuItem>
-              </MenuList>
-            </Menu>
+                  <MenuButton as={Box}>
+                    <Flex justifyContent="center" color="#000000" fontSize="16px">
+                      <BsThreeDots />
+                    </Flex>
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem
+                      onClick={() => handleOpenEditModal(studentData)}
+                      textTransform="capitalize"
+                      fontWeight="500"
+                      color="#2F2F2F"
+                      _hover={{ color: "#2F2F2F", fontWeight: "400", bg: "#E8FFF4" }}
+                    >
+                      <HStack fontSize="14px">
+                        <Text>Edit</Text>
+                      </HStack>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => openRemoveModal(student_Id)}
+                      textTransform="capitalize"
+                      fontWeight="500"
+                      color="#FF4040"
+                      _hover={{ color: "#FF4040", fontWeight: "400", bg: "#E8FFF4" }}
+                    >
+                      <HStack fontSize="14px">
+                        <Text>Remove Student</Text>
+                      </HStack>
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
+              </HStack>
+              <Text color="#667085" fontSize="13px" fontWeight="400">
+                {studentData?.email}
+              </Text>
+            </Stack>
           </HStack>
-          <Text color="#667085" fontSize="13px" fontWeight="400">
-            {studentData?.email}
-          </Text>
-        </Stack>
-      </HStack>
 
-      {/* Edit Modal */}
-      {/* Edit Modal */}
-<Modal isOpen={isEditModalOpen} onClose={onCloseEdit}>
-  <ModalOverlay />
-  <ModalContent>
-    <ModalHeader>Edit Student Details</ModalHeader>
-    <ModalCloseButton />
-    <ModalBody>
-      <Stack spacing={4}>
-        <Input
-          name="full_name"
-          placeholder="Full Name"
-          value={editedData.full_name}
-          onChange={handleChange}
-        />
-        <Input
-          name="email"
-          placeholder="Email"
-          value={editedData.email}
-          onChange={handleChange}
-        />
-        <Input
-          name="dob"
-          placeholder="Date of birth"
-          value={editedData.dob}
-          onChange={handleChange}
-        />
-        <Input
-          name="gender"
-          placeholder="Gender"
-          value={editedData.gender}
-          onChange={handleChange}
-        />
-        <Input
-          name="phone_number"
-          placeholder="Phone Number"
-          value={editedData.phone_number}
-          onChange={handleChange}
-        />
-        <Input
-          name="guardian_phone_number"
-          placeholder="Guardian Phone Number"
-          value={editedData.guardian_phone_number}
-          onChange={handleChange}
-        />
-        <Input
-          name="address"
-          placeholder="Address"
-          value={editedData.address}
-          onChange={handleChange}
-        />
-        <Input
-          name="city"
-          placeholder="City"
-          value={editedData.city}
-          onChange={handleChange}
-        />
-        <Input
-          name="state"
-          placeholder="State"
-          value={editedData.state}
-          onChange={handleChange}
-        />
-        <Input
-          name="department"
-          placeholder="Department"
-          value={editedData.department}
-          onChange={handleChange}
-        />
-        <Input
-          name="class_level"
-          placeholder="Class Level"
-          value={editedData.class_level}
-          onChange={handleChange}
-        />
-        <Input
-          name="intended_field_of_study"
-          placeholder="Intended Field Of Study"
-          value={editedData.intended_field_of_study}
-          onChange={handleChange}
-        />
-        <Input
-          name="class_performance"
-          placeholder="Class Performance"
-          value={editedData.class_performance}
-          onChange={handleChange}
-        />
-        <Input
-          name="subjects"
-          placeholder="Subjects"
-          value={editedData.subjects}
-          onChange={handleChange}
-        />
-        <Input
-          name="scholarship_need"
-          placeholder="Scholarship Need"
-          value={editedData.scholarship_need}
-          onChange={handleChange}
-        />
-        <Input
-          name="student_interest"
-          placeholder="Student Interest"
-          value={editedData.student_interest}
-          onChange={handleChange}
-        />
-        <Input
-          name="higher_education_goals"
-          placeholder="Higher Education Goals"
-          value={editedData.higher_education_goals}
-          onChange={handleChange}
-        />
-        <Input
-          name="career_goals"
-          placeholder="Career Goals"
-          value={editedData.career_goals}
-          onChange={handleChange}
-        />
-      </Stack>
-    </ModalBody>
-    <ModalFooter>
-      <Button colorScheme="blue" mr={3} onClick={handleSave}>
-        Save
-      </Button>
-      <Button onClick={onCloseEdit}>Cancel</Button>
-    </ModalFooter>
-  </ModalContent>
-</Modal>
+          {/* Edit Modal */}
+          {/* Edit Modal */}
+          <Modal isOpen={isEditModalOpen} onClose={onCloseEdit}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Edit Student Details</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Stack spacing={4}>
+                  <Input
+                    name="full_name"
+                    placeholder="Full Name"
+                    value={editedData.full_name}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="email"
+                    placeholder="Email"
+                    value={editedData.email}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="dob"
+                    placeholder="Date of birth"
+                    value={editedData.dob}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="gender"
+                    placeholder="Gender"
+                    value={editedData.gender}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="phone_number"
+                    placeholder="Phone Number"
+                    value={editedData.phone_number}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="guardian_phone_number"
+                    placeholder="Guardian Phone Number"
+                    value={editedData.guardian_phone_number}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="address"
+                    placeholder="Address"
+                    value={editedData.address}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="city"
+                    placeholder="City"
+                    value={editedData.city}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="state"
+                    placeholder="State"
+                    value={editedData.state}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="department"
+                    placeholder="Department"
+                    value={editedData.department}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="class_level"
+                    placeholder="Class Level"
+                    value={editedData.class_level}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="intended_field_of_study"
+                    placeholder="Intended Field Of Study"
+                    value={editedData.intended_field_of_study}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="class_performance"
+                    placeholder="Class Performance"
+                    value={editedData.class_performance}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="subjects"
+                    placeholder="Subjects"
+                    value={editedData.subjects}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="scholarship_need"
+                    placeholder="Scholarship Need"
+                    value={editedData.scholarship_need}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="student_interest"
+                    placeholder="Student Interest"
+                    value={editedData.student_interest}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="higher_education_goals"
+                    placeholder="Higher Education Goals"
+                    value={editedData.higher_education_goals}
+                    onChange={handleChange}
+                  />
+                  <Input
+                    name="career_goals"
+                    placeholder="Career Goals"
+                    value={editedData.career_goals}
+                    onChange={handleChange}
+                  />
+                </Stack>
+              </ModalBody>
+              <ModalFooter>
+                <Button colorScheme="blue" mr={3} onClick={handleSave}>
+                  Save
+                </Button>
+                <Button onClick={onCloseEdit}>Cancel</Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
 
 
           <Box mt={["10px", "10px", "0", "0"]}>
@@ -462,16 +464,16 @@ const closeRemoveModal = () => {
       </Box>
 
       <Stack direction={["column", "column", "row", "row"]} justifyContent={"space-between"} mt="16px">
-          <Box w={["100%", "100%", "40%", "40%"]} >
+        <Box w={["100%", "100%", "40%", "40%"]} >
 
-            <Stack spacing="16px">
+          <Stack spacing="16px">
 
-              <Box borderColor={"#EDEFF2"} py={"20.5px"} px={["8px","8px","17px","17px"]} borderRadius={"10px"} borderWidth={"1px"}>
-                <ProfileHeading title="Student Details" />
+            <Box borderColor={"#EDEFF2"} py={"20.5px"} px={["8px", "8px", "17px", "17px"]} borderRadius={"10px"} borderWidth={"1px"}>
+              <ProfileHeading title="Student Details" />
 
 
 
-                <Stack spacing={"14px"} mt="14px">
+              <Stack spacing={"14px"} mt="14px">
                 <ProfileCard title="Full Name" value={studentData?.full_name} />
                 <ProfileCard title="Date of Birth" value={studentData?.dob} />
                 <ProfileCard title="Gender" value={studentData?.gender} />
@@ -482,38 +484,38 @@ const closeRemoveModal = () => {
                 <ProfileCard title="State" value={studentData?.state} />
                 <ProfileCard title="Zip Code" value="100101" />
               </Stack>
-              </Box>
+            </Box>
 
 
-              <Box borderColor={"#EDEFF2"} py={"20.5px"} px={["8px","8px","17px","17px"]} borderRadius={"10px"} borderWidth={"1px"}>
-                <ProfileHeading title="Academic background" />
+            <Box borderColor={"#EDEFF2"} py={"20.5px"} px={["8px", "8px", "17px", "17px"]} borderRadius={"10px"} borderWidth={"1px"}>
+              <ProfileHeading title="Academic background" />
 
 
 
-                <Stack spacing={"14px"} mt="14px">
-                  <ProfileCard
-                    title="department"
-                    value={studentData?.department}
-                  />
-                  <ProfileCard
-                    title="class level"
-                    value={studentData?.class_level}
-                  />
-                  <ProfileCard
-                    title="intended field of study"
-                    value={studentData?.intended_field_of_study}
-                  />
-                  <ProfileCard
-                    title="class performance"
-                    value={studentData?.class_performance}
-                  />
-                  <ProfileCard
-                    title="subject"
-                    value={studentData?.subjects}
-                  />
-                </Stack>
-              </Box>
-              {/* <Box borderColor={"#EDEFF2"} py={"20.5px"} px={["8px","8px","17px","17px"]} borderRadius={"10px"} borderWidth={"1px"}>
+              <Stack spacing={"14px"} mt="14px">
+                <ProfileCard
+                  title="department"
+                  value={studentData?.department}
+                />
+                <ProfileCard
+                  title="class level"
+                  value={studentData?.class_level}
+                />
+                <ProfileCard
+                  title="intended field of study"
+                  value={studentData?.intended_field_of_study}
+                />
+                <ProfileCard
+                  title="class performance"
+                  value={studentData?.class_performance}
+                />
+                <ProfileCard
+                  title="subject"
+                  value={studentData?.subjects}
+                />
+              </Stack>
+            </Box>
+            {/* <Box borderColor={"#EDEFF2"} py={"20.5px"} px={["8px","8px","17px","17px"]} borderRadius={"10px"} borderWidth={"1px"}>
                 <ProfileHeading title="Leadership" />
 
 
@@ -531,80 +533,81 @@ const closeRemoveModal = () => {
 
                 </Stack>
               </Box> */}
-            </Stack>
+          </Stack>
 
 
 
-          </Box>
+        </Box>
 
 
-          <Box w={["100%", "100%", "58%", "58%"]}>
+        <Box w={["100%", "100%", "58%", "58%"]}>
 
 
-            <Stack spacing="16px">
-              <HStack background={"linear-gradient(90deg, #39996B 0%, rgba(57, 153, 107, 0) 100%)"} py={"12px"} px={"16px"} borderRadius={"8px"} justifyContent={"space-between"}>
-                <Text fontWeight={"600"} fontSize={"16px"} lineHeight={"16.94px"} color={"#FFFFFF"}>Scholarship Need</Text>
+          <Stack spacing="16px">
+            <HStack background={"linear-gradient(90deg, #39996B 0%, rgba(57, 153, 107, 0) 100%)"} py={"12px"} px={"16px"} borderRadius={"8px"} justifyContent={"space-between"}>
+              <Text fontWeight={"600"} fontSize={"16px"} lineHeight={"16.94px"} color={"#FFFFFF"}>Scholarship Need</Text>
 
-                <Button background='#FFFFFF' w={['50%', '50%','30%','30%']} color='#39996B'>{studentData?.scholarship_need}</Button>
-              </HStack>
+              {/* <Button background='#FFFFFF' w={['50%', '50%','30%','30%']} color='#39996B'>{studentData?.scholarship_need}</Button> */}
+              <Text py="8px" px="10px" rounded="8px" border="1px solid #000" textAlign={"center"} bg='#FFFFFF' color='#39996B'> {studentData?.scholarship_need}</Text>
+            </HStack>
 
-              <HStack bg="#fff" border="1px solid #EFEFEF" rounded={"8px"} py={"12px"} px={"16px"} justifyContent={"space-between"}>
-                <Text textTransform={"capitalize"} fontWeight={"500"} fontSize={"14px"} color={"#2F2F2F"}>intended field of study</Text>
-                <Text textTransform={"capitalize"} fontWeight={"600"} fontSize={"14px"} color={"#2F2F2F"}>{studentData?.intended_field_of_study}</Text>
-              </HStack>
+            <HStack bg="#fff" border="1px solid #EFEFEF" rounded={"8px"} py={"12px"} px={"16px"} justifyContent={"space-between"}>
+              <Text textTransform={"capitalize"} fontWeight={"500"} fontSize={"14px"} color={"#2F2F2F"}>intended field of study</Text>
+              <Text textTransform={"capitalize"} fontWeight={"600"} fontSize={"14px"} color={"#2F2F2F"}>{studentData?.intended_field_of_study}</Text>
+            </HStack>
 
-              <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
-                <ProfileHeading title="student’s field of interest" />
+            <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
+              <ProfileHeading title="student’s field of interest" />
 
-                <Flex mt="10px" flexWrap="wrap" gap="10px">
-                                            {studentData?.student_interest.map((item, i) => (
+              <Flex mt="10px" flexWrap="wrap" gap="10px">
+                {studentData?.student_interest.map((item, i) => (
 
-                                                <HStack key={i} cursor="pointer" px="10px" py="10px" rounded={"25px"} fontSize="13px" _hover={{ bg: "blue.blue500" }} bg="greenn.greenn500">
-                                                    <Text color="#fff" fontWeight="500" textTransform="capitalize" >{item}</Text>
-                                                    {/* <Box fontSize="20px" color="#fff" onClick={() => removeItem(item)}><IoIosCloseCircle /></Box> */}
-                                                </HStack>
-                                            ))
-                                        }
-                                        </Flex>
+                  <HStack key={i} cursor="pointer" px="10px" py="10px" rounded={"25px"} fontSize="13px" _hover={{ bg: "blue.blue500" }} bg="greenn.greenn500">
+                    <Text color="#fff" fontWeight="500" textTransform="capitalize" >{item}</Text>
+                    {/* <Box fontSize="20px" color="#fff" onClick={() => removeItem(item)}><IoIosCloseCircle /></Box> */}
+                  </HStack>
+                ))
+                }
+              </Flex>
 
-              </Box>
-
-
-              <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
-                <ProfileHeading title="Higher education goals" />
-
-                <Text fontWeight={"400"} mt="18px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>{studentData?.higher_education_goals}</Text>
-              </Box>
-
-              <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
-                <ProfileHeading title="career goals" />
+            </Box>
 
 
+            <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
+              <ProfileHeading title="Higher education goals" />
 
-                <Text fontWeight={"400"} mt="18px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>{studentData?.career_goals}</Text>
-              </Box>
+              <Text fontWeight={"400"} mt="18px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>{studentData?.higher_education_goals}</Text>
+            </Box>
 
-              <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
+            <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
+              <ProfileHeading title="career goals" />
+
+
+
+              <Text fontWeight={"400"} mt="18px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>{studentData?.career_goals}</Text>
+            </Box>
+
+            <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
 
               <Text fontSize={"14px"} textTransform={"capitalize"} fontWeight={"500"}>student essay</Text>
 
               <Text border="2px solid #ddd " borderRadius="10px" p="5" overflowY="auto" maxHeight="200px" mt="10px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>
-                   {data.essay}                     
+                {data.essay}
               </Text>
             </Box>
 
 
 
-            </Stack>
+          </Stack>
 
-          </Box>
-        </Stack>
+        </Box>
+      </Stack>
 
 
-        <RemoveNotification isOpen={isOpenModal} onClose={()=> closeRemoveModal()} onClick={() => {
-    deleteStudentProfileBtn(selectedStudentId);
-    closeRemoveModal();
-    }} />
+      <RemoveNotification isOpen={isOpenModal} onClose={() => closeRemoveModal()} onClick={() => {
+        deleteStudentProfileBtn(selectedStudentId);
+        closeRemoveModal();
+      }} />
       {/* <ProfileUpdateNotification isOpen={isEditModalOpen} onClose={onCloseEdit} /> */}
     </MainLayout>
   );
