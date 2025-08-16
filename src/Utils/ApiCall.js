@@ -1572,7 +1572,7 @@ export const UpdateSchoolProfile = async (updatedFields) => {
 
 export const UploadProfilePicture = async (file) => {
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append("displayPicture", file);
 
   const config = {
     method: "PATCH",
