@@ -607,9 +607,9 @@ export default function AddNewStudents() {
                     {
                         StudentEssay.view && (
 
-                            <Stack spacing="23px" alignItems="start" w={["100%", "100%", "65%", "65%",]}>
+                            <Stack spacing="32px" alignItems="start" w={["100%", "100%", "65%", "65%",]}>
 
-                                <Stack>
+                                <Stack mb="15px">
                                     <Text
                                         textTransform="capitalize"
                                         fontWeight="700"
@@ -627,6 +627,7 @@ export default function AddNewStudents() {
                                         fontWeight="400"
                                         color="#6B7280"
                                         mt="8px"
+                                        mb="15px"
                                     >
                                         Please upload the student’s essay detailing their career goals, interests, leadership roles, and required financial support.                    </Text>
                                 </Stack>
@@ -659,7 +660,7 @@ export default function AddNewStudents() {
                                     </Box>
                                 </Stack> */}
 
-                                <Input label='Student Essay ' placeholder="Enter the student’s essay" onChange={handlePayload} value={payload.essay} id='essay' />
+                                <TextArea label='Student Essay ' placeholder="Enter the student’s essay" onChange={handlePayload} value={payload.essay} id='essay' />
 
 
                                 <Flex justifyContent="space-between" w="100%" flexWrap="wrap" >

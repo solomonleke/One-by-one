@@ -39,7 +39,7 @@ export default function StudentProfile() {
   const { isOpen: isEditModalOpen, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
-
+const [data, setData] = useState({})
 
   const [showToast, setShowToast] = useState({
     show: false,
@@ -201,6 +201,8 @@ const closeRemoveModal = () => {
   const fetchStudentProfile = async () => {
     try {
       const response = await GetStudentProfile(student_Id);
+      console.log("response", response)
+      setData(response);
       setStudentData({
         ...response,
         student_interest: Array.isArray(response.student_interest)
@@ -459,7 +461,7 @@ const closeRemoveModal = () => {
         </Flex>
       </Box>
 
-      <Flex justifyContent={"space-between"} flexWrap="wrap" mt="16px">
+      <Stack direction={["column", "column", "row", "row"]} justifyContent={"space-between"} mt="16px">
           <Box w={["100%", "100%", "40%", "40%"]} >
 
             <Stack spacing="16px">
@@ -511,7 +513,7 @@ const closeRemoveModal = () => {
                   />
                 </Stack>
               </Box>
-              <Box borderColor={"#EDEFF2"} py={"20.5px"} px={["8px","8px","17px","17px"]} borderRadius={"10px"} borderWidth={"1px"}>
+              {/* <Box borderColor={"#EDEFF2"} py={"20.5px"} px={["8px","8px","17px","17px"]} borderRadius={"10px"} borderWidth={"1px"}>
                 <ProfileHeading title="Leadership" />
 
 
@@ -528,7 +530,7 @@ const closeRemoveModal = () => {
 
 
                 </Stack>
-              </Box>
+              </Box> */}
             </Stack>
 
 
@@ -543,7 +545,7 @@ const closeRemoveModal = () => {
               <HStack background={"linear-gradient(90deg, #39996B 0%, rgba(57, 153, 107, 0) 100%)"} py={"12px"} px={"16px"} borderRadius={"8px"} justifyContent={"space-between"}>
                 <Text fontWeight={"600"} fontSize={"16px"} lineHeight={"16.94px"} color={"#FFFFFF"}>Scholarship Need</Text>
 
-                <Button background='#FFFFFF' w='30%' color='#39996B'>{studentData?.scholarship_need}</Button>
+                <Button background='#FFFFFF' w={['50%', '50%','30%','30%']} color='#39996B'>{studentData?.scholarship_need}</Button>
               </HStack>
 
               <HStack bg="#fff" border="1px solid #EFEFEF" rounded={"8px"} py={"12px"} px={"16px"} justifyContent={"space-between"}>
@@ -554,8 +556,8 @@ const closeRemoveModal = () => {
               <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
                 <ProfileHeading title="student’s field of interest" />
 
-                {
-                                            studentData?.student_interest.map((item, i) => (
+                <Flex mt="10px" flexWrap="wrap" gap="10px">
+                                            {studentData?.student_interest.map((item, i) => (
 
                                                 <HStack key={i} cursor="pointer" px="10px" py="10px" rounded={"25px"} fontSize="13px" _hover={{ bg: "blue.blue500" }} bg="greenn.greenn500">
                                                     <Text color="#fff" fontWeight="500" textTransform="capitalize" >{item}</Text>
@@ -563,6 +565,7 @@ const closeRemoveModal = () => {
                                                 </HStack>
                                             ))
                                         }
+                                        </Flex>
 
               </Box>
 
@@ -585,17 +588,9 @@ const closeRemoveModal = () => {
 
               <Text fontSize={"14px"} textTransform={"capitalize"} fontWeight={"500"}>student essay</Text>
 
-              <HStack  borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
-                <HStack>
-                  <Pdf />
-                  <vStack>
-                    <Text color={"#353535"} fontWeight={"500"} fontSize={"13px"} lineHeight={"20px"}>davidafolarin_studentessay.pdf</Text>
-                    <Text color={"#989692"} fontSize={"11px"} fontWeight={"400"} lineHeight={"20px"}>200KB</Text>
-                  </vStack>
-                </HStack>
-              <Spacer/>
-                <Text color={"#39996B"} fontSize={"13px"} fontWeight={"600"} lineHeight={"20px"} cursor={"pointer"}>View</Text>
-              </HStack>
+              <Text border="2px solid #ddd " borderRadius="10px" p="5" overflowY="auto" maxHeight="200px" mt="10px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>
+                   {data.essay}                     
+              </Text>
             </Box>
 
 
@@ -603,7 +598,7 @@ const closeRemoveModal = () => {
             </Stack>
 
           </Box>
-        </Flex>
+        </Stack>
 
 
         <RemoveNotification isOpen={isOpenModal} onClose={()=> closeRemoveModal()} onClick={() => {

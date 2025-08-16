@@ -7,10 +7,9 @@ import ShowToast from '../Components/ToastNotification';
 import Preloader from "../Components/Preloader"
 
 import {
-  GetAdminStats,
   UpdateSchoolProfile,
   UploadAdminProfilePicture,
-  GetUserProfile,
+  GetAdminStats,
 } from "../Utils/ApiCall";
 import { isSchoolAdmin } from '../Authentication/Index';
 
@@ -30,6 +29,8 @@ export default function YourProfileSettings() {
   const [schoolAccountNumber, setSchoolAccountNumber] = useState("");
   const [schoolAccountName, setSchoolAccountName] = useState("");
   const [schoolBankCode, setSchoolBankCode] = useState("");
+  const [verifiedStatus, setVerifiedStatus] = useState("");
+  const [isEditable, setIsEditable] = useState(false);
 
   const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
 
@@ -46,7 +47,7 @@ export default function YourProfileSettings() {
 
   const fetchProfile = async () => {
     try {
-      const data = await GetUserProfile(); // directly gets the data object
+      const data = await GetAdminStats(); // directly gets the data object
       console.log("Profile Data:", data);
 
         // correct field mapping
@@ -56,10 +57,12 @@ export default function YourProfileSettings() {
         setAboutMe(data.about_me || "");
         setCurrentProfilePictureUrl(data.picture || "");
         // New bank fields
-      setSchoolBankName(data?.schoolBankName || "");
-      setSchoolAccountNumber(data?.schoolAccountNumber || "");
-      setSchoolAccountName(data?.schoolAccountName || "");
-      setSchoolBankCode(data?.schoolBankCode || "");
+        let bankDetails = JSON.parse(data?.school_admin?.school_account)
+        console.log("bank details", bankDetails)
+      setSchoolBankName(bankDetails?.bank || "");
+      setSchoolAccountNumber(bankDetails?.account_number || "");
+      setSchoolAccountName(bankDetails?.account_name || "");
+      setVerifiedStatus(data?.school_admin?.verified_status || "");
 
     } catch (error) {
       console.error("Failed to fetch profile", error);
@@ -124,12 +127,31 @@ export default function YourProfileSettings() {
         px={["8px", "8px", "18px", "18px"]}
         rounded="10px"
       >
-        <Text fontSize="17px" fontWeight="600" lineHeight="20.57px" color="#1F2937">
-          Personal Information
-        </Text>
-        <Text fontSize="13px" fontWeight="400" lineHeight="27px" color="#626974">
-          Manage and update your profile information, including contact details and profile photo.
-        </Text>
+        <Flex justifyContent="space-between" alignItems="center">
+          <Box>
+            <Text fontSize="17px" fontWeight="600" lineHeight="20.57px" color="#1F2937">
+              Personal Information
+            </Text>
+            <Text fontSize="13px" fontWeight="400" lineHeight="27px" color="#626974">
+              Manage and update your profile information, including contact details and profile photo.
+            </Text>
+          </Box>
+          {verifiedStatus === 'APPROVED' ? (
+            <Text fontSize="14px" color="green.500" fontWeight="500">
+              Your account has been verified and you can no longer edit this field.
+            </Text>
+          ) : (
+            <Button
+              onClick={() => setIsEditable(!isEditable)}
+              w="150px"
+              colorScheme={isEditable ? "gray" : "green"}
+            >
+              {isEditable ? 'View Only' : 'Edit Profile'}
+            </Button>
+          )}
+        </Flex>
+
+        
 
         <VStack alignItems="start">
           <VStack mt="20px" spacing="15px" w="100%">
@@ -142,7 +164,7 @@ export default function YourProfileSettings() {
                 </Text>
               </Box>
               <Box w="70%">
-                <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                <Input value={firstName} isReadOnly={!isEditable} onChange={(e) => setFirstName(e.target.value)} />
               </Box>
             </HStack>
 
@@ -155,7 +177,7 @@ export default function YourProfileSettings() {
                 </Text>
               </Box>
               <Box w="70%">
-                <Input value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                <Input value={lastName} isReadOnly={!isEditable} onChange={(e) => setLastName(e.target.value)} />
               </Box>
             </HStack>
 
@@ -196,7 +218,7 @@ export default function YourProfileSettings() {
                   <HStack
                     as="label"
                     borderWidth="1px"
-                    cursor="pointer"
+                    cursor={isEditable ? "pointer" : "not-allowed"}
                     borderColor="#39996B"
                     fontWeight="500"
                     color="#39996B"
@@ -212,6 +234,7 @@ export default function YourProfileSettings() {
                       type="file"
                       accept="image/*"
                       hidden
+                      disabled={!isEditable}
                       onChange={handleProfilePictureChange}
                     />
                   </HStack>
@@ -258,6 +281,7 @@ export default function YourProfileSettings() {
                   px="18px"
                   rounded="10px"
                   value={aboutMe}
+                  isReadOnly={!isEditable}
                   onChange={(e) => setAboutMe(e.target.value)}
                 />
               </Box>
@@ -289,7 +313,7 @@ export default function YourProfileSettings() {
                 </Text>
               </Box>
               <Box w="70%">
-                <Input value={schoolBankName} onChange={(e) => setSchoolBankName(e.target.value)} />
+                <Input value={schoolBankName} isReadOnly={!isEditable} onChange={(e) => setSchoolBankName(e.target.value)} />
               </Box>
             </HStack>
 
@@ -302,7 +326,7 @@ export default function YourProfileSettings() {
                 </Text>
               </Box>
               <Box w="70%">
-                <Input value={schoolAccountNumber} onChange={(e) => setSchoolAccountNumber(e.target.value)} />
+                <Input value={schoolAccountNumber} isReadOnly={!isEditable} onChange={(e) => setSchoolAccountNumber(e.target.value)} />
               </Box>
             </HStack>
 
@@ -315,22 +339,12 @@ export default function YourProfileSettings() {
                 </Text>
               </Box>
               <Box w="70%">
-                <Input value={schoolAccountName} onChange={(e) => setSchoolAccountName(e.target.value)} />
+                <Input value={schoolAccountName} isReadOnly={!isEditable} onChange={(e) => setSchoolAccountName(e.target.value)} />
               </Box>
             </HStack>
 
             <hr className="remove" />
-            {/* School Bank Code */}
-            <HStack justifyContent="space-between" w="100%">
-              <Box w="30%">
-                <Text fontSize="14px" fontWeight="500" lineHeight="22px" color="#1F2937">
-                  School Bank Code
-                </Text>
-              </Box>
-              <Box w="70%">
-                <Input value={schoolBankCode} onChange={(e) => setSchoolBankCode(e.target.value)} />
-              </Box>
-            </HStack>
+            
           </VStack>
         </VStack>
       </Box>

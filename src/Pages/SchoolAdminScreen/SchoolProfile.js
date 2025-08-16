@@ -47,22 +47,28 @@ const [logoPreview, setLogoPreview] = useState(null);   // For preview before up
 const [uploadingLogo, setUploadingLogo] = useState(false);
 const [isLogoModalOpen, setIsLogoModalOpen] = useState(false);
 const fileInputRef = useRef(null); // <--- New ref
-
+const [schoolAccountDetails, setSchoolAccountDetails] = useState({});
 
 const fetchAdminProfile = async () => {
+  
   try {
     const response = await GetAdminProfile();
     console.log("info", response);
     setAdminData(response.data); // Store school data
+    setSchoolAccountDetails(JSON.parse(response.data.school_admin.school_account|| "{}"));
+      console.log("school account fun", JSON.parse(response.data.school_admin.school_account|| "{}"))
     if (response.data?.school_admin?.school_logo) {
       setLogoSrc(response.data.school_admin.school_logo);
     }
+
     setLoading(false);
   } catch (err) {
     setError(err.message || "Failed to fetch school profile");
     setLoading(false);
   }
 };
+console.log("school account", schoolAccountDetails)
+
 
   
 
@@ -220,7 +226,7 @@ const fetchAdminProfile = async () => {
               fontWeight="700"
               w={["60%", "60%", "60%", "60%"]}
               pos="relative"
-              left={["20px", "0px", "30px", "0px"]}
+              left={["20px", "10px", "30px", "0px"]}
             >
               {adminData?.school_admin?.school_name}
             </Text>
@@ -350,16 +356,16 @@ const fetchAdminProfile = async () => {
                 <Stack spacing={"14px"} mt="14px">
                   <ProfileCard
                     title="Bank account name"
-                    value="nill"
+                    value={schoolAccountDetails.account_name}
                   />
                   <ProfileCard
                     title="Bank account number"
-                    value="nill"
+                    value={schoolAccountDetails.account_number}
                   />
                   {/* <ProfileCard title="last name" value="doe" /> */}
                   <ProfileCard
                     title="Bank name"
-                    value="nill"
+                    value={schoolAccountDetails.bank}
                   />
                   {/* <ProfileCard
                     title="phone number"
