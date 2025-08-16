@@ -268,7 +268,7 @@ export default function SchoolAdminSignup() {
                                     <HStack spacing="4">
                                         <Button px="30px" onClick={firstPage}>Back</Button>
                                         <Button px="30px" onClick={lastPage} disabled={Payload.averageJambScore !== "" && Payload.averageWaecScore !== "" && Payload.topJambScore !== ""
-                                            && Payload.topWaecScore !== "" && Payload.topResult !== "" ? false : true}>Next</Button>
+                                            && Payload.topWaecScore !== "" ? false : true}>Next</Button>
                                     </HStack>
                                 </HStack>
 
