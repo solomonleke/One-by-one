@@ -1689,7 +1689,11 @@ export const UpdateBankDetailsApi = async (payload) => {
 
   try {
     const response = await axios.request(config);
-    return response.data;
+
+    console.log("UpdateBankDetailsApi",response)
+
+
+    return response;
   } catch (error) {
     console.error("Error fetching school profile:", error);
     throw new Error(
