@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AuthenticatedWrapper from "./Layout/Index";
 import { Box, VStack, HStack, Text, Stack } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import Input from "../../Components/Input";
+import SearchableInput from "../../Components/SearchableInput";
 import TextArea from "../../Components/TextArea";
 import Button from "../../Components/Button";
 import { FaArrowLeft, FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { MdKeyboardBackspace } from "react-icons/md";
-import { CreateAdminApi } from "../../Utils/ApiCall";
+import { CreateAdminApi, GetAllBanksApi, VerifyBanksApi } from "../../Utils/ApiCall";
 import ShowToast from "../../Components/ToastNotification";
 
 
@@ -17,6 +18,7 @@ export default function SchoolAdminSignup() {
     const lastPath = localStorage.getItem("url")
     const nav = useNavigate()
     const [SchoolDetailsView, setSchoolDetailsView] = useState(true);
+    const [Banks, setBanks] = useState([]);
     const [AcademicPerformanceView, setAcademicPerformanceView] = useState(false);
     const [PrincipalInformationView, setPrincipalInformationView] = useState(false);
 
@@ -48,12 +50,20 @@ export default function SchoolAdminSignup() {
     });
 
     const [Loading, setLoading] = useState(false)
+    const [isVerifying, setIsVerifying] = useState(false);
 
     const handlePayload = (e) => {
+        const { id, value } = e.target;
+        setPayload({ ...Payload, [id]: value });
+    };
 
-        setPayload({ ...Payload, [e.target.id]: e.target.value })
-
-    }
+    const handleBankSelection = (bank) => {
+        setPayload({
+            ...Payload,
+            schoolBankName: bank.name,
+            schoolBankCode: bank.code,
+        });
+    };
 
 
 
@@ -90,7 +100,7 @@ export default function SchoolAdminSignup() {
         setLoading(true)
         try {
 
-            const result = await CreateAdminApi(Payload,tempToken)
+            const result = await CreateAdminApi(Payload, tempToken)
 
             if (result.status === 201) {
                 setLoading(false)
@@ -98,7 +108,7 @@ export default function SchoolAdminSignup() {
                 setTimeout(() => {
                     setShowToast({
                         show: false,
-    
+
                     })
 
                     nav("/sign-in")
@@ -121,6 +131,73 @@ export default function SchoolAdminSignup() {
             }, 7000)
         }
     }
+
+
+    const GetAllBanks = async () => {
+        try {
+            const result = await GetAllBanksApi(); // Assuming this function fetches the list of banks
+
+            console.log("All Banks:", result);
+
+            setBanks(result.data.data)
+
+        } catch (e) {
+            console.log(e.message)
+            setShowToast({
+                show: true,
+                message: e.message,
+                status: "error"
+            })
+        }
+
+
+    }
+
+
+    const VerifyBankDetails = async () => {
+        if (Payload.schoolAccountNumber.length === 10 && Payload.schoolBankCode) {
+            setIsVerifying(true);
+            try {
+                const result = await VerifyBanksApi({
+                    account_number: Payload.schoolAccountNumber,
+                    bank_code: Payload.schoolBankCode,
+                });
+
+                console.log("Verify Bank Details Result:", result);
+
+                if (result.data.status) {
+                    setPayload(prev => ({ ...prev, schoolAccountName: result.data.data.account_name }));
+                    setShowToast({ show: true, message: "Account verified successfully", status: "success" });
+                   
+                    setTimeout(() => {
+                        setShowToast({ show: false });
+                    }, 3000);
+                
+                  
+                } else {
+                    setShowToast({ show: true, message: result.data.message, status: "error" });
+                     setTimeout(() => {
+                        setShowToast({ show: false });
+                    }, 3000);
+                }
+            } catch (e) {
+                setShowToast({ show: true, message: e.message, status: "error" });
+                 setTimeout(() => {
+                        setShowToast({ show: false });
+                    }, 3000);
+            } finally {
+                setIsVerifying(false);
+            }
+        }
+    };
+
+    useEffect(() => {
+        GetAllBanks();
+    }, []);
+
+    useEffect(() => {
+        VerifyBankDetails();
+    }, [Payload.schoolAccountNumber, Payload.schoolBankCode]);
 
 
     return (
@@ -174,10 +251,17 @@ export default function SchoolAdminSignup() {
                                         placeholder="e.g Golden Inheritance College"
                                     />
                                     <Input label="School Email" type="email" onChange={handlePayload} value={Payload.schoolEmail} id="schoolEmail" />
-                                    <Input label="School Bank Name" type="text" onChange={handlePayload} value={Payload.schoolBankName} id="schoolBankName" />
+                                    <SearchableInput
+                                        label="School Bank Name"
+                                        value={Payload.schoolBankName}
+                                        id="schoolBankName"
+                                        onChange={(e) => handleBankSelection(e.target.value)}
+                                        options={Banks}
+                                        placeholder="Search for a bank"
+                                    />
                                     <Input label="School Account Number" type="text" onChange={handlePayload} value={Payload.schoolAccountNumber} id="schoolAccountNumber" />
-                                    <Input label="school Account Name" type="text" onChange={handlePayload} value={Payload.schoolAccountName} id="schoolAccountName" />
-                                    <Input label="School Bank Code" type="text" onChange={handlePayload} value={Payload.schoolBankCode} id="schoolBankCode" />
+                                    <Input label="School Account Name" type="text" onChange={handlePayload} value={Payload.schoolAccountName} id="schoolAccountName" disabled={isVerifying || Payload.schoolAccountName} />
+                                    {/* <Input label="School Bank Code" type="text" onChange={handlePayload} value={Payload.schoolBankCode} id="schoolBankCode" /> */}
                                     <Input label="School Address" type="text" onChange={handlePayload} value={Payload.address} id="address" />
                                     <Input label="City" type="text" onChange={handlePayload} value={Payload.city} id="city" />
                                     <Input label="Local Government" type="text" onChange={handlePayload} value={Payload.localGovernment} id="localGovernment" />
@@ -209,7 +293,7 @@ export default function SchoolAdminSignup() {
                                     <HStack spacing="4">
                                         <Button px="30px" disabled="true">Back</Button>
                                         <Button px="30px" onClick={secondPage}
-                                            disabled={Payload.schoolName !== "" && Payload.schoolBankName !== "" && Payload.schoolAccountNumber !== "" && Payload.schoolAccountName !== "" && Payload.schoolBankCode !== "" && Payload.state !== "" && Payload.address !== ""  && Payload.city !== "" &&
+                                            disabled={Payload.schoolName !== "" && Payload.schoolBankName !== "" && Payload.schoolAccountNumber !== "" && Payload.schoolAccountName !== "" && Payload.schoolBankCode !== "" && Payload.state !== "" && Payload.address !== "" && Payload.city !== "" &&
                                                 Payload.zipCode !== "" && Payload.classCapacity !== "" && Payload.aboutSchool !== "" && Payload.reason !== "" && Payload.schoolEmail !== "" ? false : true
                                             }>Next</Button>
                                     </HStack>
