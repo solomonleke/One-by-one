@@ -372,6 +372,73 @@ export const GetAllScholarshipStudentsApi = (pageNo, noItems, status, search) =>
       }
     });
 };
+export const GetAllBanksApi = () => {
+ 
+ 
+  let config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/payment-handler/all-banks`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+     
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+export const VerifyBanksApi = (payload) => {
+ let data= JSON.stringify(payload)
+ 
+  let config = {
+    method: "POST",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/payment-handler/resolve-account`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    data: data
+    
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+     
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
 
 export const GetAllScholarshipSchoolsApi = (pageNo, noItems, status) => {
  
