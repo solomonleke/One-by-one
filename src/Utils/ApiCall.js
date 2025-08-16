@@ -1675,6 +1675,28 @@ export const GetScholarshipSchoolProfileApi = async (schoolId) => {
     );
   }
 };
+export const UpdateBankDetailsApi = async (payload) => {
+  let data = JSON.stringify(payload);
+  const config = {
+    method: "PATCH",
+    url: `${baseUrl}/users/update-school-admin`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    data: data,
+  };
+
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching school profile:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Something went wrong"
+    );
+  }
+};
 
 export const GetScholarshipStudentProfileApi = async (studentId) => {
   const config = {

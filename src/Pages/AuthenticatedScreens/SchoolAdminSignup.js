@@ -3,7 +3,7 @@ import AuthenticatedWrapper from "./Layout/Index";
 import { Box, VStack, HStack, Text, Stack } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import Input from "../../Components/Input";
-import SearchableInput from "../../Components/SearchableInput";
+import SearchableInput from "../../Components/SearchableInput"; 
 import TextArea from "../../Components/TextArea";
 import Button from "../../Components/Button";
 import { FaArrowLeft, FaCloudUploadAlt } from "react-icons/fa";

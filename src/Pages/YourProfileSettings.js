@@ -5,11 +5,14 @@ import Button from "../Components/Button"
 import Input from "../Components/Input"
 import ShowToast from '../Components/ToastNotification';
 import Preloader from "../Components/Preloader"
-
+import SearchableInput from "../Components/SearchableInput";
 import {
   UpdateSchoolProfile,
   UploadAdminProfilePicture,
   GetAdminStats,
+  GetAllBanksApi,
+  VerifyBanksApi,
+  UpdateBankDetailsApi
 } from "../Utils/ApiCall";
 import { isSchoolAdmin } from '../Authentication/Index';
 
@@ -31,6 +34,8 @@ export default function YourProfileSettings() {
   const [schoolBankCode, setSchoolBankCode] = useState("");
   const [verifiedStatus, setVerifiedStatus] = useState("");
   const [isEditable, setIsEditable] = useState(false);
+  const [Banks, setBanks] = useState([]);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
 
@@ -50,15 +55,15 @@ export default function YourProfileSettings() {
       const data = await GetAdminStats(); // directly gets the data object
       console.log("Profile Data:", data);
 
-        // correct field mapping
-        setFirstName(data.first_name || "");
-        setLastName(data.last_name || "");
-        setEmail(data.email || "");
-        setAboutMe(data.about_me || "");
-        setCurrentProfilePictureUrl(data.picture || "");
-        // New bank fields
-        let bankDetails = JSON.parse(data?.school_admin?.school_account)
-        console.log("bank details", bankDetails)
+      // correct field mapping
+      setFirstName(data.first_name || "");
+      setLastName(data.last_name || "");
+      setEmail(data.email || "");
+      setAboutMe(data.about_me || "");
+      setCurrentProfilePictureUrl(data.picture || "");
+      // New bank fields
+      let bankDetails = JSON.parse(data?.school_admin?.school_account)
+      console.log("bank details", bankDetails)
       setSchoolBankName(bankDetails?.bank || "");
       setSchoolAccountNumber(bankDetails?.account_number || "");
       setSchoolAccountName(bankDetails?.account_name || "");
@@ -86,11 +91,20 @@ export default function YourProfileSettings() {
         firstName,
         lastName,
         aboutMe,
-        schoolBankName: schoolBankName || "",      // send empty string if null
-        schoolAccountNumber: schoolAccountNumber || "",
-        schoolAccountName: schoolAccountName || "",
-        schoolBankCode: schoolBankCode || "",
+
       });
+
+      if (schoolBankName || schoolAccountNumber || schoolAccountName || schoolBankCode) {
+        await UpdateBankDetailsApi({
+
+          schoolBankName: schoolBankName || "",      // send empty string if null
+          schoolAccountNumber: schoolAccountNumber || "",
+          schoolAccountName: schoolAccountName || "",
+          schoolBankCode: schoolBankCode || "",
+        });
+
+      }
+      // Update Bank Details
 
       // Refetch profile to reflect changes
       await fetchProfile();
@@ -105,20 +119,82 @@ export default function YourProfileSettings() {
     }
   };
 
+  const handleBankSelection = (bank) => {
+    setSchoolBankName(bank.name);
+    setSchoolBankCode(bank.code);
+  };
+
+  const GetAllBanks = async () => {
+    try {
+      const result = await GetAllBanksApi();
+      setBanks(result.data.data);
+    } catch (e) {
+      setShowToast({
+        show: true,
+        message: e.message,
+        status: "error",
+      });
+    }
+  };
+
+  const VerifyBankDetails = async () => {
+    if (schoolAccountNumber.length === 10 && schoolBankCode) {
+      setIsVerifying(true);
+      try {
+        const result = await VerifyBanksApi({
+          account_number: schoolAccountNumber,
+          bank_code: schoolBankCode,
+        });
+        if (result.data.status) {
+          setSchoolAccountName(result.data.data.account_name);
+          setShowToast({
+            show: true,
+            message: "Account verified successfully",
+            status: "success",
+          });
+          setTimeout(() => {
+            setShowToast({ show: false });
+          }, 3000);
+        } else {
+          setShowToast({
+            show: true,
+            message: result.data.message,
+            status: "error",
+          });
+          setTimeout(() => {
+            setShowToast({ show: false });
+          }, 3000);
+        }
+      } catch (e) {
+        setShowToast({ show: true, message: e.message, status: "error" });
+        setTimeout(() => {
+          setShowToast({ show: false });
+        }, 3000);
+      } finally {
+        setIsVerifying(false);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchProfile();
+    GetAllBanks();
   }, []);
+
+  useEffect(() => {
+    VerifyBankDetails();
+  }, [schoolAccountNumber, schoolBankCode]);
 
 
   return (
     <>
-        {
-          isLoading && <Preloader  />
-        }
+      {
+        isLoading && <Preloader />
+      }
       {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
       )}
-      
+
       <Box
         mt="12px"
         bg="#fff"
@@ -151,7 +227,7 @@ export default function YourProfileSettings() {
           )}
         </Flex>
 
-        
+
 
         <VStack alignItems="start">
           <VStack mt="20px" spacing="15px" w="100%">
@@ -243,7 +319,7 @@ export default function YourProfileSettings() {
             </HStack>
 
             {/* Modal for preview */}
-            <Modal isOpen={profilePictureModal} onClose={handlePreviewClose}  isCentered>
+            <Modal isOpen={profilePictureModal} onClose={handlePreviewClose} isCentered>
               <ModalOverlay />
               <ModalContent>
                 <ModalHeader>Profile Picture</ModalHeader>
@@ -290,64 +366,78 @@ export default function YourProfileSettings() {
         </VStack>
       </Box>
       {isSchoolAdmin() && (
-      <Box
-        mt="12px"
-        bg="#fff"
-        border="2px solid #EFEFEF"
-        py="30px"
-        px={["8px", "8px", "18px", "18px"]}
-        rounded="10px"
-      >
-        <Text fontSize="17px" fontWeight="600" lineHeight="20.57px" color="#1F2937">
-          Bank Information
-        </Text>
+        <Box
+          mt="12px"
+          bg="#fff"
+          border="2px solid #EFEFEF"
+          py="30px"
+          px={["8px", "8px", "18px", "18px"]}
+          rounded="10px"
+        >
+          <Text fontSize="17px" fontWeight="600" lineHeight="20.57px" color="#1F2937">
+            Bank Information
+          </Text>
 
-        <VStack alignItems="start">
-          <VStack mt="20px" spacing="15px" w="100%">
-            <hr className="remove" />
-            {/* School Bank Name */}
-            <HStack justifyContent="space-between" w="100%">
-              <Box w="30%">
-                <Text fontSize="14px" fontWeight="500" lineHeight="22px" color="#1F2937">
-                  School Bank Name
-                </Text>
-              </Box>
-              <Box w="70%">
-                <Input value={schoolBankName} isReadOnly={!isEditable} onChange={(e) => setSchoolBankName(e.target.value)} />
-              </Box>
-            </HStack>
+          <VStack alignItems="start">
+            <VStack mt="20px" spacing="15px" w="100%">
+              <hr className="remove" />
+              {/* School Bank Name */}
+              <HStack justifyContent="space-between" w="100%">
+                <Box w="30%">
+                  <Text fontSize="14px" fontWeight="500" lineHeight="22px" color="#1F2937">
+                    School Bank Name
+                  </Text>
+                </Box>
+                <Box w="70%">
+                  <SearchableInput
+                    value={schoolBankName}
+                    onChange={(e) => handleBankSelection(e.target.value)}
+                    options={Banks}
+                    isReadOnly={!isEditable}
+                    placeholder="Search for a bank"
+                  />
+                </Box>
+              </HStack>
 
-            <hr className="remove" />
-            {/* School Account Number */}
-            <HStack justifyContent="space-between" w="100%">
-              <Box w="30%">
-                <Text fontSize="14px" fontWeight="500" lineHeight="22px" color="#1F2937">
-                  School Account Number
-                </Text>
-              </Box>
-              <Box w="70%">
-                <Input value={schoolAccountNumber} isReadOnly={!isEditable} onChange={(e) => setSchoolAccountNumber(e.target.value)} />
-              </Box>
-            </HStack>
+              <hr className="remove" />
+              {/* School Account Number */}
+              <HStack justifyContent="space-between" w="100%">
+                <Box w="30%">
+                  <Text fontSize="14px" fontWeight="500" lineHeight="22px" color="#1F2937">
+                    School Account Number
+                  </Text>
+                </Box>
+                <Box w="70%">
+                  <Input
+                    value={schoolAccountNumber}
+                    isReadOnly={!isEditable}
+                    onChange={(e) => setSchoolAccountNumber(e.target.value)}
+                  />
+                </Box>
+              </HStack>
 
-            <hr className="remove" />
-            {/* School Account Name */}
-            <HStack justifyContent="space-between" w="100%">
-              <Box w="30%">
-                <Text fontSize="14px" fontWeight="500" lineHeight="22px" color="#1F2937">
-                  School Account Name
-                </Text>
-              </Box>
-              <Box w="70%">
-                <Input value={schoolAccountName} isReadOnly={!isEditable} onChange={(e) => setSchoolAccountName(e.target.value)} />
-              </Box>
-            </HStack>
+              <hr className="remove" />
+              {/* School Account Name */}
+              <HStack justifyContent="space-between" w="100%">
+                <Box w="30%">
+                  <Text fontSize="14px" fontWeight="500" lineHeight="22px" color="#1F2937">
+                    School Account Name
+                  </Text>
+                </Box>
+                <Box w="70%">
+                  <Input
+                    value={schoolAccountName}
+                    isReadOnly={!isEditable || isVerifying || schoolAccountName}
+                    onChange={(e) => setSchoolAccountName(e.target.value)}
+                  />
+                </Box>
+              </HStack>
 
-            <hr className="remove" />
-            
+              <hr className="remove" />
+
+            </VStack>
           </VStack>
-        </VStack>
-      </Box>
+        </Box>
       )}
 
       <Flex justifyContent="flex-end" alignItems="center" mt="20px">
