@@ -12,7 +12,7 @@ import { CgMenuLeft } from "react-icons/cg";
 import { IoArrowBackSharp } from "react-icons/io5";
 import {
 
-    GetAdminStats,
+    GetUserProfile,
   } from "../Utils/ApiCall";
 
 import SideBar from './SideBar'
@@ -34,19 +34,14 @@ import { useNavigate } from 'react-router-dom';
 export default function NavBar({ showSearch = true }) {
 
 
-   
+    const [userName, setUserName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [onlineUser, setOnlineUser] = useState({});
-
-    const { isOpen, onOpen, onClose } = useDisclosure()
-
-    const [OpenModal, setOpenModal] = useState(false)
-    const ReadNotification = (id) => {
-
-    }
+    const [loading, setLoading] = useState(true); // State to manage loading
 
     const fetchProfile = async () => {
         try {
-          const data = await GetAdminStats(); // directly gets the data object
+          const data = await GetUserProfile(); // directly gets the data object
           console.log("Profile Data:", data);
           setOnlineUser(data)
             
@@ -59,11 +54,20 @@ export default function NavBar({ showSearch = true }) {
   useEffect(() => {
   
 
-    
+    // const storedName = JSON.parse(localStorage.getItem('onlineUser'));
+    // if (storedName) {
+    //   setUserName(`${storedName.firstName}`);
+    //   setLastName(`${storedName.lastName}`);
+    // }
     fetchProfile(); // Fetch profile data when the component mounts
   }, []);
 
-   
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const [OpenModal, setOpenModal] = useState(false)
+    const ReadNotification = (id) => {
+
+    }
 
     const nav = useNavigate()
     return (
@@ -166,8 +170,8 @@ export default function NavBar({ showSearch = true }) {
                             <MenuButton as={Box}>
 
                                 <HStack cursor={"pointer"}>
-                                <Avatar  name={`${onlineUser?.first_name} ${onlineUser?.last_name}`} size="sm" src={`${onlineUser?.picture}`} />
-                                <Text textTransform="capitalize" color={"#2E2E2E"} fontWeight={"500"} fontSize={"14px"} >{onlineUser?.first_name} {onlineUser?.last_name}</Text>
+                                <Avatar  name={`${onlineUser.first_name} ${onlineUser.last_name}`} size="sm" src={`${onlineUser.picture}`} />
+                                <Text textTransform="capitalize" color={"#2E2E2E"} fontWeight={"500"} fontSize={"14px"} >{onlineUser.first_name} {onlineUser.last_name}</Text>
                                     <IoIosArrowDown size={"18px"} color='#000000' />
 
                                 </HStack>

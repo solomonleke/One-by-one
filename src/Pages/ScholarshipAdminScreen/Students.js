@@ -94,22 +94,11 @@ const [totalRejected, setTotalRejected] = useState(0);
   const { student_id } = useParams()
   const [essayPercentage, setEssayPercentage] = useState(0);
   const [loadingStudentId, setLoadingStudentId] = useState(null);
+  const [isTotalStudents, setIsTotalStudents] = useState(0);
 
 
 
-  // Pagination settings to follow
-  const [CurrentPage, setCurrentPage] = useState(1);
   const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
-  const [TotalPage, setTotalPage] = useState("");
- 
-
-  //get current post
-  //change page
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  // Pagination settings to follow end here
 
 
 
@@ -118,6 +107,7 @@ const [totalRejected, setTotalRejected] = useState(0);
   const GetAllScholarshipStudent = async (status, page) => {
     try {
       const result = await GetAllScholarshipStudentsApi(page, PostPerPage, status, search);
+      console.log("GetAllScholarshipStudent result:", result);
   
       if (result.status === 200) {
         const Students = result.data.data.students;
@@ -143,9 +133,15 @@ const [totalRejected, setTotalRejected] = useState(0);
 
 
 
-  const FetchPending = () => GetAllScholarshipStudent("PENDING", currentPagePending);
-const FetchApproved = () => GetAllScholarshipStudent("APPROVED", currentPageApproved);
-const FetchRejected = () => GetAllScholarshipStudent("REJECTED", currentPageRejected);
+  const FetchPending = () => {
+    setCurrentPagePending(1);
+  };
+const FetchApproved = () => {
+    setCurrentPageApproved(1);
+  };
+const FetchRejected = () => {
+    setCurrentPageRejected(1);
+  };
 
 
   
@@ -174,68 +170,36 @@ const FetchRejected = () => GetAllScholarshipStudent("REJECTED", currentPageReje
   const ApproveStudent = async (student_id, STATUS) => {
     setLoadingStudentId(student_id); // ✅ only this student's button shows loading
       
-      
-
     try {
       const result = await ApproveStudentApi(student_id, {status: STATUS, essayPercentage: essayPercentage});
       
       console.log("approved student", result);
       
-      setShowToast({
-        show: true,
-        message: result.message,
-        status: result.status,
-      });
-
       if (result.status === 200) {
-          setIsLoading(false);
-        if(STATUS === "APPROVED"){
-          GetAllScholarshipStudent("PENDING")
-        }
-        setIsLoading(true);
         setShowToast({
           show: true,
-          message: "Approved Student!!!",
-          status: "success",
-        });
-        setTimeout(() => setShowToast({ show: false }), 3000);
-        if(STATUS === "REJECTED"){
-          GetAllScholarshipStudent("APPROVED")
-        }
-        setIsLoading(true);
-        setShowToast({
-          show: true,
-          message: "Rejected Student!!!",
-          status: "success",
-        });
-        setTimeout(() => setShowToast({ show: false }), 3000);
-        if(STATUS === "APPROVED"){
-          GetAllScholarshipStudent("REJECTED")
-        }
-        setIsLoading(true);
-        setShowToast({
-          show: true,
-          message: "Approved Student!!!",
-          status: "success",
+          message: `Student ${STATUS === "APPROVED" ? "Approved" : "Rejected"}!!!`,
+          status: STATUS === "REJECTED" ? "error" : "success",
         });
         setTimeout(() => setShowToast({ show: false }), 3000);
         
+        // Refresh all lists
+        GetAllScholarshipStudent("PENDING", currentPagePending);
+        GetAllScholarshipStudent("APPROVED", currentPageApproved);
+        GetAllScholarshipStudent("REJECTED", currentPageRejected);
       } 
     } catch (e) {
-        setIsLoading(false);
       setShowToast({
         show: true,
-        message: "Error Approving Student!!! ",
+        message: e.response?.data?.message || e.message || "Error Approving Student!!!",
         status: "error",
       });
       setTimeout(() => setShowToast({ show: false }), 3000);
       console.log("error", e.message);
     } finally {
-      setIsLoading(false);
       setLoadingStudentId(null); // Reset loading
-
     }
-  } 
+  }
 
 
   useEffect(() => { 
@@ -249,11 +213,6 @@ const FetchRejected = () => GetAllScholarshipStudent("REJECTED", currentPageReje
   useEffect(() => { 
     GetAllScholarshipStudent("REJECTED", currentPageRejected); 
   }, [currentPageRejected]);
-  
-
-  useEffect(() => { GetAllScholarshipStudent("PENDING", currentPagePending); }, [currentPagePending]);
-useEffect(() => { GetAllScholarshipStudent("APPROVED", currentPageApproved); }, [currentPageApproved]);
-useEffect(() => { GetAllScholarshipStudent("REJECTED", currentPageRejected); }, [currentPageRejected]);
 
 
 
@@ -392,9 +351,10 @@ useEffect(() => { GetAllScholarshipStudent("REJECTED", currentPageRejected); }, 
                 </TableContainer>
 
                   <Pagination
-                    currentPage={CurrentPage}
-                    totalPosts={TotalPage}
-                    paginate={paginate}
+                    currentPage={currentPagePending}
+                    totalPosts={totalPending}
+                    postsPerPage={PostPerPage}
+                    paginate={setCurrentPagePending}
                   />
               </Box>
             </TabPanel>
@@ -443,11 +403,11 @@ useEffect(() => { GetAllScholarshipStudent("REJECTED", currentPageRejected); }, 
                   </Table>
 
                   <Pagination
-  currentPage={currentPageApproved}
-  totalPosts={totalApproved}
-  postsPerPage={PostPerPage}
-  paginate={setCurrentPageApproved}
-/>
+                    currentPage={currentPageApproved}
+                    totalPosts={totalApproved}
+                    postsPerPage={PostPerPage}
+                    paginate={setCurrentPageApproved}
+                  />
 
                 </TableContainer>
               </Box>
@@ -496,11 +456,11 @@ useEffect(() => { GetAllScholarshipStudent("REJECTED", currentPageRejected); }, 
                   </Table>
 
                   <Pagination
-  currentPage={currentPageRejected}
-  totalPosts={totalRejected}
-  postsPerPage={PostPerPage}
-  paginate={setCurrentPageRejected}
-/>
+                    currentPage={currentPageRejected}
+                    totalPosts={totalRejected}
+                    postsPerPage={PostPerPage}
+                    paginate={setCurrentPageRejected}
+                  />
 
                 </TableContainer>
               </Box>

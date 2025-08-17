@@ -9,7 +9,7 @@ import SearchableInput from "../Components/SearchableInput";
 import {
   UpdateSchoolProfile,
   UploadAdminProfilePicture,
-  GetAdminStats,
+  GetUserProfile,
   GetAllBanksApi,
   VerifyBanksApi,
   UpdateBankDetailsApi
@@ -52,7 +52,7 @@ export default function YourProfileSettings() {
 
   const fetchProfile = async () => {
     try {
-      const data = await GetAdminStats(); // directly gets the data object
+      const data = await GetUserProfile(); // directly gets the data object
       console.log("Profile Data:", data);
 
       // correct field mapping

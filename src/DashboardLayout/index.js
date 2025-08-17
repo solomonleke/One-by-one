@@ -2,7 +2,7 @@ import { Box, Flex, Stack } from '@chakra-ui/react'
 import NavBar from './NavBar'
 import SideBar from './SideBar'
 
-export default function MainLayout({ children, bgColor = "gray.gray500", color = "black",  showSearch=true, showNav=true, borderRight="1px solid #EDEFF2",  active = false }) {
+export default function MainLayout({ children, bgColor = "gray.gray500", color = "black",  showSearch=true, showNav=true, borderRight="1px solid #EDEFF2",  active = false, userName, userImage }) {
   return (
 
     <Box bgColor={bgColor} minH="100vh"  >
@@ -14,7 +14,7 @@ export default function MainLayout({ children, bgColor = "gray.gray500", color =
         </Box>
 
         <Box width={['100%', '100%', '100%', '100%', '80%']}  ml={["0%","0%","0%","0%","20%"]} >
-        <NavBar showSearch={showSearch} />
+        <NavBar showSearch={showSearch} userName={userName} userImage={userImage} />
           <Box  py="16.5px" px={["10px","10px","24px","24px"]}>
             {children}
           </Box>

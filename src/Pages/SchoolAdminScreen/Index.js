@@ -341,26 +341,7 @@ const deleteStudentProfileBtn = async (student_Id) => {
   }
 };
 
-  useEffect(() => {
-    var reloadCount = localStorage.getItem("reloadCount");
-    if(!reloadCount){
-      localStorage.setItem('reloadCount', + parseInt(1))
-
-    }
-    if(reloadCount < 2) {
-      localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
-      setTimeout(() =>
-      window.location.reload(1), 2000)
-    } else {
-      localStorage.removeItem('reloadCount');
-    }
-    
-    const storedName = JSON.parse(localStorage.getItem('onlineUser'));
-    if (storedName) {
-      setUserName(`${storedName.firstName}`);
-    }
-    
-  }, []);
+  
 
   useEffect(() => {
 

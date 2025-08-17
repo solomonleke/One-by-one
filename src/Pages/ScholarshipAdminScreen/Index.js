@@ -132,18 +132,18 @@ export default function ScholarshipAdmin() {
   useEffect(() => {
     GetScholarshipDashboardDetails()
 
-    var reloadCount = localStorage.getItem("reloadCount");
-    if(!reloadCount){
-      localStorage.setItem('reloadCount', + parseInt(1))
+    // var reloadCount = localStorage.getItem("reloadCount");
+    // if(!reloadCount){
+    //   localStorage.setItem('reloadCount', + parseInt(1))
 
-    }
-    if(reloadCount < 2) {
-      localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
-      setTimeout(() =>
-      window.location.reload(1), 2000)
-    } else {
-      localStorage.removeItem('reloadCount');
-    }
+    // }
+    // if(reloadCount < 2) {
+    //   localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
+    //   setTimeout(() =>
+    //   window.location.reload(1), 2000)
+    // } else {
+    //   localStorage.removeItem('reloadCount');
+    // }
 
   }, []);
 
@@ -231,7 +231,7 @@ useEffect(() => {
 }, [CurrentPage, PostPerPage, status, search]);
 
   const [userName, setUserName] = useState('');
-
+  const [userImage, setUserImage] = useState('');
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -243,70 +243,57 @@ useEffect(() => {
   const { student_id } = useParams()
 
   const ApproveSchool = async (schoolId, status, note) => {
-    
+    setLoading(true);
     try {
         const result = await ApproveSchoolApi(schoolId, status, note)
 
         console.log("approved school", result)
 
-        setShowToast({
-          show: true,
-          message: result.message,
-          status: result.status,
-      });
-
         if (result.status === 200) {
-            setLoading(true);
             setShowToast({
                 show: true,
                 message: "Approved School!!!",
                 status: "success",
             });
+            GetAllScholarshipSchool();
         }
     } catch (e) {
         setShowToast({
             show: true,
-            message: "Error Approving School!!!",
+            message: e.response?.data?.message || e.message || "Error Approving School!!!",
             status: "error",
         });
         console.log("error", e.message)
     } finally {
         setLoading(false);
-        setIsLoading(false);
     }
 }
 
 
-const ApproveStudent = async () => {
+const ApproveStudent = async (student_id, status) => {
+  setLoading(true);
   try {
-      const result = await ApproveStudentApi(student_id, status, essayPercentage)
+      const result = await ApproveStudentApi(student_id, {status, essayPercentage})
 
       console.log("approved student", result)
 
-      setShowToast({
-        show: true,
-        message: result.message,
-        status: result.status,
-    });
-
       if (result.status === 200) {
-          setLoading(true);
           setShowToast({
               show: true,
               message: "Approved Student!!!",
               status: "success",
           });
+          GetAllScholarshipStudent();
       }
   } catch (e) {
       setShowToast({
           show: true,
-          message: "Error Approving Student!!!",
+          message: e.response?.data?.message || e.message || "Error Approving Student!!!",
           status: "error",
       });
       console.log("error", e.message)
   } finally {
       setLoading(false);
-      setIsLoading(false);
   }
 }
 
@@ -328,6 +315,7 @@ useEffect(() => {
   const storedName = JSON.parse(localStorage.getItem('onlineUser'));
   if (storedName) {
     setUserName(`${storedName.firstName}`);
+    setUserImage(storedName.profileImg);
   }
 }, []);
 
@@ -336,10 +324,13 @@ useEffect(() => {
 
   
   return (
-    <MainLayout>
+    <MainLayout userName={userName} userImage={userImage}>
           {
             isLoading && <Preloader  />
           }
+      {showToast.show && (
+        <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
+      )}
 
       <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Welcome Back, {userName || "User"}!</Text>
       <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Review and approve schools, students, and fund requests to drive meaningful impact.</Text>
@@ -442,12 +433,16 @@ useEffect(() => {
           title='approved schools'
           value={scholarshipDetails.schoolCount}
           w="32.5%"
+          navigateTo="/scholarship-admin/schools"
+
         />
         <DashboardCard
           icon={<FaUserGraduate />}
           title='approved students'
           value={scholarshipDetails.studentCount}
           w="32.5%"
+          navigateTo="/scholarship-admin/students"
+
         />
         <DashboardCard
           icon={<TbCurrencyNaira />}

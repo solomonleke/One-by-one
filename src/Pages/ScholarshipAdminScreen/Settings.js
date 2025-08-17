@@ -9,7 +9,7 @@ import SecuritySettings from '../SecuritySettings'
 import DocumentSettings from '../DocumentSettings'
 
 import {
-  GetAdminStats,
+  GetScholarshipAdminProfileApi,
 } from "../../Utils/ApiCall";
 
 export default function Settings() {
@@ -18,7 +18,7 @@ export default function Settings() {
 
   const fetchProfile = async () => {
     try {
-      const data = await GetAdminStats(); // directly gets the data object
+      const data = await GetScholarshipAdminProfileApi(); // directly gets the data object
       console.log("Profile Data:", data);
     } catch (error) {
       console.error("Failed to fetch profile", error);

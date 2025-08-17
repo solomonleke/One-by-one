@@ -85,27 +85,38 @@ export default function Schools() {
     const [pendingSchools, setPendingSchools] = useState([]);
     const [approvedSchools, setApprovedSchools] = useState([]);
     const [rejectedSchools, setRejectedSchools] = useState([]);
+    const [currentPagePending, setCurrentPagePending] = useState(1);
+    const [totalPending, setTotalPending] = useState(0);
+    const [currentPageApproved, setCurrentPageApproved] = useState(1);
+    const [totalApproved, setTotalApproved] = useState(0);
+    const [currentPageRejected, setCurrentPageRejected] = useState(1);
+    const [totalRejected, setTotalRejected] = useState(0);
+
 
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
-    const GetAllScholarshipSchool = async (status) => {
+    const GetAllScholarshipSchool = async (status, page) => {
         try {
-            const result = await GetAllScholarshipSchoolsApi(CurrentPage, PostPerPage, status);
+            const result = await GetAllScholarshipSchoolsApi(page, PostPerPage, status);
             console.log("getallscholarshipSchools", result);
 
 
 
             if (result.status === 200 && result.data.data?.schools?.length > 0) {
                 const schools = result.data.data.schools;
-                setTotalPage(result.data.data.totalPages);
+                const total = result.data.data.totalItems;
+
                 if (status === "PENDING") {
                     setPendingSchools(schools);
+                    setTotalPending(total);
                 } else if (status === "APPROVED") {
                     setApprovedSchools(schools);
+                    setTotalApproved(total);
                 } else if (status === "REJECTED") {
                     setRejectedSchools(schools);
+                    setTotalRejected(total);
                 }
             } else {
                 if (status === "PENDING") {
@@ -124,24 +135,28 @@ export default function Schools() {
 
 
     const FetchPending = () => {
-        if (pendingSchools.length === 0) GetAllScholarshipSchool("PENDING")
-
-    }
-
+        setCurrentPagePending(1);
+    };
 
     const FetchApproved = () => {
-        if (approvedSchools.length === 0) GetAllScholarshipSchool("APPROVED")
-    }
+        setCurrentPageApproved(1);
+    };
 
     const FetchRejected = () => {
-        if (rejectedSchools.length === 0) GetAllScholarshipSchool("REJECTED")
-    }
-
-
+        setCurrentPageRejected(1);
+    };
 
     useEffect(() => {
-        
-    }, []);
+        GetAllScholarshipSchool("PENDING", currentPagePending);
+    }, [currentPagePending]);
+
+    useEffect(() => {
+        GetAllScholarshipSchool("APPROVED", currentPageApproved);
+    }, [currentPageApproved]);
+
+    useEffect(() => {
+        GetAllScholarshipSchool("REJECTED", currentPageRejected);
+    }, [currentPageRejected]);
 
     const filterBy = (type) => {
         let filtered = [...MainData];
@@ -221,7 +236,7 @@ export default function Schools() {
                 setShowToast({
                     show: true,
                     message: `School ${newStatus}`,
-                    status: "success",
+                    status: newStatus === "REJECTED" ? "error" : "success",
                 });
                 setTimeout(() => setShowToast({ show: false }), 3000);
 
@@ -233,7 +248,7 @@ export default function Schools() {
         } catch (e) {
             setShowToast({
                 show: true,
-                message: e.message || "Error changing status!",
+                message: e.response?.data?.message || e.message || "Error changing status!",
                 status: "error",
             });
             setTimeout(() => setShowToast({ show: false }), 3000);
@@ -384,10 +399,12 @@ export default function Schools() {
                                     </Table>
 
                                     <Pagination
-                                        currentPage={CurrentPage}
-                                        totalPosts={TotalPage}
-                                        paginate={paginate}
+                                        currentPage={currentPagePending}
+                                        totalPosts={totalPending}
+                                        postsPerPage={PostPerPage}
+                                        paginate={setCurrentPagePending}
                                     />
+                                    
                                 </TableContainer>
                             </Box>
                         </TabPanel>
@@ -437,9 +454,10 @@ export default function Schools() {
                                     </Table>
 
                                     <Pagination
-                                        currentPage={CurrentPage}
-                                        totalPosts={TotalPage}
-                                        paginate={paginate}
+                                        currentPage={currentPageApproved}
+                                        totalPosts={totalApproved}
+                                        postsPerPage={PostPerPage}
+                                        paginate={setCurrentPageApproved}
                                     />
                                 </TableContainer>
                             </Box>
@@ -489,9 +507,10 @@ export default function Schools() {
                                     </Table>
 
                                     <Pagination
-                                        currentPage={CurrentPage}
-                                        totalPosts={TotalPage}
-                                        paginate={paginate}
+                                        currentPage={currentPageRejected}
+                                        totalPosts={totalRejected}
+                                        postsPerPage={PostPerPage}
+                                        paginate={setCurrentPageRejected}
                                     />
                                 </TableContainer>
                             </Box>
