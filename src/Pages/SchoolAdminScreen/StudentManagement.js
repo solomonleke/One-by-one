@@ -62,6 +62,7 @@ export default function StudentManagement() {
   const [MainData, setMainData] = useState([])
   const [FilterData, setFilterData] = useState([])
   const [totalStudentsCount, setTotalStudentsCount] = useState(0);
+  const [isTotalStudents, setIsTotalStudents] = useState(0);
 
 
 
@@ -306,6 +307,7 @@ export default function StudentManagement() {
         setFilterData(result.data.data.students);
         setFilteredData(result.data.data.students)
         setTotalStudentsCount(result.data.data.totalPages);
+        setIsTotalStudents(result.data.data.totalStudents);
         const totalPosts = result.data.data.totalPages * PostPerPage;
         setTotalPage(totalPosts);
       }
@@ -880,7 +882,7 @@ export default function StudentManagement() {
 
 <Pagination
   // totalPosts={TotalPage}
-  totalPosts={totalStudentsCount}
+  totalPosts={isTotalStudents}
   postsPerPage={PostPerPage}
   currentPage={CurrentPage}
   paginate={paginate}

@@ -191,53 +191,7 @@ const [formData, setFormData] = useState({
 
   
 
-  const handleSave = async () => {
-    setLoading(true);
-    try {
-      console.log("formData before request:", formData);
   
-      const response = await requestFundApi({
-        studentId: formData.student,
-        type: formData.scholarship.toUpperCase(),
-        amount: Number(formData.amount),
-      });
-  
-      if (response.status === 201 || response.status === 200) {
-        setLoading(false);
-        setShowToast({
-          show: true,
-          message: "Fund requested successfully!",
-          status: "success",
-          duration: 3000,
-        });
-        setTimeout(() => setShowToast({ show: false }), 3000);
-        setFormData({ student: "", scholarship: "", amount: "" });
-        onCloseEdit();
-      }
-    } catch (error) {
-      setLoading(false);
-    
-      // ✅ Get the server's message if available, else fallback
-      let serverMessage =
-        error?.response?.data?.message ||     // If message is a string
-        "Failed to request fund";
-  
-      if (serverMessage === 'Cannot Create another Fund Request as there is a request still processing for student') {
-        serverMessage = "The student has already been funded";
-      }
-
-      console.error("❌ Request fund error:", serverMessage);
-  
-      setShowToast({
-        show: true,
-        message: serverMessage,
-        status: "error",
-        duration: 4000,
-      });
-  
-      setTimeout(() => setShowToast({ show: false }), 3000);
-    }
-  };
   
   
 
@@ -340,6 +294,56 @@ const [loading, setLoading] = useState(false);
       setIsLoading(false);
     }
   };
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      console.log("formData before request:", formData);
+  
+      const response = await requestFundApi({
+        studentId: formData.student,
+        type: formData.scholarship.toUpperCase(),
+        amount: Number(formData.amount),
+      });
+  
+      if (response.status === 201 || response.status === 200) {
+        setLoading(false);
+        setShowToast({
+          show: true,
+          message: "Fund requested successfully!",
+          status: "success",
+          duration: 3000,
+        });
+        setTimeout(() => setShowToast({ show: false }), 3000);
+        setFormData({ student: "", scholarship: "", amount: "" });
+        onCloseEdit();
+        fetchFundRequests();
+      }
+    } catch (error) {
+      setLoading(false);
+    
+      
+      // ✅ Get the server's message if available, else fallback
+      let serverMessage =
+        error?.response?.data?.message ||     // If message is a string
+        "Failed to request fund";
+  
+      if (serverMessage === 'Cannot Create another Fund Request as there is a request still processing for student') {
+        serverMessage = "The student has already been funded";
+      }
+
+      console.error("❌ Request fund error:", serverMessage);
+  
+      setShowToast({
+        show: true,
+        message: serverMessage,
+        status: "error",
+        duration: 4000,
+      });
+  
+      setTimeout(() => setShowToast({ show: false }), 3000);
+    }
+  };
   
   const options = students.filter(s => s.verification_status === "APPROVED")
   .map(s => ({ label: s.full_name, value: s.id }));
@@ -352,7 +356,7 @@ const [loading, setLoading] = useState(false);
   
   
   const fetchFundRequests = async () => {
-    const PostPerPage=10
+    // const PostPerPage=10
     try {
       const data = await getAllFundRequestsApi(CurrentPage, PostPerPage);
       
