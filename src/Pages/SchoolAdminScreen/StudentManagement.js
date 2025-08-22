@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../DashboardLayout'
-import { Text, Flex, HStack, Box, useDisclosure } from '@chakra-ui/react'
+import { Text, Flex, HStack, Box, useDisclosure, FormHelperText } from '@chakra-ui/react'
 import TableRow from "../../Components/TableRow"
 import Button from "../../Components/Button"
 import Input from "../../Components/Input"
@@ -98,8 +98,7 @@ export default function StudentManagement() {
   const { isOpen: isRemoveModalOpen, onOpen: onOpenRemove, onClose: onCloseRemove } = useDisclosure();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
-
-
+  const [emailError, setEmailError] = useState("");
 
   const [showToast, setShowToast] = useState({
     show: false,
@@ -110,6 +109,21 @@ export default function StudentManagement() {
     totalStudents: 0,
 
   });
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const validateEmail = (email, setEmailError) => {
+    if (!email) {
+      setEmailError("Email is required");
+      return false;
+    } else if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    } else {
+      setEmailError("");
+      return true;
+    }
+  };
 
   
 
@@ -746,9 +760,10 @@ export default function StudentManagement() {
           <Input name="full_name" value={editedData.full_name || ""} onChange={handleChange} />
         </FormControl>
 
-        <FormControl>
+        <FormControl isInvalid={!!emailError}>
           <FormLabel>Email</FormLabel>
-          <Input name="email" value={editedData.email || ""} onChange={handleChange} />
+          <Input name="email" value={editedData.email || ""} onChange={handleChange} type="email" onBlur={() => validateEmail(editedData.email, setEmailError)} />
+          {emailError ? <FormHelperText color="red.500">{emailError}</FormHelperText> : null}
         </FormControl>
 
         <FormControl>
