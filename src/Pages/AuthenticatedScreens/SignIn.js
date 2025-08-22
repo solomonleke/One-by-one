@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import AuthenticatedWrapper from './Layout/Index';
-import { Box, Stack, Text } from '@chakra-ui/react';
+import { Box, Stack, Text, FormControl, FormHelperText } from '@chakra-ui/react';
 import Input from '../../Components/Input';
 import Button from '../../Components/Button';
 import { FcGoogle } from 'react-icons/fc';
@@ -19,6 +19,23 @@ export default function SignIn() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
+
+  // Email validation state and handler
+  const [emailError, setEmailError] = useState("");
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const validateEmail = (email, setEmailError) => {
+    if (!email) {
+      setEmailError("Email is required");
+      return false;
+    } else if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    } else {
+      setEmailError("");
+      return true;
+    }
+  };
 
   const handleSignIn = async () => {
     if (!email || !password) {
@@ -182,7 +199,10 @@ export default function SignIn() {
         </Text>
 
         <Stack mt="62px" spacing={"52px"}>
-          <Input label="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <FormControl isInvalid={!!emailError}>
+            <Input label="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} onBlur={() => validateEmail(email, setEmailError)} />
+            {emailError ? <FormHelperText color="red.500">{emailError}</FormHelperText> : null}
+          </FormControl>
           <Input
             label="password"
             type="password"

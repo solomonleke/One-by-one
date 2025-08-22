@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef  } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ReactComponent as LogoSVG } from "../../Asset/schoolLogo.svg";
 import { ReactComponent as ProfileUpdateIcon } from "../../Asset/profileUpdateIcon.svg";
 import { ReactComponent as VerifySchool } from "../../Asset/verifySchool.svg";
@@ -6,6 +6,8 @@ import MainLayout from "../../DashboardLayout";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { MdWarningAmber } from "react-icons/md";
 import { AiOutlineStop } from "react-icons/ai";
+import { ReactComponent as Warning } from "../../Asset/warning.svg";
+import { Link as RouterLink } from "react-router-dom";
 import Preloader from "../../Components/Preloader"
 import Button from "../../Components/Button";
 import LegalDocuments from "../../Components/LegalDocuments";
@@ -30,6 +32,7 @@ import {
   Text,
   Flex,
   VStack,
+  Link,
   Spacer,
   Stack,
   Image,
@@ -43,39 +46,66 @@ export default function SchoolProfile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [logoSrc, setLogoSrc] = useState(null);           // Current logo (from backend or localStorage)
-const [logoPreview, setLogoPreview] = useState(null);   // For preview before upload
-const [uploadingLogo, setUploadingLogo] = useState(false);
-const [isLogoModalOpen, setIsLogoModalOpen] = useState(false);
-const fileInputRef = useRef(null); // <--- New ref
-const [schoolAccountDetails, setSchoolAccountDetails] = useState({});
+  const [logoPreview, setLogoPreview] = useState(null);   // For preview before upload
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [isLogoModalOpen, setIsLogoModalOpen] = useState(false);
+  const fileInputRef = useRef(null); // <--- New ref
+  const [schoolAccountDetails, setSchoolAccountDetails] = useState({});
+  const [documents, setDocuments] = useState([]);
 
-const fetchAdminProfile = async () => {
-  
-  try {
-    const response = await GetAdminProfile();
-    console.log("info", response);
-    setAdminData(response.data); // Store school data
-    setSchoolAccountDetails(JSON.parse(response.data.school_admin.school_account|| "{}"));
-      console.log("school account fun", JSON.parse(response.data.school_admin.school_account|| "{}"))
-    if (response.data?.school_admin?.school_logo) {
-      setLogoSrc(response.data.school_admin.school_logo);
+
+  const fetchAdminProfile = async () => {
+
+    try {
+      const response = await GetAdminProfile();
+      console.log("info", response);
+      setAdminData(response.data); // Store school data
+      setSchoolAccountDetails(JSON.parse(response.data.school_admin.school_account || "{}"));
+      console.log("school account fun", JSON.parse(response.data.school_admin.school_account || "{}"))
+      if (response.data?.school_admin?.school_logo) {
+        setLogoSrc(response.data.school_admin.school_logo);
+      }
+
+      setLoading(false);
+    } catch (err) {
+      setError(err.message || "Failed to fetch school profile");
+      setLoading(false);
     }
-
-    setLoading(false);
-  } catch (err) {
-    setError(err.message || "Failed to fetch school profile");
-    setLoading(false);
-  }
-};
-console.log("school account", schoolAccountDetails)
+  };
+  console.log("school account", schoolAccountDetails)
 
 
-  
+  const fetchDocuments = async () => {
+    try {
+      const response = await GetAdminProfile();
+      const docs = (response?.data?.documents || []).filter(
+        (doc) => doc.document_type
+      );
+
+      // Get latest document per type
+      const latestDocs = {};
+      docs.forEach((doc) => {
+        if (
+          !latestDocs[doc.document_type] ||
+          new Date(doc.created_at) >
+            new Date(latestDocs[doc.document_type].created_at)
+        ) {
+          latestDocs[doc.document_type] = doc;
+        }
+      });
+
+      setDocuments(Object.values(latestDocs));
+    } catch (error) {
+      console.error("Failed to fetch documents:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   // Load the profile picture from localStorage on component mount
   useEffect(() => {
-    
+    fetchDocuments();
   }, []);
 
   // Handle file selection and saving to localStorage
@@ -87,7 +117,7 @@ console.log("school account", schoolAccountDetails)
       setIsLogoModalOpen(true); // open modal immediately
     }
   };
-  
+
   const handleLogoUpload = async () => {
     if (!logoPreview?.file) return;
     try {
@@ -111,21 +141,21 @@ console.log("school account", schoolAccountDetails)
       setUploadingLogo(false);
     }
   };
-  
+
   useEffect(() => {
     fetchAdminProfile();
 
   }, []);
-  
+
 
   const schoolEmail = adminData?.school_admin?.school_name ? `${adminData.school_admin.school_name.toLowerCase()}@gmail.com` : "";
 
 
   return (
     <MainLayout>
-          {
-            loading && <Preloader  />
-          }
+      {
+        loading && <Preloader />
+      }
       <Box
         backgroundColor={"#fff"}
         p={"20px"}
@@ -163,63 +193,63 @@ console.log("school account", schoolAccountDetails)
 
               {/* School Logo Display */}
               <Image
-              src={logoSrc || "/defaultLogo.svg"}
-              rounded="full"
-              boxShadow="0px 4px 4px 0px #00000040"
-              w={["100px", "100px", "129px", "129px"]}
-              h={["100px", "100px", "129px", "129px"]}
-              objectFit="cover"
-              alt="School Logo"
-              onClick={() => fileInputRef.current.click()} // <--- No getElementById
-            />
+                src={logoSrc || "/defaultLogo.svg"}
+                rounded="full"
+                boxShadow="0px 4px 4px 0px #00000040"
+                w={["100px", "100px", "129px", "129px"]}
+                h={["100px", "100px", "129px", "129px"]}
+                objectFit="cover"
+                alt="School Logo"
+                onClick={() => fileInputRef.current.click()} // <--- No getElementById
+              />
 
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              onChange={handleLogoChange}
-            />
-
-            <Box pos="absolute" bottom="0" right="0">
-              <ProfileUpdateIcon cursor="pointer" onClick={() => fileInputRef.current.click()} />
-            </Box>
-          </Box>
-
-          {/* Modal for Preview */}
-          <Modal isOpen={isLogoModalOpen} onClose={() => setIsLogoModalOpen(false)} size="md">
-            <ModalOverlay />
-            <ModalContent>
-            <ModalHeader>Logo Preview</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                {logoPreview?.url && <ChakraImage src={logoPreview.url} width="100%" borderRadius="md" alt="Logo Preview" />}
-              </ModalBody>
-              <ModalFooter>
-                <ChakraButton variant="ghost" mr={3} onClick={() => setIsLogoModalOpen(false)}>
-                  Cancel
-                </ChakraButton>
-                <ChakraButton 
-                color="#fff"
-                  background="greenn.greenn500"
-                  _hover={{
-                    background: "greenn.greenn600", // Darker green on hover
-                    transform: "scale(1.05)",      // Slight zoom effect
-                    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
-                  }}
-                  transition="all 0.2s ease-in-out" onClick={handleLogoUpload} isLoading={uploadingLogo} loadingText="Uploading">
-                  Upload
-                </ChakraButton>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleLogoChange}
+              />
 
               <Box pos="absolute" bottom="0" right="0">
-                <ProfileUpdateIcon
-                  cursor={"pointer"}
-                  onClick={() => document.getElementById("logoInput").click()}
-                />
+                <ProfileUpdateIcon cursor="pointer" onClick={() => fileInputRef.current.click()} />
               </Box>
+            </Box>
+
+            {/* Modal for Preview */}
+            <Modal isOpen={isLogoModalOpen} onClose={() => setIsLogoModalOpen(false)} size="md">
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Logo Preview</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  {logoPreview?.url && <ChakraImage src={logoPreview.url} width="100%" borderRadius="md" alt="Logo Preview" />}
+                </ModalBody>
+                <ModalFooter>
+                  <ChakraButton variant="ghost" mr={3} onClick={() => setIsLogoModalOpen(false)}>
+                    Cancel
+                  </ChakraButton>
+                  <ChakraButton
+                    color="#fff"
+                    background="greenn.greenn500"
+                    _hover={{
+                      background: "greenn.greenn600", // Darker green on hover
+                      transform: "scale(1.05)",      // Slight zoom effect
+                      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+                    }}
+                    transition="all 0.2s ease-in-out" onClick={handleLogoUpload} isLoading={uploadingLogo} loadingText="Uploading">
+                    Upload
+                  </ChakraButton>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+
+            <Box pos="absolute" bottom="0" right="0">
+              <ProfileUpdateIcon
+                cursor={"pointer"}
+                onClick={() => document.getElementById("logoInput").click()}
+              />
+            </Box>
 
             <Text
               fontSize={["16px", "24px"]}
@@ -231,46 +261,46 @@ console.log("school account", schoolAccountDetails)
               {adminData?.school_admin?.school_name}
             </Text>
 
-<Box
-  w={["", "", "", "20%"]}
-  pos="relative"
-  top={["-50px", "-50px", "0", "0"]}
->
-  <Flex
-    align="center"
-    justify="center"
-    border={
-      adminData?.school_admin?.account_verified === "APPROVED"
-        ? "1px solid #027A48"
-        : adminData?.school_admin?.account_verified === "PENDING"
-        ? "1px solid #FFDE00"
-        : "1px solid #FF0000"
-    }
-    borderRadius="8px"
-    px={4}
-    py={2}
-    bg="#fff"
-    color={
-      adminData?.school_admin?.account_verified === "APPROVED"
-        ? "#027A48"
-        : adminData?.school_admin?.account_verified === "PENDING"
-        ? "#FFDE00"
-        : "#FF0000"
-    }
-    fontWeight="semibold"
-    fontSize="sm"
-    gap={2}
-  >
-    {adminData?.school_admin?.account_verified === "APPROVED" ? (
-      <FaRegCheckCircle />
-    ) : adminData?.school_admin?.account_verified === "PENDING" ? (
-      <MdWarningAmber />
-    ) : (
-      <AiOutlineStop />
-    )}
-    <Text>{adminData?.school_admin?.account_verified}</Text>
-  </Flex>
-</Box>
+            <Box
+              w={["", "", "", "20%"]}
+              pos="relative"
+              top={["-50px", "-50px", "0", "0"]}
+            >
+              <Flex
+                align="center"
+                justify="center"
+                border={
+                  adminData?.school_admin?.account_verified === "APPROVED"
+                    ? "1px solid #027A48"
+                    : adminData?.school_admin?.account_verified === "PENDING"
+                      ? "1px solid #FFDE00"
+                      : "1px solid #FF0000"
+                }
+                borderRadius="8px"
+                px={4}
+                py={2}
+                bg="#fff"
+                color={
+                  adminData?.school_admin?.account_verified === "APPROVED"
+                    ? "#027A48"
+                    : adminData?.school_admin?.account_verified === "PENDING"
+                      ? "#FFDE00"
+                      : "#FF0000"
+                }
+                fontWeight="semibold"
+                fontSize="sm"
+                gap={2}
+              >
+                {adminData?.school_admin?.account_verified === "APPROVED" ? (
+                  <FaRegCheckCircle />
+                ) : adminData?.school_admin?.account_verified === "PENDING" ? (
+                  <MdWarningAmber />
+                ) : (
+                  <AiOutlineStop />
+                )}
+                <Text>{adminData?.school_admin?.account_verified}</Text>
+              </Flex>
+            </Box>
 
 
           </Flex>
@@ -377,6 +407,39 @@ console.log("school account", schoolAccountDetails)
                   /> */}
                 </Stack>
               </Box>
+              <Box
+                borderColor={"#EDEFF2"}
+                p={"20px"}
+                borderRadius={"10px"}
+                borderWidth={"1px"}
+                backgroundColor={"#fff"}
+              >
+                <ProfileHeading title="Academic Records" />
+
+                <Stack spacing={"14px"} mt="14px">
+                  <ProfileCard
+                    title="Average JAMB score"
+                    value={adminData?.school_admin?.average_jamb_score}
+                  />
+                  <ProfileCard
+                    title="Average WAEC score"
+                    value={adminData?.school_admin?.average_waec_score}
+                  />
+                  {/* <ProfileCard title="last name" value="doe" /> */}
+                  <ProfileCard
+                    title="Top JAMB score (Last 3 years)"
+                    value={adminData?.school_admin?.top_jamb_score}
+                  />
+                  {/* {/* <ProfileCard
+                    title="phone number"
+                    value={adminData?.school_admin.principal_phone}
+                  /> */}
+                  <ProfileCard
+                    title="Top WAEC score"
+                    value={adminData?.school_admin.top_waec_score}
+                  /> */}
+                </Stack>
+              </Box>
             </Stack>
           </Box>
 
@@ -390,6 +453,27 @@ console.log("school account", schoolAccountDetails)
               borderRadius={"16px"}
               p={"16px"}
             >
+              
+
+              <Box
+                borderColor={"#EDEFF2"}
+                p={"20px"}
+                borderRadius={"10px"}
+                borderWidth={"1px"}
+                backgroundColor={"#fff"}
+              >
+                <ProfileHeading title="class capacity" />
+
+                <Text
+                  fontWeight={"400"}
+                  mt="18px"
+                  fontSize={"13px"}
+                  lineHeight={"27px"}
+                  color={"#626974"}
+                >
+                  {adminData?.school_admin?.class_capacity}
+                </Text>
+              </Box>
               <Box
                 borderColor={"#EDEFF2"}
                 p={"20px"}
@@ -438,9 +522,44 @@ console.log("school account", schoolAccountDetails)
                 backgroundColor={"#fff"}
               >
                 <ProfileHeading title="legal documents" />
+               
+
+{documents.length === 0 ? (
+  <Box
+    backgroundColor={"#FFF7EB"}
+    py={"14px"}
+    px={"20px"}
+    rounded={"6px"}
+    border={"1px solid #FFA30C80"}
+    id="close"
+  >
+    <HStack justifyContent={"space-between"}>
+      <HStack>
+        <Warning w="16px" />
+        <Text fontSize={"14px"} fontWeight={"400"} color={"#FFA30C"}>
+          Your school cannot be verified until all required documents are
+          uploaded. Go to{" "}
+          <Link
+            as={RouterLink}
+            to="/school-admin/settings" 
+            fontWeight="500"
+            textDecoration="underline"
+            _hover={{ color: "#FF8A00", textDecoration: "none" }}
+          >
+            Settings/My documents
+          </Link>{" "}
+          to upload documents
+        </Text>
+      </HStack>
+    </HStack>
+  </Box>
+) : (
+  <Text></Text>
+)}
+
 
                 <Stack mt="18px" spacing={"17px"}>
-                <LegalDocuments documents={adminData?.documents} />
+                  <LegalDocuments documents={adminData?.documents} />
 
                 </Stack>
               </Box>

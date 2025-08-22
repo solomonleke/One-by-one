@@ -338,11 +338,12 @@ export default function StudentProfile() {
                     value={editedData.full_name}
                     onChange={handleChange}
                   />
-                  <Input
+                    <Input
                     name="email"
                     placeholder="Email"
                     value={editedData.email}
                     onChange={handleChange}
+                    type="email"
                   />
                   <Input
                     name="dob"

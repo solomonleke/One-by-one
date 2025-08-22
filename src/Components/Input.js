@@ -97,10 +97,13 @@ const Input = React.forwardRef(({
             bg="transparent"
             w={w}
             onFocus={() => setActive(true)}
-            onBlur={() => {
+            onBlur={(e) => {
               if (!rest.value) {
                 setActive(false);
               }
+              if (rest.onBlur) {
+      rest.onBlur(e); // 👈 call parent’s onBlur
+    }
             }}
             // height="56px"
           />

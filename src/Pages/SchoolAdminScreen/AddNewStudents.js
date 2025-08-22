@@ -87,20 +87,30 @@ export default function AddNewStudents() {
     })
 
     const [Loading, setLoading] = useState(false);
+    const [emailError, setEmailError] = useState("");
 
     const handlePayload = (e) => {
         const value = String(e.target.value); // 👈 force value to string
         const id = e.target.id;
-      
+
         setPayload({ ...payload, [id]: value });
-      
+
         if (id === "studentInterest") {
-          setStudentInterest((prev) => [...prev, value]);
+            setStudentInterest((prev) => [...prev, value]);
+        }
+    };
+
+    const validateEmail = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (payload.email && !emailRegex.test(payload.email)) {
+          setEmailError("Please enter a valid email address");
+        } else {
+          setEmailError("");
         }
       };
-      
 
-    const removeItem = (item)=>{
+
+    const removeItem = (item) => {
         const updatedProcedureArr = StudentInterest.filter(id => id !== item);
         setStudentInterest(updatedProcedureArr);
 
@@ -111,12 +121,12 @@ export default function AddNewStudents() {
 
         setLoading(true)
 
-            try {
-                const result = await CreateStudentApi({
-                  ...payload,
-                  studentInterest: StudentInterest.join(', '), // ✅ convert array to string
-                });
-            
+        try {
+            const result = await CreateStudentApi({
+                ...payload,
+                studentInterest: StudentInterest.join(', '), // ✅ convert array to string
+            });
+
             if (result.status === 201) {
                 setLoading(false)
                 setShowToast({ show: true, message: "Student Created Successfully", status: "success" })
@@ -187,9 +197,9 @@ export default function AddNewStudents() {
                         status: "success",
                     });
 
-                     setTimeout(() => {
-                                setShowToast({ show: false });
-                              }, 3000);
+                    setTimeout(() => {
+                        setShowToast({ show: false });
+                    }, 3000);
                 } else {
                     setShowToast({
                         show: true,
@@ -197,15 +207,15 @@ export default function AddNewStudents() {
                         status: "error",
                     });
 
-                     setTimeout(() => {
-                                setShowToast({ show: false });
-                              }, 3000);
+                    setTimeout(() => {
+                        setShowToast({ show: false });
+                    }, 3000);
                 }
             } catch (e) {
                 setShowToast({ show: true, message: e.message, status: "error" });
-                 setTimeout(() => {
-                            setShowToast({ show: false });
-                          }, 3000);
+                setTimeout(() => {
+                    setShowToast({ show: false });
+                }, 3000);
             } finally {
                 setIsVerifying(false);
             }
@@ -244,9 +254,9 @@ export default function AddNewStudents() {
     const nav = useNavigate()
     return (
         <SubLayout showSearch={false} showNav={false} bgColor='#fff' borderRight={"none"}>
-                {
-                  Loading && <Preloader  />
-                }
+            {
+                Loading && <Preloader />
+            }
             {
                 showToast.show && (
                     <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
@@ -409,8 +419,22 @@ export default function AddNewStudents() {
                                 />
                                 <Input label='Guardian’s Account Number' placeholder='Enter Guardians Account Number' onChange={handlePayload} value={payload.guardianAccountNumber} id='guardianAccountNumber' />
                                 <Input label='Guardian’s Account Name' placeholder='Enter Guardians Account Name' onChange={handlePayload} value={payload.guardianAccountName} id='guardianAccountName' disabled={isVerifying || payload.guardianAccountName} />
-                                <Input label='Email Address' placeholder='Provide the student’s email address' onChange={handlePayload} value={payload.email} id='email' />
-
+                                <div>
+                                    <Input
+                                        label="Email Address"
+                                        placeholder="Provide the student’s email address"
+                                        onChange={handlePayload}
+                                        value={payload.email}
+                                        id="email"
+                                        type="email"
+                                        onBlur={validateEmail} // 🔑 triggers when leaving the field
+                                    />
+                                    {emailError && (
+                                        <p style={{ color: "red", fontSize: "0.85rem", marginTop: "4px" }}>
+                                            {emailError}
+                                        </p>
+                                    )}
+                                </div>
                                 <Input label='State' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.state} id='state' />
                                 <Input label='City' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.city} id='city' />
                                 <Input label='Residential Address' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.address} id='address' />
@@ -897,7 +921,7 @@ export default function AddNewStudents() {
                                         onClick={() => updateReview("Residental Address", payload.address, "address")}
 
                                     />
-                                    
+
 
 
                                 </Stack>
@@ -934,7 +958,7 @@ export default function AddNewStudents() {
                                         onClick={() => updateReview("Field Of Interest", payload.studentInterest, "studentInterest")}
                                     />
 
-                                    
+
 
                                     <ReviewCard
                                         title="scholarship neeed"
