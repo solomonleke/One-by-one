@@ -22,7 +22,7 @@ import { configuration } from "../../Utils/Helpers";
 import { IoFilter } from "react-icons/io5";
 import { GetAllStudentApi } from "../../Utils/ApiCall";
 import { GetSchoolAdminDashboardGraphDataApi } from "../../Utils/ApiCall";
-import { GetStudentStatsApi, UpdateStudentProfile, DeleteStudentProfile } from "../../Utils/ApiCall";
+import { GetStudentStatsApi, UpdateStudentProfile, DeleteStudentProfile, GetUserProfile } from "../../Utils/ApiCall";
 import moment from "moment";
 import ShowToast from "../../Components/ToastNotification"
 import Preloader from "../../Components/Preloader"
@@ -68,6 +68,8 @@ export default function Index() {
   const [MainData, setMainData] = useState([])
     const [FilterData, setFilterData] = useState([])
     const [FilteredData, setFilteredData] = useState(null);
+    const [onlineUser, setOnlineUser] = useState({});
+
 
   const [ByDate, setByDate] = useState(false);
     const [StartDate, setStartDate] = useState("");
@@ -239,6 +241,18 @@ export default function Index() {
 
   }
 
+  const fetchProfile = async () => {
+    try {
+      const data = await GetUserProfile(); // directly gets the data object
+      console.log("Profile Data:", data);
+      setOnlineUser(data)
+        
+
+    } catch (error) {
+      console.error("Failed to fetch profile", error);
+    } 
+  };
+
   const handleOpenEditModal = (student) => {
     setEditedData(student);
     setOriginalData(student);
@@ -346,6 +360,7 @@ const deleteStudentProfileBtn = async (student_Id) => {
   useEffect(() => {
 
     getallStudent(status)
+    fetchProfile();
 
 }, [CurrentPage]);
 
@@ -480,7 +495,7 @@ const deleteStudentProfileBtn = async (student_Id) => {
             isLoading && <Preloader  />
           }
 
-      <Text color={"#1F2937"} fontWeight={"700"} fontSize={"24px"} textTransform="capitalize" lineHeight={"25.41px"}>Welcome back, {userName || "User"}!</Text>
+      <Text color={"#1F2937"} fontWeight={"700"} fontSize={"24px"} textTransform="capitalize" lineHeight={"25.41px"}>Welcome back, {onlineUser.first_name || "User"}!</Text>
 
       <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} lineHeight={"24px"} > Easily track and manage student information with real-time insights and updates. </Text>
       

@@ -1,8 +1,9 @@
-import { Box, Flex, VStack, Text, Image, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Flex, VStack, Text, Image, useBreakpointValue, HStack } from "@chakra-ui/react";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Footer from "./Footer";
 import { motion } from "framer-motion";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { IoIosArrowRoundBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../Components/Button";
 
@@ -134,24 +135,12 @@ export default function AuthenticatedWrapper({ children }) {
         minH={isMobile ? "100vh" : "auto"}
       >
         {/* Back Button */}
-        <Box px={["5%", "8%", "10%", "15%"]} pt={["60px", "80px", "100px"]} onClick={navigateHome}>
-          <Button
-            w={buttonWidth}
-            leftIcon={
-              <Box 
-                as={IoArrowBackCircleOutline} 
-                boxSize={["18px", "20px", "22px", "24px"]} 
-              />
-            }
-            fontSize={["xs", "sm", "md", "md"]}
-            colorScheme="green"
-            variant="solid"
-            _hover={{ transform: "translateY(-2px)", boxShadow: "lg" }}
-            transition="all 0.2s ease"
-          >
-            Home
-          </Button>
+        <HStack px={["5%", "8%", "10%", "15%"]} _hover={{color:"greenn.greenn500"}} cursor="pointer" pt={["60px", "32px", "32px"]} onClick={navigateHome}>
+        <Box>
+          <IoIosArrowRoundBack /> 
         </Box>
+        <Text>Home</Text>
+        </HStack>
 
         {children}
         

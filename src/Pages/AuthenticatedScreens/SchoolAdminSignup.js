@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AuthenticatedWrapper from "./Layout/Index";
-import { Box, VStack, HStack, Text, Stack } from "@chakra-ui/react";
+import { Box, VStack, HStack, Text, Stack, FormControl, FormHelperText } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import Input from "../../Components/Input";
 import SearchableInput from "../../Components/SearchableInput"; 
@@ -51,6 +51,24 @@ export default function SchoolAdminSignup() {
 
     const [Loading, setLoading] = useState(false)
     const [isVerifying, setIsVerifying] = useState(false);
+
+    // Email validation state and handlers
+    const [schoolEmailError, setSchoolEmailError] = useState("");
+    const [principalEmailError, setPrincipalEmailError] = useState("");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const validateEmail = (email, setEmailError) => {
+        if (!email) {
+            setEmailError("Email is required");
+            return false;
+        } else if (!emailRegex.test(email)) {
+            setEmailError("Please enter a valid email address");
+            return false;
+        } else {
+            setEmailError("");
+            return true;
+        }
+    };
 
     const handlePayload = (e) => {
         const { id, value } = e.target;
@@ -250,7 +268,10 @@ export default function SchoolAdminSignup() {
                                         type="text" onChange={handlePayload}
                                         placeholder="e.g Golden Inheritance College"
                                     />
-                                    <Input label="School Email" type="email" onChange={handlePayload} value={Payload.schoolEmail} id="schoolEmail" />
+                                    <FormControl isInvalid={!!schoolEmailError}>
+                                        <Input label="School Email" type="email" onChange={handlePayload} value={Payload.schoolEmail} id="schoolEmail" onBlur={() => validateEmail(Payload.schoolEmail, setSchoolEmailError)} />
+                                        {schoolEmailError && <FormHelperText color="red.500">{schoolEmailError}</FormHelperText>}
+                                    </FormControl>
                                     <SearchableInput
                                         label="School Bank Name"
                                         value={Payload.schoolBankName}
@@ -386,7 +407,7 @@ export default function SchoolAdminSignup() {
                                 <Stack mt="62px" spacing={"52px"}>
                                     <Input label="Title" type="text" onChange={handlePayload} placeholder="e.g Mr." value={Payload.principalTitle} id="principalTitle" />
                                     <Input label="Full Name" type="text" onChange={handlePayload} placeholder="e.g John Doe" value={Payload.principalName} id="principalName" />
-                                    <Input label="Email" type="text" onChange={handlePayload} value={Payload.principalEmail} id="principalEmail" />
+                                    <Input label="Email" type="email" onChange={handlePayload} value={Payload.principalEmail} id="principalEmail" onBlur={() => validateEmail(Payload.principalEmail, setPrincipalEmailError)} />
                                     <Input
                                         label="Phone Number"
                                         type="text" onChange={handlePayload}

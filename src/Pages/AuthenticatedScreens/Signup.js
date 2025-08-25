@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AuthenticatedWrapper from "./Layout/Index";
 import Input from "../../Components/Input";
-import { Box, Checkbox, HStack, Stack, Text } from "@chakra-ui/react";
+import { Box, Checkbox, HStack, Stack, Text, FormControl, FormHelperText } from "@chakra-ui/react";
 import Button from "../../Components/Button";
 import ShowToast from "../../Components/ToastNotification";
 import { CreateAccountApi } from "../../Utils/ApiCall";
@@ -38,6 +38,22 @@ export default function Signup() {
 
   }
 
+  // Email validation state and handler
+  const [emailError, setEmailError] = useState("");
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const validateEmail = (email, setEmailError) => {
+    if (!email) {
+      setEmailError("Email is required");
+      return false;
+    } else if (!emailRegex.test(email)) {
+      setEmailError("Invalid email format");
+      return false;
+    } else {
+      setEmailError("");
+      return true;
+    }
+  };
 
 
   const register = async () => {
@@ -144,7 +160,10 @@ export default function Signup() {
         <Stack mt="62px" spacing={"52px"}>
           <Input label="First Name" type="text" value={Payload.firstName} id="firstName" onChange={handlePayload} />
           <Input label="Last Name" type="text" value={Payload.lastName} id="lastName" onChange={handlePayload} />
-          <Input label="Email" type="email" value={Payload.email} id="email" onChange={handlePayload} />
+          <FormControl isInvalid={!!emailError}>
+            <Input label="Email" type="email" value={Payload.email} id="email" onChange={handlePayload} onBlur={() => validateEmail(Payload.email, setEmailError)} />
+            {emailError ? <FormHelperText color="red.500">{emailError}</FormHelperText> : null}
+          </FormControl>
           <Input label="password" type="password" value={Payload.password} id="password" onChange={handlePayload} />
           <Input label="confirm Password" type="password" value={Payload.confirmPassword} id="confirmPassword" onChange={handlePayload} />
 

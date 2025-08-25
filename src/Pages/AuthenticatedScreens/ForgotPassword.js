@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import AuthenticatedWrapper from './Layout/Index';
-import { Box, Text, VStack } from '@chakra-ui/react';
+import { Box, Text, VStack, FormControl, FormHelperText } from '@chakra-ui/react';
 import { FaArrowLeft } from 'react-icons/fa';
 import Input from '../../Components/Input';
 import Button from '../../Components/Button';
@@ -18,6 +18,23 @@ export default function ForgotPassword() {
         message: "",
         status: ""
     });
+
+    // Email validation state and handler
+    const [emailError, setEmailError] = useState("");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const validateEmail = (email, setEmailError) => {
+        if (!email) {
+            setEmailError("Email is required");
+            return false;
+        } else if (!emailRegex.test(email)) {
+            setEmailError("Please enter a valid email address");
+            return false;
+        } else {
+            setEmailError("");
+            return true;
+        }
+    };
 
     // Handle email input changes
     const handleInputChange = (e) => {
@@ -102,13 +119,17 @@ export default function ForgotPassword() {
                         </Text>
                     </VStack>
 
-                    <Input
-                        type="email"
-                        label="Email"
-                        placeholder="kenawilson9@gmail.com"
-                        value={email}
-                        onChange={handleInputChange}
-                    />
+                    <FormControl isInvalid={!!emailError}>
+                        <Input
+                            type="email"
+                            label="Email"
+                            placeholder="kenawilson9@gmail.com"
+                            value={email}
+                            onChange={handleInputChange}
+                            onBlur={() => validateEmail(email, setEmailError)}
+                        />
+                        {emailError && <FormHelperText color="red.500">{emailError}</FormHelperText>}
+                    </FormControl>
 
                     <Button
                         isLoading={loading}
