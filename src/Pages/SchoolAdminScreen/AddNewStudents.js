@@ -16,8 +16,6 @@ import UpdateReviewModal from '../../Components/UpdateReview'
 import SearchableInput from '../../Components/SearchableInput'
 import { IoIosCloseCircle } from 'react-icons/io';
 import Preloader from '../../Components/Preloader'
-// import { StudentContext } from '../../Components/StudentContext'
-
 
 export default function AddNewStudents() {
 
@@ -27,16 +25,22 @@ export default function AddNewStudents() {
         id: ""
     })
 
-    const updateReview = (name, value, id) => {
-        console.log(name, value)
-        setOpenReviewModal(true)
-        setOldValue({
-            name, value, id
-        })
-    }
+const updateReview = (name, value, id) => {
+  console.log(name, value);
+
+  setOpenReviewModal(true);
+
+  setOldValue({
+    name,
+    value: Array.isArray(value) ? value.join(", ") : (value || ""),
+    id
+  });
+};
+
 
 
     const [StudentInterest, setStudentInterest] = useState([])
+    const [interestInput, setInterestInput] = useState("");
     const [Banks, setBanks] = useState([]);
     const [isVerifying, setIsVerifying] = useState(false);
 
@@ -68,12 +72,23 @@ export default function AddNewStudents() {
         scholarshipNeed: "",
     });
 
+const handleAddInterest = (newInterest) => {
+  setPayload((prev) => ({
+    ...prev,
+    studentInterest: [...(prev.studentInterest || []), newInterest] // always array
+  }));
+};
+
+// function to remove interest
+const handleRemoveInterest = (interest) => {
+  setStudentInterest(StudentInterest.filter((item) => item !== interest));
+};
+
     const options = [
         { value: "health and medicine", label: "Health and Medicine" },
         { value: "science", label: "Science" },
         { value: "nurse process", label: "Nurse Process" }
     ];
-
 
     const genderOptions = [
         { value: "male", label: "Male" },
@@ -115,7 +130,6 @@ export default function AddNewStudents() {
         setStudentInterest(updatedProcedureArr);
 
     }
-
 
     const Submit = async () => {
 
@@ -351,10 +365,8 @@ export default function AddNewStudents() {
                     </VStack>
                 </Box>
                 <Box w={["100%", "100%", "75%", "75%",]}>
-
                     {
                         StudentDetails.view && (
-
                             <Stack spacing="52px" alignItems="start" w={["100%", "100%", "65%", "65%",]}>
 
                                 <Stack >
@@ -408,17 +420,19 @@ export default function AddNewStudents() {
                                     </Select>
                                 </Stack>
                                 <Input label='Phone Number' placeholder='+234' onChange={handlePayload} value={payload.studentPhone} id='studentPhone' />
-                                <Input label='Guardian’s Phone Number' placeholder='+234' onChange={handlePayload} value={payload.guardianPhone} id='guardianPhone' />
-                                <Input label='Guardian’s Name' placeholder='Enter Guardians Name' onChange={handlePayload} value={payload.guardianName} id='guardianName' />
+                                <Input label='Guardian’s / Parent’s Phone Number' placeholder='+234' onChange={handlePayload} value={payload.guardianPhone} id='guardianPhone' />
+                                <Input label='Guardian’s / Parent’s Name' placeholder='Enter Guardians Name' onChange={handlePayload} value={payload.guardianName} id='guardianName' />
                                 <SearchableInput
-                                    label="Guardian's Bank Name"
+                                    label="Guardian’s / Parent’s Bank Name"
                                     value={payload.guardianBankName}
                                     onChange={(e) => handleBankSelection(e.target.value)}
                                     options={Banks}
                                     placeholder="Search for a bank"
                                 />
-                                <Input label='Guardian’s Account Number' placeholder='Enter Guardians Account Number' onChange={handlePayload} value={payload.guardianAccountNumber} id='guardianAccountNumber' />
-                                <Input label='Guardian’s Account Name' placeholder='Enter Guardians Account Name' onChange={handlePayload} value={payload.guardianAccountName} id='guardianAccountName' disabled={isVerifying || payload.guardianAccountName} />
+                                <Input label='Guardian’s / Parent’s Account Number' placeholder='Enter Guardians Account Number' onChange={handlePayload} value={payload.guardianAccountNumber} id='guardianAccountNumber' />
+                                <Input label='Guardian’s / Parent’s Account Name' placeholder='Enter Guardians Account Name' onChange={handlePayload} value={payload.guardianAccountName} id='guardianAccountName' disabled={isVerifying || payload.guardianAccountName} />
+                                <Input label='Email Address' placeholder='Provide the student’s email address' onChange={handlePayload} value={payload.email} id='email' />
+
                                 <div>
                                     <Input
                                         label="Email Address"
@@ -435,18 +449,17 @@ export default function AddNewStudents() {
                                         </p>
                                     )}
                                 </div>
+
                                 <Input label='State' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.state} id='state' />
                                 <Input label='City' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.city} id='city' />
                                 <Input label='Residential Address' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.address} id='address' />
 
 
                                 <Flex justifyContent="space-between" w="100%" >
-
                                     <Flex justifyContent="flex-start" >
 
                                         <Button background="transparent" color="green" px="43px" onClick={() => setOpenModal(true)}>Cancel</Button>
                                     </Flex>
-
 
                                     <Flex justifyContent="flex-end" >
 
@@ -469,7 +482,6 @@ export default function AddNewStudents() {
                     }
                     {
                         AcademicBackground.view && (
-
                             <Stack spacing="52px" alignItems="start" w={["100%", "100%", "65%", "65%",]}>
 
                                 <Stack >
@@ -494,11 +506,41 @@ export default function AddNewStudents() {
                                         Please provide the student's details to help sponsors and mentors understand their academic background and potential.                                    </Text>
                                 </Stack>
                                 <Input label="Department" placeholder="e.g science, arts, commercial" onChange={handlePayload} value={payload.department} id='department' />
-                                <Input label='class level' placeholder="e.g SS2" onChange={handlePayload} value={payload.classLevel} id='classLevel' />
+<Stack w="100%" pos="relative" top="-15px">
+  <Text
+    fontWeight="500"
+    fontSize="14px"
+    color="#101011"
+    fontFamily="heading"
+  >
+    Class Level
+  </Text>
+
+  <Select
+    border="2px"
+    fontSize="small"
+    fontWeight="normal"
+    size="lg"
+    w="100%"
+    onChange={handlePayload}
+    value={payload.classLevel}
+    id="classLevel"
+    placeholder="Select the student's class level"
+  >
+    {/* JSS */}
+    <option value="JSS1">JSS1</option>
+    <option value="JSS2">JSS2</option>
+    <option value="JSS3">JSS3</option>
+
+    {/* SS */}
+    <option value="SS1">SS1</option>
+    <option value="SS2">SS2</option>
+    <option value="SS3">SS3</option>
+  </Select>
+</Stack>
 
                                 <TextArea label='class performance' placeholder="Briefly describe how this student is performing in your current classes (e.g., overall grades, key subjects)." onChange={handlePayload} value={payload.performance} id='performance'></TextArea>
                                 <TextArea label='subject' placeholder="List the main subjects this student is studying this session" onChange={handlePayload} value={payload.subjects} id='subjects'></TextArea>
-
 
                                 <Flex justifyContent="space-between" w="100%" flexWrap='wrap'>
 
@@ -509,9 +551,6 @@ export default function AddNewStudents() {
 
 
                                     <Flex justifyContent="flex-end" >
-
-
-
 
                                         <HStack spacing={["100px", "12px", "12px", "12px"]}>
 
@@ -548,10 +587,8 @@ export default function AddNewStudents() {
                             </Stack>
                         )
                     }
-
                     {
                         Aspiration.view && (
-
                             <Stack spacing="52px" alignItems="start" w={["100%", "100%", "65%", "65%",]}>
 
                                 <Stack>
@@ -576,51 +613,84 @@ export default function AddNewStudents() {
                                         Provide details about the student's career goals, interests, leadership roles, and the level of financial support they require.</Text>
                                 </Stack>
                                 <Input label="intended Field of study " placeholder="e.g Nursing Science" onChange={handlePayload} value={payload.intendedFieldOfStudy} id='intendedFieldOfStudy' />
-                                <Stack w="100%" pos="relative" top="-15px">
-                                    <Text
-                                        textTransform="capitalize"
-                                        fontWeight="500"
-                                        fontSize="14px"
-                                        color="#101011"
-                                        fontFamily="heading"
-                                    >
-                                        What are the student's interests?
-                                    </Text>
+<Stack w="100%" pos="relative" top="-15px">
+  <Text
+    textTransform="capitalize"
+    fontWeight="500"
+    fontSize="14px"
+    color="#101011"
+    fontFamily="heading"
+  >
+    What are the student's interests?
+  </Text>
 
-                                    <Select
-                                        borderWidth="2px"
-                                        fontSize="13px"
-                                        borderColor="#34996B"
-                                        fontWeight="400"
-                                        size="lg"
-                                        w="100%"
-                                        _placeholder={{ color: "red" }}
-                                        color="#ADB4BF"
-                                        onChange={handlePayload}
-                                        value={payload.studentInterest}
-                                        id='studentInterest'
+  {/* Input field for typing and adding interests */}
+  <Flex gap={2} align="center">
+    <Input
+      borderWidth="2px"
+      fontSize="13px"
+      borderColor="#34996B"
+      fontWeight="400"
+      size="lg"
+      w="100%"
+      color="#101011"
+      placeholder="Type and press Enter to add interests"
+      value={interestInput}
+      onChange={(e) => setInterestInput(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && interestInput.trim() !== "") {
+          setStudentInterest([...StudentInterest, interestInput.trim()]);
+          setInterestInput(""); // clear input
+        }
+      }}
+    />
 
-                                        placeholder="Select tags associated with the student’s main area of interest"
-                                    >
-                                        <option value="health and medicine">Health and Medicine </option>
-                                        <option value="science">Science</option>
-                                        <option value="nurse process">Nurse Process</option>
-                                    </Select>
+    <Box>
+    <Button
+      colorScheme="green"
+      onClick={() => {
+        if (interestInput.trim() !== "") {
+          setStudentInterest([...StudentInterest, interestInput.trim()]);
+          setInterestInput("");
+        }
+      }}
+    >
+      Add
+    </Button>
+    </Box>
+  </Flex>
 
-                                    <SimpleGrid mt="12px" columns={{ base: 2, md: 3 }} spacing={2}>
+  {/* Display added interests */}
+  <SimpleGrid mt="12px" columns={{ base: 2, md: 3 }} spacing={2}>
+    {StudentInterest?.map((item, i) => (
+      <Flex
+        key={i}
+        cursor="pointer"
+        px="10px"
+        py="10px"
+        rounded={"25px"}
+        fontSize="13px"
+        _hover={{ bg: "blue.blue500" }}
+        bg="greenn.greenn500"
+        w="100%"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Text color="#fff" fontWeight="500" textTransform="capitalize">
+          {item}
+        </Text>
+        <Box
+          fontSize="20px"
+          color="#fff"
+          onClick={() => removeItem(item)}
+        >
+          <IoIosCloseCircle />
+        </Box>
+      </Flex>
+    ))}
+  </SimpleGrid>
+</Stack>
 
-                                        {
-                                            StudentInterest?.map((item, i) => (
-
-                                                <Flex key={i} cursor="pointer" px="10px" py="10px" rounded={"25px"} fontSize="13px" _hover={{ bg: "blue.blue500" }} bg="greenn.greenn500" w="100%" justifyContent="space-between" alignItems="center" >
-                                                    <Text color="#fff" fontWeight="500" textTransform="capitalize" >{item}</Text>
-                                                    <Box fontSize="20px" color="#fff" onClick={() => removeItem(item)}><IoIosCloseCircle /></Box>
-                                                </Flex>
-                                            ))
-                                        }
-
-                                    </SimpleGrid>
-                                </Stack>
                                 <Input label='Higher Education Goals ' placeholder="Enter the student’s higher education aspirations" onChange={handlePayload} value={payload.higherEducationGoals} id='higherEducationGoals' />
                                 <Input label='career goals' placeholder="Enter the career path the student is aspiring toward" onChange={handlePayload} value={payload.careerGoals} id='careerGoals' />
                                 <Input label='leadership roles' placeholder="Mention any leadership roles the student has taken on" />
@@ -653,10 +723,8 @@ export default function AddNewStudents() {
                                         <option value="FULL SCHOLARSHIP">FULL SCHOLARSHIP</option>
                                         <option value="PARTIAL SCHOLARSHIP">PARTIAL SCHOLARSHIP</option>
 
-
                                     </Select>
                                 </Stack>
-
 
                                 <Flex justifyContent="space-between" w="100%" flexWrap={"wrap"}>
 
@@ -665,14 +733,9 @@ export default function AddNewStudents() {
                                         <Button background="transparent" color="green" px="43px" onClick={() => setOpenModal(true)}>Cancel</Button>
                                     </Flex>
 
-
                                     <Flex justifyContent="flex-end" >
 
-
-
-
                                         <HStack spacing={["100px", "12px", "12px", "12px"]}>
-
                                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={() => {
                                                 setAcademicBackground({
                                                     view: true,
@@ -682,7 +745,6 @@ export default function AddNewStudents() {
                                                     view: false,
                                                     completed: false
                                                 })
-
 
                                             }}>Back</Button>
 
@@ -708,7 +770,6 @@ export default function AddNewStudents() {
                     }
                     {
                         StudentEssay.view && (
-
                             <Stack spacing="32px" alignItems="start" w={["100%", "100%", "65%", "65%",]}>
 
                                 <Stack mb="15px">
@@ -733,37 +794,8 @@ export default function AddNewStudents() {
                                     >
                                         Please upload the student’s essay detailing their career goals, interests, leadership roles, and required financial support.                    </Text>
                                 </Stack>
-                                {/* <Stack>
-                                    <Text
-                                        textTransform="capitalize"
-                                        fontWeight="500"
-                                        fontSize="14px"
-                                        color="#101011"
-                                        fontFamily="heading"
-                                        textAlign="left"
-                                    >
-                                        upload student’s essay
-                                    </Text>
-                                    <Box backgroundColor="#E9FFF5" py="30px" px="100px" cursor="pointer" borderRadius="8px" borderWidth="2px" borderStyle="dashed">
-                                        <label htmlFor="FrontSide" className="label">
-                                            <VStack>
-                                                <HStack>
-                                                    <FaCloudUploadAlt className="labelText" />
-                                                    <Text><span className="labelText">Click to Upload or</span><span className="drag"> drag and drop</span></Text>
-                                                </HStack>
-
-                                                <Text fontSize="small"
-                                                    fontWeight="normal"
-                                                    color="#6B7280"
-                                                    lineHeight="24px">PDF, JPG, JPEG, PNG less than 10MB</Text>
-                                            </VStack>
-                                        </label>
-                                        <input type="file" id="FrontSide" className="uploadVerification" style={{ display: 'none' }} />
-                                    </Box>
-                                </Stack> */}
-
+                                
                                 <TextArea label='Student Essay ' placeholder="Enter the student’s essay" onChange={handlePayload} value={payload.essay} id='essay' />
-
 
                                 <Flex justifyContent="space-between" w="100%" flexWrap="wrap" >
 
@@ -772,11 +804,7 @@ export default function AddNewStudents() {
                                         <Button background="transparent" color="green" px="43px" onClick={() => setOpenModal(true)}>Cancel</Button>
                                     </Flex>
 
-
                                     <Flex justifyContent="flex-end" >
-
-
-
 
                                         <HStack spacing={["100px", "12px", "12px", "12px"]}>
 
@@ -790,10 +818,7 @@ export default function AddNewStudents() {
                                                     completed: false
                                                 })
 
-
                                             }}>Back</Button>
-
-
 
                                             <Button px="43px" onClick={() => {
 
@@ -897,7 +922,6 @@ export default function AddNewStudents() {
 
                                     />
 
-
                                 </Stack>
                                 <Stack border="1px solid #E3EBF2" rounded={"7px"} py="14px" px="17px" spacing="13px" w="100%">
 
@@ -921,7 +945,6 @@ export default function AddNewStudents() {
                                         onClick={() => updateReview("Residental Address", payload.address, "address")}
 
                                     />
-
 
 
                                 </Stack>
@@ -948,22 +971,31 @@ export default function AddNewStudents() {
 
                                     />
 
-
                                 </Stack>
                                 <Stack border="1px solid #E3EBF2" rounded={"7px"} py="14px" px="17px" spacing="13px" w="100%">
 
-                                    <ReviewCard
-                                        title="field of interest"
-                                        value={payload.studentInterest}
-                                        onClick={() => updateReview("Field Of Interest", payload.studentInterest, "studentInterest")}
-                                    />
+<ReviewCard
+  title="Field of Interest"
+  value={
+    Array.isArray(payload.studentInterest)
+      ? payload.studentInterest.join(", ")
+      : (payload.studentInterest || "")
+  }
+  onClick={() =>
+    updateReview(
+      "Field Of Interest",
+      payload.studentInterest,
+      "studentInterest"
+    )
+  }
+/>
 
 
 
                                     <ReviewCard
                                         title="scholarship neeed"
                                         value={payload.scholarshipNeed}
-                                        onClick={() => updateReview("Scholarship Need", payload.fullName, "fullName")}
+                                        onClick={() => updateReview("Scholarship Need", payload.scholarshipNeed, "fullName")}
 
                                     />
 
@@ -988,49 +1020,7 @@ export default function AddNewStudents() {
 
                                     />
 
-
-                                    {/* <Box p="20px">
-      <Input
-        placeholder="Full Name"
-        name="name"
-        onChange={handleChange}
-        value={formData.name}
-        mb="10px"
-      />
-      <Input
-        placeholder="Email"
-        name="email"
-        onChange={handleChange}
-        value={formData.email}
-        mb="10px"
-      />
-      <Input
-        placeholder="Department"
-        name="department"
-        onChange={handleChange}
-        value={formData.department}
-        mb="10px"
-      />
-      <Input
-        placeholder="Class Level"
-        name="classLevel"
-        onChange={handleChange}
-        value={formData.classLevel}
-        mb="10px"
-      />
-      <Input
-        placeholder="Field of Study"
-        name="fieldOfStudy"
-        onChange={handleChange}
-        value={formData.fieldOfStudy}
-        mb="10px"
-      />
-      <Button onClick={handleSubmit}>Add Student</Button>
-    </Box> */}
-
                                 </Stack>
-
-
 
                                 <Flex justifyContent="space-between" w="100%" >
 
@@ -1039,11 +1029,7 @@ export default function AddNewStudents() {
                                         <Button background="transparent" color="green" px="43px" onClick={() => setOpenModal(true)}>Cancel</Button>
                                     </Flex>
 
-
                                     <Flex justifyContent="flex-end" >
-
-
-
 
                                         <HStack spacing={["100px", "12px", "12px", "12px"]}>
 
@@ -1072,16 +1058,10 @@ export default function AddNewStudents() {
                             </Stack>
                         )
                     }
-
-
-
-
                 </Box>
-
             </Flex>
             <BackNotification isOpen={OpenModal} onClose={() => setOpenModal(false)} />
             <UpdateReviewModal isOpen={OpenReviewModal} onClose={() => setOpenReviewModal(false)} oldValue={oldValue} payload={payload} setPayload={setPayload} />
         </SubLayout>
-
     )
 }

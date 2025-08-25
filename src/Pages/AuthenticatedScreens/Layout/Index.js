@@ -147,65 +147,47 @@ export default function AuthenticatedWrapper({ children }) {
         <Footer />
       </Box>
 
-      {/* Right Background Image Section */}
-      {showRightSection && (
-        <Flex
-          w={["100%", "100%", "50%"]}
-          bgImage={`url(${backgroundImageUrl})`}
-          bgPos="center"
-          bgSize="cover"
-          bgRepeat="no-repeat"
-          bgAttachment={["scroll", "scroll", "fixed"]}
-          flexDirection="column"
-          justifyContent="flex-end"
-          alignItems="center"
-          p={[4, 6, 8]}
-          position="relative"
-          minH="100vh"
-        >
-          {/* School Logo */}
-          <Box
-            position="absolute"
-            top={["20%", "25%", "50%"]}
-            left="50%"
-            transform="translateX(-50%)"
-            zIndex={2}
-          >
-            <Image 
-              src={logoUrl} 
-              w={logoSize}
-              h={logoSize}
-              cursor="pointer" 
-              onClick={navigateHome}
-              loading="eager"
-              alt="One by One Logo"
-              transition="all 0.3s ease"
-              _hover={{ 
-                transform: "scale(1.05) translateX(-50%)", 
-                filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.2))" 
-              }}
-            />
-          </Box>
+{/* Right Background Image Section */}
+{showRightSection && (
+  <Flex
+    position="fixed"
+    right="0"
+    top="0"
+    w="50%"
+    h="100vh"
+    bgImage={`url(${backgroundImageUrl})`}
+    bgPos="center"
+    bgSize="cover"
+    bgRepeat="no-repeat"
+    flexDirection="column"
+    alignItems="center"
+    justifyContent="flex-end"   // push content down
+    overflow="hidden"
+    pb="60px"                   // spacing from bottom
+  >
+    {/* Group: Logo + Slider */}
+    <VStack align="center" w="full">
+      <Image 
+        src={logoUrl} 
+        w={logoSize}
+        h={logoSize}
+        cursor="pointer" 
+        onClick={navigateHome}
+        loading="eager"
+        alt="One by One Logo"
+        transition="all 0.3s ease"
+        _hover={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.2))" }}
+      />
 
-          {/* Slider Container */}
-          <Box
-            position="absolute"
-            bottom={["60px", "80px", "100px"]}
-            left="50%"
-            transform="translateX(-50%)"
-            w="full"
-            display="flex"
-            justifyContent="center"
-            px={[4, 6, 8]}
-          >
-            <SliderContent 
-              currentSlide={currentSlide}
-              slides={slides}
-              handleSlideChange={handleSlideChange}
-            />
-          </Box>
-        </Flex>
-      )}
+      <SliderContent 
+        currentSlide={currentSlide}
+        slides={slides}
+        handleSlideChange={handleSlideChange}
+      />
+    </VStack>
+  </Flex>
+)}
+
     </Flex>
   );
 }
