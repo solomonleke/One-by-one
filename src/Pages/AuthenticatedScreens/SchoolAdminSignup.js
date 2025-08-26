@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import AuthenticatedWrapper from "./Layout/Index";
-import { Box, VStack, HStack, Text, Stack, FormControl, FormHelperText } from "@chakra-ui/react";
+import { Box, VStack, HStack, Text, Stack, FormControl, FormLabel, FormHelperText, Select } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import Input from "../../Components/Input";
-import SearchableInput from "../../Components/SearchableInput"; 
+import SearchableInput from "../../Components/SearchableInput";
 import TextArea from "../../Components/TextArea";
 import Button from "../../Components/Button";
 import { FaArrowLeft, FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { MdKeyboardBackspace } from "react-icons/md";
-import { CreateAdminApi, GetAllBanksApi, VerifyBanksApi } from "../../Utils/ApiCall";
+import { CreateAdminApi, GetAllBanksApi, VerifyBanksApi, fetchAllStates, fetchLgasByState } from "../../Utils/ApiCall";
 import ShowToast from "../../Components/ToastNotification";
 
 
@@ -21,6 +21,9 @@ export default function SchoolAdminSignup() {
     const [Banks, setBanks] = useState([]);
     const [AcademicPerformanceView, setAcademicPerformanceView] = useState(false);
     const [PrincipalInformationView, setPrincipalInformationView] = useState(false);
+    const [states, setStates] = useState([]);
+    const [lgas, setLgas] = useState([]);
+
 
     const [Payload, setPayload] = useState({
         userType: "SCHOOL-ADMIN",
@@ -186,31 +189,70 @@ export default function SchoolAdminSignup() {
                 if (result.data.status) {
                     setPayload(prev => ({ ...prev, schoolAccountName: result.data.data.account_name }));
                     setShowToast({ show: true, message: "Account verified successfully", status: "success" });
-                   
+
                     setTimeout(() => {
                         setShowToast({ show: false });
                     }, 3000);
-                
-                  
+
+
                 } else {
                     setShowToast({ show: true, message: result.data.message, status: "error" });
-                     setTimeout(() => {
+                    setTimeout(() => {
                         setShowToast({ show: false });
                     }, 3000);
                 }
             } catch (e) {
                 setShowToast({ show: true, message: e.message, status: "error" });
-                 setTimeout(() => {
-                        setShowToast({ show: false });
-                    }, 3000);
+                setTimeout(() => {
+                    setShowToast({ show: false });
+                }, 3000);
             } finally {
                 setIsVerifying(false);
             }
         }
     };
 
+
+    // for loading all states
+    const loadStates = async () => {
+        try {
+            const data = await fetchAllStates();
+            console.log("States data:", data);
+            setStates(data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Load LGAs when a state is chosen
+    const loadLgas = async (state) => {
+        try {
+            console.log("Fetching LGAs for:", state);
+            const data = await fetchLgasByState(state);
+            console.log("LGAs data:", data);
+            setLgas(Array.isArray(data) ? data : data.lgas || []);
+        } catch (error) {
+            console.error(error);
+            setLgas([]);
+        }
+    };
+
+
+
+    const handleStateChange = async (e) => {
+        const selectedState = e.target.value;
+        setPayload({ ...Payload, state: selectedState, localGovernment: "" });
+        await loadLgas(selectedState);
+    };
+
+
+
     useEffect(() => {
         GetAllBanks();
+        loadStates();
+        loadLgas();
     }, []);
 
     useEffect(() => {
@@ -282,11 +324,46 @@ export default function SchoolAdminSignup() {
                                     />
                                     <Input label="School Account Number" type="text" onChange={handlePayload} value={Payload.schoolAccountNumber} id="schoolAccountNumber" />
                                     <Input label="School Account Name" type="text" onChange={handlePayload} value={Payload.schoolAccountName} id="schoolAccountName" disabled={isVerifying || Payload.schoolAccountName} />
-                                    {/* <Input label="School Bank Code" type="text" onChange={handlePayload} value={Payload.schoolBankCode} id="schoolBankCode" /> */}
-                                    <Input label="School Address" type="text" onChange={handlePayload} value={Payload.address} id="address" />
+                                    <div>
+                                        {/* State Dropdown */}
+                                        <FormControl mb="20px">
+                                            <FormLabel htmlFor="state" fontSize="14px">State</FormLabel>
+                                            <Select
+                                                placeholder="Select State"
+                                                id="state"
+                                                value={Payload.state}
+                                                onChange={handleStateChange}
+                                            >
+                                                {states.map((state, index) => (
+                                                    <option key={index} value={state}>
+                                                        {state}
+                                                    </option>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+
+                                        {/* LGA Dropdown */}
+                                        <FormControl>
+                                            <FormLabel htmlFor="localGovernment" fontSize="14px">Local Government</FormLabel>
+                                            <Select
+                                                placeholder="Select Local Government"
+                                                id="localGovernment"
+                                                value={Payload.localGovernment}
+                                                onChange={handlePayload}
+                                                isDisabled={!Payload.state}
+                                            >
+                                                {lgas.map((lga, index) => (
+                                                    <option key={index} value={lga}>
+                                                        {lga}
+                                                    </option>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </div>
+
+
                                     <Input label="City" type="text" onChange={handlePayload} value={Payload.city} id="city" />
-                                    <Input label="Local Government" type="text" onChange={handlePayload} value={Payload.localGovernment} id="localGovernment" />
-                                    <Input label="State" type="text" onChange={handlePayload} value={Payload.state} id="state" />
+                                    <Input label="School Address" type="text" onChange={handlePayload} value={Payload.address} id="address" />
                                     <Input label="Zip code" type="text" onChange={handlePayload} value={Payload.zipCode} id="zipCode" />
                                     <Input
                                         label="Class Capacity"

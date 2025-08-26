@@ -440,6 +440,50 @@ export const VerifyBanksApi = (payload) => {
     });
 };
 
+// ✅ Fetch all states
+export const fetchAllStates = async () => {
+  try {
+    const response = await fetch("https://nga-states-lga.onrender.com/fetch", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    return await response.json(); // array of { state, lgas }
+  } catch (error) {
+    console.error("Error fetching states:", error);
+    return [];
+  }
+};
+
+// ✅ Fetch LGAs by selected state
+export const fetchLgasByState = async (stateName) => {
+  try {
+    if (!stateName) return [];
+
+    const url = `https://nga-states-lga.onrender.com/?state=${encodeURIComponent(
+      stateName
+    )}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching LGAs:", error);
+    return [];
+  }
+};
+
+
+
+
 export const GetAllScholarshipSchoolsApi = (pageNo, noItems, status) => {
  
  
