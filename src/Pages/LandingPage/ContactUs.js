@@ -14,13 +14,12 @@ import {
     FormControl,
     FormLabel,
     Divider,
-    FormHelperText,
 } from '@chakra-ui/react';
 import { MdEmail } from "react-icons/md";
 import { FaPhone, FaFacebookF, FaInstagram, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 import MainLayout from '../../LandingPageLayout';
 import ShowToast from "../../Components/ToastNotification"
-import { useState } from 'react';
+import { useState } from 'react'
 
 export default function ContactUs() {
 
@@ -28,24 +27,7 @@ export default function ContactUs() {
         show: false,
         message: "",
         status: ""
-    })
-
-    const [email, setEmail] = useState("");
-    const [emailError, setEmailError] = useState("");
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    const validateEmail = (email, setEmailError) => {
-        if (!email) {
-            setEmailError("Email is required");
-            return false;
-        } else if (!emailRegex.test(email)) {
-            setEmailError("Please enter a valid email address");
-            return false;
-        } else {
-            setEmailError("");
-            return true;
-        }
-    };
+      })
 
     const EmailSubmit = () => {
         setShowToast({
@@ -179,17 +161,9 @@ export default function ContactUs() {
                         </FormControl>
                     </SimpleGrid>
 
-                    <FormControl mb={4} isInvalid={!!emailError}>
+                    <FormControl mb={4}>
                         <FormLabel fontSize={{ base: "13px", md: "14px", lg: "16px" }}>Email</FormLabel>
-                        <Input 
-                            fontSize={{ base: "13px", md: "14px", lg: "16px" }} 
-                            placeholder="your@email.com" 
-                            type="email" 
-                            value={email} 
-                            onChange={(e) => setEmail(e.target.value)} 
-                            onBlur={() => validateEmail(email, setEmailError)}
-                        />
-                        {emailError ? <FormHelperText color="red.500">{emailError}</FormHelperText> : null}
+                        <Input fontSize={{ base: "13px", md: "14px", lg: "16px" }} placeholder="your@email.com" type="email" />
                     </FormControl>
 
                     <FormControl mb={4}>
