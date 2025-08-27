@@ -166,7 +166,10 @@ export default function AuthenticatedWrapper({ children }) {
     pb="60px"                   // spacing from bottom
   >
     {/* Group: Logo + Slider */}
-    <VStack align="center" w="full">
+<VStack w="full">
+
+  <Flex w="full" justify="center" pl={["10px", "10px", "5px", "0px"]}>
+    <Box w="full" maxW="550px" pl={["10px", "10px", "5px", "0px"]}>
       <Image 
         src={logoUrl} 
         w={logoSize}
@@ -178,13 +181,18 @@ export default function AuthenticatedWrapper({ children }) {
         transition="all 0.3s ease"
         _hover={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.2))" }}
       />
+    </Box>
+  </Flex>
 
-      <SliderContent 
-        currentSlide={currentSlide}
-        slides={slides}
-        handleSlideChange={handleSlideChange}
-      />
-    </VStack>
+  {/* SliderContent (stretches full width) */}
+  <SliderContent 
+    currentSlide={currentSlide}
+    slides={slides}
+    handleSlideChange={handleSlideChange}
+  />
+</VStack>
+
+
   </Flex>
 )}
 

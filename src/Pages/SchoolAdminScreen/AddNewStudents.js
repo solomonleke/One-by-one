@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import SubLayout from '../../DashboardLayout/SubLayout'
-import { Text, Flex, HStack, SimpleGrid, VStack, Stack, Select, Box, Spacer } from '@chakra-ui/react'
+import { Text, Flex, HStack, SimpleGrid, VStack, Stack, Select, FormControl, FormLabel, FormHelperText, Box, Spacer } from '@chakra-ui/react'
 import Input from '../../Components/Input'
 import TextArea from '../../Components/TextArea'
 import Button from '../../Components/Button'
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { GiCheckMark } from "react-icons/gi";
 import { FaArrowLeft, FaCloudUploadAlt } from 'react-icons/fa'
 import { FiEdit2 } from "react-icons/fi";
-import { CreateStudentApi, GetAllBanksApi, VerifyBanksApi } from "../../Utils/ApiCall";
+import { CreateStudentApi, GetAllBanksApi, VerifyBanksApi, fetchAllStates, fetchLgasByState } from "../../Utils/ApiCall";
 import ShowToast from "../../Components/ToastNotification";
 import UpdateReviewModal from '../../Components/UpdateReview'
 import SearchableInput from '../../Components/SearchableInput'
@@ -43,6 +43,8 @@ const updateReview = (name, value, id) => {
     const [interestInput, setInterestInput] = useState("");
     const [Banks, setBanks] = useState([]);
     const [isVerifying, setIsVerifying] = useState(false);
+    const [states, setStates] = useState([]);
+    const [lgas, setLgas] = useState([]);
 
     const [payload, setPayload] = useState({
         fullName: "",
@@ -57,6 +59,7 @@ const updateReview = (name, value, id) => {
         guardianBankName: "",
         guardianBankCode: "",
         state: "",
+        localGovernment: "",
         city: "",
         zipCode: "",
         address: "",
@@ -236,8 +239,44 @@ const handleRemoveInterest = (interest) => {
         }
     };
 
+        // for loading all states
+        const loadStates = async () => {
+            try {
+                const data = await fetchAllStates();
+                console.log("States data:", data);
+                setStates(data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+    
+        // Load LGAs when a state is chosen
+        const loadLgas = async (state) => {
+            try {
+                console.log("Fetching LGAs for:", state);
+                const data = await fetchLgasByState(state);
+                console.log("LGAs data:", data);
+                setLgas(Array.isArray(data) ? data : data.lgas || []);
+            } catch (error) {
+                console.error(error);
+                setLgas([]);
+            }
+        };
+    
+    
+    
+        const handleStateChange = async (e) => {
+            const selectedState = e.target.value;
+            setPayload({ ...payload, state: selectedState, localGovernment: "" });
+            await loadLgas(selectedState);
+        };
+
     useEffect(() => {
         GetAllBanks();
+        loadStates();
+        loadLgas();
     }, []);
 
     useEffect(() => {
@@ -431,9 +470,8 @@ const handleRemoveInterest = (interest) => {
                                 />
                                 <Input label='Guardian’s / Parent’s Account Number' placeholder='Enter Guardians Account Number' onChange={handlePayload} value={payload.guardianAccountNumber} id='guardianAccountNumber' />
                                 <Input label='Guardian’s / Parent’s Account Name' placeholder='Enter Guardians Account Name' onChange={handlePayload} value={payload.guardianAccountName} id='guardianAccountName' disabled={isVerifying || payload.guardianAccountName} />
-                                <Input label='Email Address' placeholder='Provide the student’s email address' onChange={handlePayload} value={payload.email} id='email' />
 
-                                <div>
+                               <Box w="full">
                                     <Input
                                         label="Email Address"
                                         placeholder="Provide the student’s email address"
@@ -448,10 +486,45 @@ const handleRemoveInterest = (interest) => {
                                             {emailError}
                                         </p>
                                     )}
-                                </div>
+                                    </Box>
 
-                                <Input label='State' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.state} id='state' />
-                                <Input label='City' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.city} id='city' />
+                                    <div>
+                                        {/* State Dropdown */}
+                                        <FormControl mb="20px">
+                                            <FormLabel htmlFor="state" fontSize="14px">State</FormLabel>
+                                            <Select
+                                                placeholder="Select State"
+                                                id="state"
+                                                value={payload.state}
+                                                onChange={handleStateChange}
+                                            >
+                                                {states.map((state, index) => (
+                                                    <option key={index} value={state}>
+                                                        {state}
+                                                    </option>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+
+                                        {/* LGA Dropdown */}
+                                        <FormControl>
+                                            <FormLabel htmlFor="localGovernment" fontSize="14px">Local Government</FormLabel>
+                                            <Select
+                                                placeholder="Select Local Government"
+                                                id="localGovernment"
+                                                value={payload.localGovernment}
+                                                onChange={handlePayload}
+                                                isDisabled={!payload.state}
+                                            >
+                                                {lgas.map((lga, index) => (
+                                                    <option key={index} value={lga}>
+                                                        {lga}
+                                                    </option>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </div>
+                                                                    <Input label='City' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.city} id='city' />
                                 <Input label='Residential Address' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.address} id='address' />
 
 
@@ -912,6 +985,13 @@ const handleRemoveInterest = (interest) => {
                                         title="state"
                                         value={payload.state}
                                         onClick={() => updateReview("State", payload.state, "state")}
+
+                                    />
+
+                                        <ReviewCard
+                                        title="LGA"
+                                        value={payload.localGovernment}
+                                        onClick={() => updateReview("LGA", payload.localGovernment, "localGovernment")}
 
                                     />
 
