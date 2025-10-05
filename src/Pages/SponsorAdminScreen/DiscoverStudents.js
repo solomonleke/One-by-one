@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../DashboardLayout'
-import { Text, Flex, Stack, HStack, VStack, Box, Radio, useDisclosure, Center, Progress, Icon, Avatar, Image, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from '@chakra-ui/react'
+import { Text, Flex, Stack, HStack, VStack, Box, Radio, useDisclosure, Center, Progress, Icon, Avatar, Image, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Switch } from '@chakra-ui/react'
 import { Tooltip as Tooltips } from '@chakra-ui/react';
 import DashboardCard from "../../Components/DashboardCard"
 import Button from "../../Components/Button"
@@ -61,7 +61,8 @@ import Preloader from "../../Components/Preloader"
 
 
 export default function DiscoverStudents() {
-  const [OpenModal, setOpenModal] = useState(false)
+  const [OpenModal, setOpenModal] = useState(false);
+  const [isLocationFiltered, setIsLocationFiltered] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [scholarships, setScholarships] = useState([]);
   const [sponsorScholarships, setSponsorScholarships] = useState([]);
@@ -139,10 +140,10 @@ export default function DiscoverStudents() {
     }
   };
 
-  
+
 
   const fetchSponsorStudents = async () => {
-      
+
     try {
       const response = await getAllSponsorStudentsApi(CurrentPage, PostPerPage);
       console.log("Sponsor Students Response:", response);
@@ -186,7 +187,7 @@ export default function DiscoverStudents() {
 
   }
 
-  
+
 
   useEffect(() => {
 
@@ -196,11 +197,11 @@ export default function DiscoverStudents() {
     }
 
   }, []);
-  
+
 
   // Listen for student selection from TableRow
- 
-  
+
+
 
   const handleOpenModal = (requestId) => {
     setSelectedRequestId(requestId);   // ✅ Store requestId
@@ -222,7 +223,7 @@ export default function DiscoverStudents() {
       setTimeout(() => setShowToast({ show: false }), 3000);
       return;
     }
-  
+
     if (!selectedRequestId) {
       setShowToast({
         show: true,
@@ -230,36 +231,41 @@ export default function DiscoverStudents() {
         status: "error"
       });
       setTimeout(() => setShowToast({ show: false }), 3000);
-     return;
-      
-    }
-      
+      return;
 
-  
+    }
+
+
+
     try {
       setIsSubmitting(true);
-  
+
       const selectedScholarshipData = sponsorScholarships.find(
         (sch) => sch.id === selectedScholarship
       );
-  
+
+      console.log("🎓 Selected Scholarship Data:", selectedScholarshipData);
+
+
       if (!selectedScholarshipData) {
         throw new Error("Selected scholarship not found.");
       }
-  
-      const existingRequestIds = selectedScholarshipData.students
-      .map(s => s.request_id)
-      .filter(Boolean); // ✅ removes undefined, null, or falsy
-          const updatedRequestIds = [...new Set([...existingRequestIds, selectedRequestId])];
-  
+
+      const existingStudentIds = selectedScholarshipData.students
+        .map(s => s.id) // Assuming 'id' is the student ID
+        .filter(Boolean);
+
+      const updatedStudentIds = [...new Set([...existingStudentIds, selectedRequestId])];
+
       console.log("🧾 Submitting to API with:", {
         scholarshipId: selectedScholarship,
-        requestIds: updatedRequestIds
+        studentIds: updatedStudentIds,
+        requestId: selectedRequestId
       });
-  
-      const response = await AddStudentToScholarshipApi(selectedScholarship, updatedRequestIds);
+
+      const response = await AddStudentToScholarshipApi(selectedScholarship, updatedStudentIds, selectedRequestId);
       console.log("✅ Add Student Response:", response);
-  
+
       if (response.status) {
         setShowToast({
           show: true,
@@ -268,7 +274,7 @@ export default function DiscoverStudents() {
         });
         setTimeout(() => setShowToast({ show: false }), 3000);
 
-  
+
         setSponsorScholarships(prev =>
           prev.map(sch =>
             sch.id === selectedScholarship
@@ -276,8 +282,8 @@ export default function DiscoverStudents() {
               : sch
           )
         );
-  
-        
+
+
         handleCloseModal();
       }
     } catch (error) {
@@ -293,7 +299,6 @@ export default function DiscoverStudents() {
       setIsLoading(false);
     }
   };
-  
 
 
 
@@ -303,38 +308,39 @@ export default function DiscoverStudents() {
 
 
 
-    const fetchScholarshipsBySponsor = async () => {
-      try {
-        const data = await getScholarshipsBySponsor();
 
-        if (data.status && Array.isArray(data.data)) {
-          setSponsorScholarships(data.data); // ✅ Set directly since `data` is an array
-        } else {
-          console.error("Unexpected response format:", data);
-          setError(data.message || "Failed to load scholarships");
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-        setIsLoading(false);
+  const fetchScholarshipsBySponsor = async () => {
+    try {
+      const data = await getScholarshipsBySponsor();
+
+      if (data.status && Array.isArray(data.data)) {
+        setSponsorScholarships(data.data); // ✅ Set directly since `data` is an array
+      } else {
+        console.error("Unexpected response format:", data);
+        setError(data.message || "Failed to load scholarships");
       }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleStudentSelected = (request) => {
+      console.log("Received studentId:", request);
+      setSelectedRequestId(request.request_id);
+      setIsOpening(true);
     };
 
-    useEffect(() => {
-      const handleStudentSelected = (request) => {
-        console.log("Received studentId:", request);
-        setSelectedRequestId(request.request_id);
-        setIsOpening(true);
-      };
-    
-      eventBus.on("studentSelected", handleStudentSelected);
-    
-      return () => {
-        eventBus.removeListener("studentSelected", handleStudentSelected);
-      };
-    }, []);
-    
+    eventBus.on("studentSelected", handleStudentSelected);
+
+    return () => {
+      eventBus.removeListener("studentSelected", handleStudentSelected);
+    };
+  }, []);
+
 
 
   useEffect(() => {
@@ -350,9 +356,9 @@ export default function DiscoverStudents() {
 
   return (
     <MainLayout>
-          {
-            isLoading && <Preloader  />
-          }
+      {
+        isLoading && <Preloader />
+      }
       {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
       )}
@@ -362,6 +368,23 @@ export default function DiscoverStudents() {
       <Box bg="#fff" border="1px solid #EDEFF2" mt="12px" pt='20px' pb="32px" px={["10px", "10px", "18px", "18px"]} rounded='10px'>
         <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px="18px" rounded='10px'>
           <Flex justifyContent="space-between" flexWrap="wrap">
+            <Box bg="#FFF9E6" p="3" border="1px solid #FFA30C80" borderRadius="md" mb="5">
+              <HStack alignItems="center" justifyContent="space-between" flexWrap={["wrap", "nowrap"]} gap="10px">
+                <Icon as={RxInfoCircled} color="orange.500" mr="2" />
+                <Text fontSize="sm" color="gray.700">
+                  The students displayed are filtered by your location. You can decide to show all students by turning off the location filter.
+                </Text>
+                <Switch
+                  size="sm"
+                  colorScheme="green"
+                  isChecked={isLocationFiltered}
+                  onChange={() => setIsLocationFiltered(!isLocationFiltered)}
+                  _focus={{ boxShadow: "none" }}
+                  _focusVisible={{ boxShadow: "none" }}
+                />
+
+              </HStack>
+            </Box>
             <HStack alignItems="center" justifyContent="space-between" flexWrap="wrap" w="100%">
               <HStack>
                 <Text color="#1F2937" fontWeight="600" fontSize="19x">Students</Text>
@@ -512,31 +535,31 @@ export default function DiscoverStudents() {
                 <Tbody>
 
 
-                {!sponsorStudents || sponsorStudents.length === 0 ? (
-  <Text textAlign={"center"} mt="32px" color="black">
-    *--No students found--*
-  </Text>
-) : (
-  sponsorStudents
-    .filter((student) =>
-      SearchInput === "" ? true : student.student_full_name?.toLowerCase().includes(SearchInput.toLowerCase())
-    )
-    .map((item, i) => (
-      <TableRow
-        key={i}
-        type="sponsor-admin-discoverstudents"
-        name={item.student_full_name}
-        classLevel={item.class_level}
-        essayScore={item.essay_score === null ? "0%" : item.essay_score}
-        request={item.fund_request_reason}
-        amount={`₦${item.total_amount_requested?.toLocaleString()}`}
-        studentIds={item.id}
-        requestId={item.request_id}
-        onOpen={handleOpenModal}
-        onEdit={() => setOpenModal(true)}
-      />
-    ))
-)}
+                  {!sponsorStudents || sponsorStudents.length === 0 ? (
+                    <Text textAlign={"center"} mt="32px" color="black">
+                      *--No students found--*
+                    </Text>
+                  ) : (
+                    sponsorStudents
+                      .filter((student) =>
+                        SearchInput === "" ? true : student.student_full_name?.toLowerCase().includes(SearchInput.toLowerCase())
+                      )
+                      .map((item, i) => (
+                        <TableRow
+                          key={i}
+                          type="sponsor-admin-discoverstudents"
+                          name={item.student_full_name}
+                          classLevel={item.class_level}
+                          essayScore={item.essay_score === null ? "0%" : item.essay_score}
+                          request={item.fund_request_reason}
+                          amount={`₦${item.total_amount_requested?.toLocaleString()}`}
+                          studentIds={item.id}
+                          requestId={item.request_id}
+                          onOpen={handleOpenModal}
+                          onEdit={() => setOpenModal(true)}
+                        />
+                      ))
+                  )}
 
 
                 </Tbody>

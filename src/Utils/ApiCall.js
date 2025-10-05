@@ -1278,7 +1278,7 @@ export const fundScholarshipApi = async (Id) => {
 
 
 
-export const AddStudentToScholarshipApi = async (scholarshipId, studentIds) => {
+export const AddStudentToScholarshipApi = async (scholarshipId, requestId) => {
   if (!scholarshipId) {
     console.error("❌ scholarshipId is missing!");
     throw new Error("Scholarship ID is required.");
@@ -1287,7 +1287,7 @@ export const AddStudentToScholarshipApi = async (scholarshipId, studentIds) => {
   try {
     const response = await axios.patch(
       `${baseUrl}/sponsor-admin/add-students-to-scholarship/${scholarshipId}`, // ✅ Correctly insert scholarshipId in URL
-      { studentIds }, // ✅ Send student IDs in the body
+      { requestId }, // ✅ Send student IDs in the body
       {
         headers: {
           Authorization: `Bearer ${token}`,

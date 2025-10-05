@@ -2,21 +2,38 @@ import React, { useState } from "react";
 import AuthenticatedWrapper from "./Layout/Index";
 import { ReactComponent as VerifyIcon } from "../../Asset/verify.svg";
 import { FaArrowLeft } from "react-icons/fa";
-import { Box, Text, VStack, HStack, Tag, Wrap, WrapItem } from "@chakra-ui/react";
+import { Box, Text, VStack, HStack, Tag, Wrap, WrapItem, FormControl, FormLabel, Select, Input } from "@chakra-ui/react";
 import TextArea from "../../Components/TextArea";
 import Button from "../../Components/Button";
-import { CreateAdminApi } from "../../Utils/ApiCall";
+import { CreateAdminApi, fetchAllStates, fetchLgasByState } from "../../Utils/ApiCall";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import ShowToast from "../../Components/ToastNotification";
+import { useEffect } from 'react';
 
 const Sponsor = () => {
   const [currentView, setCurrentView] = useState("motivationView");
+      const [states, setStates] = useState([]);
+      const [lgas, setLgas] = useState([]);
+  
   const [payload, setPayload] = useState({
     userType: "SPONSOR",
     motivation: "",
     interest: [],
+    state: "",
+    localGovernment: "",
+    city: "",
   });
+
+  const handleStateChange = async (e) => {
+    const selectedState = e.target.value;
+    setPayload({ ...payload, state: selectedState, localGovernment: "" });
+    await loadLgas(selectedState);
+  };
+
+  const handlePayload = (e) => {
+    setPayload({ ...payload, [e.target.id]: e.target.value });
+  };
 
   const [showToast, setShowToast] = useState({
     show: false,
@@ -30,6 +47,7 @@ const Sponsor = () => {
 
   const switchToMotivationView = () => setCurrentView("motivationView");
   const switchToFieldOfInterestView = () => setCurrentView("fieldOfInterestView");
+  const switchToMyLocationView = () => setCurrentView("myLocationView");
 
   const handleInputChange = (key, value) => {
     setPayload((prev) => ({ ...prev, [key]: value }));
@@ -82,9 +100,39 @@ const Sponsor = () => {
     }
   }
 
-  const renderPaginationLines = () => (
+  const loadStates = async () => {
+    try {
+        const data = await fetchAllStates();
+        console.log("States data:", data);
+        setStates(data);
+    } catch (error) {
+        console.error(error);
+    } finally {
+        setLoading(false);
+    }
+};
+
+// Load LGAs when a state is chosen
+const loadLgas = async (state) => {
+    try {
+        console.log("Fetching LGAs for:", state);
+        const data = await fetchLgasByState(state);
+        console.log("LGAs data:", data);
+        setLgas(Array.isArray(data) ? data : data.lgas || []);
+    } catch (error) {
+        console.error(error);
+        setLgas([]);
+    }
+};
+
+useEffect(() => {
+  loadStates();
+  loadLgas();
+}, []);
+
+ const renderPaginationLines = () => (
     <HStack spacing="4px" align="flex-start">
-      {["motivationView", "fieldOfInterestView"].map((view, index) => (
+      {["motivationView", "fieldOfInterestView", "myLocationView"].map((view, index) => (
         <Box
           key={view}
           height="8px"
@@ -92,12 +140,18 @@ const Sponsor = () => {
           bg={currentView === view ? "teal.500" : "gray.300"}
           cursor="pointer"
           borderRadius="md"
-          onClick={() => (view === "motivationView" ? switchToMotivationView() : switchToFieldOfInterestView())}
+          onClick={() => {
+            if (view === "motivationView") switchToMotivationView();
+            else if (view === "fieldOfInterestView") switchToFieldOfInterestView();
+            else switchToMyLocationView();
+          }}
           transition="background-color 0.3s"
         />
       ))}
     </HStack>
   );
+
+  
 
   return (
 
@@ -177,6 +231,63 @@ const Sponsor = () => {
                 </Wrap>
               </VStack>
             )}
+
+            {currentView === "myLocationView" && (
+              <VStack spacing="70px" align="start">
+                <VStack align="start" spacing="22px">
+                  <FaArrowLeft />
+                  <Text fontWeight="700" fontSize="22px" color="#101011" fontFamily="heading">
+                    My Location
+                  </Text>
+                  <Text fontSize="small" fontWeight="medium" color="#6B7280" lineHeight="24px">
+                    Please provide your location details.
+                  </Text>
+                </VStack>
+
+                <Wrap spacing="10px">
+                  <div>
+                    {/* State Dropdown */}
+                    <FormControl mb="20px">
+                      <FormLabel htmlFor="state" fontSize="14px">State</FormLabel>
+                      <Select
+                        placeholder="Select State"
+                        id="state"
+                        value={payload.state}
+                        onChange={handleStateChange}
+                      >
+                        {states.map((state, index) => (
+                          <option key={index} value={state}>
+                            {state}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormControl>
+
+                    {/* LGA Dropdown */}
+                    <FormControl>
+                      <FormLabel htmlFor="localGovernment" fontSize="14px">Local Government</FormLabel>
+                      <Select
+                        placeholder="Select Local Government"
+                        id="localGovernment"
+                        value={payload.localGovernment}
+                        onChange={handlePayload}
+                        isDisabled={!payload.state}
+                      >
+                        {lgas.map((lga, index) => (
+                          <option key={index} value={lga}>
+                            {lga}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
+                   <FormControl>   
+                  <FormLabel htmlFor="localGovernment" fontSize="14px">City</FormLabel>
+                  <Input label="City" type="text" placeholder="Your city" onChange={handlePayload} value={payload.city} id="city" />
+                  </FormControl>  
+                </Wrap>
+              </VStack>
+            )}
           </motion.div>
         </Box>
 
@@ -188,7 +299,12 @@ const Sponsor = () => {
                 Next
               </Button>
             )}
-            {currentView === "fieldOfInterestView" && (
+             {currentView === "fieldOfInterestView" && (
+              <Button onClick={switchToMyLocationView} px="30px">
+                Next
+              </Button>
+            )}
+            {currentView === "myLocationView" && (
               <Button onClick={Submit} isLoading={Loading} px="30px">Finish</Button>
             )}
           </HStack>
@@ -197,5 +313,7 @@ const Sponsor = () => {
     </AuthenticatedWrapper>
   );
 };
+
+ 
 
 export default Sponsor;

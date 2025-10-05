@@ -9,6 +9,7 @@ import { PiStudent, PiUser } from "react-icons/pi"
 import { BiHistory, BiUser } from "react-icons/bi"
 import { TbCurrencyNaira } from "react-icons/tb"
 import { VscHistory } from "react-icons/vsc"
+import { useMemo } from "react";
 export const NavList =(location)=>{
 
 
@@ -82,7 +83,7 @@ const checkLeaderboardActive= ()=>{
 }
   
     
-     let List = [
+     const List = useMemo(() => [
     
   
     {
@@ -163,13 +164,13 @@ const checkLeaderboardActive= ()=>{
         active: isActive(location, "/sponsor-admin/myscholarships"),
         display: isSponsorAdmin()
     },
-    {
-        name: "discover students",
-        icon: <PiStudent />,
-        link: "/sponsor-admin/discoverstudents",
-        active: isActive(location, "/sponsor-admin/discoverstudents"),
-        display: isSponsorAdmin()
-    },
+    // {
+    //     name: "discover students",
+    //     icon: <PiStudent />,
+    //     link: "/sponsor-admin/discoverstudents",
+    //     active: isActive(location, "/sponsor-admin/discoverstudents"),
+    //     display: isSponsorAdmin()
+    // },
     {
         name: "funding history",
         icon: <BiHistory />,
@@ -271,11 +272,11 @@ const checkLeaderboardActive= ()=>{
     },
    
     
-]
+], [location]);
 
 
 console.log("isSchoolAdmin():", isSchoolAdmin());
 console.log("isScholarshipAdmin():", isScholarshipAdmin());
 
 return List
-} 
+}

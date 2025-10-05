@@ -63,7 +63,7 @@ export default function MyScholarships() {
     name: '',
     purpose: '',
     motivation: '',
-    amount: '',
+    amount: '0',
   });
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
