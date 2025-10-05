@@ -36,7 +36,7 @@ export const isScholarshipAdmin = () => {
 
 export const isSponsorAdmin = () => {
    
-    if (role === "SPONSOR") {
+    if (role === "SPONSOR" || role === "SPONSOR-ADMIN") {
         return true
     } else {
         return false
