@@ -12,10 +12,11 @@ import Button from './Button'
 import { IoMdOpen } from "react-icons/io";
 import { GoDotFill } from "react-icons/go";
 import eventBus from './eventBus';
+import ReceiptModal from './ReceiptModal';
 
 
 
-export default function TableRow({ type, stationary, total, name, request, requestId, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools, isLoading, loading }) {
+export default function TableRow({ type, stationary, total, name, request, requestId, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools, isLoading, loading, reference, scholarship_cost, scholarship_name, onApprove, onReject, receipt, user }) {
 
     const router = useNavigate()
 
@@ -199,7 +200,7 @@ export default function TableRow({ type, stationary, total, name, request, reque
                             </HStack>
                         </Td>
                         <Td>
-                            <Button onClick={onButtonClick}  isLoading={loading} background={buttonText === "Revoke Approval" ? "white" : buttonText === "Unreject" ? "white" : "greenn.greenn400"} color={buttonText === "Revoke Approval" ? "greenn.greenn400" : buttonText === "Unreject" ? "greenn.greenn400" : "#fff"}>{buttonText}</Button>
+                            <Button onClick={onButtonClick} isLoading={loading} background={buttonText === "Revoke Approval" ? "white" : buttonText === "Unreject" ? "white" : "greenn.greenn400"} color={buttonText === "Revoke Approval" ? "greenn.greenn400" : buttonText === "Unreject" ? "greenn.greenn400" : "#fff"}>{buttonText}</Button>
                         </Td>
                     </>
 
@@ -242,7 +243,7 @@ export default function TableRow({ type, stationary, total, name, request, reque
                     <>
                         <Td fontSize="13px">
                             <Flex align="center">
-                                <Avatar size="sm"  name={name} mr={2} />
+                                <Avatar size="sm" name={name} mr={2} />
                                 {name}
                             </Flex>
                         </Td>
@@ -283,7 +284,7 @@ export default function TableRow({ type, stationary, total, name, request, reque
                                             <Text>Fund Account</Text>
                                         </HStack>
                                     </MenuItem>
-                                 
+
 
                                 </MenuList>
                             </Menu>
@@ -319,7 +320,7 @@ export default function TableRow({ type, stationary, total, name, request, reque
                             >
                                 <Icon as={GoDotFill} boxSize={3} mr={1} /> {status}
                             </Box>
-                        </Td> 
+                        </Td>
                         <Td fontSize="13px">{stationary}</Td>
                     </>
                 )
@@ -400,6 +401,78 @@ export default function TableRow({ type, stationary, total, name, request, reque
                     </>
                 )
             }
+            {
+                type === "super-admin-transactions" && (
+                    <>
+                        <Td fontSize="13px" fontWeight="400" color="#101828">{transactionId}</Td>
+                        <Td fontSize="13px" fontWeight="500" color="#101828">{user}</Td>
+                        <Td fontSize="13px" fontWeight="500" color="#101828">{scholarship_name}</Td>
+                        <Td fontSize="13px" fontWeight="400" color="#101828">{amount}</Td>
+                        <Td fontSize="13px" fontWeight="500" color="#101828">{scholarship_cost}</Td>
+                        <Td fontSize="13px" fontWeight="500" color="#101828">{reference}</Td>
+                        <Td fontSize="13px" fontWeight="500" color="#101828">
+                            <ReceiptModal receiptUrl={receipt} />
+                        </Td>
+                        <Td fontSize="13px" fontWeight="400" color="#101828">{date}</Td>
+
+                        <Td>
+                            <HStack
+                                bg={
+                                    status === "APPROVED"
+                                        ? "#ECFDF3"
+                                        : status === "PENDING"
+                                            ? "#FFF4E5"
+                                            : "#FEE2E2"
+                                }
+                                rounded="16px"
+                                py="2px"
+                                pl="6px"
+                                pr="8px"
+                            >
+                                <Text
+                                    fontWeight="500"
+                                    fontSize="12px"
+                                    color={
+                                        status === "APPROVED"
+                                            ? "#027A48"
+                                            : status === "PENDING"
+                                                ? "#B54708"
+                                                : "#B42318"
+                                    }
+                                >
+                                    {status}
+                                </Text>
+                            </HStack>
+                        </Td>
+
+                        {/* ✅ Pass callbacks from parent */}
+                        <Td>
+                            {status === "APPROVED" ? (
+                                <Button
+                                    size="sm"
+                                    bg="#B42318"
+                                    color="white"
+                                    _hover={{ bg: "#91190F" }}
+                                    onClick={() => onReject(transactionId)}
+                                >
+                                    Reject
+                                </Button>
+                            ) : (
+                                <Button
+                                    size="sm"
+                                    bg="#027A48"
+                                    color="white"
+                                    _hover={{ bg: "#035E3D" }}
+                                    onClick={() => onApprove(transactionId)}
+                                >
+                                    Approve
+                                </Button>
+                            )}
+                        </Td>
+                    </>
+                )
+            }
+
             {
                 type === "fund-request" && (
                     <>
@@ -516,7 +589,7 @@ export default function TableRow({ type, stationary, total, name, request, reque
                             >
                                 <Icon as={GoDotFill} boxSize={3} mr={1} /> {status}
                             </Box>
-                        </Td> 
+                        </Td>
                         <Td>
                             <Menu isLazy>
                                 <MenuButton as={Box}>
