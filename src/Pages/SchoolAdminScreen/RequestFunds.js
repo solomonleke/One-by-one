@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../DashboardLayout'
-import { Text, Flex, HStack, Box, useDisclosure } from '@chakra-ui/react'
+import { Text, Flex, HStack, Box, useDisclosure, VStack, Icon, Image } from '@chakra-ui/react'
 import TableRow from "../../Components/TableRow"
 import Button from "../../Components/Button"
 import Input from "../../Components/Input"
@@ -19,6 +19,8 @@ import { configuration } from "../../Utils/Helpers";
 import { GetAllStudentApi, GetStudentStatsApi, requestFundApi, getAllSponsorStudentsApi, getAllFundRequestsApi } from "../../Utils/ApiCall";
 import moment from "moment";
 import { useParams } from 'react-router-dom';
+import { FiUploadCloud } from "react-icons/fi";
+
 import ReactSelect from 'react-select'; // ✅ CLEAR
 
 import {
@@ -54,13 +56,14 @@ export default function RequestFunds() {
   const [Rejected, setRejected] = useState(false)
 
 
+
   const [OpenModal, setOpenModal] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
 
   const router = useNavigate();
 
-const [status, setStatus] = useState("PENDING"); // State to manage the status filter
+  const [status, setStatus] = useState("PENDING"); // State to manage the status filter
   const [MainData, setMainData] = useState([])
   const [FilterData, setFilterData] = useState([])
   const [totalStudentsCount, setTotalStudentsCount] = useState(0);
@@ -74,11 +77,15 @@ const [status, setStatus] = useState("PENDING"); // State to manage the status f
   const [TotalPage, setTotalPage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [students, setStudents] = useState([]);
-const [formData, setFormData] = useState({
-  student: "",
-  scholarship: "",
-  amount: ""
-});
+  const [formData, setFormData] = useState({
+    student: "",
+    scholarship: "",
+    studentClass: "",
+    term: "",
+    amount: "",
+    result: null, // ✅ store image file here
+  });
+
 
 
   //get current post
@@ -106,7 +113,7 @@ const [formData, setFormData] = useState({
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [fundRequests, setFundRequests] = useState([]);
-  
+
 
 
 
@@ -166,12 +173,12 @@ const [formData, setFormData] = useState({
       [name]: value,
     }));
   };
-  
+
 
 
   // When opening the modal (e.g. in a useEffect or a handler)
   const handleOpenEditModal = () => {
-    
+
     onOpenEdit();
   };
 
@@ -189,19 +196,19 @@ const [formData, setFormData] = useState({
 
 
 
-  
-
-  
-  
-  
-
-const [loading, setLoading] = useState(false);
 
 
 
-  
 
-  
+
+
+  const [loading, setLoading] = useState(false);
+
+
+
+
+
+
 
   const filterBy = (title) => {
     console.log("filter checking", title);
@@ -268,25 +275,25 @@ const [loading, setLoading] = useState(false);
   // Search Filter settings to follow end here
 
   const getallStudent = async (status) => {
-  
+
     try {
       const result = await GetAllStudentApi(CurrentPage, PostPerPage, status);
       console.log("📦 Raw API Response:", result);
 
-  
+
       if (result.status === 200) {
         const studentList = result.data.data.students;
-  
+
         setMainData(studentList);
         setStudents(studentList);
         setFilterData(studentList);
         setFilteredData(studentList);
         setTotalStudentsCount(result.data.data.totalCount);
-  
+
         const totalPosts = result.data.data.totalPages * PostPerPage;
         setTotalPage(totalPosts);
       }
-  
+
       console.log("students", result.data.data.students);
     } catch (e) {
       console.log("error", e.message);
@@ -296,81 +303,110 @@ const [loading, setLoading] = useState(false);
   };
 
   const handleSave = async () => {
-    setLoading(true);
-    try {
-      console.log("formData before request:", formData);
-  
-      const response = await requestFundApi({
-        studentId: formData.student,
-        type: formData.scholarship.toUpperCase(),
-        amount: Number(formData.amount),
-      });
-  
-      if (response.status === 201 || response.status === 200) {
-        setLoading(false);
-        setShowToast({
-          show: true,
-          message: "Fund requested successfully!",
-          status: "success",
-          duration: 3000,
-        });
-        setTimeout(() => setShowToast({ show: false }), 3000);
-        setFormData({ student: "", scholarship: "", amount: "" });
-        onCloseEdit();
-        fetchFundRequests();
-      }
-    } catch (error) {
-      setLoading(false);
-    
-      
-      // ✅ Get the server's message if available, else fallback
-      let serverMessage =
-        error?.response?.data?.message ||     // If message is a string
-        "Failed to request fund";
-  
-      if (serverMessage === 'Cannot Create another Fund Request as there is a request still processing for student') {
-        serverMessage = "The student has already been funded";
-      }
-
-      console.error("❌ Request fund error:", serverMessage);
-  
+    // Validate fields
+    if (
+      !formData.student ||
+      !formData.scholarship ||
+      !formData.amount ||
+      !formData.studentClass ||
+      !formData.term
+    ) {
       setShowToast({
         show: true,
-        message: serverMessage,
-        status: "error",
-        duration: 4000,
+        message: "Please fill all required fields.",
+        status: "warning",
+        duration: 3000,
       });
-  
-      setTimeout(() => setShowToast({ show: false }), 3000);
+
+      // ⏱️ hide after duration
+      setTimeout(() => {
+        setShowToast((prev) => ({ ...prev, show: false }));
+      }, 3000);
+
+      return; // exit here
+    }
+
+    const payload = {
+      studentId: formData.student,
+      type: formData.scholarship,
+      amount: formData.amount,
+      studentClass: formData.studentClass,
+      term: formData.term,
+      result: formData.result,
+    };
+
+    try {
+      setLoading(true);
+
+      await requestFundApi(payload);
+
+      setShowToast({
+        show: true,
+        message: "Fund request submitted successfully.",
+        status: "success",
+        duration: 3000,
+      });
+
+      setTimeout(() => {
+        setShowToast((prev) => ({ ...prev, show: false }));
+      }, 3000);
+
+      onCloseEdit(); // 👈 add this line
+
+      // Optional: reset form
+      setFormData({
+        student: "",
+        scholarship: "",
+        amount: "",
+        studentClass: "",
+        term: "",
+        result: "",
+      });
+
+    } catch (error) {
+      setShowToast({
+        show: true,
+        message: error.message || "Something went wrong.",
+        status: "error",
+        duration: 3000,
+      });
+
+      setTimeout(() => {
+        setShowToast((prev) => ({ ...prev, show: false }));
+      }, 3000);
+    } finally {
+      setLoading(false);
     }
   };
-  
+
+
+
   const options = students.filter(s => s.verification_status === "APPROVED")
-  .map(s => ({ label: s.full_name, value: s.id }));
+    .map(s => ({ label: s.full_name, value: s.id }));
 
   console.log("options", students);
-  
+
   const selectedStudent = options.find(o => o.value === formData.student);
-  
+
   const [totalRequests, setTotalRequests] = useState(0);
-  
-  
+
+
   const fetchFundRequests = async () => {
     // const PostPerPage=10
     try {
       const data = await getAllFundRequestsApi(CurrentPage, PostPerPage);
-      
-        setFundRequests(data);
-        setTotalRequests(data.length)
-        console.log( "Fund requests data:", data);
-        console.log("All fund requests:", data.requests);
-      } catch (error) {
-        console.error("Error fetching fund requests:", error.message);
-      }
-    };
-  
-    
-  
+
+      setFundRequests(data);
+      setTotalRequests(data.length)
+      console.log("Fund requests data:", data);
+      console.log("All fund requests:", data.requests);
+    } catch (error) {
+      console.error("Error fetching fund requests:", error.message);
+    }
+  };
+
+
+
 
 
 
@@ -384,9 +420,9 @@ const [loading, setLoading] = useState(false);
 
   return (
     <MainLayout>
-    {
-      isLoading && <Preloader  />
-    }
+      {
+        isLoading && <Preloader />
+      }
       {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
       )}
@@ -609,7 +645,7 @@ const [loading, setLoading] = useState(false);
           mt={["10px", "10px", "10px", "10px"]}
           w={["100%", "100%", "50%", "37%"]}
         >
-          <Button w="159px" size="sm" 
+          <Button w="159px" size="sm"
             onClick={() => handleOpenEditModal()}
           >Request Funds</Button>
         </Flex>
@@ -633,18 +669,18 @@ const [loading, setLoading] = useState(false);
               <Tbody>
 
 
-              {fundRequests?.map((item, i) => (
-  <TableRow
-    key={i}
-    type="fund-request"
-    name={item.name}
-    amount={`₦${item.amount?.toLocaleString()}`}
-    stationary={`₦${item.stationery_fund?.toLocaleString()}`}
-    total={`₦${item.total_amount?.toLocaleString()}`}
-    date={moment(item.created_at).format("lll")}
-    requestType={item.type}
-  />
-))}
+                {fundRequests?.map((item, i) => (
+                  <TableRow
+                    key={i}
+                    type="fund-request"
+                    name={item.name}
+                    amount={`₦${item.amount?.toLocaleString()}`}
+                    stationary={`₦${item.stationery_fund?.toLocaleString()}`}
+                    total={`₦${item.total_amount?.toLocaleString()}`}
+                    date={moment(item.created_at).format("lll")}
+                    requestType={item.type}
+                  />
+                ))}
 
 
 
@@ -655,64 +691,146 @@ const [loading, setLoading] = useState(false);
 
           <Modal isOpen={isEditModalOpen} onClose={onCloseEdit} scrollBehavior="inside">
             <ModalOverlay />
-            <ModalContent maxW="80%" height="80vh">
-            {showToast.show && (
-              <ShowToast
-                message={showToast.message}
-                status={showToast.status}
-                show={showToast.show}
-                duration={showToast.duration}
-              />
-            )}
-              <ModalHeader>Request Funds</ModalHeader>
+            <ModalContent maxW={{ base: "90%", md: "600px" }} borderRadius="2xl" py={2}>
+              {showToast.show && (
+                <ShowToast
+                  message={showToast.message}
+                  status={showToast.status}
+                  show={showToast.show}
+                  duration={showToast.duration}
+                />
+              )}
+
+              <ModalHeader fontWeight="bold" fontSize="xl">
+                Request Funds
+              </ModalHeader>
               <ModalCloseButton />
-              <ModalBody overflow="visible">
-  <SimpleGrid spacing={4}>
-    <FormControl>
-      <FormLabel>Student</FormLabel>
 
-      <ReactSelect
-  name="student"
-  placeholder="Select a student"
-  options={options}
-  value={selectedStudent || null}
-  onChange={(selectedOption) => {
-    handleChange({
-      target: {
-        name: "student",
-        value: selectedOption?.value || "",
-      },
-    });
-  }}
-/>
+              <ModalBody>
+                <Stack spacing={4}>
+                  {/* Student */}
+                  <FormControl>
+                    <FormLabel>Student</FormLabel>
+                    <ReactSelect
+                      name="student"
+                      placeholder="Select a student"
+                      options={options}
+                      value={selectedStudent || null}
+                      onChange={(selectedOption) => {
+                        handleChange({
+                          target: {
+                            name: "student",
+                            value: selectedOption?.value || "",
+                          },
+                        });
+                      }}
+                    />
+                  </FormControl>
 
-    </FormControl>
+                  {/* Scholarship Type */}
+                  <FormControl>
+                    <FormLabel>Scholarship Type</FormLabel>
+                    <Select
+                      name="scholarship"
+                      placeholder="Select type"
+                      onChange={handleChange}
+                      value={formData.scholarship}
+                    >
+                      <option value="SCHOOL FEES">School Fees</option>
+                      <option value="EXAMINATION FEES">Examination Fees</option>
+                    </Select>
+                  </FormControl>
 
-    <FormControl>
-      <FormLabel>Scholarship Type</FormLabel>
-      <Select
-        name="scholarship"
-        placeholder="Select type"
-        onChange={handleChange}
-        value={formData.scholarship}
-      >
-        <option value="school fees">School Fees</option>
-        <option value="examination fees">Examination Fees</option>
-      </Select>
-    </FormControl>
+                  {/* Class and Term — Responsive layout */}
+                  <Stack
+                    direction={{ base: "column", md: "row" }}
+                    spacing={4}
+                    w="100%"
+                  >
+                    <FormControl flex={1}>
+                      <FormLabel>Class</FormLabel>
+                      <Select
+                        name="studentClass"
+                        placeholder="Select class"
+                        onChange={handleChange}
+                        value={formData.studentClass}
+                      >
+                        <option value="jss1">JSS 1</option>
+                        <option value="jss2">JSS 2</option>
+                        <option value="jss3">JSS 3</option>
+                        <option value="ss1">SS 1</option>
+                        <option value="ss2">SS 2</option>
+                        <option value="ss3">SS 3</option>
+                      </Select>
+                    </FormControl>
 
-    <FormControl>
-      <FormLabel>Amount</FormLabel>
-      <Input
-        name="amount"
-        onChange={handleChange}
-        value={formData.amount}
-        placeholder="Enter amount"
-      />
-    </FormControl>
-  </SimpleGrid>
-</ModalBody>
-          
+                    <FormControl flex={1}>
+                      <FormLabel>Term</FormLabel>
+                      <Select
+                        name="term"
+                        placeholder="Select term"
+                        onChange={handleChange}
+                        value={formData.term}
+                      >
+                        <option value="first term">First Term</option>
+                        <option value="second term">Second Term</option>
+                        <option value="third term">Third Term</option>
+                      </Select>
+                    </FormControl>
+                  </Stack>
+
+                  {/* Amount */}
+                  <FormControl>
+                    <FormLabel>Amount</FormLabel>
+                    <Input
+                      name="amount"
+                      onChange={handleChange}
+                      value={formData.amount}
+                      placeholder="Enter amount"
+                    />
+                  </FormControl>
+
+                  <FormControl>
+                    <FormLabel fontWeight="600">Upload Document</FormLabel>
+                    <Box
+                      border="2px dashed #39996B"
+                      borderRadius="10px"
+                      p="4"
+                      textAlign="center"
+                      cursor="pointer"
+                      bg="gray.50"
+                      _hover={{ bg: "gray.100" }}
+                      onClick={() => document.getElementById("fileInput").click()}
+                    >
+                      {formData.result ? (
+                        <Text color="green.600" fontWeight="600">
+                          📄 {formData.result.name}
+                        </Text>
+                      ) : (
+                        <Text color="gray.500">Click to upload image, PDF, or Word file</Text>
+                      )}
+                    </Box>
+
+                    <Input
+                      id="fileInput"
+                      type="file"
+                      display="none"
+                      accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        setFormData((prev) => ({
+                          ...prev,
+                          result: file,
+                        }));
+                      }}
+                    />
+                  </FormControl>
+
+
+
+                </Stack>
+              </ModalBody>
+
               <ModalFooter>
                 <Flex
                   direction={{ base: "column", md: "row" }}
@@ -722,57 +840,55 @@ const [loading, setLoading] = useState(false);
                   align="center"
                 >
                   <Button
-                  variant="outline"
-                  _focus={{ boxShadow: 'none' }}
-            background="#39996B"
-            color="white"
-            isLoading={loading}
-            border="1px solid #39996B"
-            onClick={handleSave}
-            _hover={{
-              background: "transparent",
-              color: "#111e18ff",
-              border: "1px solid #39996B",
-            }}
-          >
-            Request
-          </Button>
-          
-          
-                  <Button
-                  variant="outline"
-                  _focus={{ boxShadow: 'none' }}
+                    variant="outline"
                     color="#39996B"
-            background="transparent"
-            border="1px solid #39996B"
-                    onClick={onCloseEdit}
+                    background="transparent"
+                    border="1px solid #39996B"
+                    _focus={{ boxShadow: "none" }}
                     _hover={{
-              background: "#39996B",
-              color: "white",
-              border: "1px solid #39996B",
-            }}          
+                      background: "#39996B",
+                      color: "white",
+                    }}
+                    onClick={onCloseEdit}
                   >
                     Cancel
                   </Button>
+                  <Button
+                    background="#39996B"
+                    color="white"
+                    border="1px solid #39996B"
+                    _focus={{ boxShadow: "none" }}
+                    _hover={{
+                      background: "transparent",
+                      color: "#111e18ff",
+                      border: "1px solid #39996B",
+                    }}
+                    isLoading={loading}
+                    onClick={handleSave}
+                  >
+                    Request Fund
+                  </Button>
+
                 </Flex>
               </ModalFooter>
             </ModalContent>
           </Modal>
-          
 
 
 
 
-<Pagination
-  totalPosts={TotalPage}
-  postsPerPage={PostPerPage}
-  currentPage={CurrentPage}
-  paginate={paginate}
-/>
+
+
+          <Pagination
+            totalPosts={TotalPage}
+            postsPerPage={PostPerPage}
+            currentPage={CurrentPage}
+            paginate={paginate}
+          />
 
         </Box>
       </Box>
-      
+
     </MainLayout>
   )
 }

@@ -304,13 +304,13 @@ export const GetAllStudentApi = (pageNo, postPerPage, status) => {
     });
 };
 
-export const GetAllSponsorStudentApi = (pageNo, postPerPage) => {
+export const GetAllSponsorStudentApi = (pageNo, postPerPage, searchByLocation = "", searchByBudgetRange = "", searchByAspiration = "") => {
  
  
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
-    url: `${baseUrl}/sponsor-admin/all-students?pageNo=${pageNo}&noItems=${postPerPage}`,
+    url: `${baseUrl}/sponsor-admin/all-students?pageNo=${pageNo}&noItems=${postPerPage}&searchByLocation=${searchByLocation}&searchByBudgetRange=${searchByBudgetRange}&searchByAspiration=${searchByAspiration}`,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
@@ -1234,46 +1234,32 @@ export const getScholarshipsBySponsor = async () => {
 };
 
 // apiCall.js
-export const fundScholarshipApi = async (Id) => {
-  console.log("🚀 Funding Scholarship with ID:", Id);
-
+export const fundScholarshipApi = async (Id, receiptFile) => {
   try {
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: `${baseUrl}/sponsor-admin/fund-scholarship/${Id}`,
-      headers: {
-        'Authorization': `Bearer ${token}`
+    const formData = new FormData();
+    formData.append("receipt", receiptFile); // must match "receipt"
+
+    const response = await axios.post(
+      `${baseUrl}/sponsor-admin/fund-scholarship/${Id}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // your token
+          // ❌ no need to set Content-Type; axios sets multipart/form-data automatically
+        },
+        maxBodyLength: Infinity,
       }
-    };
+    );
 
-    const response = await axios.request(config);
     console.log("✅ Funding response data:", response.data);
-
-    if (response.data.status === true) {
-      return response.data;
-    } else {
-      console.error(" Backend returned failure status:", response.data);
-      throw new Error(response.data.message || "Could not generate payment link.");
-    }
-
+    return response.data;
   } catch (error) {
-    if (error.response) {
-      // The request was made and the server responded with a status code outside of 2xx
-      console.error(" API call failed - response error:");
-      console.error("Status:", error.response.status);
-      console.error("Data:", error.response.data);
-      console.error("Headers:", error.response.headers);
-    } else if (error.request) {
-      // The request was made but no response received
-      console.error(" API call failed - no response received:", error.request);
-    } else {
-      // Something happened in setting up the request
-      console.error(" API call setup error:", error.message);
-    }
+    console.error("🚨 API Error:", error.response?.data || error.message);
     throw error;
   }
 };
+
+
 
 
 
@@ -1286,8 +1272,8 @@ export const AddStudentToScholarshipApi = async (scholarshipId, requestId) => {
 
   try {
     const response = await axios.patch(
-      `${baseUrl}/sponsor-admin/add-students-to-scholarship/${scholarshipId}`, // ✅ Correctly insert scholarshipId in URL
-      { requestId }, // ✅ Send student IDs in the body
+      `${baseUrl}/sponsor-admin/add-students-to-scholarship/${scholarshipId}`,
+      { requestIds: [requestId] }, // ✅ must be an array
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1299,19 +1285,34 @@ export const AddStudentToScholarshipApi = async (scholarshipId, requestId) => {
     console.log("✅ Student added successfully:", response.data);
     return response.data;
   } catch (error) {
-    console.error("❌ Failed to add student:", error.response?.data || error.message);
+    console.error(
+      "❌ Failed to add student:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
 
-export const requestFundApi = async ({ studentId, type, amount }) => {
+
+export const requestFundApi = async ({ studentId, type, amount, studentClass, term, result }) => {
   try {
+    const formData = new FormData();
+
+    formData.append("type", type);
+    formData.append("amount", String(amount)); // ✅ make sure it's a string
+    formData.append("class", studentClass);
+    formData.append("term", term);
+
+    if (result) {
+      formData.append("result", result); // ✅ attach image file
+    }
+
     const config = {
       method: "POST",
       url: `${baseUrl}/school-admin/request-fund/${studentId}`,
-      data: { type, amount },
+      data: formData,
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     };
@@ -1319,8 +1320,7 @@ export const requestFundApi = async ({ studentId, type, amount }) => {
     const response = await axios.request(config);
     console.log("✅ Fund Request Sent:", response.data);
 
-    // ✅ Fix: Accept either 200 or 201, and flexible status structure
-    if ((response.status === 201 || response.status === 200) && response.data?.message) {
+    if ((response.status === 200 || response.status === 201) && response.data?.message) {
       return response.data;
     } else {
       throw new Error("Unexpected API response format");
@@ -1331,7 +1331,7 @@ export const requestFundApi = async ({ studentId, type, amount }) => {
     if (error.response) {
       const { data, status } = error.response;
       console.error(`Server Error [${status}]:`, data);
-      throw error
+      throw error;
     } else if (error.request) {
       throw new Error("No response from server. Please check your internet connection.");
     } else {
@@ -1339,6 +1339,7 @@ export const requestFundApi = async ({ studentId, type, amount }) => {
     }
   }
 };
+
 
 export const getAllFundRequestsApi = async (pageNo, PostPerPage) => {
   try {
@@ -1366,21 +1367,29 @@ export const getAllFundRequestsApi = async (pageNo, PostPerPage) => {
 };
 
 
-export const getAllSponsorStudentsApi = async (pageNo, PostPerPage) => {
+export const getAllSponsorStudentsApi = async (
+  pageNo,
+  PostPerPage,
+  searchByLocation,
+  searchByBudgetRange,
+  searchByAspiration,
+  scholarshipId
+) => {
   try {
     const config = {
       method: "GET",
-      url: `${baseUrl}/sponsor-admin/all-students?pageNo=${pageNo}&noItems=${PostPerPage}`,
+      url: `${baseUrl}/sponsor-admin/all-students?pageNo=${pageNo}&noItems=${PostPerPage}&searchByLocation=${searchByLocation}&searchByBudgetRange=${searchByBudgetRange}&searchByAspiration=${searchByAspiration}&scholarshipId=${scholarshipId}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     };
 
+    console.log("📡 Fetching students with config:", config.url);
+
     const response = await axios.request(config);
     console.log("✅ Sponsor Students Retrieved:", response.data);
 
-    // Return just the student list or the full data depending on what you need
     return response.data;
   } catch (error) {
     console.error("❌ Failed to fetch sponsor students:", error);
@@ -1396,6 +1405,7 @@ export const getAllSponsorStudentsApi = async (pageNo, PostPerPage) => {
     }
   }
 };
+
 
 export const GetAllRequestFundsApi = (pageNo, postPerPage, funded) => {
   const config = {
@@ -1614,6 +1624,59 @@ export const getAllAdmins = async (adminType, pageNo, postPerPage) => {
       throw new Error("No response from server");
     } else {
       throw new Error(error.message);
+    }
+  }
+};
+
+export const GetAllSuperAdminTransactionsApi = (page, size, status) => {
+  const config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/super-admin/transactions?page=${page}&size=${size}&status=${status}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  return axios
+    .request(config)
+    .then((response) => response)
+    .catch((error) => {
+      console.error("error", error);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response?.data) {
+        throw new Error(error.response.data);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
+
+export const ApproveTransactionApi = async (id, status) => {
+  const config = {
+    method: "PATCH",
+    url: `${baseUrl}/super-admin/update-transaction/${id}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    data: { status },
+  };
+
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    console.error("Error approving transaction:", error);
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("Something went wrong while approving the transaction.");
     }
   }
 };

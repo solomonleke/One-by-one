@@ -36,6 +36,7 @@ import FundingHistory from '../Pages/SponsorAdminScreen/FundingHistory'
 import Settings3 from '../Pages/SponsorAdminScreen/Settings'
 import Dashboard from '../Pages/FundAdminUserScreen/Index'
 import AwaitingFunding from '../Pages/FundAdminUserScreen/AwaitingFunding'
+import FundStudent from '../Pages/FundAdminUserScreen/AwaitingFunding'
 import FundedStudents from '../Pages/FundAdminUserScreen/FundedStudents'
 import FundedHistory from '../Pages/FundAdminUserScreen/FundedHistory'
 import FundingRecords from '../Pages/FundAdminUserScreen/FundingRecords'
@@ -48,6 +49,7 @@ import SuperAdminScholarships from '../Pages/SuperAdmin/Scholarships'
 import SuperAdminSchools from '../Pages/SuperAdmin/Schools'
 import SuperAdminStudents from '../Pages/SuperAdmin/Students'
 import SuperAdminUserManagement from '../Pages/SuperAdmin/UserManagement'
+import SuperAdminTransactions from '../Pages/SuperAdmin/Transactions'
 import SuperAdminSettings from '../Pages/SuperAdmin/Settings'
 import StudentProfile3 from '../Pages/SuperAdmin/StudentProfile'
 import SchoolProfile3 from '../Pages/SuperAdmin/SchoolProfile'
@@ -140,7 +142,8 @@ export default function IndexRoutes() {
       <Route path='/super-admin-schools' element={<SuperAdminSchools />} />
       <Route path='/super-admin-students' element={<SuperAdminStudents />} />
       <Route path='/super-admin-user-management' element={<SuperAdminUserManagement />} />
-      <Route path='/super-admin-settings' element={<SuperAdminSettings />} />
+      <Route path='/super-admin-transactions' element={<SuperAdminTransactions />} />
+      <Route path='/super-admin/awaiting-funding' element={<FundStudent />} />
       <Route path='/super-admin-students-profile' element={<StudentProfile3 />} />
       <Route path='/super-admin-admin-profile' element={<AdminProfile />} />
         </Routes>

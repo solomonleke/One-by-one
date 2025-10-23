@@ -257,6 +257,20 @@ const checkLeaderboardActive= ()=>{
         display: isSuperAdmin()
     },
     {
+        name: "Transactions",
+        icon: <PiUser/>,
+        link: "/super-admin-transactions",
+        active: isActive(location, "/super-admin-transactions"),
+        display: isSuperAdmin()
+    },
+    {
+        name: "Fund student",
+        icon: <PiUser/>,
+        link: "/super-admin/awaiting-funding",
+        active: isActive(location, "/super-admin/awaiting-funding"),
+        display: isSuperAdmin()
+    },
+    {
         name: "reports & analytics",
         icon: <GoReport/>,
         link: "/super-admin-reports",

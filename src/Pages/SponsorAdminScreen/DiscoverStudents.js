@@ -75,7 +75,7 @@ export default function DiscoverStudents() {
   const router = useNavigate();
   const [MainData, setMainData] = useState([])
   const [FilterData, setFilterData] = useState([])
-  const [FilteredData, setFilteredData] = useState(null);
+  const [FilteredData, setFilteredData] = useState([]);
   const [SearchInput, setSearchInput] = useState("");
   const [userName, setUserName] = useState('');
   const [TotalPage, setTotalPage] = useState("");
@@ -93,6 +93,9 @@ export default function DiscoverStudents() {
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [isOpening, setIsOpening] = useState(false);
   const [sponsorStudents, setSponsorStudents] = useState([]);
+  const [searchByLocation, setSearchByLocation] = useState("true");
+  const [searchByBudgetRange, setSearchByBudgetRange] = useState("false");
+  const [searchByAspiration, setSearchByAspiration] = useState("false");
 
   //get current post
   //change page
@@ -105,9 +108,9 @@ export default function DiscoverStudents() {
   const filterBy = (title) => {
     console.log("filter checking", title);
 
-    if (title === "essay") {
+    if (title === "location") {
       let filter = MainData.filter((item) =>
-        item.essay_rating?.toLowerCase().includes(SearchInput.toLowerCase())
+        item.searchByLocation?.toLowerCase().includes(SearchInput.toLowerCase())
       );
       setFilteredData(filter);
       console.log("filter checking", filter);
@@ -142,50 +145,66 @@ export default function DiscoverStudents() {
 
 
 
-  const fetchSponsorStudents = async () => {
+  // const fetchSponsorStudents = async () => {
+
+  //   try {
+  //     const response = await getAllSponsorStudentsApi(CurrentPage, PostPerPage);
+  //     console.log("Sponsor Students Response:", response);
+  //     setMainData(response.data?.students)
+  //     setSponsorStudents(response.data?.students || []); // Adjust based on response structure
+  //     setFilteredData(response.data?.students || []); // Adjust based on response structure
+  //     setTotalPage(response.data.totalPages)
+  //     setTotalStudentsCount(response.data.totalCount);
+  //     const totalPosts = response.data.totalPages * PostPerPage;
+  //     setTotalPage(totalPosts);
+  //   } catch (error) {
+  //     console.error("Error loading sponsor students:", error.message);
+  //     setSponsorStudents([]);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+  const getallStudent = async (scholarshipId) => {
+    console.log("📡 getallStudent called with scholarshipId:", scholarshipId);
+    console.log("CurrentPage:", CurrentPage, "PostPerPage:", PostPerPage);
 
     try {
-      const response = await getAllSponsorStudentsApi(CurrentPage, PostPerPage);
-      console.log("Sponsor Students Response:", response);
-      setMainData(response.data?.students)
-      setSponsorStudents(response.data?.students || []); // Adjust based on response structure
-      setFilteredData(response.data?.students || []); // Adjust based on response structure
-      setTotalPage(response.data.totalPages)
-      setTotalStudentsCount(response.data.totalCount);
-      const totalPosts = response.data.totalPages * PostPerPage;
-      setTotalPage(totalPosts);
-    } catch (error) {
-      console.error("Error loading sponsor students:", error.message);
-      setSponsorStudents([]);
-    } finally {
-      setLoading(false);
+      const result = await getAllSponsorStudentsApi(
+        CurrentPage,
+        PostPerPage,
+        searchByLocation,     // ✅ use state variable
+        searchByBudgetRange,  // ✅ use state variable
+        searchByAspiration,   // ✅ use state variable
+        scholarshipId
+      );
+
+      console.log("📦 Full API response:", result);
+
+      // ✅ The correct shape is result.data.students
+      if (result.status === 200 && result.data && result.data.students) {
+        const students = result.data.students;
+
+        console.log("✅ Students fetched:", students.length);
+        console.log("🧾 sponsorStudents:", students);
+
+        setMainData(students);
+        setSponsorStudents(students);
+        setFilteredData(students);
+        setTotalPage(result.data.totalPages || 1);
+        setTotalStudentsCount(result.data.totalItems || 0);
+      } else {
+        console.warn("⚠️ Unexpected response format:", result);
+      }
+    } catch (e) {
+      console.error("❌ Error fetching students:", e.message);
     }
   };
 
 
-  const getallStudent = async () => {
-    console.log("CurrentPage:", CurrentPage, "PostPerPage:", PostPerPage);
-
-    try {
-      const result = await GetAllSponsorStudentApi(CurrentPage, PostPerPage)
-
-      console.log("getallSponsorStudent", result)
 
 
-      if (result.status === 200) {
-        setMainData(result.data.data.students)
-        setFilteredData(result.data.data.students)
-        setTotalPage(result.data.data.totalPages)
-        setTotalStudentsCount(result.data.data.totalCount);
-        const totalPosts = result.data.data.totalPages * PostPerPage;
-        setTotalPage(totalPosts);
-      }
-    } catch (e) {
-
-      console.log("error", e.message)
-    }
-
-  }
 
 
 
@@ -204,9 +223,10 @@ export default function DiscoverStudents() {
 
 
   const handleOpenModal = (requestId) => {
-    setSelectedRequestId(requestId);   // ✅ Store requestId
-    setIsOpening(true);                // ✅ Open modal
+    setSelectedRequestId(requestId); // ✅ store only requestId
+    setIsOpening(true);              // ✅ open modal
   };
+
 
   const handleCloseModal = () => {
     setIsOpening(false);
@@ -214,11 +234,17 @@ export default function DiscoverStudents() {
   };
 
   const handleSubmit = async () => {
+    console.log("🎯 Submitting with:", {
+      scholarshipId: selectedScholarship,
+      requestId: selectedRequestId,
+    });
+
+    // ✅ Validation
     if (!selectedScholarship) {
       setShowToast({
         show: true,
         message: "Select a Scholarship.",
-        status: "error"
+        status: "error",
       });
       setTimeout(() => setShowToast({ show: false }), 3000);
       return;
@@ -228,42 +254,25 @@ export default function DiscoverStudents() {
       setShowToast({
         show: true,
         message: "No student selected.",
-        status: "error"
+        status: "error",
       });
       setTimeout(() => setShowToast({ show: false }), 3000);
       return;
-
     }
-
-
 
     try {
       setIsSubmitting(true);
 
-      const selectedScholarshipData = sponsorScholarships.find(
-        (sch) => sch.id === selectedScholarship
-      );
-
-      console.log("🎓 Selected Scholarship Data:", selectedScholarshipData);
-
-
-      if (!selectedScholarshipData) {
-        throw new Error("Selected scholarship not found.");
-      }
-
-      const existingStudentIds = selectedScholarshipData.students
-        .map(s => s.id) // Assuming 'id' is the student ID
-        .filter(Boolean);
-
-      const updatedStudentIds = [...new Set([...existingStudentIds, selectedRequestId])];
-
       console.log("🧾 Submitting to API with:", {
         scholarshipId: selectedScholarship,
-        studentIds: updatedStudentIds,
-        requestId: selectedRequestId
+        requestId: selectedRequestId,
       });
 
-      const response = await AddStudentToScholarshipApi(selectedScholarship, updatedStudentIds, selectedRequestId);
+      const response = await AddStudentToScholarshipApi(
+        selectedScholarship,
+        selectedRequestId
+      );
+
       console.log("✅ Add Student Response:", response);
 
       if (response.status) {
@@ -274,15 +283,29 @@ export default function DiscoverStudents() {
         });
         setTimeout(() => setShowToast({ show: false }), 3000);
 
+        // ✅ Update state safely — merge new student without overwriting
+        setSponsorScholarships((prev) =>
+          prev.map((sch) => {
+            if (sch.id === selectedScholarship) {
+              const existingStudents = sch.students || [];
+              // Prevent duplicates
+              const alreadyExists = existingStudents.some(
+                (s) => s.request_id === selectedRequestId
+              );
 
-        setSponsorScholarships(prev =>
-          prev.map(sch =>
-            sch.id === selectedScholarship
-              ? { ...sch, students: [...sch.students, { request_id: selectedRequestId, full_name: "New Student" }] }
-              : sch
-          )
+              return {
+                ...sch,
+                students: alreadyExists
+                  ? existingStudents
+                  : [
+                    ...existingStudents,
+                    { request_id: selectedRequestId, full_name: "New Student" },
+                  ],
+              };
+            }
+            return sch;
+          })
         );
-
 
         handleCloseModal();
       }
@@ -309,10 +332,13 @@ export default function DiscoverStudents() {
 
 
 
+
+
   const fetchScholarshipsBySponsor = async () => {
     try {
+      console.log("Fetching scholarships...");
       const data = await getScholarshipsBySponsor();
-
+      console.log("Scholarship response:", data);
       if (data.status && Array.isArray(data.data)) {
         setSponsorScholarships(data.data); // ✅ Set directly since `data` is an array
       } else {
@@ -344,13 +370,66 @@ export default function DiscoverStudents() {
 
 
   useEffect(() => {
-
-    getallStudent()
-    fetchSponsorStudents();
+    // Step 1: Load scholarships only once when component mounts
     fetchScholarshipsBySponsor();
+  }, []); // ✅ run only once at mount
 
+  useEffect(() => {
+    // Step 2: When scholarships are fetched, set a default selected scholarship if not set
+    if (sponsorScholarships.length > 0 && !selectedScholarship) {
+      setSelectedScholarship(sponsorScholarships[0].id); // ✅ pick first one automatically
+    }
+  }, [sponsorScholarships]);
 
-  }, [CurrentPage]);
+  useEffect(() => {
+    // Step 3: Fetch students when a scholarship is selected or when the page changes
+    if (selectedScholarship) {
+      getallStudent(selectedScholarship);
+    }
+  }, [CurrentPage, selectedScholarship]);
+
+  // 🔁 Re-fetch students whenever the location filter is toggled
+  useEffect(() => {
+    if (!selectedScholarship) return;
+
+    if (isLocationFiltered) {
+      // ✅ When location filter is ON
+      setSearchByLocation("true");
+      getallStudent(selectedScholarship);
+
+      setShowToast({
+        show: true,
+        message: "Location filter disabled — showing all students.",
+        status: "success",
+        duration: 3000,
+      });
+
+      // 🕒 Auto-hide after duration
+      const timer = setTimeout(() => {
+        setShowToast((prev) => ({ ...prev, show: false }));
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    } else {
+      // 🌍 When filter is OFF
+      setSearchByLocation("false");
+      getallStudent(selectedScholarship);
+
+      setShowToast({
+        show: true,
+        message: "Location filter enabled — showing nearby students.",
+        status: "success",
+        duration: 3000,
+      });
+
+      const timer = setTimeout(() => {
+        setShowToast((prev) => ({ ...prev, show: false }));
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLocationFiltered]);
+
 
 
 
@@ -376,12 +455,19 @@ export default function DiscoverStudents() {
                 </Text>
                 <Switch
                   size="sm"
-                  colorScheme="green"
                   isChecked={isLocationFiltered}
-                  onChange={() => setIsLocationFiltered(!isLocationFiltered)}
+                  onChange={() => setIsLocationFiltered((prev) => !prev)}
                   _focus={{ boxShadow: "none" }}
                   _focusVisible={{ boxShadow: "none" }}
+                  sx={{
+                    // ✅ Use custom styles to override Chakra’s default gray
+                    ".chakra-switch__track": {
+                      backgroundColor: isLocationFiltered ? "#48BB78" : "#48BB78", // green.400 or red.500
+                    },
+                  }}
                 />
+
+
 
               </HStack>
             </Box>
@@ -428,7 +514,7 @@ export default function DiscoverStudents() {
                         </MenuButton>
                         <MenuList>
                           <MenuItem
-                            onClick={() => filterBy("name")}
+                            onClick={() => filterBy("location")}
                             textTransform="capitalize"
                             fontWeight={"500"}
                             color="#2F2F2F"
@@ -439,7 +525,7 @@ export default function DiscoverStudents() {
                             }}
                           >
                             <HStack fontSize="14px">
-                              <Text>by Name</Text>
+                              <Text>by Location</Text>
                             </HStack>
                           </MenuItem>
                           <MenuItem
@@ -536,30 +622,35 @@ export default function DiscoverStudents() {
 
 
                   {!sponsorStudents || sponsorStudents.length === 0 ? (
-                    <Text textAlign={"center"} mt="32px" color="black">
+                    <Text textAlign="center" mt="32px" color="black">
                       *--No students found--*
                     </Text>
                   ) : (
                     sponsorStudents
                       .filter((student) =>
-                        SearchInput === "" ? true : student.student_full_name?.toLowerCase().includes(SearchInput.toLowerCase())
+                        SearchInput === ""
+                          ? true
+                          : student.student_full_name
+                            ?.toLowerCase()
+                            .includes(SearchInput.toLowerCase())
                       )
                       .map((item, i) => (
                         <TableRow
-                          key={i}
+                          key={item.request_id || i}
                           type="sponsor-admin-discoverstudents"
                           name={item.student_full_name}
                           classLevel={item.class_level}
-                          essayScore={item.essay_score === null ? "0%" : item.essay_score}
+                          essayScore={item.essay_score || "0%"}
                           request={item.fund_request_reason}
                           amount={`₦${item.total_amount_requested?.toLocaleString()}`}
-                          studentIds={item.id}
+                          studentIds={item.request_id}   // ✅ use request_id as unique identifier
                           requestId={item.request_id}
                           onOpen={handleOpenModal}
                           onEdit={() => setOpenModal(true)}
                         />
                       ))
                   )}
+
 
 
                 </Tbody>
