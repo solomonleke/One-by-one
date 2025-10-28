@@ -143,7 +143,7 @@ export default function IndexRoutes() {
       <Route path='/super-admin-students' element={<SuperAdminStudents />} />
       <Route path='/super-admin-user-management' element={<SuperAdminUserManagement />} />
       <Route path='/super-admin-transactions' element={<SuperAdminTransactions />} />
-      <Route path='/super-admin/awaiting-funding' element={<FundStudent />} />
+      <Route path='/super-admin/funding' element={<FundStudent />} />
       <Route path='/super-admin-students-profile' element={<StudentProfile3 />} />
       <Route path='/super-admin-admin-profile' element={<AdminProfile />} />
         </Routes>

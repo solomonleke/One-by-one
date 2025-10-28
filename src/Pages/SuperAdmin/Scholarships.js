@@ -78,7 +78,7 @@ export default function Scholarships() {
   const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
   const [TotalPage, setTotalPage] = useState("");
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [editedData, setEditedData] = useState("");
   const { isOpen: isRemoveModalOpen, onOpen: onOpenRemove, onClose: onCloseRemove } = useDisclosure();
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -100,131 +100,7 @@ export default function Scholarships() {
 
   
 
-  const dummyScholarships = [
-    {
-      id: 1,
-      name: "Stem Excellence Scholarship",
-      created_at: "2024-05-01T10:30:00Z",
-      amount: "500000",
-      sponsor: 'Francis Uzoma',
-      students: [
-        { full_name: "Alice Johnson" },
-        { full_name: "Bob Smith" },
-        { full_name: "Alan Walker" },
-        { full_name: "Joe Aribo" },
-      ],
-    },
-    {
-      id: 2,
-      name: "Pathway to Excellence Scholarship",
-      created_at: "2024-05-01T10:30:00Z",
-      amount: "500000",
-      sponsor: 'Francis Uzoma',
-      students: [
-        { full_name: "Philip Amakari" },
-        { full_name: "Jane Chucks" },
-      ],
-    },
-    {
-      id: 3,
-      name: "Stem Excellence Scholarship",
-      created_at: "2024-05-01T10:30:00Z",
-      amount: "500000",
-      sponsor: 'Francis Uzoma',
-      students: [
-        { full_name: "Simon Abubakar" },
-        { full_name: "Sterling John" },
-        { full_name: "Alan Walker" },
-      ],
-    },
-    {
-      id: 4,
-      name: "Pathway to Excellence Scholarship",
-      created_at: "2024-05-01T10:30:00Z",
-      amount: "500000",
-      sponsor: 'Francis Uzoma',
-      students: [
-        { full_name: "Micheal Odegard" },
-        { full_name: "Williams Saliba" },
-      ],
-    },
-    {
-      id: 5,
-      name: "Stem Excellence Scholarship",
-      created_at: "2024-05-01T10:30:00Z",
-      amount: "500000",
-      sponsor: 'Francis Uzoma',
-      students: [],
-    },
-    {
-      id: 6,
-      name: "Pathway to Excellence Scholarship",
-      created_at: "2024-05-01T10:30:00Z",
-      amount: "500000",
-      sponsor: 'Francis Uzoma',
-      students: [
-        { full_name: "Bukayo Saka" },
-        { full_name: "Declan Rice" },
-      ],
-    },
-    {
-      id: 7,
-      name: "Stem Excellence Scholarship",
-      created_at: "2024-05-01T10:30:00Z",
-      amount: "500000",
-      sponsor: 'Francis Uzoma',
-      students: [
-        { full_name: "Mikel Arteta" },
-        { full_name: "Lissandro Trossard" },
-        { full_name: "Joe Aribo" },
-        { full_name: "Alan Walker" },
-        { full_name: "Joel Menes" },
-      ],
-    },
-    {
-      id: 8,
-      name: "Pathway to Excellence Scholarship",
-      created_at: "2024-05-01T10:30:00Z",
-      amount: "500000",
-      sponsor: 'Francis Uzoma',
-      students: [
-        { full_name: "Don Callafiorri" },
-        { full_name: "Ben White" },
-      ],
-    },
-    {
-      id: 9,
-      name: "Stem Excellence Scholarship",
-      created_at: "2024-05-01T10:30:00Z",
-      amount: "500000",
-      sponsor: 'Francis Uzoma',
-      students: [
-        { full_name: "David Raya" },
-        { full_name: "Thomas Partey" },
-        { full_name: "Fred Jackson" },
-      ],
-    },
-    {
-      id: 10,
-      name: "Pathway to Excellence Scholarship",
-      created_at: "2024-05-01T10:30:00Z",
-      amount: "500000",
-      sponsor: 'Francis Uzoma',
-      students: [
-        { full_name: "Havertz Rio" },
-        { full_name: "Nketiah Black" },
-        { full_name: "Alan Walker" },
-        { full_name: "Joe Aribo" },
-      ],
-    },
-    {
-      id: 11,
-      name: "Merit-Based Award",
-      created_at: "2024-04-15T14:20:00Z",
-      amount: "300000",
-      students: [],
-    },
-  ];
+  
 
   const fetchScholarships = async () => {
     try {

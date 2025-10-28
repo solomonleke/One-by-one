@@ -12,15 +12,18 @@ import { useNavigate } from 'react-router-dom';
 import { IoChevronBackOutline, IoCloseOutline } from 'react-icons/io5';
 import { BsThreeDots } from 'react-icons/bs';
 import { FaSchoolFlag, FaCheck } from "react-icons/fa6";
+import Preloader from '../../Components/Preloader'; // Import Preloader
 
 export default function AdminProfile() {
   const router = useNavigate();
 
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const { isOpen: isRemoveModalOpen, onOpen: onOpenRemove, onClose: onCloseRemove } = useDisclosure();
+  const [loading, setLoading] = useState(false); // Add loading state
 
   return (
     <MainLayout>
+      {loading && <Preloader />} {/* Conditionally render Preloader */}
       <Flex justifyContent="space-between" flexWrap="wrap">
 
         <HStack fontSize="14px" fontWeight="600" spacing="10px" cursor="pointer" onClick={() => router('/super-admin-user-management')}>
@@ -240,7 +243,7 @@ export default function AdminProfile() {
               <Text fontSize={"14px"} textTransform={"capitalize"} fontWeight={"500"}>student essay</Text>
 
               <HStack  borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} mt="10px" borderWidth={"1px"}>
-                <Text fontWeight={"400"} fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>Education is the key to breaking barriers and unlocking opportunities and I have always held this belief close to my heart. My name is Phillip Amakiri, and I am a dedicated and hardworking student who is devoted to making the right decisions that will lead me forward in life.</Text>
+                <Text fontWeight={"400"} mt="18px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>Education is the key to breaking barriers and unlocking opportunities and I have always held this belief close to my heart. My name is Phillip Amakiri, and I am a dedicated and hardworking student who is devoted to making the right decisions that will lead me forward in life.</Text>
               </HStack>
             </Box>
 

@@ -75,7 +75,7 @@ export default function Students() {
   const [ByDate, setByDate] = useState(false);
   const [StartDate, setStartDate] = useState("");
   const [EndDate, setEndDate] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState("PENDING");
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -126,6 +126,8 @@ const [totalRejected, setTotalRejected] = useState(0);
       }
     } catch (e) {
       console.error("GetAllScholarshipStudent error:", e.message);
+    } finally {
+      setLoading(false);
     }
   };
   

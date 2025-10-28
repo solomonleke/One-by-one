@@ -13,23 +13,29 @@ import {
   Input,
   VStack,
   Textarea,
-  useToast,
 } from "@chakra-ui/react";
+import ShowToast from "./ToastNotification";
 
-const PaymentModal = ({ isOpen, onClose, student, onSubmit  }) => {
+
+const PaymentModal = ({ isOpen, onClose, student, onSubmit, isLoading: parentLoading = false }) => { // Accept isLoading prop
   const [reason, setReason] = useState("");
-  const toast = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // Internal loading state
+  const [showToast, setShowToast] = useState({
+    show: false,
+    message: "",
+    status: "",
+  });
+
+  const currentLoading = parentLoading || loading; // Use parentLoading if provided, otherwise internal loading
 
 
   const handleSubmit = async () => {
     if (!reason.trim()) {
-      toast({
-        title: "Reason for payment is required.",
+      setShowToast({
+        message: "Reason for payment is required.",
         status: "error",
-        duration: 3000,
-        isClosable: true,
       });
+      setTimeout(() => setShowToast({ show: false }), 3000);
       return;
     }
 
@@ -42,23 +48,20 @@ const PaymentModal = ({ isOpen, onClose, student, onSubmit  }) => {
       };
 
       await onSubmit(paymentPayload); // expected to be a promise
-      toast({
-        title: "Payment initiated.",
-        description: "The payment process has started.",
+      setShowToast({
+        message: "The payment process has started.",
         status: "success",
-        duration: 5000,
-        isClosable: true,
+        show: true,
       });
+      setTimeout(() => setShowToast({ show: false }), 3000);
 
       setReason(""); // Reset reason
       onClose();     // Close modal
     } catch (error) {
-      toast({
-        title: "Payment failed.",
-        description: error?.message || "Something went wrong during payment.",
+      setShowToast({
+        message: error?.message || "Something went wrong during payment.",
         status: "error",
-        duration: 5000,
-        isClosable: true,
+        show: true,
       });
     } finally {
       setLoading(false);
@@ -70,6 +73,12 @@ const PaymentModal = ({ isOpen, onClose, student, onSubmit  }) => {
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent mx={{ base: "4", md: "0" }}>
+      <ShowToast
+          message={showToast.message}
+          status={showToast.status}
+          show={showToast.show}
+          duration={showToast.duration}
+        />
         <ModalHeader>Fund Student</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -123,7 +132,7 @@ const PaymentModal = ({ isOpen, onClose, student, onSubmit  }) => {
           <Button colorScheme="blue" mr={3} onClick={onClose}>
             Close
           </Button>
-          <Button variant="ghost" onClick={handleSubmit} isLoading={loading}
+          <Button variant="ghost" onClick={handleSubmit} isLoading={currentLoading}
 >
             Submit Payment
           </Button>

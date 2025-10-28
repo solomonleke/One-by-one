@@ -14,6 +14,7 @@ import {
 
     GetUserProfile,
   } from "../Utils/ApiCall";
+import { logout } from '../Authentication/Index'; // Import the logout function
 
 import SideBar from './SideBar'
 
@@ -42,7 +43,7 @@ export default function NavBar({ showSearch = true }) {
     const fetchProfile = async () => {
         try {
           const data = await GetUserProfile(); // directly gets the data object
-          console.log("Profile Data:", data);
+        //   console.log("Profile Data:", data);
           setOnlineUser(data)
             
     
@@ -60,7 +61,7 @@ export default function NavBar({ showSearch = true }) {
     //   setLastName(`${storedName.lastName}`);
     // }
     fetchProfile(); // Fetch profile data when the component mounts
-  }, []);
+  }, [onlineUser]); // Add onlineUser to dependency array
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -185,6 +186,7 @@ export default function NavBar({ showSearch = true }) {
                                     </HStack>
                                 </MenuItem>
                                 <MenuItem textTransform="capitalize" fontWeight={"400"} color='#586375' _hover={{ color: "green", fontWeight: "600", bg: "#E8FFF4" }} onClick={() => {
+                                            logout(); // Call the logout function
                                             nav("/sign-in")
                                         }}>
                                     <HStack fontSize="14px">

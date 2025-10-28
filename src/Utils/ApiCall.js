@@ -1,5 +1,5 @@
 import axios from "axios";
-import { baseUrl, token } from "./ApiConfig";
+import { baseUrl, getToken } from "./ApiConfig";
 import { useParams } from "react-router-dom";
 
 
@@ -49,7 +49,7 @@ export const CreateStudentApi = (Payload) => {
     url: `${baseUrl}/school-admin/register-student`,
     headers: {
       "Content-Type": "application/json",
-      'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${getToken()}`,
     },
     data: data,
   };
@@ -197,10 +197,13 @@ export const GoogleSignInApi = (Payload) => {
 
   return axios
     .request(config)
-    .then((response) => {
+    .then(async (response) => { // Made the callback async
       console.log("Response data:", response.data);
       if (response.data.token) {
         localStorage.setItem('authToken', response.data.token);
+        // Fetch user profile and store it
+        const userProfile = await GetUserProfile();
+        localStorage.setItem('onlineUser', JSON.stringify(userProfile.data));
       }
       return response.data; // Return only response data
     })
@@ -232,10 +235,13 @@ export const SignInApi = (Payload) => {
 
   return axios
     .request(config)
-    .then((response) => {
+    .then(async (response) => { // Made the callback async
       console.log("Response data:", response.data);
       if (response.data.token) {
         localStorage.setItem('authToken', response.data.token);
+        // Fetch user profile and store it
+        const userProfile = await GetUserProfile();
+        localStorage.setItem('onlineUser', JSON.stringify(userProfile.data));
       }
       return response.data; // Return only response data
     })
@@ -279,7 +285,7 @@ export const GetAllStudentApi = (pageNo, postPerPage, status) => {
     url: status === null ? `${baseUrl}/school-admin/all-students?pageNo=${pageNo}&noItems=${postPerPage}` : `${baseUrl}/school-admin/all-students?pageNo=${pageNo}&noItems=${postPerPage}&status=${status}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -313,7 +319,7 @@ export const GetAllSponsorStudentApi = (pageNo, postPerPage, searchByLocation = 
     url: `${baseUrl}/sponsor-admin/all-students?pageNo=${pageNo}&noItems=${postPerPage}&searchByLocation=${searchByLocation}&searchByBudgetRange=${searchByBudgetRange}&searchByAspiration=${searchByAspiration}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -348,7 +354,7 @@ export const GetAllScholarshipStudentsApi = (pageNo, noItems, status, search) =>
     url: `${baseUrl}/scholarship-admin/all-students?pageNo=${pageNo}&noItems=${noItems}&status=${status}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -381,7 +387,7 @@ export const GetAllBanksApi = () => {
     url: `${baseUrl}/payment-handler/all-banks`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -414,7 +420,7 @@ export const VerifyBanksApi = (payload) => {
     url: `${baseUrl}/payment-handler/resolve-account`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     data: data
     
@@ -493,7 +499,7 @@ export const GetAllScholarshipSchoolsApi = (pageNo, noItems, status) => {
     url: `${baseUrl}/scholarship-admin/get-all-schools?pageNo=${pageNo}&noItems=${noItems}&status=${status}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -525,7 +531,7 @@ export const ApproveSchoolApi = async (schoolId, status, note) => {
     url: `${baseUrl}/scholarship-admin/approve-school/${schoolId}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     data: {
       status,
@@ -553,7 +559,7 @@ export const ApproveStudentApi = (id,payload) => {
     url: `${baseUrl}/scholarship-admin/approve-student/${id}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     data: JSON.stringify(payload)
     
@@ -588,7 +594,7 @@ export const GetScholarshipDashboardDetailsApi = () => {
     url: `${baseUrl}/scholarship-admin/dashboard`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -623,7 +629,7 @@ export const GetSuperAdminDashboardDetailsApi = () => {
     url: `${baseUrl}/super-admin/dashboard-metrics`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -657,7 +663,7 @@ export const GetSuperAdminFinancialReportsApi = () => {
     url: `${baseUrl}/super-admin/financial-metrics`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -691,7 +697,7 @@ export const GetPlatformOverviewApi = () => {
     url: `${baseUrl}/super-admin/platform-overview`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -725,7 +731,7 @@ export const GetScholarshipDashboardGraphDataApi = () => {
     url: `${baseUrl}/scholarship-admin/graph-data`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -759,7 +765,7 @@ export const GetAdminProfile = () => {
     url: `${baseUrl}/school-admin/admin-profile`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -791,7 +797,7 @@ export const GetScholarshipAdminProfileApi = () => {
     url: `${baseUrl}/scholarship-admin/admin-profile`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
   };
 
@@ -821,7 +827,7 @@ export const GetScholarshipAdminLeaderboardApi = () => {
     url: `${baseUrl}/scholarship-admin/approved-schools-count/true`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
   };
 
@@ -853,7 +859,7 @@ export const UpdateStudentProfile = async (studentId, updatedFields) => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       }
     );
@@ -875,7 +881,7 @@ export const DeleteStudentProfile = async (student_Id) => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       }
     );
@@ -896,7 +902,7 @@ export const GetStudentProfile = async (student_Id) => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       }
     );
@@ -931,7 +937,7 @@ export const UploadDocumentApi = async (file, name, ownerType, studentEmail = nu
       formData, 
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
           "Content-Type": "multipart/form-data",
         },
       }
@@ -952,7 +958,7 @@ export const GetAdminStat = async () => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       }
     );
@@ -971,7 +977,7 @@ export const GetAdminStats = async () => {
     url: `${baseUrl}/school-admin/admin-profile`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
   };
 
@@ -1003,7 +1009,7 @@ export const GetSchoolAdminDashboardGraphDataApi = (status) => {
     url: `${baseUrl}/school-admin/student-graph-data?status=PENDING`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -1034,7 +1040,7 @@ export const GetStudentStatsApi = () => {
     url: `${baseUrl}/school-admin/stats`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
   };
 
@@ -1063,7 +1069,7 @@ export const GetSponsorAdminStats = async () => {
     url: `${baseUrl}/sponsor-admin/metrics`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
   };
 
@@ -1101,7 +1107,7 @@ export const fetchSponsorStudents = async () => {
       url: `${baseUrl}/sponsor-admin/all-sponsor-students`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${getToken()}`,
       },
     };
 
@@ -1136,7 +1142,7 @@ export const createScholarshipApi = async (formData) => {
       data: formData,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Token used in headers, not as a parameter
+        Authorization: `Bearer ${getToken()}`, // Token used in headers, not as a parameter
       },
     };
 
@@ -1170,7 +1176,7 @@ export const getActiveScholarships = async () => {
       url: `${baseUrl}/sponsor-admin/active-scholarship`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Include token if provided
+        Authorization: `Bearer ${getToken()}`, // Include token if provided
       },
     };
 
@@ -1205,7 +1211,7 @@ export const getScholarshipsBySponsor = async () => {
       url: `${baseUrl}/sponsor-admin/all-scholarship`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${getToken()}`,
       },
     };
 
@@ -1244,7 +1250,7 @@ export const fundScholarshipApi = async (Id, receiptFile) => {
       formData,
       {
         headers: {
-          Authorization: `Bearer ${token}`, // your token
+          Authorization: `Bearer ${getToken()}`, // your token
           // ❌ no need to set Content-Type; axios sets multipart/form-data automatically
         },
         maxBodyLength: Infinity,
@@ -1276,7 +1282,7 @@ export const AddStudentToScholarshipApi = async (scholarshipId, requestId) => {
       { requestIds: [requestId] }, // ✅ must be an array
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
           "Content-Type": "application/json",
         },
       }
@@ -1313,7 +1319,7 @@ export const requestFundApi = async ({ studentId, type, amount, studentClass, te
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${getToken()}`,
       },
     };
 
@@ -1348,7 +1354,7 @@ export const getAllFundRequestsApi = async (pageNo, PostPerPage) => {
       url: `${baseUrl}/school-admin/request-fund?pageNo=${pageNo}&noItems=${PostPerPage}`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${getToken()}`,
       },
     };
 
@@ -1381,7 +1387,7 @@ export const getAllSponsorStudentsApi = async (
       url: `${baseUrl}/sponsor-admin/all-students?pageNo=${pageNo}&noItems=${PostPerPage}&searchByLocation=${searchByLocation}&searchByBudgetRange=${searchByBudgetRange}&searchByAspiration=${searchByAspiration}&scholarshipId=${scholarshipId}`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${getToken()}`,
       },
     };
 
@@ -1414,7 +1420,7 @@ export const GetAllRequestFundsApi = (pageNo, postPerPage, funded) => {
     url: `${baseUrl}/fund-admin/get-all-request-funds?pageNo=${pageNo}&noItems=${postPerPage}&funded=${funded}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // Make sure `token` is defined in this scope
+      Authorization: `Bearer ${getToken()}`, // Make sure `token` is defined in this scope
     },
   };
 
@@ -1444,7 +1450,7 @@ export const GetAllFundingHistoryApi = (pageNo, postPerPage) => {
     url: `${baseUrl}/fund-admin/get-all-funding-history?pageNo=${pageNo}&noItems=${postPerPage}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
   };
 
@@ -1471,7 +1477,7 @@ export const GetFundAdminMetricsApi = () => {
     url: `${baseUrl}/fund-admin/metrics`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // ensure `token` is defined properly
+      Authorization: `Bearer ${getToken()}`, // ensure `token` is defined properly
     },
   };
   console.log("Calling metrics API at:", config.url);
@@ -1500,7 +1506,7 @@ export const GetAllSuperAdminSchoolsApi = (pageNo, noItems, status) => {
     url: `${baseUrl}/super-admin/all-schools?pageNo=${pageNo}&noItems=${noItems}&status=${status}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -1534,7 +1540,7 @@ export const GetAllSuperAdminStudentsApi = (pageNo, noItems, status) => {
     url: `${baseUrl}/super-admin/all-students?pageNo=${pageNo}&noItems=${noItems}&status=${status}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${getToken()}`
     },
     
   };
@@ -1566,7 +1572,7 @@ export const getAllActiveScholarships = async () => {
       url: `${baseUrl}/super-admin/all-scholarships`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Include token if provided
+        Authorization: `Bearer ${getToken()}`, // Include token if provided
       },
     };
 
@@ -1606,7 +1612,7 @@ export const getAllAdmins = async (adminType, pageNo, postPerPage) => {
         },
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       }
     );
@@ -1635,7 +1641,7 @@ export const GetAllSuperAdminTransactionsApi = (page, size, status) => {
     url: `${baseUrl}/super-admin/transactions?page=${page}&size=${size}&status=${status}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
   };
 
@@ -1663,7 +1669,7 @@ export const ApproveTransactionApi = async (id, status) => {
     url: `${baseUrl}/super-admin/update-transaction/${id}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
     data: { status },
   };
@@ -1690,9 +1696,9 @@ export const initiateFundingApi = async (id, type = "stationery") => {
   try {
     const config = {
       method: 'post',
-      url: `${baseUrl}/fund-admin/initiate-funding/${id}`,
+      url: `${baseUrl}/super-admin/fund-request/${id}`,
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${getToken()}`,
         'Content-Type': 'application/json'
       },
       data: {
@@ -1730,7 +1736,7 @@ export const UpdateSchoolProfile = async (updatedFields) => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       }
     );
@@ -1753,7 +1759,7 @@ export const UploadProfilePicture = async (file) => {
     url: `${baseUrl}/document-uploader/upload-profile-picture-school-admin`,
     headers: {
       "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`, // if needed
+      Authorization: `Bearer ${getToken()}`, // if needed
     },
     data: formData,
   };
@@ -1768,7 +1774,7 @@ export const GetScholarshipSchoolProfileApi = async (schoolId) => {
     url: `${baseUrl}/scholarship-admin/school-profile/${schoolId}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
   };
 
@@ -1789,7 +1795,7 @@ export const UpdateBankDetailsApi = async (payload) => {
     url: `${baseUrl}/users/update-school-admin`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
     data: data,
   };
@@ -1815,14 +1821,15 @@ export const GetScholarshipStudentProfileApi = async (studentId) => {
     url: `${baseUrl}/scholarship-admin/student-profile/${studentId}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
   };
 
   try {
     const response = await axios.request(config);
     return response.data;
-  } catch (error) {
+  }
+  catch (error) {
     console.error("Error fetching student profile:", error);
     throw new Error(
       error.response?.data?.message || error.message || "Something went wrong"
@@ -1836,7 +1843,7 @@ export const GetUserProfile = async () => {
     url: `${baseUrl}/users/profile`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
   };
 
@@ -1860,7 +1867,7 @@ export const UploadAdminProfilePicture = async (file) => {
     url: `${baseUrl}/document-uploader/upload-profile-picture`,
     headers: {
       "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`, // if needed
+      Authorization: `Bearer ${getToken()}`, // if needed
     },
     data: formData,
   };

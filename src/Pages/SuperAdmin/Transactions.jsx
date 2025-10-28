@@ -26,6 +26,7 @@ import MainLayout from "../../DashboardLayout";
 import TableRow from "../../Components/TableRow";
 import Pagination from "../../Components/Pagination";
 import ShowToast from "../../Components/ToastNotification";
+import Preloader from "../../Components/Preloader";
 import {
   GetAllSuperAdminTransactionsApi,
   ApproveTransactionApi,
@@ -38,7 +39,9 @@ export default function Transactions() {
   const [PostPerPage, setPostPerPage] = useState(10);
   const [TotalPage, setTotalPage] = useState(1);
   const [TotalItems, setTotalItems] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [showToast, setShowToast] = useState({
     show: false,
     message: "",
@@ -47,12 +50,12 @@ export default function Transactions() {
 
   const GetAllTransactions = async (status) => {
     try {
-      setLoading(true);
       const result = await GetAllSuperAdminTransactionsApi(
         CurrentPage,
         PostPerPage,
         status
       );
+      console.log(" Transactions fetched:", result);
 
       if (result.status === 200 && result.data.data?.funds) {
         const data = result.data.data;
@@ -82,6 +85,8 @@ export default function Transactions() {
 
   const handleTransactionAction = async (transactionId, newStatus) => {
     console.log("Sending:", { id: transactionId, status: newStatus });
+    setIsLoading(true);
+    setSelectedTransaction(transactionId);
 
     try {
       await ApproveTransactionApi(transactionId, newStatus);
@@ -102,6 +107,9 @@ export default function Transactions() {
         status: "error",
       });
       setTimeout(() => setShowToast({ show: false }), 3000);
+    } finally {
+      setIsLoading(false);
+      setSelectedTransaction(null);
     }
   };
 
@@ -111,6 +119,7 @@ export default function Transactions() {
 
   return (
     <MainLayout>
+      {loading && <Preloader />}
       {showToast.show && (
         <ShowToast
           message={showToast.message}
@@ -185,64 +194,64 @@ export default function Transactions() {
             <TabPanels>
               {/* === PENDING TRANSACTIONS === */}
               <TabPanel>
-                {loading ? (
-                  <Spinner />
-                ) : (
-                  <Box
-                    mt="12px"
-                    bg="#fff"
-                    border="2px solid #EFEFEF"
-                    py="20px"
-                    rounded="10px"
-                  >
-                    <TableContainer overflowX="auto">
-                      <Table variant="simple" size="sm">
-                        <Thead bg="#F9FAFB">
+                <Box
+                  mt="12px"
+                  bg="#fff"
+                  border="2px solid #EFEFEF"
+                  py="20px"
+                  rounded="10px"
+                >
+                  <TableContainer overflowX="auto">
+                    <Table variant="simple" size="sm">
+                      <Thead bg="#F9FAFB">
+                        <Tr>
+                          <Th>Transaction ID</Th>
+                          <Th>Sponsor</Th>
+                          <Th>Scholarship</Th>
+                          <Th>Amount</Th>
+                          <Th>Cost</Th>
+                          <Th>Reference</Th>
+                          <Th>Receipt</Th>
+                          <Th>Date</Th>
+                          <Th>Status</Th>
+                          <Th>Action</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {transactions.length > 0 ? (
+                          transactions.map((item, i) => (
+                            <TableRow
+                              key={i}
+                              type="super-admin-transactions"
+                              transactionId={item.id}
+                              user={`${item.sponsor_first_name} ${item.sponsor_last_name}`}
+                              scholarship_name={item.scholarship_name}
+                              amount={item.funding_amount}
+                              scholarship_cost={item.scholarship_cost}
+                              reference={item.reference}
+                              receipt={item.receipt}
+                              date={item.paid_date}
+                              status={item.funding_status}
+                              loading={isLoading && selectedTransaction === item.id}
+                              onApprove={() =>
+                                handleTransactionAction(item.id, "APPROVED")
+                              }
+                              onReject={() =>
+                                handleTransactionAction(item.id, "FAILED")
+                              }
+                            />
+                          ))
+                        ) : (
                           <Tr>
-                            <Th>Transaction ID</Th>
-                            <Th>Sponsor</Th>
-                            <Th>Scholarship</Th>
-                            <Th>Amount</Th>
-                            <Th>Cost</Th>
-                            <Th>Reference</Th>
-                            <Th>Receipt</Th>
-                            <Th>Date</Th>
-                            <Th>Status</Th>
-                            <Th>Action</Th>
+                            <Td colSpan={10} textAlign="center" py={5}>
+                              <Text>No pending transactions</Text>
+                            </Td>
                           </Tr>
-                        </Thead>
-                        <Tbody>
-                          {transactions.length > 0 ? (
-                            transactions.map((item, i) => (
-                              <TableRow
-                                key={i}
-                                type="super-admin-transactions"
-                                transactionId={item.id}
-                                user={`${item.sponsor_first_name} ${item.sponsor_last_name}`}
-                                scholarship_name={item.scholarship_name}
-                                amount={item.funding_amount}
-                                scholarship_cost={item.scholarship_cost}
-                                reference={item.reference}
-                                receipt={item.receipt}
-                                date={item.paid_date}
-                                status={item.funding_status}
-                                onApprove={() =>
-                                  handleTransactionAction(item.id, "APPROVED")
-                                }
-                              />
-                            ))
-                          ) : (
-                            <Tr>
-                              <Td colSpan={10} textAlign="center" py={5}>
-                                <Text>No pending transactions</Text>
-                              </Td>
-                            </Tr>
-                          )}
-                        </Tbody>
-                      </Table>
-                    </TableContainer>
-                  </Box>
-                )}
+                        )}
+                      </Tbody>
+                    </Table>
+                  </TableContainer>
+                </Box>
               </TabPanel>
 
               {/* === APPROVED TRANSACTIONS === */}
@@ -288,6 +297,7 @@ export default function Transactions() {
                                 receipt={item.receipt}
                                 date={item.paid_date}
                                 status={item.funding_status}
+                                loading={isLoading && selectedTransaction === item.id}
                                 onReject={() =>
                                   handleTransactionAction(item.id, "FAILED")
                                 }
@@ -350,6 +360,7 @@ export default function Transactions() {
                                 receipt={item.receipt}
                                 date={item.paid_date}
                                 status={item.funding_status}
+                                loading={isLoading && selectedTransaction === item.id}
                                 onApprove={() =>
                                   handleTransactionAction(item.id, "APPROVED")
                                 }
