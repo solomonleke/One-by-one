@@ -37,7 +37,6 @@ import { FaCalendarAlt, FaSchool } from "react-icons/fa";
 import TableRow from "../../Components/TableRow"
 import { CgSearch } from "react-icons/cg";
 import { configuration } from "../../Utils/Helpers";
-import { IoFilter } from "react-icons/io5";
 import { GetAllStudentApi, GetSuperAdminDashboardDetailsApi } from "../../Utils/ApiCall";
 import { GetSchoolAdminDashboardGraphDataApi } from "../../Utils/ApiCall";
 import { GetStudentStatsApi, UpdateStudentProfile, DeleteStudentProfile } from "../../Utils/ApiCall";
@@ -98,7 +97,8 @@ export default function Index() {
   const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
   const [TotalPage, setTotalPage] = useState("");
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [editedData, setEditedData] = useState("");
   const { isOpen: isRemoveModalOpen, onOpen: onOpenRemove, onClose: onCloseRemove } = useDisclosure();
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -177,6 +177,9 @@ export default function Index() {
     }
   ]
 
+  const navigate = useNavigate();
+
+
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload?.length) {
       return (
@@ -222,6 +225,7 @@ export default function Index() {
 
   const GetSuperAdminDashboardDetails = async () => {
 
+
     try {
       const response = await GetSuperAdminDashboardDetailsApi()
 
@@ -231,8 +235,9 @@ export default function Index() {
 
 
     } catch (e) {
-
       console.log("error", e.message)
+    } finally {
+      setIsLoading(false)
     }
 
   }
@@ -322,18 +327,21 @@ export default function Index() {
               total: superAdminDetails.totalSchools ? superAdminDetails.totalSchools.toLocaleString() : "0",
               icon: FaSchool,
               navText: "See All",
+              navigateTo: "/super-admin-schools"
             },
             {
               title: "Total Students",
               total: superAdminDetails.totalStudents ? superAdminDetails.totalStudents.toLocaleString() : "0",
               icon: FaSchool,
               navText: "See All",
+              navigateTo: "/super-admin-students"
             },
             {
               title: "Total Students Sponsored",
               total: superAdminDetails.totalStudentsSponsored ? superAdminDetails.totalStudentsSponsored.toLocaleString() : "0",
               icon: FaSchool,
               navText: "See All",
+              navigateTo: "/super-admin/funding"
             },
             {
               title: "Total Funds Disbursed",
@@ -347,6 +355,7 @@ export default function Index() {
                 : `₦${superAdminDetails.fundsDisbursed}`,
               icon: FaSchool,
               navText: "See All",
+              navigateTo: "/super-admin-transactions"
             }
           ].map((role, i) => (
             <Box
@@ -370,7 +379,7 @@ export default function Index() {
                   <Text fontSize="20px" fontWeight="600" color="#2F2F2F">{role.total}</Text>
                 </HStack>
                 <Box height="1px" bg="#EDEFF2" />
-                <HStack spacing="4px" cursor="pointer">
+                <HStack spacing="4px" cursor="pointer" onClick={() => navigate(role.navigateTo)}>
                   <Text fontSize="13px" fontWeight="600" color="#39996B">{role.navText}</Text>
                   <IoArrowForward color="#39996B" />
                 </HStack>

@@ -33,6 +33,7 @@ import Pagination from "../../Components/Pagination";
 import TableRow from "../../Components/TableRow"
 import { IoIosSearch } from "react-icons/io";
 import { IoFilter } from "react-icons/io5";
+import Preloader from "../../Components/Preloader"
 import { GetAllSuperAdminStudentsApi } from "../../Utils/ApiCall";
 
 
@@ -46,6 +47,7 @@ export default function Schools() {
   const [pendingCount, setPendingCount] = useState(0);
 const [approvedCount, setApprovedCount] = useState(0);
 const [rejectedCount, setRejectedCount] = useState(0);
+const [isLoading, setIsLoading] = useState(true);
   const [CurrentPage, setCurrentPage] = useState(1);
   const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
   const [status, setStatus] = useState("PENDING");
@@ -81,6 +83,8 @@ const [rejectedCount, setRejectedCount] = useState(0);
       }
     } catch (e) {
       console.log("error", e.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 const totalStudents = pendingCount + approvedCount + rejectedCount;
@@ -103,6 +107,9 @@ const totalStudents = pendingCount + approvedCount + rejectedCount;
 
   return (
     <MainLayout>
+    {
+            isLoading && <Preloader  />
+          }
       <Box p={6}>
         <Text fontSize="21px" fontWeight="600" color="#101828" mb="28px">
           Students <span style={{ color: "#667085", fontWeight: "400" }}>({totalStudents})</span>

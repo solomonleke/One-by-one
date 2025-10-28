@@ -31,6 +31,7 @@ import Pagination from "../../Components/Pagination";
 import TableRow from "../../Components/TableRow"
 import { IoIosSearch } from "react-icons/io";
 import { configuration } from "../../Utils/Helpers";
+import Preloader from "../../Components/Preloader"
 import { GetAllSuperAdminSchoolsApi } from "../../Utils/ApiCall";
 
 
@@ -41,6 +42,7 @@ export default function Schools() {
   const itemsPerPage = 5;
   const [TotalPage, setTotalPage] = useState("");
   const [pendingSchools, setPendingSchools] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [approvedSchools, setApprovedSchools] = useState([]);
   const [rejectedSchools, setRejectedSchools] = useState([]);
   const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
@@ -159,6 +161,8 @@ export default function Schools() {
       }
     } catch (e) {
       console.log("error", e.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const totalSchools = pendingSchools.length + approvedSchools.length + rejectedSchools.length;
@@ -181,6 +185,9 @@ export default function Schools() {
 
   return (
     <MainLayout>
+    {
+            isLoading && <Preloader  />
+          }
       <Box p={6}>
         <Text fontSize="21px" fontWeight="600" color="#101828" mb="28px">
           Schools <span style={{ color: "#667085", fontWeight: "400" }}>({totalSchools})</span>

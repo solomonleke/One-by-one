@@ -258,16 +258,16 @@ const checkLeaderboardActive= ()=>{
     },
     {
         name: "Transactions",
-        icon: <PiUser/>,
+        icon: <TbCurrencyNaira/>,
         link: "/super-admin-transactions",
         active: isActive(location, "/super-admin-transactions"),
         display: isSuperAdmin()
     },
     {
         name: "Fund student",
-        icon: <PiUser/>,
-        link: "/super-admin/awaiting-funding",
-        active: isActive(location, "/super-admin/awaiting-funding"),
+        icon: <PiStudent/>,
+        link: "/super-admin/funding",
+        active: isActive(location, "/super-admin/funding"),
         display: isSuperAdmin()
     },
     {

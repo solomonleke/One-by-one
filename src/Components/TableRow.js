@@ -16,7 +16,7 @@ import ReceiptModal from './ReceiptModal';
 
 
 
-export default function TableRow({ type, stationary, total, name, request, requestId, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools, isLoading, loading, reference, scholarship_cost, scholarship_name, onApprove, onReject, receipt, user }) {
+export default function TableRow({ type, receiptUrl, stationary, total, name, request, requestId, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools, isLoading, loading, reference, scholarship_cost, scholarship_name, onApprove, onReject, receipt, user }) {
 
     const router = useNavigate()
 
@@ -453,22 +453,49 @@ export default function TableRow({ type, stationary, total, name, request, reque
                                     bg="#B42318"
                                     color="white"
                                     _hover={{ bg: "#91190F" }}
+                                    isLoading={loading} 
                                     onClick={() => onReject(transactionId)}
                                 >
                                     Reject
                                 </Button>
+                            ) : status === "PENDING" ? (
+                                <HStack spacing={3}>
+                                    <Button
+                                        size="sm"
+                                        bg="#027A48"
+                                        color="white"
+                                        _hover={{ bg: "#035E3D" }}
+                                        onClick={() => onApprove(transactionId)}
+                                        isLoading={loading} 
+                                    >
+                                        Approve
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        bg="#B42318"
+                                        color="white"
+                                        _hover={{ bg: "#91190F" }}
+                                        onClick={() => onReject(transactionId)}
+                                    >
+                                        Reject
+                                    </Button>
+                                </HStack>
                             ) : (
+                                <Text color="#667085" fontSize="sm">
                                 <Button
-                                    size="sm"
-                                    bg="#027A48"
-                                    color="white"
-                                    _hover={{ bg: "#035E3D" }}
-                                    onClick={() => onApprove(transactionId)}
-                                >
-                                    Approve
-                                </Button>
+                                        size="sm"
+                                        bg="#027A48"
+                                        color="white"
+                                        _hover={{ bg: "#035E3D" }}
+                                        onClick={() => onApprove(transactionId)}
+                                        isLoading={loading} 
+                                    >
+                                        Approve
+                                    </Button>
+                                </Text>
                             )}
                         </Td>
+
                     </>
                 )
             }

@@ -3,8 +3,6 @@ export const isActive = (history, path) => {
     return activeScreen;
 }
 
-const {role} =  JSON.parse(localStorage.getItem("onlineUser"))||"";
-
 export const isAuthenticated = () => {
     if (localStorage.getItem("authToken")) {
         return true;
@@ -13,10 +11,18 @@ export const isAuthenticated = () => {
     }
 };
 
+export const logout = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("onlineUser");
+};
 
+const getUserRole = () => {
+    const onlineUser = JSON.parse(localStorage.getItem("onlineUser"));
+    return onlineUser ? onlineUser.role : "";
+};
 
 export const isSchoolAdmin = () => {
-   
+    const role = getUserRole();
     if (role === "SCHOOL-ADMIN") {
         return true
     } else {
@@ -25,7 +31,7 @@ export const isSchoolAdmin = () => {
 
 };
 export const isScholarshipAdmin = () => {
-   
+    const role = getUserRole();
     if (role === "SCHOLARSHIP-ADMIN") {
         return true
     } else {
@@ -35,7 +41,7 @@ export const isScholarshipAdmin = () => {
 };
 
 export const isSponsorAdmin = () => {
-   
+    const role = getUserRole();
     if (role === "SPONSOR" || role === "SPONSOR-ADMIN") {
         return true
     } else {
@@ -44,7 +50,7 @@ export const isSponsorAdmin = () => {
 
 };
 export const isFundAdmin = () => {
-   
+    const role = getUserRole();
     if (role === "FUND-ADMIN") {
         return true
     } else {
@@ -54,7 +60,7 @@ export const isFundAdmin = () => {
 };
 
 export const isSuperAdmin = () => {
-   
+    const role = getUserRole();
     if (role === "SUPER-ADMIN") {
         return true
     } else {

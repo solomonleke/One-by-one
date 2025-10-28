@@ -28,6 +28,7 @@ import TableRow from "../../Components/TableRow"
 import { IoIosSearch } from "react-icons/io";
 import { IoFilter } from "react-icons/io5";
 import { configuration } from "../../Utils/Helpers";
+import Preloader from "../../Components/Preloader"
 import { getAllAdmins } from "../../Utils/ApiCall";
 
 
@@ -37,6 +38,7 @@ export default function UserManagement() {
   const [admins, setAdmins] = useState([]);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
   const [TotalPage, setTotalPage] = useState("");
 
@@ -91,6 +93,8 @@ export default function UserManagement() {
     } catch (err) {
       console.error(`Error fetching ${adminType}:`, err.message);
       setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -118,6 +122,9 @@ export default function UserManagement() {
 
   return (
     <MainLayout>
+    {
+            isLoading && <Preloader  />
+          }
       <Box p={6}>
         <Text fontSize="21px" fontWeight="600" color="#101828" mb="28px">
           Users <span style={{ color: "#667085", fontWeight: "400" }}>({schoolAdmins.length + scholarshipAdmins.length + fundAdmins.length + sponsorAdmins.length})</span>

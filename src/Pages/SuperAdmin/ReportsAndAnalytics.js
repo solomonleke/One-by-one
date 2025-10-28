@@ -186,7 +186,7 @@ export default function ReportAndAnalytics() {
     const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
     const [TotalPage, setTotalPage] = useState("");
     const [error, setError] = useState('');
-      const [isLoading, setIsLoading] = useState(false);
+      const [isLoading, setIsLoading] = useState(true);
       const [editedData, setEditedData] = useState("");
       const { isOpen: isRemoveModalOpen, onOpen: onOpenRemove, onClose: onCloseRemove } = useDisclosure();
       const [isOpenModal, setIsOpenModal] = useState(false);
@@ -221,6 +221,8 @@ export default function ReportAndAnalytics() {
       } catch (e) {
   
         console.log("error", e.message)
+      } finally{
+        setIsLoading(false);
       }
   
     }

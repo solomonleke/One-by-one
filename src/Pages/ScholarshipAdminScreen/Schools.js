@@ -63,6 +63,8 @@ import { FaCloudUploadAlt, FaSearch } from 'react-icons/fa';
 import { ReactComponent as EditIcon } from "../../Asset/editIcon.svg";
 import { ReactComponent as Warning } from "../../Asset/warning.svg";
 import { ReactComponent as Close } from "../../Asset/close.svg";
+import Preloader from "../../Components/Preloader"
+
 
 
 export default function Schools() {
@@ -78,6 +80,7 @@ export default function Schools() {
     const [CurrentPage, setCurrentPage] = useState(1);
     const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
     const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [TotalPage, setTotalPage] = useState("");
     const [note, setNote] = useState("");
     const [activeTab, setActiveTab] = useState("PENDING");
@@ -129,6 +132,8 @@ export default function Schools() {
             }
         } catch (e) {
             console.log("error", e.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -263,6 +268,9 @@ export default function Schools() {
 
     return (
         <MainLayout>
+        {
+            isLoading && <Preloader  />
+          }
             {showToast.show && (
                 <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
             )}
