@@ -153,52 +153,112 @@ export default function ScholarshipAdminLeaderboard() {
 
       {/* Header gradient card */}
       <Flex
-        w={"1,125px"}
-        mt="30px"
+        w="100%"
+        maxW="1125px"
+        mt={{ base: "20px", md: "30px" }}
         background="linear-gradient(90.1deg, #18AB91 0.09%, #BCDC60 60.15%, #FFBC4F 101.02%)"
         borderRadius="10px"
-        p={"13px 19px"}
+        p={{ base: "12px 14px", md: "13px 19px" }}
         justifyContent="space-between"
-        flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}
-        position={"relative"}
-        overflow={"visible"}
+        flexDir={{ base: "column", md: "row" }}
+        align={{ base: "stretch", md: "center" }}
+        gap={{ base: 4, md: 0 }}
+        position="relative"
+        overflow="hidden"
       >
-        <Box w={"356px"}>
+        {/* LEFT SECTION */}
+        <Box w="100%" maxW={{ md: "356px" }}>
           <Flex align="center" mb={2}>
-            <Icon as={FaGoogleScholar} color="yellow.500" boxSize={5} mr={2} />
-            <Text fontWeight="600" fontSize={"18px"} color="#FFFFFF">
+            <Icon as={FaGoogleScholar} color="yellow.400" boxSize={{ base: 4, md: 5 }} mr={2} />
+            <Text
+              fontWeight="600"
+              fontSize={{ base: "16px", md: "18px" }}
+              color="#FFFFFF"
+              lineHeight="24px"
+            >
               Scholarship Admin Leaderboard
             </Text>
           </Flex>
 
-          <Box bg="#03493D54" cursor="pointer" width={"356px"} height={"26px"} p={"6px"} borderRadius={"6px"}>
-            <Flex align="center" justify="space-between">
+          <Box
+            bg="#03493D54"
+            cursor="pointer"
+            w="100%"
+            maxW={{ base: "100%", md: "356px" }}
+            borderRadius="6px"
+            p="6px"
+          >
+            <Flex align="center" justify="space-between" flexWrap="wrap" gap={2}>
               <Progress
                 value={progressValue}
                 height="6px"
-                width="199px"
+                w={{ base: "65%", md: "199px" }}
                 borderRadius="2px"
                 sx={{
                   "& > div": { backgroundColor: "#42ED9B" },
                   backgroundColor: "#FAFFFD4A",
                 }}
               />
-              <Text fontSize="14px" color="#ffffff">
+              <Text
+                fontSize={{ base: "12px", md: "14px" }}
+                color="#ffffff"
+                textAlign="right"
+                fontWeight="500"
+              >
                 {toThird ? `${toThird} Schools to Rank #3` : "You're at or above #3"}
               </Text>
             </Flex>
           </Box>
         </Box>
 
-        <Box bg="#FFFFFF" width={"363.99px"} height={"44px"} borderRadius="7px" mt={"14px"}>
-          <Flex align="center" m={"8px"} gap={"11px"}>
-            <Image src={scholarshipImage8} w={"23.59px"} h={"33px"} />
-            <Text fontSize="15px" color="#194B33" fontWeight="600">
-              Super Volunteer
-            </Text>
-            <Box height={"11.5px"} border={"1px solid #194B3380"} />
-            <Text fontSize="15px" color="#194B33" fontWeight="600">
-              Schools Verified: <Text as="span">{youTotal}</Text>
+        {/* RIGHT SECTION */}
+        <Box
+          bg="#FFFFFF"
+          w="100%"
+          maxW={{ base: "100%", md: "364px" }}
+          borderRadius="7px"
+          mt={{ base: 4, md: "14px" }}
+          p={{ base: "8px 10px", md: "8px 13px" }}
+        >
+          <Flex
+            align="center"
+            flexWrap="wrap"
+            justify={{ base: "space-between", md: "flex-start" }}
+            gap={{ base: 2, md: "11px" }}
+          >
+            <HStack>
+              <Image
+                src={scholarshipImage8}
+                w={{ base: "20px", md: "23.59px" }}
+                h={{ base: "28px", md: "33px" }}
+                alt="Scholarship"
+              />
+              <Text
+                fontSize={{ base: "14px", md: "15px" }}
+                color="#194B33"
+                fontWeight="600"
+                letterSpacing="-0.03em"
+              >
+                Super Volunteer
+              </Text>
+            </HStack>
+
+            <Box
+              display={{ base: "none", md: "block" }}
+              border="1px solid #194B3380"
+              h="11.5px"
+            />
+
+            <Text
+              fontSize={{ base: "14px", md: "15px" }}
+              color="#194B33"
+              fontWeight="600"
+              letterSpacing="-0.03em"
+            >
+              Schools Verified:{" "}
+              <Text as="span" ml="4px">
+                {youTotal}
+              </Text>
             </Text>
           </Flex>
         </Box>

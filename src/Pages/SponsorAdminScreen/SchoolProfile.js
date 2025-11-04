@@ -197,7 +197,7 @@ const paginate = (pageNumber) => {
 
   return (
     <MainLayout>
-      <Flex justifyContent="space-between" flexWrap="wrap">
+      <Flex justifyContent="space-between" flexWrap="wrap" px={{ base: "10px", md: "0" }}>
 
         <HStack fontSize="14px" fontWeight="600" spacing="10px" cursor="pointer" onClick={() => router('/sponsor-admin/discoverstudents')}>
           <IoChevronBackOutline />
@@ -207,7 +207,7 @@ const paginate = (pageNumber) => {
 
       <Box
         backgroundColor={"#fff"}
-        p={"20px"}
+        p={{ base: "10px", md: "20px" }}
         mt="10px"
         borderWidth={"1px"}
         borderRadius={"10px"}
@@ -219,7 +219,7 @@ const paginate = (pageNumber) => {
             justifyContent={"space-between"}
             borderTopLeftRadius={"10px"}
             borderTopRightRadius={"10px"}
-            px={"20px"}
+            px={{ base: "10px", md: "20px" }}
             borderBottomWidth={"1px"}
             borderBottomColor={"#EDEFF2"}
             height={"100px"}
@@ -227,9 +227,9 @@ const paginate = (pageNumber) => {
 
           </Box>
 
-          <Flex justifyContent={"space-between"} flexWrap="wrap" mt="22px" borderBottom="1px solid #EDEFF2" >
+          <Flex justifyContent={"space-between"} flexWrap="wrap" mt="22px" borderBottom="1px solid #EDEFF2" flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "center", md: "flex-start" }}>
 
-            <Box position="relative" cursor="pointer" top={["-72px", "-90px"]} left="20px">
+            <Box position="relative" cursor="pointer" top={["-72px", "-90px"]} left={{ base: "0", md: "20px" }} mb={{ base: "20px", md: "0" }}>
               {/* Display uploaded logo or default SVG */}
 
               <Image
@@ -253,12 +253,12 @@ const paginate = (pageNumber) => {
               </Box>
             </Box>
 
-            <Text fontSize={["16px", "24px"]} fontWeight="700" w={["60%", "60%", "60%", "60%"]} pos="relative" left={["20px", "0px", "30px", "0px",]}>
+            <Text fontSize={["16px", "24px"]} fontWeight="700" w={{ base: "100%", md: "60%" }} textAlign={{ base: "center", md: "left" }} pos="relative" left={{ base: "0", md: "30px" }} mb={{ base: "10px", md: "0" }}>
               Legacy Scholars Academy
             </Text>
 
-            <Box w={["", "", "", "20%"]} pos="relative" top={["-50px", "-50px", "0", "0"]}>
-              <Button background="#fff" color={"#027A48"}>
+            <Box w={{ base: "100%", md: "20%" }} pos="relative" top={{ base: "0", md: "0" }} textAlign={{ base: "center", md: "right" }}>
+              <Button background="#fff" color={"#027A48"} w={{ base: "100%", md: "auto" }}>
                 <span className='right'><VerifySchool className='very' /></span>
                 Verified
               </Button>
@@ -269,8 +269,8 @@ const paginate = (pageNumber) => {
         </Box>
 
         {/* Rest of the Page */}
-        <Flex justifyContent={"space-between"} flexWrap="wrap" mt="16px">
-          <Box w={["100%", "100%", "40%", "40%"]}>
+        <Flex justifyContent={"space-between"} flexWrap="wrap" mt="16px" flexDirection={{ base: "column", md: "row" }}>
+          <Box w={{ base: "100%", md: "40%" }} mb={{ base: "20px", md: "0" }}>
             <Stack spacing="16px">
               <Box
                 borderColor={"#EDEFF2"}
@@ -315,7 +315,7 @@ const paginate = (pageNumber) => {
             </Stack>
           </Box>
 
-          <Box w={["100%", "100%", "58%", "58%"]}>
+          <Box w={{ base: "100%", md: "58%" }}>
             <Box
               bg={"#9BF5CA4A"}
               borderWidth={"1px"}
@@ -381,7 +381,7 @@ const paginate = (pageNumber) => {
                 <ProfileHeading title="legal documents" />
 
                 <Stack mt="18px" spacing={"17px"}>
-                  <HStack>
+                  <HStack flexWrap="wrap">
                     <Text
                       fontSize={"13px"}
                       fontWeight={"400"}
@@ -403,7 +403,7 @@ const paginate = (pageNumber) => {
                     </Text>
                   </HStack>
 
-                  <HStack>
+                  <HStack flexWrap="wrap">
                     <Text
                       fontSize={"13px"}
                       fontWeight={"400"}
@@ -425,7 +425,7 @@ const paginate = (pageNumber) => {
                     </Text>
                   </HStack>
 
-                  <HStack>
+                  <HStack flexWrap="wrap">
                     <Text
                       fontSize={"13px"}
                       fontWeight={"400"}
@@ -447,7 +447,7 @@ const paginate = (pageNumber) => {
                     </Text>
                   </HStack>
 
-                  <HStack>
+                  <HStack flexWrap="wrap">
                     <Text
                       fontSize={"13px"}
                       fontWeight={"400"}
@@ -477,7 +477,7 @@ const paginate = (pageNumber) => {
 
       <Box
         backgroundColor={"#fff"}
-        p={"20px"}
+        p={{ base: "10px", md: "20px" }}
         mt="10px"
         borderWidth={"1px"}
         borderRadius={"10px"}
@@ -494,10 +494,12 @@ const paginate = (pageNumber) => {
           <ProfileHeading title="payment information" />
 
           <Stack spacing={"14px"} mt="14px">
-            <HStack justifyContent="space-between">
-              <ProfileCard title="account name" />
+            <HStack justifyContent="space-between" flexWrap={{ base: "wrap", sm: "nowrap" }}>
+              <Box w={{ base: "100%", sm: "auto" }}>
+                <ProfileCard title="account name" />
+              </Box>
               <HStack
-                w="80%"
+                w={{ base: "100%", sm: "80%" }}
                 justifyContent="space-between"
                 borderColor={"#EDEFF2"}
                 py={"20.5px"}
@@ -511,10 +513,12 @@ const paginate = (pageNumber) => {
               </HStack>
             </HStack>
 
-            <HStack justifyContent="space-between">
-              <ProfileCard title="account number" />
+            <HStack justifyContent="space-between" flexWrap={{ base: "wrap", sm: "nowrap" }}>
+              <Box w={{ base: "100%", sm: "auto" }}>
+                <ProfileCard title="account number" />
+              </Box>
               <HStack
-                w="80%"
+                w={{ base: "100%", sm: "80%" }}
                 justifyContent="space-between"
                 borderColor={"#EDEFF2"}
                 py={"20.5px"}
@@ -528,10 +532,12 @@ const paginate = (pageNumber) => {
               </HStack>
             </HStack>
 
-            <HStack justifyContent="space-between">
-              <ProfileCard title="bank name" />
+            <HStack justifyContent="space-between" flexWrap={{ base: "wrap", sm: "nowrap" }}>
+              <Box w={{ base: "100%", sm: "auto" }}>
+                <ProfileCard title="bank name" />
+              </Box>
               <HStack
-                w="80%"
+                w={{ base: "100%", sm: "80%" }}
                 justifyContent="space-between"
                 borderColor={"#EDEFF2"}
                 py={"20.5px"}
@@ -551,7 +557,7 @@ const paginate = (pageNumber) => {
 
       <Box
         backgroundColor={"#fff"}
-        p={"20px"}
+        p={{ base: "10px", md: "20px" }}
         mt="10px"
         borderWidth={"1px"}
         borderRadius={"10px"}

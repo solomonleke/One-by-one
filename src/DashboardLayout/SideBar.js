@@ -6,7 +6,7 @@ import { NavList } from './NavList';
 export default function SideBar({borderRight="1px solid #EDEFF2", h="100%", showNav = true,  active = false}) {
     const location = useLocation();
 
-    console.log("location", location)
+    // console.log("location", location)
 
     const navigate = useNavigate();
 

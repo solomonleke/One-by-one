@@ -178,6 +178,39 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
 
                 )
             }
+
+            {
+                type === "sponsor-admin-history" && (
+                    <>
+                        <Td fontSize="13px">{date}</Td>
+                        <Td fontSize="13px">
+                            <Flex align="center">
+                                <Avatar size="sm" name={fundedStudents} mr={2} />
+                                {fundedStudents}
+                            </Flex>
+                        </Td>
+                        <Td fontSize="13px">{amount}</Td>
+                        <Td fontSize="13px">{paymentMethod}</Td>
+                        <Td>
+                            <Box
+                                fontSize="12px"
+                                fontWeight="bold"
+                                bg={status === "Pending" ? "#FFF7EB" : "#C0FFE1"}
+                                borderRadius="16px"
+                                p="4px 8px"
+                                display="inline-flex"
+                                alignItems="center"
+                                ml="5px"
+                                color={status === "Pending" ? "#FFA30C" : "#027A48"}
+                            >
+                                <Icon as={GoDotFill} boxSize={3} mr={1} /> {status}
+                            </Box>
+                        </Td>
+                        <Td fontSize="13px">{transactionId}</Td>
+                    </>
+                )
+            }
+
             {
                 type === "scholarship-admin-schools" && (
                     <>
@@ -453,7 +486,7 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
                                     bg="#B42318"
                                     color="white"
                                     _hover={{ bg: "#91190F" }}
-                                    isLoading={loading} 
+                                    isLoading={loading}
                                     onClick={() => onReject(transactionId)}
                                 >
                                     Reject
@@ -466,7 +499,7 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
                                         color="white"
                                         _hover={{ bg: "#035E3D" }}
                                         onClick={() => onApprove(transactionId)}
-                                        isLoading={loading} 
+                                        isLoading={loading}
                                     >
                                         Approve
                                     </Button>
@@ -482,13 +515,13 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
                                 </HStack>
                             ) : (
                                 <Text color="#667085" fontSize="sm">
-                                <Button
+                                    <Button
                                         size="sm"
                                         bg="#027A48"
                                         color="white"
                                         _hover={{ bg: "#035E3D" }}
                                         onClick={() => onApprove(transactionId)}
-                                        isLoading={loading} 
+                                        isLoading={loading}
                                     >
                                         Approve
                                     </Button>

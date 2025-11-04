@@ -98,18 +98,18 @@ export default function Scholarships() {
   const [activeScholarshipCount, setActiveScholarshipCount] = useState(0);
 
 
-  
 
-  
+
+
 
   const fetchScholarships = async () => {
     try {
-      const scholarships = await getAllActiveScholarships(); // Now an array
-      console.log("Fetched scholarships:", scholarships);
-  
-      if (Array.isArray(scholarships)) {
-        setScholarships(scholarships);
-        setActiveScholarshipCount(scholarships.length);
+      const response = await getAllActiveScholarships();
+      console.log("Fetched scholarships response:", response);
+
+      if (response && response.scholarships && Array.isArray(response.scholarships)) {
+        setScholarships(response.scholarships);
+        setActiveScholarshipCount(response.scholarships.length);
       } else {
         setError("Scholarship data is not in expected format");
       }
@@ -120,18 +120,18 @@ export default function Scholarships() {
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchScholarships();
   }, []);
-  
+
 
 
   return (
     <MainLayout>
-          {
-            isLoading && <Preloader  />
-          }
+      {
+        isLoading && <Preloader />
+      }
       <Text
         color="#1F2937"
         fontWeight="600"
@@ -140,7 +140,7 @@ export default function Scholarships() {
         lineHeight="25.41px"
         mb="20px"
       >
-        Active Scholarships 
+        Active Scholarships
         <Box as="span" color="#667085" fontSize="18px" fontWeight="400"> ({scholarships.length})</Box>
       </Text>
 
@@ -235,7 +235,7 @@ export default function Scholarships() {
 
                 </HStack>
 
-                  <HStack border="1px solid #EDEFF2" py="16px" px="14px" rounded="8px">
+                {/* <HStack border="1px solid #EDEFF2" py="16px" px="14px" rounded="8px">
                   <Text color="#6B7280" fontSize="13px" fontWeight="500">
                     Sponsor
                   </Text>
@@ -245,15 +245,25 @@ export default function Scholarships() {
                   <Text color="#6B7280" fontSize="13px" fontWeight="500">
                     {scholarship.sponsor}
                   </Text>
-                </HStack>
+                </HStack> */}
               </HStack>
             </Stack>
           ))}
         </SimpleGrid>
       ) : (
-        <Text fontSize="14px" fontWeight="500" color="#767F8E">
-          No scholarships available.
-        </Text>
+        <Box
+          borderWidth="1px"
+          borderColor="#E0E0E0"
+          rounded="11px"
+          py="12px"
+          px="16px"
+          w="100%"
+          spacing="16px"
+        >
+          <Text fontSize="14px" fontWeight="500" color="#767F8E">
+            No scholarships available.
+          </Text>
+        </Box>
       )}
     </MainLayout>
 

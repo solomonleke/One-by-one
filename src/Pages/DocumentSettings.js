@@ -166,9 +166,9 @@ export default function DocumentSettings() {
         </Stack>
 
         {showVerificationWarning && !areAllDocumentsUploaded() && (
-          <Box backgroundColor={"#FFF7EB"} py={"14px"} px={"20px"} rounded={"6px"} border={"1px solid #FFA30C80"} id='close'>
-            <HStack justifyContent={"space-between"}>
-              <HStack>
+          <Box backgroundColor={"#FFF7EB"} py={"14px"} px={{ base: "10px", md: "20px" }} rounded={"6px"} border={"1px solid #FFA30C80"} id='close'>
+            <HStack justifyContent={"space-between"} flexWrap={{ base: "wrap", md: "nowrap" }}>
+              <HStack flexWrap={{ base: "wrap", md: "nowrap" }}>
                 <Warning />
                 <Text fontSize={"14px"} fontWeight={"400"} color={"#FFA30C"}>Your school cannot be verified until all required documents are uploaded. Ensure the following documents below are uploaded</Text>
               </HStack>
@@ -179,11 +179,11 @@ export default function DocumentSettings() {
 
         <hr className="remove" />
 
-        <VStack spacing={4} p="23px" w="100%" borderWidth={1} borderRadius="lg">
+        <VStack spacing={4} p={{ base: "10px", md: "23px" }} w="100%" borderWidth={1} borderRadius="lg">
 
           {/* Certificate of Incorporation */}
           <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} w="100%">
-            <VStack align="start">
+            <VStack align="start" w="100%">
               <Text fontWeight="bold" fontSize="13px" color="#626974">Certificate of Incorporation</Text>
 
               <Box w="100%">
@@ -196,17 +196,17 @@ export default function DocumentSettings() {
                     borderColor="#D7E8E0"
                     p={4}
                     justifyContent="space-between"
-                    flexWrap="wrap"
-                    spacing={isMobile ? 2 : 4}
+                    flexWrap={{ base: "wrap", sm: "nowrap" }}
+                    spacing={{ base: 2, sm: 4 }}
                   >
                     <HStack flex="1" spacing={4}>
                       <HStack>
                         <TbFileMinus size="30px" color="#96C3AD" />
                         <Box>
-                          <Text color="#353535" fontSize={isMobile ? "10px" : "13px"} fontWeight="450000" isTruncated>
+                          <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
                             {files.certificate?.name}
                           </Text>
-                          <Text fontSize={isMobile ? "9px" : "11px"} color="#989692">
+                          <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
                             {files.certificate?.size
                               ? `${(files.certificate.size / 1024).toFixed(2)} KB`
                               : ""}
@@ -216,7 +216,7 @@ export default function DocumentSettings() {
                       <Spacer />
                       <Text
                         align="end"
-                        fontSize={isMobile ? "10px" : "13px"}
+                        fontSize={{ base: "10px", sm: "13px" }}
                         color="#39996B"
                         cursor="pointer"
                         fontWeight="600"
@@ -245,7 +245,7 @@ export default function DocumentSettings() {
                     display="flex"
                     flexDirection="column"
                     p={4}
-                    spacing={isMobile ? 2 : 4}
+                    spacing={{ base: 2, sm: 4 }}
                     alignItems="center"
                     justifyContent="center"
                     bg="#E9F8F0"
@@ -255,12 +255,12 @@ export default function DocumentSettings() {
                   >
                     <HStack alignText="center">
                       <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
-                      <Text color="#39996B" fontWeight="500" fontSize={isMobile ? "10px" : "13px"}>
+                      <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
                         Click to Upload
                       </Text>
-                      <Text fontWeight="500" fontSize={isMobile ? "10px" : "13px"}>or drag and drop</Text>
+                      <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
                     </HStack>
-                    <Text fontSize={isMobile ? "9px" : "12px"} color="#98A0B0" fontWeight="400">
+                    <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
                       PDF, JPG, JPEG, PNG less than 10MB
                     </Text>
                     <Input
@@ -288,17 +288,17 @@ export default function DocumentSettings() {
                   borderColor="#D7E8E0"
                   p={4}
                   justifyContent="space-between"
-                  flexWrap="wrap"
-                  spacing={isMobile ? 2 : 4}
+                  flexWrap={{ base: "wrap", sm: "nowrap" }}
+                  spacing={{ base: 2, sm: 4 }}
                 >
                   <HStack flex="1" spacing={4}>
                     <HStack>
                       <TbFileMinus size="30px" color="#96C3AD" />
                       <Box>
-                        <Text color="#353535" fontSize={isMobile ? "10px" : "13px"} fontWeight="450000" isTruncated>
+                        <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
                           {files.tin?.name}
                         </Text>
-                        <Text fontSize={isMobile ? "9px" : "11px"} color="#989692">
+                        <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
                           {files.tin?.size
                             ? `${(files.tin.size / 1024).toFixed(2)} KB`
                             : ""}
@@ -308,7 +308,7 @@ export default function DocumentSettings() {
                     <Spacer />
                     <Text
                       align="end"
-                      fontSize={isMobile ? "10px" : "13px"}
+                      fontSize={{ base: "10px", sm: "13px" }}
                       color="#39996B"
                       cursor="pointer"
                       fontWeight="600"
@@ -337,7 +337,7 @@ export default function DocumentSettings() {
                   display="flex"
                   flexDirection="column"
                   p={4}
-                  spacing={isMobile ? 2 : 4}
+                  spacing={{ base: 2, sm: 4 }}
                   alignItems="center"
                   justifyContent="center"
                   bg="#E9F8F0"
@@ -347,12 +347,12 @@ export default function DocumentSettings() {
                 >
                   <HStack alignText="center">
                     <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
-                    <Text color="#39996B" fontWeight="500" fontSize={isMobile ? "10px" : "13px"}>
+                    <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
                       Click to Upload
                     </Text>
-                    <Text fontWeight="500" fontSize={isMobile ? "10px" : "13px"}>or drag and drop</Text>
+                    <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
                   </HStack>
-                  <Text fontSize={isMobile ? "9px" : "12px"} color="#98A0B0" fontWeight="400">
+                  <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
                     PDF, JPG, JPEG, PNG less than 10MB
                   </Text>
                   <Input
@@ -369,7 +369,7 @@ export default function DocumentSettings() {
           </Grid>
 
           <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} w="100%">
-            <VStack align="start">
+            <VStack align="start" w="100%">
               <Text fontWeight="bold" fontSize="13px" color="#626974">Ministry of Education Approval Letter</Text>
 
               <Box w="100%">
@@ -382,17 +382,17 @@ export default function DocumentSettings() {
                     borderColor="#D7E8E0"
                     p={4}
                     justifyContent="space-between"
-                    flexWrap="wrap"
-                    spacing={isMobile ? 2 : 4}
+                    flexWrap={{ base: "wrap", sm: "nowrap" }}
+                    spacing={{ base: 2, sm: 4 }}
                   >
                     <HStack flex="1" spacing={4}>
                       <HStack>
                         <TbFileMinus size="30px" color="#96C3AD" />
                         <Box>
-                          <Text color="#353535" fontSize={isMobile ? "10px" : "13px"} fontWeight="450000" isTruncated>
+                          <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
                             {files.educationApproval?.name}
                           </Text>
-                          <Text fontSize={isMobile ? "9px" : "11px"} color="#989692">
+                          <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
                             {files.educationApproval?.size
                               ? `${(files.educationApproval.size / 1024).toFixed(2)} KB`
                               : ""}
@@ -402,7 +402,7 @@ export default function DocumentSettings() {
                       <Spacer />
                       <Text
                         align="end"
-                        fontSize={isMobile ? "10px" : "13px"}
+                        fontSize={{ base: "10px", sm: "13px" }}
                         color="#39996B"
                         cursor="pointer"
                         fontWeight="600"
@@ -431,7 +431,7 @@ export default function DocumentSettings() {
                     display="flex"
                     flexDirection="column"
                     p={4}
-                    spacing={isMobile ? 2 : 4}
+                    spacing={{ base: 2, sm: 4 }}
                     alignItems="center"
                     justifyContent="center"
                     bg="#E9F8F0"
@@ -441,12 +441,12 @@ export default function DocumentSettings() {
                   >
                     <HStack alignText="center">
                       <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
-                      <Text color="#39996B" fontWeight="500" fontSize={isMobile ? "10px" : "13px"}>
+                      <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
                         Click to Upload
                       </Text>
-                      <Text fontWeight="500" fontSize={isMobile ? "10px" : "13px"}>or drag and drop</Text>
+                      <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
                     </HStack>
-                    <Text fontSize={isMobile ? "9px" : "12px"} color="#98A0B0" fontWeight="400">
+                    <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
                       PDF, JPG, JPEG, PNG less than 10MB
                     </Text>
                     <Input
@@ -474,17 +474,17 @@ export default function DocumentSettings() {
                   borderColor="#D7E8E0"
                   p={4}
                   justifyContent="space-between"
-                  flexWrap="wrap"
-                  spacing={isMobile ? 2 : 4}
+                  flexWrap={{ base: "wrap", sm: "nowrap" }}
+                  spacing={{ base: 2, sm: 4 }}
                 >
                   <HStack flex="1" spacing={4}>
                     <HStack>
                       <TbFileMinus size="30px" color="#96C3AD" />
                       <Box>
-                        <Text color="#353535" fontSize={isMobile ? "10px" : "13px"} fontWeight="450000" isTruncated>
+                        <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
                           {files.schoolCert?.name}
                         </Text>
-                        <Text fontSize={isMobile ? "9px" : "11px"} color="#989692">
+                        <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
                           {files.schoolCert?.size
                             ? `${(files.schoolCert.size / 1024).toFixed(2)} KB`
                             : ""}
@@ -494,7 +494,7 @@ export default function DocumentSettings() {
                     <Spacer />
                     <Text
                       align="end"
-                      fontSize={isMobile ? "10px" : "13px"}
+                      fontSize={{ base: "10px", sm: "13px" }}
                       color="#39996B"
                       cursor="pointer"
                       fontWeight="600"
@@ -523,7 +523,7 @@ export default function DocumentSettings() {
                   display="flex"
                   flexDirection="column"
                   p={4}
-                  spacing={isMobile ? 2 : 4}
+                  spacing={{ base: 2, sm: 4 }}
                   alignItems="center"
                   justifyContent="center"
                   bg="#E9F8F0"
@@ -533,12 +533,12 @@ export default function DocumentSettings() {
                 >
                   <HStack alignText="center">
                     <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
-                    <Text color="#39996B" fontWeight="500" fontSize={isMobile ? "10px" : "13px"}>
+                    <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
                       Click to Upload
                     </Text>
-                    <Text fontWeight="500" fontSize={isMobile ? "10px" : "13px"}>or drag and drop</Text>
+                    <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
                   </HStack>
-                  <Text fontSize={isMobile ? "9px" : "12px"} color="#98A0B0" fontWeight="400">
+                  <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
                     PDF, JPG, JPEG, PNG less than 10MB
                   </Text>
                   <Input
@@ -562,7 +562,7 @@ export default function DocumentSettings() {
           </Box>
 
           <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} w="100%">
-            <VStack align="start">
+            <VStack align="start" w="100%">
               <Text fontWeight="bold" fontSize="13px" color="#626974">
                 <Text>Front Side</Text>
               </Text>
@@ -577,17 +577,17 @@ export default function DocumentSettings() {
                     borderColor="#D7E8E0"
                     p={4}
                     justifyContent="space-between"
-                    flexWrap="wrap"
-                    spacing={isMobile ? 2 : 4}
+                    flexWrap={{ base: "wrap", sm: "nowrap" }}
+                    spacing={{ base: 2, sm: 4 }}
                   >
                     <HStack flex="1" spacing={4}>
                       <HStack>
                         <TbFileMinus size="30px" color="#96C3AD" />
                         <Box>
-                          <Text color="#353535" fontSize={isMobile ? "10px" : "13px"} fontWeight="450000" isTruncated>
+                          <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
                             {files.idFront?.name}
                           </Text>
-                          <Text fontSize={isMobile ? "9px" : "11px"} color="#989692">
+                          <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
                             {files.idFront?.size
                               ? `${(files.idFront.size / 1024).toFixed(2)} KB`
                               : ""}
@@ -597,7 +597,7 @@ export default function DocumentSettings() {
                       <Spacer />
                       <Text
                         align="end"
-                        fontSize={isMobile ? "10px" : "13px"}
+                        fontSize={{ base: "10px", sm: "13px" }}
                         color="#39996B"
                         cursor="pointer"
                         fontWeight="600"
@@ -626,7 +626,7 @@ export default function DocumentSettings() {
                     display="flex"
                     flexDirection="column"
                     p={4}
-                    spacing={isMobile ? 2 : 4}
+                    spacing={{ base: 2, sm: 4 }}
                     alignItems="center"
                     justifyContent="center"
                     bg="#E9F8F0"
@@ -636,12 +636,12 @@ export default function DocumentSettings() {
                   >
                     <HStack alignText="center">
                       <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
-                      <Text color="#39996B" fontWeight="500" fontSize={isMobile ? "10px" : "13px"}>
+                      <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
                         Click to Upload
                       </Text>
-                      <Text fontWeight="500" fontSize={isMobile ? "10px" : "13px"}>or drag and drop</Text>
+                      <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
                     </HStack>
-                    <Text fontSize={isMobile ? "9px" : "12px"} color="#98A0B0" fontWeight="400">
+                    <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
                       PDF, JPG, JPEG, PNG less than 10MB
                     </Text>
                     <Input
@@ -669,17 +669,17 @@ export default function DocumentSettings() {
                   borderColor="#D7E8E0"
                   p={4}
                   justifyContent="space-between"
-                  flexWrap="wrap"
-                  spacing={isMobile ? 2 : 4}
+                  flexWrap={{ base: "wrap", sm: "nowrap" }}
+                  spacing={{ base: 2, sm: 4 }}
                 >
                   <HStack flex="1" spacing={4}>
                     <HStack>
                       <TbFileMinus size="30px" color="#96C3AD" />
                       <Box>
-                        <Text color="#353535" fontSize={isMobile ? "10px" : "13px"} fontWeight="450000" isTruncated>
+                        <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
                           {files.idBack?.name}
                         </Text>
-                        <Text fontSize={isMobile ? "9px" : "11px"} color="#989692">
+                        <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
                           {files.idBack?.size
                             ? `${(files.idBack.size / 1024).toFixed(2)} KB`
                             : ""}
@@ -689,7 +689,7 @@ export default function DocumentSettings() {
                     <Spacer />
                     <Text
                       align="end"
-                      fontSize={isMobile ? "10px" : "13px"}
+                      fontSize={{ base: "10px", sm: "13px" }}
                       color="#39996B"
                       cursor="pointer"
                       fontWeight="600"
@@ -718,7 +718,7 @@ export default function DocumentSettings() {
                   display="flex"
                   flexDirection="column"
                   p={4}
-                  spacing={isMobile ? 2 : 4}
+                  spacing={{ base: 2, sm: 4 }}
                   alignItems="center"
                   justifyContent="center"
                   bg="#E9F8F0"
@@ -728,12 +728,12 @@ export default function DocumentSettings() {
                 >
                   <HStack alignText="center">
                     <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
-                    <Text color="#39996B" fontWeight="500" fontSize={isMobile ? "10px" : "13px"}>
+                    <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
                       Click to Upload
                     </Text>
-                    <Text fontWeight="500" fontSize={isMobile ? "10px" : "13px"}>or drag and drop</Text>
+                    <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
                   </HStack>
-                  <Text fontSize={isMobile ? "9px" : "12px"} color="#98A0B0" fontWeight="400">
+                  <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
                     PDF, JPG, JPEG, PNG less than 10MB
                   </Text>
                   <Input

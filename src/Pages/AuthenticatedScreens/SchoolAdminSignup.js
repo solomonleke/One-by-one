@@ -218,7 +218,7 @@ export default function SchoolAdminSignup() {
         try {
             const data = await fetchAllStates();
             console.log("States data:", data);
-            setStates(data);
+            setStates(Array.isArray(data) ? data : data.data || []);
         } catch (error) {
             console.error(error);
         } finally {
@@ -226,26 +226,44 @@ export default function SchoolAdminSignup() {
         }
     };
 
+
     // Load LGAs when a state is chosen
-    const loadLgas = async (state) => {
+    const loadLgas = async (state_code) => {
         try {
-            console.log("Fetching LGAs for:", state);
-            const data = await fetchLgasByState(state);
-            console.log("LGAs data:", data);
-            setLgas(Array.isArray(data) ? data : data.lgas || []);
+            if (!state_code) return;
+            const data = await fetchLgasByState(state_code);
+            console.log("Fetched LGAs data:", data);
+
+            if (data.status === "success" && Array.isArray(data.data)) {
+                setLgas(data.data); // ✅ store the array directly
+            } else {
+                setLgas([]);
+            }
         } catch (error) {
-            console.error(error);
+            console.error("Error loading LGAs:", error);
             setLgas([]);
         }
     };
 
 
 
+
     const handleStateChange = async (e) => {
-        const selectedState = e.target.value;
-        setPayload({ ...Payload, state: selectedState, localGovernment: "" });
-        await loadLgas(selectedState);
+        const selectedStateCode = e.target.value;
+        const selectedState = states.find((s) => s.state_code === selectedStateCode);
+
+        setPayload((prev) => ({
+            ...prev,
+            state_code: selectedStateCode,
+            state: selectedState?.state_name || "",
+            localGovernment: "",
+        }));
+
+        await loadLgas(selectedStateCode);
     };
+
+
+
 
 
 
@@ -326,17 +344,20 @@ export default function SchoolAdminSignup() {
                                     <Input label="School Account Name" type="text" onChange={handlePayload} value={Payload.schoolAccountName} id="schoolAccountName" disabled={isVerifying || Payload.schoolAccountName} />
                                     <div>
                                         {/* State Dropdown */}
+                                        {/* State Dropdown */}
                                         <FormControl mb="20px">
-                                            <FormLabel htmlFor="state" fontSize="14px">State</FormLabel>
+                                            <FormLabel htmlFor="state" fontSize="14px">
+                                                State
+                                            </FormLabel>
                                             <Select
                                                 placeholder="Select State"
                                                 id="state"
-                                                value={Payload.state}
+                                                value={Payload.state_code || ""}
                                                 onChange={handleStateChange}
                                             >
-                                                {states.map((state, index) => (
-                                                    <option key={index} value={state}>
-                                                        {state}
+                                                {states.map((state) => (
+                                                    <option key={state.id} value={state.state_code}>
+                                                        {state.state_name}
                                                     </option>
                                                 ))}
                                             </Select>
@@ -344,21 +365,27 @@ export default function SchoolAdminSignup() {
 
                                         {/* LGA Dropdown */}
                                         <FormControl>
-                                            <FormLabel htmlFor="localGovernment" fontSize="14px">Local Government</FormLabel>
+                                            <FormLabel htmlFor="localGovernment" fontSize="14px">
+                                                Local Government
+                                            </FormLabel>
                                             <Select
                                                 placeholder="Select Local Government"
                                                 id="localGovernment"
-                                                value={Payload.localGovernment}
-                                                onChange={handlePayload}
-                                                isDisabled={!Payload.state}
+                                                value={Payload.localGovernment || ""}
+                                                onChange={(e) =>
+                                                    setPayload({ ...Payload, localGovernment: e.target.value })
+                                                }
+                                                isDisabled={!Payload.state_code}
                                             >
-                                                {lgas.map((lga, index) => (
-                                                    <option key={index} value={lga}>
-                                                        {lga}
+                                                {lgas.map((lga) => (
+                                                    <option key={lga.id} value={lga.lga_name}>
+                                                        {lga.lga_name}
                                                     </option>
                                                 ))}
                                             </Select>
                                         </FormControl>
+
+
                                     </div>
 
 

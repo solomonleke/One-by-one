@@ -91,11 +91,11 @@ export default function ScholarshipAdmin() {
       const response = await GetScholarshipDashboardGraphDataApi()
 
       console.log("getScholarshipDashboardGraphDetails", response)
-      if(response.status === 200){
+      if (response.status === 200) {
         setStudentGraphData(response.data.data.StudentGraphData[0])
         setSchoolGraphData(response.data.data.SchoolGraphData[0])
       }
-      
+
     } catch (e) {
 
       console.log("error", e.message)
@@ -182,53 +182,53 @@ export default function ScholarshipAdmin() {
 
   const GetAllScholarshipSchool = async () => {
     try {
-        const result = await GetAllScholarshipSchoolsApi(CurrentPage, PostPerPage, status);
-        console.log("getallscholarshipSchools", result);
+      const result = await GetAllScholarshipSchoolsApi(CurrentPage, PostPerPage, status);
+      console.log("getallscholarshipSchools", result);
 
-        if (result.status === 200 && result.data.data?.schools?.length > 0) {
-            setSchoolMainData(result.data.data.schools);
-            setTotalPage(result.data.data.totalPages); 
-        } else {
-          setSchoolMainData([]);
-        }
+      if (result.status === 200 && result.data.data?.schools?.length > 0) {
+        setSchoolMainData(result.data.data.schools);
+        setTotalPage(result.data.data.totalPages);
+      } else {
+        setSchoolMainData([]);
+      }
     } catch (e) {
-        console.log("error", e.message);
-    }  finally {
+      console.log("error", e.message);
+    } finally {
       setIsLoading(false);
-  }
-};
+    }
+  };
 
-useEffect(() => {
+  useEffect(() => {
     GetAllScholarshipSchool();
-}, [CurrentPage, PostPerPage, status]);
+  }, [CurrentPage, PostPerPage, status]);
 
 
-const GetAllScholarshipStudent = async () => {
+  const GetAllScholarshipStudent = async () => {
 
-  try {
-    const result = await GetAllScholarshipStudentsApi(CurrentPage, PostPerPage, status, search)
+    try {
+      const result = await GetAllScholarshipStudentsApi(CurrentPage, PostPerPage, status, search)
 
-    console.log("getallscholarshipStudents", result)
+      console.log("getallscholarshipStudents", result)
 
-    if (result.status === 200 && result.data.data?.students?.length > 0) {
-      setStudentMainData(result.data.data.students);
-      setTotalPage(result.data.data.totalPages);
-  } else {
-    setStudentMainData([]);
+      if (result.status === 200 && result.data.data?.students?.length > 0) {
+        setStudentMainData(result.data.data.students);
+        setTotalPage(result.data.data.totalPages);
+      } else {
+        setStudentMainData([]);
+      }
+    } catch (e) {
+
+      console.log("error", e.message)
+    } finally {
+      setIsLoading(false);
+    }
+
   }
-  } catch (e) {
-
-    console.log("error", e.message)
-  }  finally {
-    setIsLoading(false);
-}
-
-}
 
 
-useEffect(() => {
-  GetAllScholarshipStudent();
-}, [CurrentPage, PostPerPage, status, search]);
+  useEffect(() => {
+    GetAllScholarshipStudent();
+  }, [CurrentPage, PostPerPage, status, search]);
 
   const [userName, setUserName] = useState('');
   const [userImage, setUserImage] = useState('');
@@ -236,7 +236,7 @@ useEffect(() => {
   const [isLoading, setIsLoading] = useState(true);
 
 
-  
+
 
 
   const { schoolId } = useParams()
@@ -245,89 +245,89 @@ useEffect(() => {
   const ApproveSchool = async (schoolId, status, note) => {
     setLoading(true);
     try {
-        const result = await ApproveSchoolApi(schoolId, status, note)
+      const result = await ApproveSchoolApi(schoolId, status, note)
 
-        console.log("approved school", result)
+      console.log("approved school", result)
 
-        if (result.status === 200) {
-            setShowToast({
-                show: true,
-                message: "Approved School!!!",
-                status: "success",
-            });
-            GetAllScholarshipSchool();
-        }
-    } catch (e) {
+      if (result.status === 200) {
         setShowToast({
-            show: true,
-            message: e.response?.data?.message || e.message || "Error Approving School!!!",
-            status: "error",
+          show: true,
+          message: "Approved School!!!",
+          status: "success",
         });
-        console.log("error", e.message)
+        GetAllScholarshipSchool();
+      }
+    } catch (e) {
+      setShowToast({
+        show: true,
+        message: e.response?.data?.message || e.message || "Error Approving School!!!",
+        status: "error",
+      });
+      console.log("error", e.message)
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-}
+  }
 
 
-const ApproveStudent = async (student_id, status) => {
-  setLoading(true);
-  try {
-      const result = await ApproveStudentApi(student_id, {status, essayPercentage})
+  const ApproveStudent = async (student_id, status) => {
+    setLoading(true);
+    try {
+      const result = await ApproveStudentApi(student_id, { status, essayPercentage })
 
       console.log("approved student", result)
 
       if (result.status === 200) {
-          setShowToast({
-              show: true,
-              message: "Approved Student!!!",
-              status: "success",
-          });
-          GetAllScholarshipStudent();
-      }
-  } catch (e) {
-      setShowToast({
+        setShowToast({
           show: true,
-          message: e.response?.data?.message || e.message || "Error Approving Student!!!",
-          status: "error",
+          message: "Approved Student!!!",
+          status: "success",
+        });
+        GetAllScholarshipStudent();
+      }
+    } catch (e) {
+      setShowToast({
+        show: true,
+        message: e.response?.data?.message || e.message || "Error Approving Student!!!",
+        status: "error",
       });
       console.log("error", e.message)
-  } finally {
+    } finally {
       setLoading(false);
+    }
   }
-}
 
 
-useEffect(() => {
-  //   var reloadCount = localStorage.getItem("reloadCount");
-  //   if (!reloadCount) {
-  //     localStorage.setItem('reloadCount', + parseInt(1))
+  useEffect(() => {
+    //   var reloadCount = localStorage.getItem("reloadCount");
+    //   if (!reloadCount) {
+    //     localStorage.setItem('reloadCount', + parseInt(1))
 
-  //   }
-  //   if (reloadCount < 2) {
-  //     localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
-  //     setTimeout(() =>
-  //       window.location.reload(1), 2000)
-  //   } else {
-  //     localStorage.removeItem('reloadCount');
-  //   }
+    //   }
+    //   if (reloadCount < 2) {
+    //     localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
+    //     setTimeout(() =>
+    //       window.location.reload(1), 2000)
+    //   } else {
+    //     localStorage.removeItem('reloadCount');
+    //   }
 
-  const storedName = JSON.parse(localStorage.getItem('onlineUser'));
-  if (storedName) {
-    setUserName(`${storedName.firstName}`);
-    setUserImage(storedName.profileImg);
-  }
-}, []);
-
-
+    const storedName = JSON.parse(localStorage.getItem('onlineUser'));
+    if (storedName) {
+      setUserName(`${storedName.firstName}`);
+      setUserImage(storedName.profileImg);
+    }
+  }, []);
 
 
-  
+
+
+
   return (
     <MainLayout userName={userName} userImage={userImage}>
-          {
-            isLoading && <Preloader  />
-          }
+      {
+        isLoading && <Preloader />
+      }
       {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
       )}
@@ -336,94 +336,143 @@ useEffect(() => {
       <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Review and approve schools, students, and fund requests to drive meaningful impact.</Text>
 
       <Flex
-        w={"1,125px"}
-        // h={"101px"}
+        w="100%"
+        maxW="1125px"
         background="linear-gradient(90.1deg, #18AB91 0.09%, #BCDC60 60.15%, #FFBC4F 101.02%)"
         borderRadius="10px"
-        p={"13px 19px 13px 19px"}
+        p={{ base: "12px", md: "13px 19px" }}
         justifyContent="space-between"
-        gap={"0px"}
-        flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}
-        position={"relative"}
-        overflow={"visible"}
-        opacity={"0px"}>
-        <Box w={"356px"} h={"65.18px"} gap={"11px"} opacity={"0px"}>
+        gap={{ base: 4, md: 0 }}
+        flexDir={{ base: "column", md: "row" }}
+        align={{ base: "stretch", md: "center" }}
+        position="relative"
+        overflow="hidden"
+      >
+        {/* Left Section */}
+        <Box w="100%" maxW={{ md: "356px" }}>
           <Flex align="center" mb={2}>
-            <Icon as={FaGoogleScholar} color="yellow.500" boxSize={5} mr={2} />
-            <Text fontWeight="600" fontSize={"18px"} lineHeight={"24px"} textAlign={"left"} letterSpacing={"-0.02em"} color="#FFFFFF">Scholarship Admin Leaderboard</Text>
-
+            <Icon as={FaGoogleScholar} color="yellow.400" boxSize={{ base: 4, md: 5 }} mr={2} />
+            <Text
+              fontWeight="600"
+              fontSize={{ base: "16px", md: "18px" }}
+              lineHeight="24px"
+              textAlign="left"
+              color="#FFFFFF"
+            >
+              Scholarship Admin Leaderboard
+            </Text>
           </Flex>
+
           <Box
-
-
-            bg="#03493D54" cursor={"pointer"} width={["320px", "320px", "356px", "356px"]} opacity={"0px"} height={"26px"} padding={"6px 6px"} gap="12px" borderRadius={"6px"}>
+            bg="#03493D54"
+            cursor="pointer"
+            w="100%"
+            maxW={{ base: "100%", md: "356px" }}
+            borderRadius="6px"
+            p="6px"
+          >
             <Flex align="center" justify="space-between">
               <Progress
-
                 value={80}
-                gap={"0px"}
-                opacity={"0px"}
                 height="6px"
-                width={["170px", "170px", "199px", "199px"]}
-                borderRadius="2px 2px"
+                w={{ base: "65%", md: "199px" }}
+                borderRadius="2px"
                 sx={{
-                  "& > div": {
-                    backgroundColor: "#42ED9B",
-                  }, backgroundColor: "#FAFFFD4A",
-
+                  "& > div": { backgroundColor: "#42ED9B" },
+                  backgroundColor: "#FAFFFD4A",
                 }}
               />
-              <Text fontSize="14px" color="#ffffff" textAlign={"center"} weight={"500"} lineHeight={"16.94px"} letterSpacing="-3%" >5 Schools to Rank #3</Text>
+              <Text
+                fontSize={{ base: "12px", md: "14px" }}
+                color="#ffffff"
+                textAlign="center"
+                fontWeight="500"
+              >
+                5 Schools to Rank #3
+              </Text>
             </Flex>
           </Box>
         </Box>
+
+        {/* Right Section */}
         <Box
           bg="#FFFFFF"
-          width={"363.99px"}
-          height={"44px"}
-
-          gap="10px"
+          w="100%"
+          maxW={{ base: "100%", md: "364px" }}
           borderRadius="7px"
-          opacity="0px"
-          padding={{ left: 13, right: 13 }}
-          mt={"14px"}
-
+          mt={{ base: 4, md: "14px" }}
+          p={{ base: "8px 10px", md: "8px 13px" }}
         >
-
-
-          <Flex align="center" m={"8px"} gap={"11px"} >
-            <Image src={scholarshipImage8} w={"23.59px"}
-              h={"33px"} gap={"0"} />
-            <Text fontSize="15px" color=" #194B33"
-              fontWeight="600" textAlign={"left"} letterSpacing={"-0.03em"}
-              lineHeight="18.15px">Rank:  <Text as={"span"} fontSize="15px" fontWeight="600" textAlign={"left"} letterSpacing={"-0.25px"}
-                lineHeight="18.45px">  #4</Text>
+          <Flex
+            align="center"
+            flexWrap="wrap"
+            justify={{ base: "space-between", md: "flex-start" }}
+            gap={{ base: 2, md: "11px" }}
+          >
+            <Image
+              src={scholarshipImage8}
+              w={{ base: "20px", md: "23.59px" }}
+              h={{ base: "28px", md: "33px" }}
+              alt="Scholarship"
+            />
+            <Text
+              fontSize={{ base: "14px", md: "15px" }}
+              color="#194B33"
+              fontWeight="600"
+              letterSpacing="-0.03em"
+            >
+              Rank:
+              <Text as="span" ml="4px">
+                #4
+              </Text>
             </Text>
-            <Box width="0px" opacity={"0px"} height={"11.5px"} gap={"0px"} border={"1px solid #194B3380"} />
-            <Text fontSize="15px" color=" #194B33"
-              fontWeight="600" textAlign={"left"} letterSpacing={"-0.25px"}
-              lineHeight="18.15px">Schools Verified: <Text as={"span"} fontSize="15px" fontWeight="600" textAlign={"left"} letterSpacing={"-0.25px"}
-                lineHeight="18.45px">  24</Text>
 
+            <Box
+              display={{ base: "none", md: "block" }}
+              border="1px solid #194B3380"
+              h="11.5px"
+            />
 
+            <Text
+              fontSize={{ base: "14px", md: "15px" }}
+              color="#194B33"
+              fontWeight="600"
+              letterSpacing="-0.03em"
+            >
+              Schools Verified:
+              <Text as="span" ml="4px">
+                24
+              </Text>
             </Text>
-            <Box width="0px" opacity={"0px"} height={"11.5px"} gap={"0px"} border={"1px solid #194B3380"} />
-            <Text fontSize="14px" display={"flex"} fontWeight="600" cursor="pointer" letterSpacing={"-0.04em"} textAlign={"left"} lineHeight="16.94px" color=" #194B33"
-              onClick={() => {
-                router("/scholarship-admin/scholarship-admin-leaderboard")
-              }}
-            > View  </Text>  <Icon as={LiaAngleDoubleRightSolid} cursor="pointer" color=" #194B33" onClick={() => {
-              router("/scholarship-admin/scholarship-admin-leaderboard")
-            }} />
+
+            <Box
+              display={{ base: "none", md: "block" }}
+              border="1px solid #194B3380"
+              h="11.5px"
+            />
+
+            <Flex
+              align="center"
+              gap="4px"
+              cursor="pointer"
+              onClick={() => router("/scholarship-admin/scholarship-admin-leaderboard")}
+            >
+              <Text
+                fontSize={{ base: "13px", md: "14px" }}
+                fontWeight="600"
+                color="#194B33"
+                lineHeight="16.94px"
+              >
+                View
+              </Text>
+              <Icon
+                as={LiaAngleDoubleRightSolid}
+                color="#194B33"
+                boxSize={{ base: 4, md: 5 }}
+              />
+            </Flex>
           </Flex>
-
-
-
-
         </Box>
-
-
-
       </Flex>
 
 
@@ -466,38 +515,38 @@ useEffect(() => {
           </HStack>
 
           <VStack borderRadius={"10px"} border=" 1px solid #EDEFF2" spacing={4} align="stretch">
-          {SchoolMainData.length > 0 ? (
-            SchoolMainData.map((school, index) => (
-              <Flex
-                key={index}
-                justify="space-between"
-                align="center"
-                flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}
-                p={2}
-                gap="10px"
-                borderBottomWidth={index !== schools.length - 1 ? 1 : 0}
-                borderColor={"gray.200"}>
-                <HStack w={{ Fill: "264px" }} padding={"16px, 30px, 16px, 12px"} h={{ Fixed: "42px" }} gap={"18px"} opacity={"0px"}>
-                  <Avatar name={school.school_name} w={{ Fixed: "42px" }} opacity={"0px"} h={{ Fixed: "42px" }} gap={"0px"} borderRadius={"280px"} />
-                  <Box  >
+            {SchoolMainData.length > 0 ? (
+              SchoolMainData.map((school, index) => (
+                <Flex
+                  key={index}
+                  justify="space-between"
+                  align="center"
+                  flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}
+                  p={2}
+                  gap="10px"
+                  borderBottomWidth={index !== schools.length - 1 ? 1 : 0}
+                  borderColor={"gray.200"}>
+                  <HStack w={{ Fill: "264px" }} padding={"16px, 30px, 16px, 12px"} h={{ Fixed: "42px" }} gap={"18px"} opacity={"0px"}>
+                    <Avatar name={school.school_name} w={{ Fixed: "42px" }} opacity={"0px"} h={{ Fixed: "42px" }} gap={"0px"} borderRadius={"280px"} />
+                    <Box  >
 
-                    <Text lineHeight={"20px"} fontFamily={"Inter"} textAlign="left" letterSpacing="-0.02em%" color="#101828" fontWeight="500" size="13px">{school.school_name}</Text>
-                    <Text fontSize="12px" color="#667085" fontWeight={"400"} fontFamily={"Inter"} lineHeight={"20px"} textAlign={"left"} letterSpacing={"-0.02em"} >{school.principal_email}</Text>
-                  </Box>
-                </HStack>
+                      <Text lineHeight={"20px"} fontFamily={"Inter"} textAlign="left" letterSpacing="-0.02em%" color="#101828" fontWeight="500" size="13px">{school.school_name}</Text>
+                      <Text fontSize="12px" color="#667085" fontWeight={"400"} fontFamily={"Inter"} lineHeight={"20px"} textAlign={"left"} letterSpacing={"-0.02em"} >{school.principal_email}</Text>
+                    </Box>
+                  </HStack>
 
 
-                <HStack>
-                  <Button size="7px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<IoCloseOutline />}>Reject</Button>
-                  <Button size="5px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<FaCheck />} onClick={() => {ApproveSchool(school.id, "APPROVED", "Approved after review")}} isLoading={loading}>Approve</Button>
-                </HStack>
-              </Flex>
-            ))
-            ): (
-                                                    <Text textAlign="center" py={5} >
-                                                        No Awaiting approval found.
-                                                    </Text>
-                                                )
+                  <HStack>
+                    <Button size="7px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<IoCloseOutline />}>Reject</Button>
+                    <Button size="5px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<FaCheck />} onClick={() => { ApproveSchool(school.id, "APPROVED", "Approved after review") }} isLoading={loading}>Approve</Button>
+                  </HStack>
+                </Flex>
+              ))
+            ) : (
+              <Text textAlign="center" py={5} >
+                No Awaiting approval found.
+              </Text>
+            )
             }
           </VStack>
         </Box>
@@ -512,43 +561,43 @@ useEffect(() => {
           </HStack>
 
           <VStack spacing={13} align="stretch">
-          {
-            StudentMainData.length > 0 ? (
-            StudentMainData.map((student, index) => (
-            <Flex
-              key={index}
-              p={"12px"} border=" 1px solid #EDEFF2"
-              gap="0px"
-              cursor="pointer"
-              align="center"
-              opacity="0px"
-              w={{ Fill: "396px" }}
-              justify="space-between" borderRadius="10px" height={{ Fixed: "68px" }}
-              borderBottomWidth={index !== schools.length - 1 ? 1 : 0}
-              borderColor={"gray.200"}
-              onClick={() => {
-                router("/scholarship-admin/students")
-              }}>
-              <HStack onClick={() => {
-                router("/scholarship-admin/students/student-profile")
-              }}>
+            {
+              StudentMainData.length > 0 ? (
+                StudentMainData.map((student, index) => (
+                  <Flex
+                    key={index}
+                    p={"12px"} border=" 1px solid #EDEFF2"
+                    gap="0px"
+                    cursor="pointer"
+                    align="center"
+                    opacity="0px"
+                    w={{ Fill: "396px" }}
+                    justify="space-between" borderRadius="10px" height={{ Fixed: "68px" }}
+                    borderBottomWidth={index !== schools.length - 1 ? 1 : 0}
+                    borderColor={"gray.200"}
+                    onClick={() => {
+                      router("/scholarship-admin/students")
+                    }}>
+                    <HStack onClick={() => {
+                      router("/scholarship-admin/students/student-profile")
+                    }}>
 
 
-                <Avatar size="sm" name={student.full_name} />
-                <Box >
-                  <Text fontWeight="500" fontSize="13px" lineHeight="20px" textAlign="left" letterSpacing={"-0.02em"}>{student.full_name}</Text>
-                  <Text fontSize={"11px"} opacity="0px" fontWeight={"400"} lineHeight={"20px"} textAlign={"left"} letterSpacing={"-0.02em"} color="gray.500">{student.email}</Text>
-                </Box>
-              </HStack>
-              <Icon as={IoIosArrowRoundForward} cursor={"pointer"} angle="-180 deg" gap="1px" w={{ Hug: "18.01px" }} h={{ Fixed: "33px" }} color=" #101828" />
-            </Flex>
-          ))
-        ): (
-                                                    <Text textAlign="center" py={5} >
-                                                        No Pending approval found.
-                                                    </Text>
-                                                )
-                                                }
+                      <Avatar size="sm" name={student.full_name} />
+                      <Box >
+                        <Text fontWeight="500" fontSize="13px" lineHeight="20px" textAlign="left" letterSpacing={"-0.02em"}>{student.full_name}</Text>
+                        <Text fontSize={"11px"} opacity="0px" fontWeight={"400"} lineHeight={"20px"} textAlign={"left"} letterSpacing={"-0.02em"} color="gray.500">{student.email}</Text>
+                      </Box>
+                    </HStack>
+                    <Icon as={IoIosArrowRoundForward} cursor={"pointer"} angle="-180 deg" gap="1px" w={{ Hug: "18.01px" }} h={{ Fixed: "33px" }} color=" #101828" />
+                  </Flex>
+                ))
+              ) : (
+                <Text textAlign="center" py={5} >
+                  No Pending approval found.
+                </Text>
+              )
+            }
           </VStack>
         </Box>
       </Flex>
