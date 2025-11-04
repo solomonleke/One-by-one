@@ -1,63 +1,40 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
-import MainLayout from '../../DashboardLayout'
-import { Text, Grid, Flex, HStack, Stack, VStack, Box, Center, Progress, Icon, Avatar, Image } from '@chakra-ui/react'
-import { Tooltip as Tooltips } from '@chakra-ui/react';
-import DashboardCard from "../../Components/DashboardCard"
-import Button from "../../Components/Button"
-import Preloader from "../../Components/Preloader"
-import { ReactComponent as Scholarship } from "../../Asset/scholarship.svg"
-import { HiOutlineUsers } from 'react-icons/hi'
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-import { MdOutlineCancel } from 'react-icons/md'
-import { IoInformationCircleOutline } from "react-icons/io5";
-import { GoArrowDown } from "react-icons/go";
-import { Bar, BarChart, CartesianGrid, Label, Legend, Line, ResponsiveContainer, Pie, PieChart, Tooltip, XAxis, YAxis, LineChart } from 'recharts'
-import TableRow from "../../Components/TableRow"
-import { CgSearch } from "react-icons/cg";
-import { IoFilter } from "react-icons/io5";
-import { FaUserGraduate } from "react-icons/fa6";
-import { TbCurrencyNaira } from "react-icons/tb";
-import { FaSchoolFlag } from "react-icons/fa6";
-import { FaGoogleScholar } from "react-icons/fa6";
-import { FaCheck } from "react-icons/fa6";
-import { IoIosArrowRoundForward } from "react-icons/io";
-import { IoCloseOutline } from "react-icons/io5";
-import { LiaAngleDoubleRightSolid } from "react-icons/lia";
-import { RxInfoCircled } from "react-icons/rx";
-import { FaArrowRight } from "react-icons/fa6";
-import { GetSponsorAdminStats } from "../../Utils/ApiCall";
-import { fetchSponsorStudents } from "../../Utils/ApiCall";
-import { getScholarshipsBySponsor } from "../../Utils/ApiCall";
-import { getActiveScholarships } from "../../Utils/ApiCall";
-
-
-import scholarshipImage from "../../Asset/image1.png"
-import scholarshipImage2 from "../../Asset/Image2.png"
-import scholarshipImage3 from "../../Asset/Image3.png"
-import scholarshipImage4 from "../../Asset/Image4.png"
-import scholarshipImage5 from "../../Asset/Image5.png"
-import scholarshipImage6 from "../../Asset/Image6.png"
-import scholarshipImage7 from "../../Asset/Image7.png"
-import scholarshipImage8 from "../../Asset/goldIcon.svg"
-
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import MainLayout from "../../DashboardLayout";
 import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-} from '@chakra-ui/react'
-import { PiStudent } from 'react-icons/pi';
-
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
+import {
+  Text,
+  Grid,
+  HStack,
+  Stack,
+  Box,
+  Avatar,
+  VStack,
+} from "@chakra-ui/react";
+import DashboardCard from "../../Components/DashboardCard";
+import Button from "../../Components/Button";
+import Preloader from "../../Components/Preloader";
+import { ReactComponent as Scholarship } from "../../Asset/scholarship.svg";
+import { PiStudent } from "react-icons/pi";
+import { TbCurrencyNaira } from "react-icons/tb";
+import {
+  GetSponsorAdminStats,
+  fetchSponsorStudents,
+  getScholarshipsBySponsor,
+  getActiveScholarships,
+} from "../../Utils/ApiCall";
 
 export default function Index() {
   const [students, setStudents] = useState([]);
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState("");
   const [stats, setStats] = useState(null);
   const [scholarships, setScholarships] = useState([]);
   const [sponsorScholarships, setSponsorScholarships] = useState([]);
@@ -67,33 +44,29 @@ export default function Index() {
   const [activeScholarshipCount, setActiveScholarshipCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
-
   const [data, setData] = useState({
     scholarshipCount: 0,
     studentSponsoredCount: 0,
     totalDonations: 0,
   });
 
+  // === Fetch Students ===
   const fetchStudents = async () => {
     try {
-      console.log("Fetching students..."); // Debugging Step 1
-
       const response = await fetchSponsorStudents();
-      console.log("Full Students API Response:", JSON.stringify(response, null, 2)); // Debugging Step 2
-
-      if (response?.status === true && Array.isArray(response?.data) && response.data.length > 0) {
-        console.log("Setting Students State:", response.data); // Debugging Step 3
+      if (
+        response?.status === true &&
+        Array.isArray(response?.data) &&
+        response.data.length > 0
+      ) {
         setStudents(response.data);
-      } else {
-        console.warn("No students available or unexpected response:", response);
       }
     } catch (error) {
       console.error("Error fetching students:", error.message);
     }
   };
 
-  
-
+  // === Fetch Active Scholarships ===
   const fetchScholarships = async () => {
     try {
       const data = await getActiveScholarships();
@@ -107,19 +80,16 @@ export default function Index() {
       setError(err.message);
     } finally {
       setLoading(false);
-      setLoading(false);
     }
   };
 
-
+  // === Fetch Scholarships by Sponsor ===
   const fetchScholarshipsBySponsor = async () => {
     try {
       const data = await getScholarshipsBySponsor();
-
       if (data.status && Array.isArray(data.data)) {
-        setSponsorScholarships(data.data); // ✅ Set directly since `data` is an array
+        setSponsorScholarships(data.data);
       } else {
-        console.error("Unexpected response format:", data);
         setError(data.message || "Failed to load scholarships");
       }
     } catch (err) {
@@ -130,14 +100,10 @@ export default function Index() {
     }
   };
 
-
+  // === Fetch Dashboard Stats ===
   const fetchData = async () => {
     try {
-      console.log("Fetching Dashboard Stats...");
-
       const data = await GetSponsorAdminStats();
-      console.log("Fetched Dashboard Stats:", data);
-
       if (data) {
         setStats(data);
         setData({
@@ -145,8 +111,6 @@ export default function Index() {
           studentSponsoredCount: data.studentSponsoredCount,
           totalDonations: data.totalDonations,
         });
-      } else {
-        console.error("Dashboard data is null or undefined.");
       }
     } catch (error) {
       console.error("Error fetching dashboard data:", error.message);
@@ -156,240 +120,358 @@ export default function Index() {
     }
   };
 
-  
-
   useEffect(() => {
-    
     fetchData();
     fetchStudents();
     fetchScholarshipsBySponsor();
     fetchScholarships();
-  }, []);
 
-
-
-  useEffect(() => {
-    //   var reloadCount = localStorage.getItem("reloadCount");
-    //   if (!reloadCount) {
-    //     localStorage.setItem('reloadCount', + parseInt(1))
-
-    //   }
-    //   if (reloadCount < 2) {
-    //     localStorage.setItem('reloadCount', parseInt(reloadCount) + 1);
-    //     setTimeout(() =>
-    //       window.location.reload(1), 2000)
-    //   } else {
-    //     localStorage.removeItem('reloadCount');
-    //   }
-
-
-    const storedName = JSON.parse(localStorage.getItem('onlineUser'));
-    if (storedName) {
-      setUserName(`${storedName.firstName}`);
-    }
+    const storedName = JSON.parse(localStorage.getItem("onlineUser"));
+    if (storedName) setUserName(`${storedName.firstName}`);
   }, []);
 
   return (
     <MainLayout>
-          {
-            isLoading && <Preloader  />
-          }
-      <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Welcome Back, {userName || "User"}.</Text>
-      <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Track your impact and manage your scholarships with ease. Monitor funding trends and create opportunities to change lives.</Text>
+      {isLoading && <Preloader />}
 
-      <Grid justifyContent="space-between" gridTemplateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap="12px" mt="20px">  
-        <Box borderWidth="1px" rounded="10px" px="20px" py="20px"  bg="#fff">
-          <Stack>
+      {/* Welcome Section */}
+      <Text
+        fontSize={{ base: "18px", md: "21px" }}
+        lineHeight="25px"
+        fontWeight="700"
+      >
+        Welcome Back, {userName || "User"}.
+      </Text>
+      <Text
+        mt={{ base: "5px", md: "9px" }}
+        color="#686C75"
+        fontWeight="400"
+        fontSize={{ base: "13px", md: "15px" }}
+        mb={5}
+        lineHeight={{ base: "20px", md: "24px" }}
+      >
+        Track your impact and manage your scholarships with ease. Monitor
+        funding trends and create opportunities to change lives.
+      </Text>
+
+      {/* Statistic Cards */}
+      <Grid
+        justifyContent="space-between"
+        gridTemplateColumns={{ base: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)" }}
+        gap={{ base: "10px", md: "12px" }}
+        mt={{ base: "10px", md: "20px" }}
+      >
+        <Box borderWidth="1px" rounded="10px" px={{ base: "14px", md: "20px" }} py="16px" bg="#fff">
+          <Stack spacing="6px">
             <HStack>
-              <Scholarship />
-              <Text color="#4C515C" fontSize="13px" fontWeight="400">Scholarships Created</Text>
-            </HStack>
-            <Text color="#2F2F2F" fontSize="20px" fontWeight="600">{data.scholarshipCount}</Text>
-          </Stack>
-        </Box>
-
-        <Box borderWidth="1px" rounded="10px" px="20px" py="20px"  bg="#fff">
-          <Stack>
-            <HStack>
-              <PiStudent color="#39996B" fontSize="24px" />
-              <Text color="#4C515C" fontSize="13px" fontWeight="400">Total Student Sponsored</Text>
-            </HStack>
-            <Text color="#2F2F2F" fontSize="20px" fontWeight="600">{data.studentSponsoredCount}</Text>
-          </Stack>
-        </Box>
-
-        <Box borderWidth="1px" rounded="10px" px="20px" py="20px"  bg="#fff">
-          <Stack>
-            <HStack>
-              <TbCurrencyNaira color="#39996B" fontSize="24px" />
-              <Text color="#4C515C" fontSize="13px" fontWeight="400">Total Donations</Text>
-            </HStack>
-            <Text color="#2F2F2F" fontSize="20px" fontWeight="600">{data.totalDonations}</Text>
-          </Stack>
-        </Box>
-      </Grid>
-
-      <Grid mt="20px" w="100%" gridTemplateColumns={{ base: "100%", md: "65% 35%" }} gap="12px" >
-        <Box display="flex" flexDir="column" gap="10px"  borderWidth="1px" rounded="10px" bg="#fff" px="17px" py="16px">
-          <HStack justifyContent="space-between">
-            <Text color="#3F4956" fontSize="15px" fontWeight="600">Students You're Sponsoring <Box as="span" fontSize="15px" fontWeight="500" color="#3F495680">({data.studentSponsoredCount})</Box></Text>
-            <Text cursor="pointer" color="#39996B" fontSize="14px" fontWeight="600" >See All</Text>
-          </HStack>
-
-          <hr className="remove" />
-
-          <HStack >
-          {scholarships && scholarships.length > 0 ? (
-    (() => {
-      const uniqueStudents = new Map(); // Use Map to store unique students
-
-      scholarships.forEach((scholarship) => {
-        if (Array.isArray(scholarship.students)) {
-          scholarship.students
-            .filter((student) => !student.is_deleted) // Remove deleted students
-            .forEach((student) => {
-              uniqueStudents.set(student.id, student); // Store by student ID (avoids duplicates)
-            });
-        }
-      });
-
-      const studentsArray = Array.from(uniqueStudents.values()); // Convert Map back to an array
-
-      return studentsArray.length > 0 ? (
-        studentsArray.map((student) => (
-          <Box
-            key={student.id}
-            display="flex"
-            flexDir="column"
-            alignItems="center"
-            w="207px"
-            h="170px"
-            gap="8px"
-            rounded="12px"
-            borderWidth="1px"
-            py="23px"
-            px="16px"
-          >
-            <Avatar size="sm" name={student.full_name} />
-            <Text color="#101828" fontWeight="500" fontSize="14px">
-              {student.full_name}
-            </Text>
-            <Text color="#667085" fontWeight="400" fontSize="11px">
-              {student.email}
-            </Text>
-            <Text color="#667085" fontWeight="500" fontSize="11px">
-              {student.intended_field_of_study || "No field specified"}
-            </Text>
-          </Box>
-        ))
-      ) : (
-        <Text>No students available</Text>
-      );
-    })()
-  ) : (
-    <Text>No scholarships available</Text>
-  )}
-
-          </HStack>
-        </Box>
-
-
-
-
-
-        <Box display="flex" flexDir="column"  gap="10px" w="100%" borderWidth="1px" rounded="10px" bg="#fff" px="17px" py="16px">
-          <HStack justifyContent="space-between" alignItems="flex-start" >
-            <Text color="#3F4956" fontSize="15px" fontWeight="600">Active Scholarships <Box as="span" fontSize="15px" fontWeight="500" color="#3F495680">({activeScholarshipCount})</Box></Text>
-            <Text cursor="pointer" color="#39996B" fontSize="14px" fontWeight="600" onClick={() => {
-              router("/sponsor-admin/myscholarships")}} >See All</Text>
-          </HStack>
-
-          <hr className="remove" />
-
-          <Stack borderWidth="1px" w="100%" alignItems="center" maxW={{ base: "100%", md: "426px" }}  rounded="11px" py="12px" pl="8px" pr="16px" spacing="10px">
-  <VStack w="100%">
-    {Array.isArray(scholarships) && scholarships.length > 0 ? (
-      scholarships.slice(0,2).map((scholarship, index) => (
-        <Stack
-          key={scholarship.id || index}
-          borderWidth="1px"
-          borderColor="#E0E0E0" // Visible borders for each scholarship container
-          rounded="11px"
-          py="12px"
-          pl="8px"
-          pr="16px"
-          w="100%" // Take up full available width
-          maxW={{ base: "100%", md: "426px" }}
-          minH="150px" // Ensure consistent height irrespective of content
-          spacing="16px" // Spacing between child elements
-        >
-          {/* Scholarship Details */}
-          <HStack justifyContent="space-between" w="100%" gap="10px">
-            <HStack >
-              <Box bg="#39996B" w="3px" h="33px" rounded="3px"></Box>
-              <Stack>
-                {/* Scholarship Name */}
-                <Text color="#1F2937" fontSize="13px" fontWeight="600">
-                  {scholarship?.name ?? "Unnamed Scholarship"}
-                </Text>
-                {/* Date Created (Formatted) */}
-                <Text color="#767F8E" fontSize="11px" fontWeight="400">
-                  Date Created:{" "}
-                  {scholarship?.created_at
-                    ? new Date(scholarship.created_at).toLocaleString()
-                    : "N/A"}
-                </Text>
-              </Stack>
-            </HStack>
-
-            {/* Scholarship Amount */}
-            <HStack>
-              <Text color="#344054" fontSize="12px" fontWeight="400">:</Text>
-              <Text color="#3F4956" fontSize="14px" fontWeight="600">
-                ₦{scholarship?.amount ? parseInt(scholarship.amount).toLocaleString() : "N/A"}
+              <Scholarship width={18} height={18} />
+              <Text color="#4C515C" fontSize={{ base: "12px", md: "13px" }}>
+                Scholarships Created
               </Text>
             </HStack>
-          </HStack>
+            <Text color="#2F2F2F" fontSize={{ base: "18px", md: "20px" }} fontWeight="600">
+              {data.scholarshipCount}
+            </Text>
+          </Stack>
+        </Box>
 
-          {/* Horizontal Line */}
-          <hr className="remove" />
-
-          {/* Awardees & View Funding History */}
-          <HStack  display="flex" >
-            <HStack flexWrap="wrap" mt="10px" gap="8px">
-              {scholarship.students.length > 0 ? (
-                scholarship.students.map((student, idx) => (
-                  <HStack key={idx} bg="#E8F2ED" p="8px" rounded="31px" >
-                    <Avatar size="sm" name={student.full_name} />
-                    <Text color="#101828" fontSize="13px" fontWeight="500">
-                      {student.full_name}
-                    </Text>
-                  </HStack>
-                ))
-              ) : (
-                <Text color="#767F8E" fontSize="12px" fontWeight="400">
-                  No students assigned
-                </Text>
-              )}
+        <Box borderWidth="1px" rounded="10px" px={{ base: "14px", md: "20px" }} py="16px" bg="#fff">
+          <Stack spacing="6px">
+            <HStack>
+              <PiStudent color="#39996B" fontSize="20px" />
+              <Text color="#4C515C" fontSize={{ base: "12px", md: "13px" }}>
+                Total Student Sponsored
+              </Text>
             </HStack>
-          </HStack>
-        </Stack>
-      ))
-    ) : (
-      <Text fontSize="14px" fontWeight="500" color="#767F8E">
-        No scholarships available.
-      </Text>
-    )}
-  </VStack>
-</Stack>
+            <Text color="#2F2F2F" fontSize={{ base: "18px", md: "20px" }} fontWeight="600">
+              {data.studentSponsoredCount}
+            </Text>
+          </Stack>
+        </Box>
 
-
-
+        <Box borderWidth="1px" rounded="10px" px={{ base: "14px", md: "20px" }} py="16px" bg="#fff">
+          <Stack spacing="6px">
+            <HStack>
+              <TbCurrencyNaira color="#39996B" fontSize="20px" />
+              <Text color="#4C515C" fontSize={{ base: "12px", md: "13px" }}>
+                Total Donations
+              </Text>
+            </HStack>
+            <Text color="#2F2F2F" fontSize={{ base: "18px", md: "20px" }} fontWeight="600">
+              {data.totalDonations}
+            </Text>
+          </Stack>
         </Box>
       </Grid>
 
-      {/* do the chart here */}
+      {/* Students & Scholarships Section */}
+      <Grid
+        mt={{ base: "16px", md: "20px" }}
+        w="100%"
+        gridTemplateColumns={{ base: "1fr", md: "65% 35%" }}
+        gap={{ base: "12px", md: "16px" }}
+      >
+        {/* Sponsored Students */}
+        <Box
+          display="flex"
+          flexDir="column"
+          gap="10px"
+          borderWidth="1px"
+          rounded="10px"
+          bg="#fff"
+          px={{ base: "12px", md: "17px" }}
+          py={{ base: "12px", md: "16px" }}
+        >
+          <HStack justifyContent="space-between" flexWrap="wrap">
+            <Text
+              color="#3F4956"
+              fontSize={{ base: "14px", md: "15px" }}
+              fontWeight="600"
+            >
+              Students You’re Sponsoring{" "}
+              <Box as="span" color="#3F495680" fontWeight="500">
+                ({data.studentSponsoredCount})
+              </Box>
+            </Text>
+            <Text
+              cursor="pointer"
+              color="#39996B"
+              fontSize={{ base: "13px", md: "14px" }}
+              fontWeight="600"
+            >
+              See All
+            </Text>
+          </HStack>
 
+          <hr className="remove" />
+
+          <HStack
+            flexWrap="wrap"
+            justifyContent={{ base: "center", md: "flex-start" }}
+          >
+            {scholarships && scholarships.length > 0 ? (
+              (() => {
+                const uniqueStudents = new Map();
+                scholarships.forEach((scholarship) => {
+                  if (Array.isArray(scholarship.students)) {
+                    scholarship.students
+                      .filter((student) => !student.is_deleted)
+                      .forEach((student) =>
+                        uniqueStudents.set(student.id, student)
+                      );
+                  }
+                });
+
+                const studentsArray = Array.from(uniqueStudents.values());
+                return studentsArray.length > 0 ? (
+                  studentsArray.map((student) => (
+                    <Box
+                      key={student.id}
+                      display="flex"
+                      flexDir="column"
+                      alignItems="center"
+                      w={{ base: "100%", sm: "45%", md: "207px" }}
+                      h={{ base: "140px", md: "170px" }}
+                      gap="6px"
+                      rounded="12px"
+                      borderWidth="1px"
+                      py={{ base: "16px", md: "23px" }}
+                      px="12px"
+                      mb="10px"
+                    >
+                      <Avatar size="sm" name={student.full_name} />
+                      <Text
+                        color="#101828"
+                        fontWeight="500"
+                        fontSize={{ base: "12px", md: "14px" }}
+                      >
+                        {student.full_name}
+                      </Text>
+                      <Text
+                        color="#667085"
+                        fontWeight="400"
+                        fontSize={{ base: "10px", md: "11px" }}
+                      >
+                        {student.email}
+                      </Text>
+                      <Text
+                        color="#667085"
+                        fontWeight="500"
+                        fontSize={{ base: "10px", md: "11px" }}
+                      >
+                        {student.intended_field_of_study || "No field specified"}
+                      </Text>
+                    </Box>
+                  ))
+                ) : (
+                  <Text>No students available</Text>
+                );
+              })()
+            ) : (
+              <Text>No scholarships available</Text>
+            )}
+          </HStack>
+        </Box>
+
+        {/* Active Scholarships */}
+        <Box
+          display="flex"
+          flexDir="column"
+          gap="10px"
+          borderWidth="1px"
+          rounded="10px"
+          bg="#fff"
+          px={{ base: "12px", md: "17px" }}
+          py={{ base: "12px", md: "16px" }}
+        >
+          <HStack justifyContent="space-between" flexWrap="wrap">
+            <Text color="#3F4956" fontSize={{ base: "14px", md: "15px" }} fontWeight="600">
+              Active Scholarships{" "}
+              <Box as="span" color="#3F495680" fontWeight="500">
+                ({activeScholarshipCount})
+              </Box>
+            </Text>
+            <Text
+              cursor="pointer"
+              color="#39996B"
+              fontSize={{ base: "13px", md: "14px" }}
+              fontWeight="600"
+              onClick={() => router("/sponsor-admin/myscholarships")}
+            >
+              See All
+            </Text>
+          </HStack>
+
+          <hr className="remove" />
+
+          <VStack w="100%" spacing={{ base: "8px", md: "10px" }}>
+            {Array.isArray(scholarships) && scholarships.length > 0 ? (
+              scholarships.slice(0, 2).map((scholarship, index) => (
+                <Stack
+                  key={scholarship.id || index}
+                  borderWidth="1px"
+                  borderColor="#E0E0E0"
+                  rounded="11px"
+                  py={{ base: "10px", md: "12px" }}
+                  pl={{ base: "8px", md: "10px" }}
+                  pr={{ base: "10px", md: "16px" }}
+                  w="100%"
+                  spacing={{ base: "8px", md: "10px" }}
+                >
+                  <HStack justifyContent="space-between" gap="10px">
+                    <HStack>
+                      <Box bg="#39996B" w="3px" h="33px" rounded="3px"></Box>
+                      <Stack>
+                        <Text color="#1F2937" fontSize={{ base: "12px", md: "13px" }} fontWeight="600">
+                          {scholarship?.name ?? "Unnamed Scholarship"}
+                        </Text>
+                        <Text color="#767F8E" fontSize={{ base: "10px", md: "11px" }}>
+                          Date Created:{" "}
+                          {scholarship?.created_at
+                            ? new Date(scholarship.created_at).toLocaleString()
+                            : "N/A"}
+                        </Text>
+                      </Stack>
+                    </HStack>
+                    <HStack>
+                      <Text color="#3F4956" fontSize={{ base: "12px", md: "14px" }} fontWeight="600">
+                        ₦
+                        {scholarship?.amount
+                          ? parseInt(scholarship.amount).toLocaleString()
+                          : "N/A"}
+                      </Text>
+                    </HStack>
+                  </HStack>
+
+                  <hr className="remove" />
+
+                  <HStack flexWrap="wrap" mt="6px" gap="6px">
+                    {scholarship.students.length > 0 ? (
+                      scholarship.students.map((student, idx) => (
+                        <HStack
+                          key={idx}
+                          bg="#E8F2ED"
+                          p="6px"
+                          rounded="31px"
+                          flexShrink={0}
+                        >
+                          <Avatar size="xs" name={student.full_name} />
+                          <Text
+                            color="#101828"
+                            fontSize={{ base: "11px", md: "13px" }}
+                            fontWeight="500"
+                          >
+                            {student.full_name}
+                          </Text>
+                        </HStack>
+                      ))
+                    ) : (
+                      <Text
+                        color="#767F8E"
+                        fontSize={{ base: "11px", md: "12px" }}
+                        fontWeight="400"
+                      >
+                        No students assigned
+                      </Text>
+                    )}
+                  </HStack>
+                </Stack>
+              ))
+            ) : (
+              <Text
+                fontSize={{ base: "12px", md: "14px" }}
+                fontWeight="500"
+                color="#767F8E"
+              >
+                No scholarships available.
+              </Text>
+            )}
+          </VStack>
+        </Box>
+      </Grid>
+        <Box
+          mt={{ base: "16px", md: "24px" }}
+          borderWidth="1px"
+          rounded="10px"
+          bg="#fff"
+          px={{ base: "12px", md: "17px" }}
+          py={{ base: "12px", md: "16px" }}
+        >
+          <Text
+            color="#3F4956"
+            fontSize={{ base: "14px", md: "15px" }}
+            fontWeight="600"
+            mb={{ base: "10px", md: "15px" }}
+          >
+            Funding Trends Over Time
+          </Text>
+
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={[
+                { name: "Jan", amount: 150 },
+                { name: "Feb", amount: 220 },
+                { name: "Mar", amount: 100 },
+                { name: "Apr", amount: 180 },
+                { name: "May", amount: 90 },
+                { name: "Jun", amount: 200 },
+                { name: "Jul", amount: 270 },
+                { name: "Aug", amount: 130 },
+                { name: "Sep", amount: 160 },
+                { name: "Oct", amount: 190 },
+                { name: "Nov", amount: 110 },
+                { name: "Dec", amount: 210 },
+              ]}
+              margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} />
+              <Tooltip />
+              <Bar dataKey="amount" fill="#799E91" radius={[6, 6, 0, 0]} barSize={25} />
+            </BarChart>
+          </ResponsiveContainer>
+        </Box>
     </MainLayout>
-  )
+  );
 }

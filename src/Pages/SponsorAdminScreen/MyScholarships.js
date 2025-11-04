@@ -118,34 +118,44 @@ export default function MyScholarships() {
 
 
   const handleSubmit = async () => {
-    console.log("Submitting formData:", formData); // Debugging
-
-    setLoading(true);
+    setIsLoading(true);
     try {
       const response = await createScholarshipApi(formData);
-      console.log("Server Response:", response); // Debugging
+      console.log("✅ Scholarship created:", response);
 
+      // ✅ Show custom toast
       setShowToast({
-        show: true,
         message: "Scholarship successfully created!",
         status: "success",
+        show: true,
       });
-      setTimeout(() => setShowToast({ show: false }), 3000);
 
+      // ✅ Reset form and close modal
       setFormData({ name: "", purpose: "", motivation: "", amount: "0" });
-      handleCloseDetails();
+      closeModal();
+      handleCloseDetails(); // if you have a secondary modal open
+
+      // Optionally refresh data
+      fetchActiveScholarships();
+
+      // Auto-hide toast after 3 seconds
+      setTimeout(() => {
+        setShowToast({ ...showToast, show: false });
+      }, 3000);
+
     } catch (error) {
       console.error("❌ Error creating scholarship:", error);
-      console.error("Server Response:", error.response?.data || "No response data");
 
       setShowToast({
+        message: "Failed to create scholarship.",
+        status: "error",
         show: true,
-        message: error.message || "Failed to create scholarship.",
-        status: "error"
       });
-      setTimeout(() => setShowToast({ show: false }), 3000);
+
+      setTimeout(() => {
+        setShowToast({ ...showToast, show: false });
+      }, 3000);
     } finally {
-      setLoading(false);
       setIsLoading(false);
     }
   };
@@ -312,26 +322,31 @@ export default function MyScholarships() {
             pr="16px"
             spacing="10px"
           >
-            <HStack justifyContent="space-between">
-              <HStack>
-                <Box bg="#39996B" w="3px" h="33px" rounded="3px"></Box>
-                <Stack>
-                  <Text color="#1F2937" fontSize="14px" fontWeight="600">
-                    {scholarship.name ?? "Unnamed Scholarship"}
-                  </Text>
-                  <Text color="#767F8E" fontSize="12px">
-                    Date Created:{" "}
-                    {scholarship.created_at
-                      ? new Date(scholarship.created_at).toLocaleDateString()
-                      : "N/A"}
-                  </Text>
-                </Stack>
-              </HStack>
-
-              {/* Different actions depending on tab */}
-              {type === "active" ? (
-                <HStack>
+            {/* Header section */}
+            <HStack alignItems="flex-start" spacing="12px">
+              <Box bg="#39996B" w="3px" h="33px" rounded="3px" />
+              <Stack flex="1">
+                <Text color="#1F2937" fontSize="14px" fontWeight="600">
+                  {scholarship.name ?? "Unnamed Scholarship"}
+                </Text>
+                <Text color="#767F8E" fontSize="12px">
+                  Date Created:{" "}
+                  {scholarship.created_at
+                    ? new Date(scholarship.created_at).toLocaleDateString()
+                    : "N/A"}
+                </Text>
+              </Stack>
+  
+              {/* Buttons (desktop only) */}
+              {type === "active" && (
+                <HStack
+                  spacing="4"
+                  display={{ base: "none", md: "flex" }}
+                  align="center"
+                  justify="flex-end"
+                >
                   <Button
+                    fontSize="14px"
                     px="50px"
                     color="#39996B"
                     background="white"
@@ -339,16 +354,58 @@ export default function MyScholarships() {
                   >
                     Fund Scholarship
                   </Button>
-                  <Button px="30px" onClick={() => router("/sponsor-admin/discoverstudents")}>
+                  <Button
+                    px="30px"
+                    onClick={() => router("/sponsor-admin/discoverstudents")}
+                  >
                     Add Student
                   </Button>
                 </HStack>
-              ) : type === "awaiting" ? (
-                <Button w="200px" px="30px" onClick={() => router("/sponsor-admin/discoverstudents")}>
+              )}
+  
+              {type === "awaiting" && (
+                <Button
+                  w="200px"
+                  px="30px"
+                  display={{ base: "none", md: "block" }}
+                  onClick={() => router("/sponsor-admin/discoverstudents")}
+                >
                   Add Student
                 </Button>
-              ) : (
-                <HStack cursor="pointer" onClick={() => router("/sponsor-admin/fundinghistory")}>
+              )}
+            </HStack>
+  
+            {/* Students Row + View Funds History (desktop) */}
+            <HStack
+              flexWrap="wrap"
+              spacing="10px"
+              justify="space-between"
+              align="center"
+            >
+              <HStack spacing="10px" flexWrap="wrap">
+                {scholarship.students?.length > 0 ? (
+                  scholarship.students.slice(0, 2).map((student, idx) => (
+                    <HStack key={idx} bg="#E8F2ED" p="8px" rounded="31px">
+                      <Avatar size="sm" name={student.full_name} />
+                      <Text color="#101828" fontSize="13px" fontWeight="500">
+                        {student.full_name}
+                      </Text>
+                    </HStack>
+                  ))
+                ) : (
+                  <Text color="#767F8E" fontSize="12px">
+                    No students assigned
+                  </Text>
+                )}
+              </HStack>
+  
+              {/* ✅ View Funds History now sits beside students (desktop only) */}
+              {type === "active" && (
+                <HStack
+                  cursor="pointer"
+                  onClick={() => router("/sponsor-admin/fundinghistory")}
+                  display={{ base: "none", md: "flex" }}
+                >
                   <Text fontSize="12px" fontWeight="500" color="#39996B">
                     View Funds History
                   </Text>
@@ -356,23 +413,47 @@ export default function MyScholarships() {
                 </HStack>
               )}
             </HStack>
-
-            <HStack>
-              {scholarship.students?.length > 0 ? (
-                scholarship.students.slice(0, 2).map((student, idx) => (
-                  <HStack key={idx} bg="#E8F2ED" p="8px" rounded="31px">
-                    <Avatar size="sm" name={student.full_name} />
-                    <Text color="#101828" fontSize="13px" fontWeight="500">
-                      {student.full_name}
-                    </Text>
-                  </HStack>
-                ))
-              ) : (
-                <Text color="#767F8E" fontSize="12px">
-                  No students assigned
-                </Text>
-              )}
-            </HStack>
+  
+            {/* Mobile-only buttons + link */}
+            {type === "active" && (
+              <Stack
+                direction="column"
+                spacing={2}
+                align="center"
+                justify="center"
+                display={{ base: "flex", md: "none" }}
+                mt={2}
+              >
+                <Button
+                  fontSize="12px"
+                  px="30px"
+                  color="#39996B"
+                  background="white"
+                  onClick={() => handleOpenDetails(scholarship)}
+                >
+                  Fund Scholarship
+                </Button>
+                <Button
+                  px="30px"
+                  onClick={() => router("/sponsor-admin/discoverstudents")}
+                >
+                  Add Student
+                </Button>
+  
+                {/* ✅ Mobile version of View Funds History */}
+                <HStack
+                  w="100%"
+                  justify="flex-start"
+                  cursor="pointer"
+                  onClick={() => router("/sponsor-admin/fundinghistory")}
+                >
+                  <Text fontSize="12px" fontWeight="500" color="#39996B">
+                    View Funds History
+                  </Text>
+                  <FaArrowRight color="#39996B" />
+                </HStack>
+              </Stack>
+            )}
           </Stack>
         ))
       ) : (
@@ -382,6 +463,8 @@ export default function MyScholarships() {
       )}
     </Stack>
   );
+  
+  
 
 
 
@@ -394,20 +477,23 @@ export default function MyScholarships() {
       {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
       )}
-      <HStack justifyContent="space-between" w="100%">
-        <Box w="80%">
+      <HStack justifyContent="space-between" w="100%" flexWrap={{ base: "wrap", md: "nowrap" }}>
+        <Box w={{ base: "100%", md: "80%" }}>
           <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">My Scholarships <Box as="span" color="#667085" fontSize="18px" fontWeight="400">({data.scholarshipCount})</Box></Text>
           <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Manage your scholarships effortlessly. Support students, and create new opportunities to make a lasting impact.</Text>
         </Box>
 
         <Spacer />
 
-        <Box w="20%">
-          <Button onClick={openModal}><Box as="span" display="inline-flex" pr="6px" isLoading={loading} ><FaPlus /></Box>Create Scholarship</Button>
+        <Box w={{ base: "100%", md: "20%" }} mt={{ base: "10px", md: "0" }}>
+          <Button onClick={openModal} w="100%"><Box as="span" display="inline-flex" pr="6px" isLoading={loading} ><FaPlus /></Box>Create Scholarship</Button>
         </Box>
       </HStack>
 
       <Modal isOpen={isOpen} onClose={closeModal} >
+        {showToast.show && (
+          <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
+        )}
         <ModalOverlay />
         <ModalContent maxW="537px">
           <ModalHeader px="25px" pt="23px">
@@ -456,9 +542,9 @@ export default function MyScholarships() {
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["10px", "10px", "18px", "18px"]} rounded='10px'>
         <Tabs>
           <TabList overflowX="auto" overflowY="hidden" _focus={{ outline: "none" }}>
-            <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "500" }} fontSize="13px">
+            {/* <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "500" }} fontSize="13px">
               Paid Scholarships ({paidScholarships.length})
-            </Tab>
+            </Tab> */}
             <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "500" }} fontSize="13px">
               Active Scholarships ({activeScholarships.length})
             </Tab>
@@ -471,9 +557,9 @@ export default function MyScholarships() {
 
           <TabPanels>
             {/* PAID SCHOLARSHIPS */}
-            <TabPanel>
+            {/* <TabPanel>
               <ScholarshipList scholarships={paidScholarships} type="paid" />
-            </TabPanel>
+            </TabPanel> */}
 
             {/* ACTIVE SCHOLARSHIPS */}
             <TabPanel>

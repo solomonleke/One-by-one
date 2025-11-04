@@ -1,118 +1,159 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
-import MainLayout from '../../DashboardLayout'
-import { Text, Flex, HStack, VStack, Box, Center, Progress, Icon, Avatar, Image } from '@chakra-ui/react'
-import { Tooltip as Tooltips } from '@chakra-ui/react';
-import DashboardCard from "../../Components/DashboardCard"
-import Button from "../../Components/Button"
-import { HiOutlineUsers } from 'react-icons/hi'
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-import { MdOutlineCancel } from 'react-icons/md'
-import { IoInformationCircleOutline } from "react-icons/io5";
-import { GoArrowDown } from "react-icons/go";
-import { Bar, BarChart, CartesianGrid, Label, Legend, Line, ResponsiveContainer, Pie, PieChart, Tooltip, XAxis, YAxis, LineChart } from 'recharts'
-import TableRow from "../../Components/TableRow"
-import { CgSearch } from "react-icons/cg";
-import { IoFilter } from "react-icons/io5";
-import { FaUserGraduate } from "react-icons/fa6";
-import { TbCurrencyNaira } from "react-icons/tb";
-import { FaSchoolFlag } from "react-icons/fa6";
-import { FaGoogleScholar } from "react-icons/fa6";
-import { FaCheck } from "react-icons/fa6";
-import { IoIosArrowRoundForward } from "react-icons/io";
-import { IoCloseOutline } from "react-icons/io5";
-import { LiaAngleDoubleRightSolid } from "react-icons/lia";
-import { RxInfoCircled } from "react-icons/rx";
-
-import scholarshipImage from "../../Asset/image1.png"
-import scholarshipImage2 from "../../Asset/Image2.png"
-import scholarshipImage3 from "../../Asset/Image3.png"
-import scholarshipImage4 from "../../Asset/Image4.png"
-import scholarshipImage5 from "../../Asset/Image5.png"
-import scholarshipImage6 from "../../Asset/Image6.png"
-import scholarshipImage7 from "../../Asset/Image7.png"
-import scholarshipImage8 from "../../Asset/goldIcon.svg"
-
+import { useState, useEffect } from "react";
 import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-} from '@chakra-ui/react'
+    Box,
+    Flex,
+    Text,
+    Table,
+    Thead,
+    Tbody,
+    Tr,
+    Th,
+    Td,
+    Avatar,
+    TableContainer,
+} from "@chakra-ui/react";
+import MainLayout from "../../DashboardLayout";
+import TableRow from "../../Components/TableRow"
+import { configuration } from "../../Utils/Helpers";
+import { GetSponsorHistory } from "../../Utils/ApiCall"; // Adjust path as needed
+import Pagination from "../../Components/Pagination";
+import Preloader from "../../Components/Preloader"
+import ShowToast from "../../Components/ToastNotification"
 
 
-export default function FundingHistory() {
-    return(
+
+export default function FundedHistory() {
+    const [history, setHistory] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [pageNo, setPageNo] = useState(1);
+    const [TotalPage, setTotalPage] = useState("");
+    const noItems = 10;
+    const [error, setError] = useState("");
+    const [CurrentPage, setCurrentPage] = useState(1);
+    const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
+    const [isLoading, setIsLoading] = useState(true);
+    const [showToast, setShowToast] = useState({
+        show: false,
+        message: "",
+        status: ""
+    })
+
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+
+    const students = [
+        {
+            fundedStudents: "Philip Amakiri",
+            amount: "₦100,000.00",
+            transactionId: "TX123456789",
+            date: "01/16/2025 15:13",
+            paymentMethod: "Bank Transfer",
+            status: "Pending",
+        },
+        {
+            fundedStudents: "solomon adeleke",
+            amount: "₦50,000.00",
+            transactionId: "TX987654321",
+            date: "01/20/2025 07:17",
+            paymentMethod: "Bank Transfer",
+            status: "Completed",
+        },
+        {
+            fundedStudents: "peter charles",
+            amount: "₦50,000.00",
+            transactionId: "TX456789123",
+            date: "02/07/2025 10:14",
+            paymentMethod: "Bank Transfer",
+            status: "Completed",
+        }
+    ]
+
+    const fetchFundingHistory = async () => {
+        setError("");
+
+        try {
+            const response = await GetSponsorHistory(CurrentPage, PostPerPage);
+            console.log("API funding history response:", response.data);
+            setHistory(response.data.data.funds || []);
+            setTotalPage(response.data.data.totalPages || []); // adjust depending on API response structure
+            const totalPosts = response.data.totalPages * PostPerPage;
+            setTotalPage(totalPosts);
+        } catch (err) {
+            setError(err.message || "Error fetching data");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchFundingHistory();
+    }, [CurrentPage, PostPerPage]);
+
+
+
+    return (
         <MainLayout>
-                           <Text fontSize={"21px"} lineHeight={"25.41px"} fontWeight="700">Funding History</Text>
-                           <Text mt="9px" color={"#686C75"} fontWeight={"400"} fontSize={"15px"} mb={5} gap={"9px"} lineHeight={"24px"}>Keep track of your financial contributions with detailed records. Review past transactions, monitor disbursements, and ensure your impact is well-documented.</Text>
+            {
+                isLoading && <Preloader />
+            }
+            {showToast.show && (
+                <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
+            )}
+            <Box p={6}>
+                <Text fontSize="21px" fontWeight="bold">Funding History</Text>
+                <Text mb={4} fontSize="14px">Keep track of your financial contributions with detailed records. Review past transactions, monitor disbursements, and ensure your impact is well-documented.</Text>
+                <TableContainer border="1px solid #EDEFF2" borderRadius="7px" mt="15px">
+                    <Table variant="simple">
+                        <Thead>
+                            <Tr>
+                                <Th fontSize="13px">Date</Th>
+                                <Th fontSize="13px">Funded Students</Th>
+                                <Th fontSize="13px">Amount</Th>
+                                <Th fontSize="13px">Payment Method</Th>
+                                <Th fontSize="13px">Status</Th>
+                                <Th fontSize="13px">Transaction ID</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {history.length === 0 ? (
+                                <Tr>
+                                    <Td colSpan={6} textAlign="center" py={6}>
+                                        <Text fontSize="14px" color="#767F8E" fontWeight="500">
+                                            No transactions made yet.
+                                        </Text>
+                                    </Td>
+                                </Tr>
+                            ) : (
+                                history.map((student, index) => (
+                                    <TableRow
+                                        key={index}
+                                        type="sponsor-admin-history"
+                                        date={student.funding_date}
+                                        fundedStudents={student.student_name}
+                                        amount={student.funding_amount}
+                                        paymentMethod={student.payment_method}
+                                        status={student.funding_status}
+                                        transactionId={student.trx_id}
+                                    />
+                                ))
+                            )}
+                        </Tbody>
 
-                           <Box mt="12px" bg="white" borderWidth="1px" rounded="10px" pt="20px" pb="32px" px="24px">
-                            <Box rounded="7px" borderWidth="1px" p="15px">
-                                <HStack bg="#F9FAFB" w="100%" py="10px">
-                                    <Box w="15%" color="#2F2F2F" fontSize="13px" fontWeight="500">Date</Box>
-                                    <Box w="20%" color="#2F2F2F" fontSize="13px" fontWeight="500">Funded Students</Box>
-                                    <Box w="20%" color="#2F2F2F" fontSize="13px" fontWeight="500">Amount</Box>
-                                    <Box w="15%" color="#2F2F2F" fontSize="13px" fontWeight="500">Payment Method</Box>
-                                    <Box w="15%" color="#2F2F2F" fontSize="13px" fontWeight="500">Status</Box>
-                                    <Box w="15%" color="#2F2F2F" fontSize="13px" fontWeight="500">Transaction ID</Box>
-                                </HStack>
-                                <hr className="remove"/>
-                                <HStack w="100%" py="20px">
-                                    <Box w="15%" color="#101828" fontSize="13px" fontWeight="400">Jan 15, 2025</Box>
-                                    <Box w="20%" color="#101828" fontSize="13px" fontWeight="500">
-                                        <HStack>
-                                            <Box color="#101828" fontSize="13px" fontWeight="500" cursor="pointer" bg="#E8F2ED" rounded="31px" p="11px">Philip Amakiri</Box>
-                                            <Box color="#101828" fontSize="13px" fontWeight="500" cursor="pointer" bg="#E8F2ED" rounded="31px" p="11px">+2</Box>
-                                        </HStack>
-                                    </Box>
-                                    <Box w="20%" color="#101828" fontSize="13px" fontWeight="400">₦100,000.00</Box>
-                                    <Box w="15%" color="#101828" fontSize="13px" fontWeight="400">Bank Transfer</Box>
-                                    <Box w="15%" color="#2F2F2F" fontSize="13px" fontWeight="500"><HStack py="2px" rounded="16px" px="6px">
-                <Box w="8px" h="8px" bg="#FFA30C" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#FFA30C">Pending</Text>
-              </HStack></Box>
-                                    <Box w="15%" color="#101828" fontSize="13px" fontWeight="400">TX123456789</Box>
-                                </HStack>
-                                <hr className="remove"/>
-                                <HStack w="100%" py="20px">
-                                    <Box w="15%" color="#101828" fontSize="13px" fontWeight="400">Jan 15, 2025</Box>
-                                    <Box w="20%" color="#101828" fontSize="13px" fontWeight="500">
-                                        <HStack>
-                                            <Box color="#101828" fontSize="13px" fontWeight="500" cursor="pointer" bg="#E8F2ED" rounded="31px" p="11px">Solomon Adeleke</Box>
-                                        </HStack>
-                                    </Box>
-                                    <Box w="20%" color="#101828" fontSize="13px" fontWeight="400">₦50,000.00</Box>
-                                    <Box w="15%" color="#101828" fontSize="13px" fontWeight="400">Debit Card</Box>
-                                    <Box w="15%" color="#2F2F2F" fontSize="13px" fontWeight="500"><HStack py="2px" rounded="16px" px="6px">
-                <Box w="8px" h="8px" bg="#027A48" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#027A48">Completed</Text>
-              </HStack></Box>
-                                    <Box w="15%" color="#101828" fontSize="13px" fontWeight="400">TX987654321</Box>
-                                </HStack>
-                                <hr className="remove" />
-                                <HStack w="100%" py="20px">
-                                    <Box w="15%" color="#101828" fontSize="13px" fontWeight="400">Jan 15, 2025</Box>
-                                    <Box w="20%" color="#101828" fontSize="13px" fontWeight="500">
-                                        <HStack>
-                                            <Box color="#101828" fontSize="13px" fontWeight="500" cursor="pointer" bg="#E8F2ED" rounded="31px" p="11px">Saviour Promise</Box>
-                                        </HStack>
-                                    </Box>
-                                    <Box w="20%" color="#101828" fontSize="13px" fontWeight="400">₦50,000.00</Box>
-                                    <Box w="15%" color="#101828" fontSize="13px" fontWeight="400">Bank Transfer</Box>
-                                    <Box w="15%" color="#2F2F2F" fontSize="13px" fontWeight="500"><HStack py="2px" rounded="16px" px="6px">
-                <Box w="8px" h="8px" bg="#027A48" rounded="full"></Box>
-                <Text fontSize="12px" fontWeight="500" color="#027A48">Completed</Text>
-              </HStack></Box>
-                                    <Box w="15%" color="#101828" fontSize="13px" fontWeight="400">TX456789123</Box>
-                                </HStack>
-                            </Box>
-                           </Box>
+                    </Table>
+                </TableContainer>
+
+                <Pagination
+                    totalPosts={TotalPage}
+                    postsPerPage={PostPerPage}
+                    currentPage={CurrentPage}
+                    paginate={paginate}
+                />
+
+            </Box>
         </MainLayout>
-    )
-}
+    );
+};
+
+

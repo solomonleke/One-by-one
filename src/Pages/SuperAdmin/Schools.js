@@ -247,7 +247,7 @@ export default function Schools() {
 
             <TabPanels>
               <TabPanel>
-                <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px", "8px", "18px", "18px"]} rounded='10px'>
+                <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["4px", "8px", "18px", "18px"]} rounded='10px'>
                   <TableContainer border="1px solid #EDEFF2" borderRadius="7px" mt="15px">
                     <Table variant="simple">
                       <Thead>

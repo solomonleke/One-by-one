@@ -282,6 +282,8 @@ export default function DiscoverStudents() {
           status: "success",
         });
         setTimeout(() => setShowToast({ show: false }), 3000);
+        handleCloseModal();
+
 
         // ✅ Update state safely — merge new student without overwriting
         setSponsorScholarships((prev) =>
@@ -307,7 +309,6 @@ export default function DiscoverStudents() {
           })
         );
 
-        handleCloseModal();
       }
     } catch (error) {
       console.error("❌ Submit error:", error);
@@ -397,36 +398,13 @@ export default function DiscoverStudents() {
       setSearchByLocation("true");
       getallStudent(selectedScholarship);
 
-      setShowToast({
-        show: true,
-        message: "Location filter disabled — showing all students.",
-        status: "success",
-        duration: 3000,
-      });
-
-      // 🕒 Auto-hide after duration
-      const timer = setTimeout(() => {
-        setShowToast((prev) => ({ ...prev, show: false }));
-      }, 3000);
-
-      return () => clearTimeout(timer);
+      
     } else {
       // 🌍 When filter is OFF
       setSearchByLocation("false");
       getallStudent(selectedScholarship);
 
-      setShowToast({
-        show: true,
-        message: "Location filter enabled — showing nearby students.",
-        status: "success",
-        duration: 3000,
-      });
-
-      const timer = setTimeout(() => {
-        setShowToast((prev) => ({ ...prev, show: false }));
-      }, 3000);
-
-      return () => clearTimeout(timer);
+      
     }
   }, [isLocationFiltered]);
 
@@ -660,7 +638,7 @@ export default function DiscoverStudents() {
 
             <Modal isOpen={isOpening} onClose={handleCloseModal}>
               <ModalOverlay />
-              <ModalContent maxW="537px">
+              <ModalContent maxW={{ base: "90%", md: "537px" }}>
                 {showToast.show && (
                   <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
                 )}
@@ -686,7 +664,7 @@ export default function DiscoverStudents() {
                         <HStack justifyContent="space-between">
                           <Box w="100%" >
                             <Stack >
-                              <HStack w="100%" justifyContent="space-between" gap="10px">
+                              <HStack w="100%" justifyContent="space-between" gap="10px" flexWrap={{ base: "wrap", sm: "nowrap" }}>
                                 <HStack>
                                   <Text color="#1F2937" fontSize="13px" fontWeight="600">
                                     {scholarship.name || "Unnamed Scholarship"}
@@ -731,7 +709,7 @@ export default function DiscoverStudents() {
                           </Box>
                         </HStack>
 
-                        <HStack>
+                        <HStack flexWrap="wrap">
                           {scholarship.students.length > 0 ? (
                             scholarship.students.slice(0, 2).map((student, idx) => (
                               <HStack key={idx} bg="#E8F2ED" p="8px" rounded="31px">

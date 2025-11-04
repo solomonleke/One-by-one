@@ -16,69 +16,73 @@ import {
 } from "@chakra-ui/react";
 import ShowToast from "./ToastNotification";
 
-
-const PaymentModal = ({ isOpen, onClose, student, onSubmit, isLoading: parentLoading = false }) => { // Accept isLoading prop
+const PaymentModal = ({
+  isOpen,
+  onClose,
+  student,
+  onSubmit,
+  isLoading: parentLoading = false,
+}) => {
   const [reason, setReason] = useState("");
-  const [loading, setLoading] = useState(false); // Internal loading state
+  const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState({
     show: false,
     message: "",
     status: "",
   });
 
-  const currentLoading = parentLoading || loading; // Use parentLoading if provided, otherwise internal loading
+  const currentLoading = parentLoading || loading;
 
+  const triggerToast = (message, status) => {
+    setShowToast({ show: true, message, status });
+    setTimeout(
+      () => setShowToast({ show: false, message: "", status: "" }),
+      3000
+    );
+  };
 
   const handleSubmit = async () => {
     if (!reason.trim()) {
-      setShowToast({
-        message: "Reason for payment is required.",
-        status: "error",
-      });
-      setTimeout(() => setShowToast({ show: false }), 3000);
+      triggerToast("Reason for payment is required.", "error");
       return;
     }
 
     setLoading(true);
-
     try {
       const paymentPayload = {
         student,
         reason,
       };
 
-      await onSubmit(paymentPayload); // expected to be a promise
-      setShowToast({
-        message: "The payment process has started.",
-        status: "success",
-        show: true,
-      });
-      setTimeout(() => setShowToast({ show: false }), 3000);
+      await onSubmit(paymentPayload);
 
-      setReason(""); // Reset reason
-      onClose();     // Close modal
+      triggerToast("The payment process has started.", "success");
+
+      setReason("");
+      onClose();
     } catch (error) {
-      setShowToast({
-        message: error?.message || "Something went wrong during payment.",
-        status: "error",
-        show: true,
-      });
+      triggerToast(
+        error?.message || "Something went wrong during payment.",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
   };
 
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent mx={{ base: "4", md: "0" }}>
-      <ShowToast
-          message={showToast.message}
-          status={showToast.status}
-          show={showToast.show}
-          duration={showToast.duration}
-        />
+        {showToast.show && (
+          <ShowToast
+            message={showToast.message}
+            status={showToast.status}
+            show={showToast.show}
+            duration={3000}
+          />
+        )}
+
         <ModalHeader>Fund Student</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -128,12 +132,35 @@ const PaymentModal = ({ isOpen, onClose, student, onSubmit, isLoading: parentLoa
             </FormControl>
           </VStack>
         </ModalBody>
+
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
+          <Button
+            bg="transparent"
+            border="1px solid green"
+            color="greenn.greenn500"
+            mr={3}
+            _hover={{
+              bg: "greenn.greenn500",
+              color: "white",
+              borderColor: "green.600",
+            }}
+            onClick={onClose}
+          >
             Close
           </Button>
-          <Button variant="ghost" onClick={handleSubmit} isLoading={currentLoading}
->
+
+          <Button
+            bg="greenn.greenn500"
+            color="white"
+            _hover={{
+              bg: "transparent",
+              color: "greenn.greenn500",
+              border: "1px solid green",
+            }}
+            onClick={handleSubmit}
+            isLoading={currentLoading}
+            loadingText="Processing..."
+          >
             Submit Payment
           </Button>
         </ModalFooter>

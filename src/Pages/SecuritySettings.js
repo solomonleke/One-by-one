@@ -45,8 +45,8 @@ export default function SecuritySettings() {
       <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py="20px" px={["8px", "8px", "18px", "18px"]} rounded="10px">
         <VStack alignItems="start">
           <VStack spacing="15px" w="100%">
-            <HStack justifyContent="space-between" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} w="100%">
-              <Box w={["100%", "100%", "80%", "80%"]}>
+            <HStack justifyContent="space-between" flexWrap={{ base: "wrap", md: "nowrap" }} w="100%">
+              <Box w={{ base: "100%", md: "80%" }} mb={{ base: "10px", md: "0" }}>
                 <Text fontSize="15px" fontWeight="500" lineHeight="18.15px" color="#1F2937">
                   Password Management
                 </Text>
@@ -55,11 +55,12 @@ export default function SecuritySettings() {
                   numbers, and special characters.
                 </Text>
               </Box>
-              <Box w={["40%", "40%", "20%", "20%"]} alignItems={"start"}>
+              <Box w={{ base: "100%", md: "20%" }} display="flex" justifyContent={{ base: "flex-start", md: "flex-end" }}>
                 <Button 
                   background="#fff" 
                   color='#39996B'
                   onClick={handleChangePassword}
+                  w={{ base: "100%", md: "auto" }}
                 >
                   Change Password
                 </Button>
@@ -67,8 +68,8 @@ export default function SecuritySettings() {
             </HStack>
             <hr className="remove" />
             
-            <HStack justifyContent="space-between" w="100%">
-              <Box w={["90%", "90%", "95%", "95%"]}>
+            <HStack justifyContent="space-between" w="100%" flexWrap={{ base: "wrap", md: "nowrap" }}>
+              <Box w={{ base: "100%", md: "95%" }} mb={{ base: "10px", md: "0" }}>
                 <Text fontSize="15px" fontWeight="500" lineHeight="18.15px" color="#1F2937">
                   Two-Factor Authentication (2FA)
                 </Text>
@@ -77,7 +78,7 @@ export default function SecuritySettings() {
                   code whenever you <br /> sign in from a new device.
                 </Text>
               </Box>
-              <Box w={["10%", "10%", "5%", "5%"]}>
+              <Box w={{ base: "100%", md: "5%" }} display="flex" justifyContent={{ base: "flex-start", md: "flex-end" }}>
                 <Switch 
                   colorScheme="teal" 
                   size="md" 
@@ -88,8 +89,8 @@ export default function SecuritySettings() {
             </HStack>
             <hr className="remove" />
             
-            <HStack justifyContent="space-between" w="100%">
-              <Box w={["90%", "90%", "95%", "95%"]}>
+            <HStack justifyContent="space-between" w="100%" flexWrap={{ base: "wrap", md: "nowrap" }}>
+              <Box w={{ base: "100%", md: "95%" }} mb={{ base: "10px", md: "0" }}>
                 <Text fontSize="15px" fontWeight="500" lineHeight="18.15px" color="#1F2937">
                   Login Notifications
                 </Text>
@@ -98,7 +99,7 @@ export default function SecuritySettings() {
                   detect unauthorized <br /> access.
                 </Text>
               </Box>
-              <Box w={["10%", "10%", "5%", "5%"]}>
+              <Box w={{ base: "100%", md: "5%" }} display="flex" justifyContent={{ base: "flex-start", md: "flex-end" }}>
                 <Switch 
                   colorScheme="teal" 
                   size="md" 
@@ -113,7 +114,7 @@ export default function SecuritySettings() {
       
       <Flex justifyContent="flex-end" alignItems="center" mt="20px">
         <Button 
-          w="10%"
+          w={{ base: "100%", md: "10%" }}
           onClick={handleUpdate}
           isLoading={loading}
           loadingText="Updating..."

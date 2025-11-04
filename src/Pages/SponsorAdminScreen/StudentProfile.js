@@ -21,7 +21,7 @@ export default function StudentProfile() {
 
   return (
     <MainLayout>
-      <Flex justifyContent="space-between" flexWrap="wrap">
+      <Flex justifyContent="space-between" flexWrap="wrap" px={{ base: "10px", md: "0" }}>
 
         <HStack fontSize="14px" fontWeight="600" spacing="10px" cursor="pointer" onClick={() => router('/sponsor-admin/discoverstudents')}>
           <IoChevronBackOutline />
@@ -29,12 +29,12 @@ export default function StudentProfile() {
         </HStack>
       </Flex>
 
-      <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py="17px" px={["8px", "8px", "18px", "18px"]} rounded="10px">
-        <Flex justifyContent="space-between" flexWrap="wrap" gap="10px">
-          <HStack spacing="14px" w={["100%", "100%", "70%", "70%"]}>
+      <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py="17px" px={{ base: "10px", md: "18px" }} rounded="10px">
+        <Flex justifyContent="space-between" flexWrap={{ base: "wrap", md: "nowrap" }} gap="10px" flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "center", md: "flex-start" }}>
+          <HStack spacing="14px" w={{ base: "100%", md: "70%" }} flexWrap={{ base: "wrap", sm: "nowrap" }} justifyContent={{ base: "center", sm: "flex-start" }}>
             <Avatar name="Philip Amakiri" size="lg" src="https://bit.ly/sage-adebayo" />
-            <Stack spacing="10px">
-              <HStack>
+            <Stack spacing="10px" textAlign={{ base: "center", sm: "left" }}>
+              <HStack flexWrap={{ base: "wrap", sm: "nowrap" }} justifyContent={{ base: "center", sm: "flex-start" }}>
                 <Text color="#1F2937" fontSize="25px" fontWeight="700">
                   Philip Amakiri
                 </Text>
@@ -76,18 +76,18 @@ export default function StudentProfile() {
             </Stack>
           </HStack>
 
-          <HStack>
+          <HStack w={{ base: "100%", md: "auto" }} justifyContent={{ base: "center", md: "flex-end" }}>
                   <Button border='1px solid #222' fontSize="13px" fontWeight="500" fontStyle="italic" background="white" color="#6B7280" px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B">Verified by: Solomon Adeleke</Button>
                 </HStack>
         </Flex>
       </Box>
 
-      <Flex justifyContent={"space-between"} flexWrap="wrap" mt="16px">
-          <Box w={["100%", "100%", "40%", "40%"]} >
+      <Flex justifyContent={"space-between"} flexWrap="wrap" mt="16px" flexDirection={{ base: "column", md: "row" }}>
+          <Box w={{ base: "100%", md: "40%" }} mb={{ base: "20px", md: "0" }}>
 
             <Stack spacing="16px">
 
-              <Box borderColor={"#EDEFF2"} py={"20.5px"} px={["8px","8px","17px","17px"]} borderRadius={"10px"} borderWidth={"1px"}>
+              <Box borderColor={"#EDEFF2"} py={"20.5px"} px={{ base: "8px", md: "17px" }} borderRadius={"10px"} borderWidth={"1px"}>
                 <ProfileHeading title="Student Details" />
 
 
@@ -144,7 +144,7 @@ export default function StudentProfile() {
               </Box>
 
 
-              <Box borderColor={"#EDEFF2"} py={"20.5px"} px={["8px","8px","17px","17px"]} borderRadius={"10px"} borderWidth={"1px"}>
+              <Box borderColor={"#EDEFF2"} py={"20.5px"} px={{ base: "8px", md: "17px" }} borderRadius={"10px"} borderWidth={"1px"}>
                 <ProfileHeading title="Academic background" />
 
 
@@ -176,7 +176,7 @@ export default function StudentProfile() {
 
               <Text fontSize={"14px"} textTransform={"capitalize"} fontWeight={"500"}>historical term results/average</Text>
 
-              <HStack  borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} mt="10px" borderWidth={"1px"}>
+              <HStack  borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} mt="10px" borderWidth={"1px"} flexWrap={{ base: "wrap", sm: "nowrap" }}>
                 <HStack>
                   <Pdf />
                   <Stack>
@@ -194,17 +194,17 @@ export default function StudentProfile() {
           </Box>
 
 
-          <Box w={["100%", "100%", "58%", "58%"]}>
+          <Box w={{ base: "100%", md: "58%" }}>
 
 
             <Stack spacing="16px">
-              <HStack background={"linear-gradient(90deg, #39996B 0%, rgba(57, 153, 107, 0) 100%)"} py={"12px"} px={"16px"} borderRadius={"8px"} justifyContent={"space-between"}>
+              <HStack background={"linear-gradient(90deg, #39996B 0%, rgba(57, 153, 107, 0) 100%)"} py={"12px"} px={"16px"} borderRadius={"8px"} justifyContent={"space-between"} flexWrap={{ base: "wrap", sm: "nowrap" }}>
                 <Text fontWeight={"600"} fontSize={"16px"} lineHeight={"16.94px"} color={"#FFFFFF"}>Essay Score</Text>
 
-                <Button background='#FFFFFF' w='10%' color='#39996B'>86%</Button>
+                <Button background='#FFFFFF' w={{ base: "100%", sm: "10%" }} color='#39996B'>86%</Button>
               </HStack>
 
-              <HStack bg="#fff" border="1px solid #EFEFEF" rounded={"8px"} py={"12px"} px={"16px"} justifyContent={"space-between"}>
+              <HStack bg="#fff" border="1px solid #EFEFEF" rounded={"8px"} py={"12px"} px={"16px"} justifyContent={"space-between"} flexWrap={{ base: "wrap", sm: "nowrap" }}>
                 <Text textTransform={"capitalize"} fontWeight={"500"} fontSize={"14px"} color={"#2F2F2F"}>intended field of study</Text>
                 <Text textTransform={"capitalize"} fontWeight={"600"} fontSize={"14px"} color={"#2F2F2F"}>nursing science</Text>
               </HStack>
@@ -212,7 +212,7 @@ export default function StudentProfile() {
               <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
                 <ProfileHeading title="student’s field of interest" />
 
-                <HStack spacing="13px" mt="18px">
+                <HStack spacing="13px" mt="18px" flexWrap="wrap">
                   <Text textTransform={"capitalize"} backgroundColor={"#D9FFED"} rounded={"8px"} py={"10px"} px={"16px"} cursor={"pointer"} textColor={"green"} fontWeight={"500"} fontSize={"14px"} letterSpacing={"-1%"} border={"1px solid #39996B7A"}>health and medicine</Text>
                   <Text textTransform={"capitalize"} backgroundColor={"#D9FFED"} rounded={"8px"} py={"10px"} px={"16px"} cursor={"pointer"} textColor={"green"} fontWeight={"500"} fontSize={"14px"} letterSpacing={"-1%"} border={"1px solid #39996B7A"}>science</Text>
                   <Text textTransform={"capitalize"} backgroundColor={"#D9FFED"} rounded={"8px"} py={"10px"} px={"16px"} cursor={"pointer"} textColor={"green"} fontWeight={"500"} fontSize={"14px"} letterSpacing={"-1%"} border={"1px solid #39996B7A"}>nursing process</Text>

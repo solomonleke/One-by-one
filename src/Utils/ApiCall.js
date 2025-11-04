@@ -449,28 +449,37 @@ export const VerifyBanksApi = (payload) => {
 // ✅ Fetch all states
 export const fetchAllStates = async () => {
   try {
-    const response = await fetch("https://nga-states-lga.onrender.com/fetch", {
+    const response = await fetch("https://api.onebyone.ng/api/v1/super-admin/states-list", {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    return await response.json(); // array of { state, lgas }
+    const result = await response.json();
+
+    // Return just the array of states (safely)
+    if (Array.isArray(result)) {
+      return result; // already an array
+    } else if (result.data && Array.isArray(result.data)) {
+      return result.data.map(item => item.state || item); // Extract just state names if needed
+    } else {
+      return []; // fallback
+    }
   } catch (error) {
     console.error("Error fetching states:", error);
     return [];
   }
 };
 
-// ✅ Fetch LGAs by selected state
-export const fetchLgasByState = async (stateName) => {
-  try {
-    if (!stateName) return [];
 
-    const url = `https://nga-states-lga.onrender.com/?state=${encodeURIComponent(
-      stateName
-    )}`;
+// ✅ Fetch LGAs by selected state
+export const fetchLgasByState = async (state_code) => {
+  try {
+    if (!state_code) return [];
+
+    // ✅ Correct query parameter format
+    const url = `https://api.onebyone.ng/api/v1/super-admin/lga-list/${encodeURIComponent(state_code)}`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -486,6 +495,8 @@ export const fetchLgasByState = async (stateName) => {
     return [];
   }
 };
+
+
 
 
 
@@ -1239,6 +1250,40 @@ export const getScholarshipsBySponsor = async () => {
   }
 };
 
+export const GetSponsorHistory = (pageNo, noItems, status) => {
+ 
+ 
+  let config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/sponsor-admin/funding-history?pageNo=${pageNo}&noItems=${noItems}&status=${status}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`
+    },
+    
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+     
+      return response;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response.data) {
+        throw new Error(error.response);
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
 // apiCall.js
 export const fundScholarshipApi = async (Id, receiptFile) => {
   try {
@@ -1580,7 +1625,7 @@ export const getAllActiveScholarships = async () => {
     console.log("getAllActiveScholarships raw response:", response); // Add this
 
     // Check if response is valid
-    if (response.status === 200 && response.data?.status === true && Array.isArray(response.data?.data?.activeScholarship)) {
+    if (response.status === 200 ) {
       return response.data; // ✅ Return full response, including metadata
     } else {
       throw new Error("Unexpected API response format");

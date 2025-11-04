@@ -289,8 +289,8 @@ const checkLeaderboardActive= ()=>{
 ], [location]);
 
 
-console.log("isSchoolAdmin():", isSchoolAdmin());
-console.log("isScholarshipAdmin():", isScholarshipAdmin());
+// console.log("isSchoolAdmin():", isSchoolAdmin());
+// console.log("isScholarshipAdmin():", isScholarshipAdmin());
 
 return List
 }

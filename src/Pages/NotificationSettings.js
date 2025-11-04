@@ -45,12 +45,12 @@ export default function NotificationSettings() {
       <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='20px' px={["8px", "8px", "18px", "18px"]} rounded='10px'>
         <VStack alignItems={"start"}>
           <VStack spacing={"15px"} w="100%">
-            <HStack justifyContent="space-between" w="100%">
-              <Box w={["90%", "90%", "95%", "95%"]}>
+            <HStack justifyContent="space-between" w="100%" flexWrap={{ base: "wrap", md: "nowrap" }}>
+              <Box w={{ base: "100%", md: "95%" }} mb={{ base: "10px", md: "0" }}>
                 <Text fontSize={"15px"} fontWeight={"500"} lineHeight={"18.15px"} color={"#1F2937"}>Receive All Notifications</Text>
                 <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Stay updated with all our latest news and alerts.</Text>
               </Box>
-              <Box w={["10%", "10%", "5%", "5%"]}>
+              <Box w={{ base: "100%", md: "5%" }} display="flex" justifyContent={{ base: "flex-start", md: "flex-end" }}>
                 <Switch 
                   colorScheme="teal" 
                   size="md" 
@@ -61,12 +61,12 @@ export default function NotificationSettings() {
             </HStack>
             <hr className="remove" />
             
-            <HStack justifyContent="space-between" w="100%">
-              <Box w={["90%", "90%", "95%", "95%"]}>
+            <HStack justifyContent="space-between" w="100%" flexWrap={{ base: "wrap", md: "nowrap" }}>
+              <Box w={{ base: "100%", md: "95%" }} mb={{ base: "10px", md: "0" }}>
                 <Text fontSize={"15px"} fontWeight={"500"} lineHeight={"18.15px"} color={"#1F2937"}>Activity Alerts</Text>
                 <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Get notified about account activity and important interactions.</Text>
               </Box>
-              <Box w={["10%", "10%", "5%", "5%"]}>
+              <Box w={{ base: "100%", md: "5%" }} display="flex" justifyContent={{ base: "flex-start", md: "flex-end" }}>
                 <Switch 
                   colorScheme="teal" 
                   size="md" 
@@ -77,12 +77,12 @@ export default function NotificationSettings() {
             </HStack>
             <hr className="remove" />
             
-            <HStack justifyContent="space-between" w="100%">
-              <Box w={["90%", "90%", "95%", "95%"]}>
+            <HStack justifyContent="space-between" w="100%" flexWrap={{ base: "wrap", md: "nowrap" }}>
+              <Box w={{ base: "100%", md: "95%" }} mb={{ base: "10px", md: "0" }}>
                 <Text fontSize={"15px"} fontWeight={"500"} lineHeight={"18.15px"} color={"#1F2937"}>Updates and Newsletters</Text>
                 <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Regular updates on new features and our monthly newsletter.</Text>
               </Box>
-              <Box w={["10%", "10%", "5%", "5%"]}>
+              <Box w={{ base: "100%", md: "5%" }} display="flex" justifyContent={{ base: "flex-start", md: "flex-end" }}>
                 <Switch 
                   colorScheme="teal" 
                   size="md" 
@@ -93,12 +93,12 @@ export default function NotificationSettings() {
             </HStack>
             <hr className="remove" />
             
-            <HStack justifyContent="space-between" w="100%">
-              <Box w={["90%", "90%", "95%", "95%"]}>
+            <HStack justifyContent="space-between" w="100%" flexWrap={{ base: "wrap", md: "nowrap" }}>
+              <Box w={{ base: "100%", md: "95%" }} mb={{ base: "10px", md: "0" }}>
                 <Text fontSize={"15px"} fontWeight={"500"} lineHeight={"18.15px"} color={"#1F2937"}>Email Notifications</Text>
                 <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Opt to receive notifications as emails instead of app alerts.</Text>
               </Box>
-              <Box w={["10%", "10%", "5%", "5%"]}>
+              <Box w={{ base: "100%", md: "5%" }} display="flex" justifyContent={{ base: "flex-start", md: "flex-end" }}>
                 <Switch 
                   colorScheme="teal" 
                   size="md" 
@@ -109,12 +109,12 @@ export default function NotificationSettings() {
             </HStack>
             <hr className="remove" />
             
-            <HStack justifyContent="space-between" w="100%">
-              <Box w={["90%", "90%", "95%", "95%"]}>
+            <HStack justifyContent="space-between" w="100%" flexWrap={{ base: "wrap", md: "nowrap" }}>
+              <Box w={{ base: "100%", md: "95%" }} mb={{ base: "10px", md: "0" }}>
                 <Text fontSize={"15px"} fontWeight={"500"} lineHeight={"18.15px"} color={"#1F2937"}>Push Notifications</Text>
                 <Text fontSize={"13px"} fontWeight={"400"} lineHeight={"27px"} color={"#626974"}>Immediate alerts directly to your device.</Text>
               </Box>
-              <Box w={["10%", "10%", "5%", "5%"]}>
+              <Box w={{ base: "100%", md: "5%" }} display="flex" justifyContent={{ base: "flex-start", md: "flex-end" }}>
                 <Switch 
                   colorScheme="teal" 
                   size="md" 
@@ -129,7 +129,7 @@ export default function NotificationSettings() {
       
       <Flex justifyContent="flex-end" alignItems="center" mt="20px">
         <Button 
-          w="10%" 
+          w={{ base: "100%", md: "10%" }} 
           onClick={handleUpdate}
           isLoading={loading}
           loadingText="Updating..."
