@@ -74,9 +74,9 @@ export default function Scholarships() {
   const [ByDate, setByDate] = useState(false);
   const [StartDate, setStartDate] = useState("");
   const [EndDate, setEndDate] = useState("");
-  const [CurrentPage, setCurrentPage] = useState(1);
-  const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
-  const [TotalPage, setTotalPage] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(configuration.sizePerPage);
+  const [totalPosts, setTotalPosts] = useState(0); // Renamed TotalPage to totalPosts for clarity
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [editedData, setEditedData] = useState("");
@@ -102,14 +102,16 @@ export default function Scholarships() {
 
 
 
-  const fetchScholarships = async () => {
+  const fetchScholarships = async (page, size) => {
     try {
-      const response = await getAllActiveScholarships();
+      setIsLoading(true);
+      const response = await getAllActiveScholarships(page, size);
       console.log("Fetched scholarships response:", response);
 
       if (response && response.scholarships && Array.isArray(response.scholarships)) {
         setScholarships(response.scholarships);
-        setActiveScholarshipCount(response.scholarships.length);
+        setTotalPosts(response.totalItems || 0); // Assuming API returns totalItems
+        setActiveScholarshipCount(response.totalItems || 0); // Update count based on totalItems
       } else {
         setError("Scholarship data is not in expected format");
       }
@@ -122,8 +124,12 @@ export default function Scholarships() {
   };
 
   useEffect(() => {
-    fetchScholarships();
-  }, []);
+    fetchScholarships(currentPage, postsPerPage);
+  }, [currentPage, postsPerPage]);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
 
 
@@ -141,115 +147,123 @@ export default function Scholarships() {
         mb="20px"
       >
         Active Scholarships
-        <Box as="span" color="#667085" fontSize="18px" fontWeight="400"> ({scholarships.length})</Box>
+        <Box as="span" color="#667085" fontSize="18px" fontWeight="400"> ({totalPosts})</Box>
       </Text>
 
       {scholarships.length > 0 ? (
-        <SimpleGrid
-          columns={{ base: 1, sm: 1, md: 1, lg: 1, xl: 2, "2xl": 2 }}
-          spacing="20px"
-          w="100%"
-        >
-          {scholarships.map((scholarship, index) => (
-            <Stack
-              key={scholarship.id || index}
-              borderWidth="1px"
-              borderColor="#E0E0E0"
-              rounded="11px"
-              py="12px"
-              px="16px"
-              w="100%"
-              minH="150px"
-              spacing="16px"
-            >
-              {/* Scholarship Details */}
-              <HStack justifyContent="space-between" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} w="100%" gap="10px">
-                <HStack>
-                  <Box bg="#39996B" w="3px" h="33px" rounded="3px"></Box>
-                  <Stack>
-                    <Text color="#1F2937" fontSize="13px" fontWeight="600">
-                      {scholarship.name}
+        <>
+          <SimpleGrid
+            columns={{ base: 1, sm: 1, md: 1, lg: 1, xl: 2, "2xl": 2 }}
+            spacing="20px"
+            w="100%"
+          >
+            {scholarships.map((scholarship, index) => (
+              <Stack
+                key={scholarship.id || index}
+                borderWidth="1px"
+                borderColor="#E0E0E0"
+                rounded="11px"
+                py="12px"
+                px="16px"
+                w="100%"
+                minH="150px"
+                spacing="16px"
+              >
+                {/* Scholarship Details */}
+                <HStack justifyContent="space-between" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} w="100%" gap="10px">
+                  <HStack>
+                    <Box bg="#39996B" w="3px" h="33px" rounded="3px"></Box>
+                    <Stack>
+                      <Text color="#1F2937" fontSize="13px" fontWeight="600">
+                        {scholarship.name}
+                      </Text>
+                      <Text color="#767F8E" fontSize="11px" fontWeight="400">
+                        Date Created:{" "}
+                        {new Date(scholarship.created_at).toLocaleString()}
+                      </Text>
+                    </Stack>
+                  </HStack>
+
+                  <HStack>
+                    <Text color="#344054" fontSize="12px" fontWeight="400">
+                      Amount
                     </Text>
-                    <Text color="#767F8E" fontSize="11px" fontWeight="400">
-                      Date Created:{" "}
-                      {new Date(scholarship.created_at).toLocaleString()}
+                    <Text color="#344054" fontSize="12px" fontWeight="400">
+                      :
                     </Text>
-                  </Stack>
+                    <Text color="#3F4956" fontSize="14px" fontWeight="600">
+                      ₦
+                      {parseInt(scholarship.amount).toLocaleString(undefined, {
+                        maximumFractionDigits: 0,
+                      })}
+                    </Text>
+                  </HStack>
                 </HStack>
 
-                <HStack>
-                  <Text color="#344054" fontSize="12px" fontWeight="400">
-                    Amount
-                  </Text>
-                  <Text color="#344054" fontSize="12px" fontWeight="400">
-                    :
-                  </Text>
-                  <Text color="#3F4956" fontSize="14px" fontWeight="600">
-                    ₦
-                    {parseInt(scholarship.amount).toLocaleString(undefined, {
-                      maximumFractionDigits: 0,
-                    })}
-                  </Text>
-                </HStack>
-              </HStack>
+                {/* Horizontal Line */}
+                <Box borderBottom="1px solid #E0E0E0" />
 
-              {/* Horizontal Line */}
-              <Box borderBottom="1px solid #E0E0E0" />
-
-              {/* Awardees & View Funding History */}
-              <HStack justifyContent="space-between" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="10px" alignItems="center">
-                <HStack display="flex" flexWrap="wrap" mt="10px" gap="2px">
-                  {scholarship.students.length > 0 ? (
-                    <>
-                      <HStack
-                        bg="#E8F2ED"
-                        p="8px"
-                        rounded="31px"
-                      >
-                        <Avatar size="sm" name={scholarship.students[0].full_name} />
-                        <Text color="#101828" fontSize="13px" fontWeight="500">
-                          {scholarship.students[0].full_name}
-                        </Text>
-                      </HStack>
-                      {scholarship.students.length > 1 && (
+                {/* Awardees & View Funding History */}
+                <HStack justifyContent="space-between" flexWrap={["wrap", "wrap", "nowrap", "nowrap"]} gap="10px" alignItems="center">
+                  <HStack display="flex" flexWrap="wrap" mt="10px" gap="2px">
+                    {scholarship.students.length > 0 ? (
+                      <>
                         <HStack
                           bg="#E8F2ED"
                           p="8px"
                           rounded="31px"
                         >
-                          <Text
-                            color="#101828"
-                            fontSize="13px"
-                            fontWeight="500"
-                          >
-                            +{scholarship.students.length - 1}
+                          <Avatar size="sm" name={scholarship.students[0].full_name} />
+                          <Text color="#101828" fontSize="13px" fontWeight="500">
+                            {scholarship.students[0].full_name}
                           </Text>
                         </HStack>
-                      )}
-                    </>
-                  ) : (
-                    <Text color="#767F8E" fontSize="12px" fontWeight="400">
-                      No students assigned
+                        {scholarship.students.length > 1 && (
+                          <HStack
+                            bg="#E8F2ED"
+                            p="8px"
+                            rounded="31px"
+                          >
+                            <Text
+                              color="#101828"
+                              fontSize="13px"
+                              fontWeight="500"
+                            >
+                              +{scholarship.students.length - 1}
+                            </Text>
+                          </HStack>
+                        )}
+                      </>
+                    ) : (
+                      <Text color="#767F8E" fontSize="12px" fontWeight="400">
+                        No students assigned
+                      </Text>
+                    )}
+
+                  </HStack>
+
+                  {/* <HStack border="1px solid #EDEFF2" py="16px" px="14px" rounded="8px">
+                    <Text color="#6B7280" fontSize="13px" fontWeight="500">
+                      Sponsor
                     </Text>
-                  )}
-
+                    <Text color="#6B7280" fontSize="13px" fontWeight="500">
+                      :
+                    </Text>
+                    <Text color="#6B7280" fontSize="13px" fontWeight="500">
+                      {scholarship.sponsor}
+                    </Text>
+                  </HStack> */}
                 </HStack>
-
-                {/* <HStack border="1px solid #EDEFF2" py="16px" px="14px" rounded="8px">
-                  <Text color="#6B7280" fontSize="13px" fontWeight="500">
-                    Sponsor
-                  </Text>
-                  <Text color="#6B7280" fontSize="13px" fontWeight="500">
-                    :
-                  </Text>
-                  <Text color="#6B7280" fontSize="13px" fontWeight="500">
-                    {scholarship.sponsor}
-                  </Text>
-                </HStack> */}
-              </HStack>
-            </Stack>
-          ))}
-        </SimpleGrid>
+              </Stack>
+            ))}
+          </SimpleGrid>
+          <Pagination
+            currentPage={currentPage}
+            postsPerPage={postsPerPage}
+            totalPosts={totalPosts}
+            paginate={paginate}
+          />
+        </>
       ) : (
         <Box
           borderWidth="1px"

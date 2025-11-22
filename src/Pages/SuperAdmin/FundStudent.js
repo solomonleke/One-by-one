@@ -25,8 +25,8 @@ import ShowToast from "../../Components/ToastNotification";
 export default function FundStudent() {
   // State definitions
   const [currentPage, setCurrentPage] = useState(1);
-  const [postPerPage, setPostPerPage] = useState(configuration.sizePerPage);
-  const [TotalPage, setTotalPage] = useState(1);
+  const [postPerPage] = useState(configuration.sizePerPage); // Changed to const
+  const [totalItems, setTotalItems] = useState(0); // Renamed TotalPage to totalItems
   const [FundRequests, setFundRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fundingLoading, setFundingLoading] = useState(false); // New loading state for funding
@@ -91,7 +91,7 @@ export default function FundStudent() {
       }
 
       setFundRequests(data.requests || []);
-      setTotalPage(data.totalPages || 1);
+      setTotalItems(data.totalItems || 0); // Set totalItems from API response
 
       console.log(`📊 Requests loaded: ${data.requests?.length || 0}`);
     } catch (err) {
@@ -128,13 +128,13 @@ export default function FundStudent() {
         />
       )}
       <Box p={6}>
-        <Text fontSize="21px" fontWeight="bold" color="#101828">
+        <Text fontSize={{base: "16px", md: "21px"}} fontWeight="bold" color="#101828">
           Awaiting Funding{" "}
           <span style={{ color: "#667085", fontWeight: "400" }}>
-            ({FundRequests.length})
+            ({totalItems})
           </span>
         </Text>
-        <Text mb={4}>
+        <Text mb={4} fontSize={{base: "14px", md: "18px"}}>
           Explore a diverse pool of students and their academic aspirations.
         </Text>
 
@@ -220,7 +220,7 @@ export default function FundStudent() {
           padding="12px 24px"
         >
           <Pagination
-            totalPosts={TotalPage}
+            totalPosts={totalItems}
             postsPerPage={postPerPage}
             currentPage={currentPage}
             paginate={paginate}

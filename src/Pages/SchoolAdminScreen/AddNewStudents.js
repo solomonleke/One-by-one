@@ -25,17 +25,17 @@ export default function AddNewStudents() {
         id: ""
     })
 
-const updateReview = (name, value, id) => {
-  console.log(name, value);
+    const updateReview = (name, value, id) => {
+        console.log(name, value);
 
-  setOpenReviewModal(true);
+        setOpenReviewModal(true);
 
-  setOldValue({
-    name,
-    value: Array.isArray(value) ? value.join(", ") : (value || ""),
-    id
-  });
-};
+        setOldValue({
+            name,
+            value: Array.isArray(value) ? value.join(", ") : (value || ""),
+            id
+        });
+    };
 
 
 
@@ -75,17 +75,17 @@ const updateReview = (name, value, id) => {
         scholarshipNeed: "",
     });
 
-const handleAddInterest = (newInterest) => {
-  setPayload((prev) => ({
-    ...prev,
-    studentInterest: [...(prev.studentInterest || []), newInterest] // always array
-  }));
-};
+    const handleAddInterest = (newInterest) => {
+        setPayload((prev) => ({
+            ...prev,
+            studentInterest: [...(prev.studentInterest || []), newInterest] // always array
+        }));
+    };
 
-// function to remove interest
-const handleRemoveInterest = (interest) => {
-  setStudentInterest(StudentInterest.filter((item) => item !== interest));
-};
+    // function to remove interest
+    const handleRemoveInterest = (interest) => {
+        setStudentInterest(StudentInterest.filter((item) => item !== interest));
+    };
 
     const options = [
         { value: "health and medicine", label: "Health and Medicine" },
@@ -121,11 +121,11 @@ const handleRemoveInterest = (interest) => {
     const validateEmail = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (payload.email && !emailRegex.test(payload.email)) {
-          setEmailError("Please enter a valid email address");
+            setEmailError("Please enter a valid email address");
         } else {
-          setEmailError("");
+            setEmailError("");
         }
-      };
+    };
 
 
     const removeItem = (item) => {
@@ -239,39 +239,49 @@ const handleRemoveInterest = (interest) => {
         }
     };
 
-        // for loading all states
-        const loadStates = async () => {
-            try {
-                const data = await fetchAllStates();
-                console.log("States data:", data);
-                setStates(data);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-    
-        // Load LGAs when a state is chosen
-        const loadLgas = async (state) => {
-            try {
-                console.log("Fetching LGAs for:", state);
-                const data = await fetchLgasByState(state);
-                console.log("LGAs data:", data);
-                setLgas(Array.isArray(data) ? data : data.lgas || []);
-            } catch (error) {
-                console.error(error);
+    // for loading all states
+    const loadStates = async () => {
+        try {
+            const data = await fetchAllStates();
+            console.log("States data:", data);
+            setStates(data);
+        } catch (error) {
+            console.error("Error loading states:", error);
+        }
+    };
+
+    const loadLgas = async (state_code) => {
+        try {
+            if (!state_code) return;
+            console.log("Fetching LGAs for:", state_code);
+            const data = await fetchLgasByState(state_code);
+            console.log("Fetched LGAs data:", data);
+            if (data.status === "success" && Array.isArray(data.data)) {
+                setLgas(data.data);
+            } else {
                 setLgas([]);
             }
-        };
+        } catch (error) {
+            console.error("Error loading LGAs:", error);
+            setLgas([]);
+        }
+    };
+
+
+
+    const handleStateChange = async (e) => {
+        const selectedStateCode = e.target.value;
+        const selectedState = states.find((s) => s.state_code === selectedStateCode);
     
+        setPayload((prev) => ({
+          ...prev,
+          state_code: selectedStateCode,
+          state: selectedState?.state_name || "",
+          localGovernment: "",
+        }));
     
-    
-        const handleStateChange = async (e) => {
-            const selectedState = e.target.value;
-            setPayload({ ...payload, state: selectedState, localGovernment: "" });
-            await loadLgas(selectedState);
-        };
+        await loadLgas(selectedStateCode);
+      };
 
     useEffect(() => {
         GetAllBanks();
@@ -471,7 +481,7 @@ const handleRemoveInterest = (interest) => {
                                 <Input label='Guardian’s / Parent’s Account Number' placeholder='Enter Guardians Account Number' onChange={handlePayload} value={payload.guardianAccountNumber} id='guardianAccountNumber' />
                                 <Input label='Guardian’s / Parent’s Account Name' placeholder='Enter Guardians Account Name' onChange={handlePayload} value={payload.guardianAccountName} id='guardianAccountName' disabled={isVerifying || payload.guardianAccountName} />
 
-                               <Box w="full">
+                                <Box w="full">
                                     <Input
                                         label="Email Address"
                                         placeholder="Provide the student’s email address"
@@ -486,45 +496,60 @@ const handleRemoveInterest = (interest) => {
                                             {emailError}
                                         </p>
                                     )}
-                                    </Box>
+                                </Box>
 
-                                    <div>
-                                        {/* State Dropdown */}
-                                        <FormControl mb="20px">
-                                            <FormLabel htmlFor="state" fontSize="14px">State</FormLabel>
-                                            <Select
-                                                placeholder="Select State"
-                                                id="state"
-                                                value={payload.state}
-                                                onChange={handleStateChange}
-                                            >
-                                                {states.map((state, index) => (
-                                                    <option key={index} value={state}>
-                                                        {state}
-                                                    </option>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
+                                <div>
+                                    {/* State Dropdown */}
+                                    <FormControl mb="20px">
+                                        <FormLabel htmlFor="state" fontSize="14px">
+                                            State
+                                        </FormLabel>
+                                        <Select
+                                            placeholder="Select State"
+                                            id="state"
+                                            value={payload.state_code || ""}
+                                            onChange={handleStateChange}
+                                        >
+                                            {states.map((state) => (
+                                                <option
+                                                    key={state.id}
+                                                    value={state.state_code}
+                                                >
+                                                    {state.state_name}
+                                                </option>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
 
-                                        {/* LGA Dropdown */}
-                                        <FormControl>
-                                            <FormLabel htmlFor="localGovernment" fontSize="14px">Local Government</FormLabel>
-                                            <Select
-                                                placeholder="Select Local Government"
-                                                id="localGovernment"
-                                                value={payload.localGovernment}
-                                                onChange={handlePayload}
-                                                isDisabled={!payload.state}
-                                            >
-                                                {lgas.map((lga, index) => (
-                                                    <option key={index} value={lga}>
-                                                        {lga}
-                                                    </option>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    </div>
-                                                                    <Input label='City' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.city} id='city' />
+                                    {/* LGA Dropdown */}
+                                    <FormControl>
+                                        <FormLabel
+                                            htmlFor="localGovernment"
+                                            fontSize="14px"
+                                        >
+                                            Local Government
+                                        </FormLabel>
+                                        <Select
+                                            placeholder="Select Local Government"
+                                            id="localGovernment"
+                                            value={payload.localGovernment || ""}
+                                            onChange={(e) =>
+                                                setPayload({
+                                                    ...payload,
+                                                    localGovernment: e.target.value,
+                                                })
+                                            }
+                                            isDisabled={!payload.state_code}
+                                        >
+                                            {lgas.map((lga) => (
+                                                <option key={lga.id} value={lga.lga_name}>
+                                                    {lga.lga_name}
+                                                </option>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </div>
+                                <Input label='City' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.city} id='city' />
                                 <Input label='Residential Address' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.address} id='address' />
 
 
@@ -579,38 +604,38 @@ const handleRemoveInterest = (interest) => {
                                         Please provide the student's details to help sponsors and mentors understand their academic background and potential.                                    </Text>
                                 </Stack>
                                 <Input label="Department" placeholder="e.g science, arts, commercial" onChange={handlePayload} value={payload.department} id='department' />
-<Stack w="100%" pos="relative" top="-15px">
-  <Text
-    fontWeight="500"
-    fontSize="14px"
-    color="#101011"
-    fontFamily="heading"
-  >
-    Class Level
-  </Text>
+                                <Stack w="100%" pos="relative" top="-15px">
+                                    <Text
+                                        fontWeight="500"
+                                        fontSize="14px"
+                                        color="#101011"
+                                        fontFamily="heading"
+                                    >
+                                        Class Level
+                                    </Text>
 
-  <Select
-    border="2px"
-    fontSize="small"
-    fontWeight="normal"
-    size="lg"
-    w="100%"
-    onChange={handlePayload}
-    value={payload.classLevel}
-    id="classLevel"
-    placeholder="Select the student's class level"
-  >
-    {/* JSS */}
-    <option value="JSS1">JSS1</option>
-    <option value="JSS2">JSS2</option>
-    <option value="JSS3">JSS3</option>
+                                    <Select
+                                        border="2px"
+                                        fontSize="small"
+                                        fontWeight="normal"
+                                        size="lg"
+                                        w="100%"
+                                        onChange={handlePayload}
+                                        value={payload.classLevel}
+                                        id="classLevel"
+                                        placeholder="Select the student's class level"
+                                    >
+                                        {/* JSS */}
+                                        <option value="JSS1">JSS1</option>
+                                        <option value="JSS2">JSS2</option>
+                                        <option value="JSS3">JSS3</option>
 
-    {/* SS */}
-    <option value="SS1">SS1</option>
-    <option value="SS2">SS2</option>
-    <option value="SS3">SS3</option>
-  </Select>
-</Stack>
+                                        {/* SS */}
+                                        <option value="SS1">SS1</option>
+                                        <option value="SS2">SS2</option>
+                                        <option value="SS3">SS3</option>
+                                    </Select>
+                                </Stack>
 
                                 <TextArea label='class performance' placeholder="Briefly describe how this student is performing in your current classes (e.g., overall grades, key subjects)." onChange={handlePayload} value={payload.performance} id='performance'></TextArea>
                                 <TextArea label='subject' placeholder="List the main subjects this student is studying this session" onChange={handlePayload} value={payload.subjects} id='subjects'></TextArea>
@@ -686,83 +711,83 @@ const handleRemoveInterest = (interest) => {
                                         Provide details about the student's career goals, interests, leadership roles, and the level of financial support they require.</Text>
                                 </Stack>
                                 <Input label="intended Field of study " placeholder="e.g Nursing Science" onChange={handlePayload} value={payload.intendedFieldOfStudy} id='intendedFieldOfStudy' />
-<Stack w="100%" pos="relative" top="-15px">
-  <Text
-    textTransform="capitalize"
-    fontWeight="500"
-    fontSize="14px"
-    color="#101011"
-    fontFamily="heading"
-  >
-    What are the student's interests?
-  </Text>
+                                <Stack w="100%" pos="relative" top="-15px">
+                                    <Text
+                                        textTransform="capitalize"
+                                        fontWeight="500"
+                                        fontSize="14px"
+                                        color="#101011"
+                                        fontFamily="heading"
+                                    >
+                                        What are the student's interests?
+                                    </Text>
 
-  {/* Input field for typing and adding interests */}
-  <Flex gap={2} align="center">
-    <Input
-      borderWidth="2px"
-      fontSize="13px"
-      borderColor="#34996B"
-      fontWeight="400"
-      size="lg"
-      w="100%"
-      color="#101011"
-      placeholder="Type and press Enter to add interests"
-      value={interestInput}
-      onChange={(e) => setInterestInput(e.target.value)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" && interestInput.trim() !== "") {
-          setStudentInterest([...StudentInterest, interestInput.trim()]);
-          setInterestInput(""); // clear input
-        }
-      }}
-    />
+                                    {/* Input field for typing and adding interests */}
+                                    <Flex gap={2} align="center">
+                                        <Input
+                                            borderWidth="2px"
+                                            fontSize="13px"
+                                            borderColor="#34996B"
+                                            fontWeight="400"
+                                            size="lg"
+                                            w="100%"
+                                            color="#101011"
+                                            placeholder="Type and press Enter to add interests"
+                                            value={interestInput}
+                                            onChange={(e) => setInterestInput(e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter" && interestInput.trim() !== "") {
+                                                    setStudentInterest([...StudentInterest, interestInput.trim()]);
+                                                    setInterestInput(""); // clear input
+                                                }
+                                            }}
+                                        />
 
-    <Box>
-    <Button
-      colorScheme="green"
-      onClick={() => {
-        if (interestInput.trim() !== "") {
-          setStudentInterest([...StudentInterest, interestInput.trim()]);
-          setInterestInput("");
-        }
-      }}
-    >
-      Add
-    </Button>
-    </Box>
-  </Flex>
+                                        <Box>
+                                            <Button
+                                                colorScheme="green"
+                                                onClick={() => {
+                                                    if (interestInput.trim() !== "") {
+                                                        setStudentInterest([...StudentInterest, interestInput.trim()]);
+                                                        setInterestInput("");
+                                                    }
+                                                }}
+                                            >
+                                                Add
+                                            </Button>
+                                        </Box>
+                                    </Flex>
 
-  {/* Display added interests */}
-  <SimpleGrid mt="12px" columns={{ base: 2, md: 3 }} spacing={2}>
-    {StudentInterest?.map((item, i) => (
-      <Flex
-        key={i}
-        cursor="pointer"
-        px="10px"
-        py="10px"
-        rounded={"25px"}
-        fontSize="13px"
-        _hover={{ bg: "blue.blue500" }}
-        bg="greenn.greenn500"
-        w="100%"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Text color="#fff" fontWeight="500" textTransform="capitalize">
-          {item}
-        </Text>
-        <Box
-          fontSize="20px"
-          color="#fff"
-          onClick={() => removeItem(item)}
-        >
-          <IoIosCloseCircle />
-        </Box>
-      </Flex>
-    ))}
-  </SimpleGrid>
-</Stack>
+                                    {/* Display added interests */}
+                                    <SimpleGrid mt="12px" columns={{ base: 2, md: 3 }} spacing={2}>
+                                        {StudentInterest?.map((item, i) => (
+                                            <Flex
+                                                key={i}
+                                                cursor="pointer"
+                                                px="10px"
+                                                py="10px"
+                                                rounded={"25px"}
+                                                fontSize="13px"
+                                                _hover={{ bg: "blue.blue500" }}
+                                                bg="greenn.greenn500"
+                                                w="100%"
+                                                justifyContent="space-between"
+                                                alignItems="center"
+                                            >
+                                                <Text color="#fff" fontWeight="500" textTransform="capitalize">
+                                                    {item}
+                                                </Text>
+                                                <Box
+                                                    fontSize="20px"
+                                                    color="#fff"
+                                                    onClick={() => removeItem(item)}
+                                                >
+                                                    <IoIosCloseCircle />
+                                                </Box>
+                                            </Flex>
+                                        ))}
+                                    </SimpleGrid>
+                                </Stack>
 
                                 <Input label='Higher Education Goals ' placeholder="Enter the student’s higher education aspirations" onChange={handlePayload} value={payload.higherEducationGoals} id='higherEducationGoals' />
                                 <Input label='career goals' placeholder="Enter the career path the student is aspiring toward" onChange={handlePayload} value={payload.careerGoals} id='careerGoals' />
@@ -867,7 +892,7 @@ const handleRemoveInterest = (interest) => {
                                     >
                                         Please upload the student’s essay detailing their career goals, interests, leadership roles, and required financial support.                    </Text>
                                 </Stack>
-                                
+
                                 <TextArea label='Student Essay ' placeholder="Enter the student’s essay" onChange={handlePayload} value={payload.essay} id='essay' />
 
                                 <Flex justifyContent="space-between" w="100%" flexWrap="wrap" >
@@ -988,7 +1013,7 @@ const handleRemoveInterest = (interest) => {
 
                                     />
 
-                                        <ReviewCard
+                                    <ReviewCard
                                         title="LGA"
                                         value={payload.localGovernment}
                                         onClick={() => updateReview("LGA", payload.localGovernment, "localGovernment")}
@@ -1054,21 +1079,21 @@ const handleRemoveInterest = (interest) => {
                                 </Stack>
                                 <Stack border="1px solid #E3EBF2" rounded={"7px"} py="14px" px="17px" spacing="13px" w="100%">
 
-<ReviewCard
-  title="Field of Interest"
-  value={
-    Array.isArray(payload.studentInterest)
-      ? payload.studentInterest.join(", ")
-      : (payload.studentInterest || "")
-  }
-  onClick={() =>
-    updateReview(
-      "Field Of Interest",
-      payload.studentInterest,
-      "studentInterest"
-    )
-  }
-/>
+                                    <ReviewCard
+                                        title="Field of Interest"
+                                        value={
+                                            Array.isArray(payload.studentInterest)
+                                                ? payload.studentInterest.join(", ")
+                                                : (payload.studentInterest || "")
+                                        }
+                                        onClick={() =>
+                                            updateReview(
+                                                "Field Of Interest",
+                                                payload.studentInterest,
+                                                "studentInterest"
+                                            )
+                                        }
+                                    />
 
 
 

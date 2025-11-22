@@ -195,13 +195,25 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
                             <Box
                                 fontSize="12px"
                                 fontWeight="bold"
-                                bg={status === "Pending" ? "#FFF7EB" : "#C0FFE1"}
+                                bg={
+                                    status === "PEDNDING"
+                                        ? "#FFF7EB"
+                                        : status === "FAILED" || status === "FAILED"
+                                            ? "#FFE0E0"
+                                            : "#C0FFE1"
+                                }
                                 borderRadius="16px"
                                 p="4px 8px"
                                 display="inline-flex"
                                 alignItems="center"
                                 ml="5px"
-                                color={status === "Pending" ? "#FFA30C" : "#027A48"}
+                                color={
+                                    status === "PENDING"
+                                        ? "#FFA30C" // Orange for pending
+                                        : status === "FAILED" || status === "FAILED"
+                                            ? "#D92D20" // Red for failed
+                                            : "#027A48" // Green for approved/successful
+                                }
                             >
                                 <Icon as={GoDotFill} boxSize={3} mr={1} /> {status}
                             </Box>
@@ -620,21 +632,21 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
 
             {
                 type === "super-admin-students" && (
-                    <>
+                    < >
                         <Td onClick={() => { router("/super-admin-students-profile") }}>
-                            <HStack spacing={3}>
-                                <Avatar name={name} size='sm' src='https://bit.ly/tioluwani-kolawole' />
+                            <HStack spacing={4}>
+                                <Avatar fontSize={{base: "10px", md: "13px"}} name={name} size='sm' src='https://bit.ly/tioluwani-kolawole' />
                                 <Box>
-                                    <Text fontWeight="medium">{name}</Text>
-                                    <Text fontSize="11px" color="gray.500">
+                                    <Text fontSize={{base: "10px", md: "13px"}} fontWeight="medium">{name}</Text>
+                                    <Text fontSize={{base: "9px", md: "11px"}} color="gray.500">
                                         {email}
                                     </Text>
                                 </Box>
                             </HStack>
                         </Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{schoolName}</Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{essayScore}</Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{fieldOfStudy}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{schoolName}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{essayScore}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{fieldOfStudy}</Td>
                         <Td>
                             <Box
                                 fontSize="12px"
@@ -692,9 +704,9 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
                                 </Box>
                             </HStack>
                         </Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{schoolName}</Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{city}</Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{state}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{schoolName}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{city}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{state}</Td>
                         <Td>
                             <Box
                                 fontSize="12px"
@@ -710,7 +722,7 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
                                 <Icon as={GoDotFill} boxSize={3} mr={1} /> {status}
                             </Box>
                         </Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{date}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{date}</Td>
                         <Td>
                             <Menu isLazy>
                                 <MenuButton as={Box}>
@@ -752,10 +764,10 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
                                 </Box>
                             </HStack>
                         </Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{approvedStudents}</Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{approvedSchools}</Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{city}</Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{state}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{approvedStudents}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{approvedSchools}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{city}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{state}</Td>
                         <Td>
                             <Box
                                 fontSize="12px"
@@ -771,7 +783,7 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
                                 <Icon as={GoDotFill} boxSize={3} mr={1} /> {status}
                             </Box>
                         </Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{date}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{date}</Td>
                         <Td>
                             <Menu isLazy>
                                 <MenuButton as={Box}>
@@ -814,11 +826,11 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
                                 </Box>
                             </HStack>
                         </Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{scholarshipsCreated}</Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{fundedScholarships}</Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{studentsFunded}</Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{city}</Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{state}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{scholarshipsCreated}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{fundedScholarships}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{studentsFunded}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{city}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{state}</Td>
                         <Td>
                             <Box
                                 fontSize="12px"
@@ -834,7 +846,7 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
                                 <Icon as={GoDotFill} boxSize={3} mr={1} /> {status}
                             </Box>
                         </Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{date}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{date}</Td>
                         <Td>
                             <Menu isLazy>
                                 <MenuButton as={Box}>
@@ -876,9 +888,9 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
                                 </Box>
                             </HStack>
                         </Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{studentsFunded}</Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{city}</Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{state}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{studentsFunded}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{city}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{state}</Td>
                         <Td>
                             <Box
                                 fontSize="12px"
@@ -894,7 +906,7 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
                                 <Icon as={GoDotFill} boxSize={3} mr={1} /> {status}
                             </Box>
                         </Td>
-                        <Td fontSize="13px" fontWeight="400" color="#101828">{date}</Td>
+                        <Td fontSize={{base: "10px", md: "13px"}} fontWeight="400" color="#101828">{date}</Td>
                         <Td>
                             <Menu isLazy>
                                 <MenuButton as={Box}>

@@ -75,12 +75,16 @@ export default function Leaderboard() {
   const [loading, setLoading] = useState(true);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [error, setError] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(configuration.sizePerPage);
+  const [totalPosts, setTotalPosts] = useState(0);
 
-  const fetchSchoolAdminLeaderboard = async () => {
+  const fetchSchoolAdminLeaderboard = async (page, size) => {
     try {
-      const response = await GetScholarshipAdminLeaderboardApi();
+      const response = await GetScholarshipAdminLeaderboardApi(page, size);
       console.log("info", response);
       setLeaderboardData(response.data.stats || []);
+      setTotalPosts(response.data.totalItems || 0); // Assuming API returns totalItems
       setLoading(false);
     } catch (err) {
       setError(err.message || "Failed to fetch school admin leaderboard");
@@ -95,13 +99,17 @@ export default function Leaderboard() {
   const [lastName, setLastName] = useState('')
 
   useEffect(() => {
-    fetchSchoolAdminLeaderboard();
+    fetchSchoolAdminLeaderboard(currentPage, postsPerPage);
     const storedName = JSON.parse(localStorage.getItem('onlineUser'));
     if (storedName) {
       setFirstName(`${storedName.firstName}`);
       setLastName(`${storedName.lastName}`);
     }
-  }, []);
+  }, [currentPage, postsPerPage]); // Add currentPage and postsPerPage to dependency array
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
 
   if (isLoading) {
@@ -197,7 +205,12 @@ export default function Leaderboard() {
           <Text fontSize="14px" color="gray.500">No data available</Text>
         )}
       </Stack>
-
+      <Pagination
+        currentPage={currentPage}
+        postsPerPage={postsPerPage}
+        totalPosts={totalPosts}
+        paginate={paginate}
+      />
     </Box>
 
   )

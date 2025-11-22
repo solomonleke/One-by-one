@@ -38,14 +38,19 @@ import { GetAllSuperAdminSchoolsApi } from "../../Utils/ApiCall";
 
 export default function Schools() {
   const [search, setSearch] = useState("");
-  const [CurrentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const [TotalPage, setTotalPage] = useState("");
+  const [currentPagePending, setCurrentPagePending] = useState(1);
+  const [currentPageApproved, setCurrentPageApproved] = useState(1);
+  const [currentPageRejected, setCurrentPageRejected] = useState(1);
+
+  const [totalPendingItems, setTotalPendingItems] = useState(0);
+  const [totalApprovedItems, setTotalApprovedItems] = useState(0);
+  const [totalRejectedItems, setTotalRejectedItems] = useState(0);
+
   const [pendingSchools, setPendingSchools] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [approvedSchools, setApprovedSchools] = useState([]);
   const [rejectedSchools, setRejectedSchools] = useState([]);
-  const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
+  const [PostPerPage] = useState(configuration.sizePerPage); // Changed to const as it's from config
   const [status, setStatus] = useState("PENDING");
 
 
@@ -133,30 +138,36 @@ export default function Schools() {
     },
   ];
 
-  const GetAllSchool = async (status) => {
+  const GetAllSchool = async (currentStatus, page) => {
     try {
-      const result = await GetAllSuperAdminSchoolsApi(CurrentPage, PostPerPage, status);
+      setIsLoading(true);
+      const result = await GetAllSuperAdminSchoolsApi(page, PostPerPage, currentStatus);
       console.log("getallSchools", result);
 
-
-
-      if (result.status === 200 && result.data.data?.schools?.length > 0) {
+      if (result.status === 200 && result.data.data?.schools) {
         const schools = result.data.data.schools;
-        setTotalPage(result.data.data.totalPages);
-        if (status === "PENDING") {
+        const totalItems = Number(result.data.data.totalItems) || 0; // Ensure totalItems is a number
+
+        if (currentStatus === "PENDING") {
           setPendingSchools(schools);
-        } else if (status === "APPROVED") {
+          setTotalPendingItems(totalItems); // Set totalItems
+        } else if (currentStatus === "APPROVED") {
           setApprovedSchools(schools);
-        } else if (status === "REJECTED") {
+          setTotalApprovedItems(totalItems); // Set totalItems
+        } else if (currentStatus === "REJECTED") {
           setRejectedSchools(schools);
+          setTotalRejectedItems(totalItems); // Set totalItems
         }
       } else {
-        if (status === "PENDING") {
+        if (currentStatus === "PENDING") {
           setPendingSchools([]);
-        } else if (status === "APPROVED") {
+          setTotalPendingItems(0); // Reset totalItems
+        } else if (currentStatus === "APPROVED") {
           setApprovedSchools([]);
-        } else if (status === "REJECTED") {
+          setTotalApprovedItems(0); // Reset totalItems
+        } else if (currentStatus === "REJECTED") {
           setRejectedSchools([]);
+          setTotalRejectedItems(0); // Reset totalItems
         }
       }
     } catch (e) {
@@ -165,7 +176,30 @@ export default function Schools() {
       setIsLoading(false);
     }
   };
-  const totalSchools = pendingSchools.length + approvedSchools.length + rejectedSchools.length;
+
+  const totalSchools = totalPendingItems + totalApprovedItems + totalRejectedItems; // Sum of total items
+
+  const handleTabChange = (index) => {
+    const newStatus = ["PENDING", "APPROVED", "REJECTED"][index];
+    setStatus(newStatus);
+    // Reset current page for the new tab
+    if (newStatus === "PENDING") setCurrentPagePending(1);
+    else if (newStatus === "APPROVED") setCurrentPageApproved(1);
+    else if (newStatus === "REJECTED") setCurrentPageRejected(1);
+  };
+
+  // Effects for each tab's pagination
+  useEffect(() => {
+    GetAllSchool("PENDING", currentPagePending);
+  }, [currentPagePending]);
+
+  useEffect(() => {
+    GetAllSchool("APPROVED", currentPageApproved);
+  }, [currentPageApproved]);
+
+  useEffect(() => {
+    GetAllSchool("REJECTED", currentPageRejected);
+  }, [currentPageRejected]);
 
 
 
@@ -174,60 +208,83 @@ export default function Schools() {
   // Filter students first
 
 
-  // Handle page change
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  useEffect(() => {
-    GetAllSchool(status)
-  }, [status, CurrentPage]);
+  // No longer need a single useEffect for status and CurrentPage
+  // The individual useEffects for each currentPage handle this.
 
   return (
     <MainLayout>
-    {
-            isLoading && <Preloader  />
-          }
-      <Box p={6}>
+      {
+        isLoading && <Preloader />
+      }
+      <Box p={{ base: 3, sm: 4, md: 6 }}>
         <Text fontSize="21px" fontWeight="600" color="#101828" mb="28px">
           Schools <span style={{ color: "#667085", fontWeight: "400" }}>({totalSchools})</span>
         </Text>
 
-        <Box border="1px solid #E7E9EC" py="20px" px="31px" borderRadius="10px">
+        <Box
+          border="1px solid #E7E9EC"
+          py={{ base: "16px", md: "20px" }}
+          px={{ base: "15px", md: "31px" }}
+          borderRadius="10px"
+          overflowX={{ base: "auto", md: "visible" }}
+        >
           <Tabs
             index={["PENDING", "APPROVED", "REJECTED"].indexOf(status)}
-            onChange={(index) => setStatus(["PENDING", "APPROVED", "REJECTED"][index])}
+            onChange={handleTabChange}
             isFitted
             variant="unstyled"
           >
-            <Flex justifyContent="space-between" flexWrap="wrap" alignItems="center">
+            <Flex
+              justifyContent={{ base: "center", md: "space-between" }}
+              alignItems="center"
+              flexWrap="wrap"
+              gap={{ base: 3, md: 0 }}
+            >
               <TabList border="1px solid #E7E9EC" rounded="7px" mt={["10px", "10px", "0px", "0px"]}>
                 <Tab
                   fontWeight="500"
                   fontSize="13px"
                   py="8.5px"
                   px="12px"
-                  _selected={{ color: "blue.500" }}
+                  _hover={{ bg: "#F8FAFC" }}
+                  _selected={{
+                    color: "#027A48", // ✅ green text when active
+                    fontWeight: "600",
+                    bg: "#E6FFF2", // ✅ subtle green background
+                  }}
+                  _focus={{ boxShadow: "none" }} // ✅ removes blue outline
                 >
-                  Pending Approval ({pendingSchools.length})
+                  Pending  ({totalPendingItems})
                 </Tab>
                 <Tab
                   fontWeight="500"
                   fontSize="13px"
                   py="8.5px"
                   px="12px"
-                  _selected={{ color: "blue.500" }}
+                  _hover={{ bg: "#F8FAFC" }}
+                  _selected={{
+                    color: "#027A48", // ✅ green text when active
+                    fontWeight: "600",
+                    bg: "#E6FFF2", // ✅ subtle green background
+                  }}
+                  _focus={{ boxShadow: "none" }} // ✅ removes blue outline
                 >
-                  Approved ({approvedSchools.length})
+                  Approved ({totalApprovedItems})
                 </Tab>
                 <Tab
                   fontWeight="500"
                   fontSize="13px"
                   py="8.5px"
                   px="12px"
-                  _selected={{ color: "blue.500" }}
+                  _hover={{ bg: "#F8FAFC" }}
+                  _selected={{
+                    color: "#027A48", // ✅ green text when active
+                    fontWeight: "600",
+                    bg: "#E6FFF2", // ✅ subtle green background
+                  }}
+                  _focus={{ boxShadow: "none" }} // ✅ removes blue outline
                 >
-                  Rejected ({rejectedSchools.length})
+                  Rejected ({totalRejectedItems})
                 </Tab>
               </TabList>
 
@@ -252,13 +309,13 @@ export default function Schools() {
                     <Table variant="simple">
                       <Thead>
                         <Tr>
-                          <Th>Name</Th>
-                          <Th>Principal</Th>
-                          <Th>Approved Students</Th>
-                          <Th>State</Th>
-                          <Th>City</Th>
-                          <Th>Submission Date</Th>
-                          <Th>Actions</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Name</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Principal</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Approved Students</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>State</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>City</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Submission Date</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Actions</Th>
 
                         </Tr>
                       </Thead>
@@ -290,6 +347,12 @@ export default function Schools() {
                       </Tbody>
                     </Table>
                   </TableContainer>
+                  <Pagination
+                    currentPage={currentPagePending}
+                    totalPosts={totalPendingItems}
+                    postsPerPage={PostPerPage}
+                    paginate={setCurrentPagePending}
+                  />
                 </Box>
               </TabPanel>
               <TabPanel>
@@ -298,13 +361,13 @@ export default function Schools() {
                     <Table variant="simple">
                       <Thead>
                         <Tr>
-                          <Th>Name</Th>
-                          <Th>Principal</Th>
-                          <Th>Approved Students</Th>
-                          <Th>State</Th>
-                          <Th>City</Th>
-                          <Th>Submission Date</Th>
-                          <Th>Actions</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Name</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Principal</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Approved Students</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>State</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>City</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Submission Date</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Actions</Th>
 
                         </Tr>
                       </Thead>
@@ -328,7 +391,7 @@ export default function Schools() {
                             ))
                           ) : (
                             <Text textAlign="center" py={5} ml="20px">
-                              No Pending Schools found.
+                              No Approved Schools found.
                             </Text>
                           )
                         }
@@ -336,21 +399,35 @@ export default function Schools() {
                       </Tbody>
                     </Table>
                   </TableContainer>
+                  <Pagination
+                    currentPage={currentPageApproved}
+                    totalPosts={totalApprovedItems}
+                    postsPerPage={PostPerPage}
+                    paginate={setCurrentPageApproved}
+                  />
                 </Box>
               </TabPanel>
               <TabPanel>
-                <Box mt="12px" bg="#fff" border="2px solid #EFEFEF" py='30px' px={["8px", "8px", "18px", "18px"]} rounded='10px'>
+                <Box
+                  mt="12px"
+                  bg="#fff"
+                  border="2px solid #EFEFEF"
+                  py={{ base: "20px", md: "30px" }}
+                  px={{ base: "10px", md: "18px" }}
+                  rounded="10px"
+                  overflowX="auto"
+                >
                   <TableContainer border="1px solid #EDEFF2" borderRadius="7px" mt="15px">
                     <Table variant="simple">
                       <Thead>
                         <Tr>
-                          <Th>Name</Th>
-                          <Th>Principal</Th>
-                          <Th>Approved Students</Th>
-                          <Th>State</Th>
-                          <Th>City</Th>
-                          <Th>Submission Date</Th>
-                          <Th>Actions</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Name</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Principal</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Approved Students</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>State</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>City</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Submission Date</Th>
+                          <Th fontSize={{ base: "12px", md: "14px" }}>Actions</Th>
 
                         </Tr>
                       </Thead>
@@ -374,7 +451,7 @@ export default function Schools() {
                             ))
                           ) : (
                             <Text textAlign="center" py={5} ml="20px">
-                              No Pending Schools found.
+                              No Rejected Schools found.
                             </Text>
                           )
                         }
@@ -382,6 +459,12 @@ export default function Schools() {
                       </Tbody>
                     </Table>
                   </TableContainer>
+                  <Pagination
+                    currentPage={currentPageRejected}
+                    totalPosts={totalRejectedItems}
+                    postsPerPage={PostPerPage}
+                    paginate={setCurrentPageRejected}
+                  />
                 </Box>
               </TabPanel>
 
@@ -389,15 +472,7 @@ export default function Schools() {
           </Tabs>
 
         </Box>
-
-
-        <Pagination
-          currentPage={CurrentPage}
-          totalPosts={TotalPage}
-          paginate={paginate}
-        />
       </Box>
     </MainLayout >
   );
 };
-

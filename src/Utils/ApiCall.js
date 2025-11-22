@@ -202,8 +202,8 @@ export const GoogleSignInApi = (Payload) => {
       if (response.data.token) {
         localStorage.setItem('authToken', response.data.token);
         // Fetch user profile and store it
-        const userProfile = await GetUserProfile();
-        localStorage.setItem('onlineUser', JSON.stringify(userProfile.data));
+        // const userProfile = await GetUserProfile();
+        // localStorage.setItem('onlineUser', JSON.stringify(userProfile.data));
       }
       return response.data; // Return only response data
     })
@@ -240,8 +240,8 @@ export const SignInApi = (Payload) => {
       if (response.data.token) {
         localStorage.setItem('authToken', response.data.token);
         // Fetch user profile and store it
-        const userProfile = await GetUserProfile();
-        localStorage.setItem('onlineUser', JSON.stringify(userProfile.data));
+        // const userProfile = await GetUserProfile();
+        // localStorage.setItem('onlineUser', JSON.stringify(userProfile.data));
       }
       return response.data; // Return only response data
     })
@@ -831,11 +831,11 @@ export const GetScholarshipAdminProfileApi = () => {
     });
 };
 
-export const GetScholarshipAdminLeaderboardApi = () => {
+export const GetScholarshipAdminLeaderboardApi = (pageNo, noItems) => {
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
-    url: `${baseUrl}/scholarship-admin/approved-schools-count/true`,
+    url: `${baseUrl}/scholarship-admin/approved-schools-count/true?pageNo=${pageNo}&noItems=${noItems}`,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`,
@@ -1085,12 +1085,12 @@ export const GetSponsorAdminStats = async () => {
   };
 
   try {
-    console.log("Fetching Sponsor Admin Stats...");
-    console.log("Request Config:", config);
+    // console.log("Fetching Sponsor Admin Stats...");
+    // console.log("Request Config:", config);
 
     const response = await axios.request(config);
 
-    console.log("Full API Response:", response); // Log entire response
+    // console.log("Full API Response:", response); // Log entire response
 
     return response.data.data;
   } catch (error) {
@@ -1123,7 +1123,7 @@ export const fetchSponsorStudents = async () => {
     };
 
     const response = await axios.request(config);
-    console.log("API Response:", JSON.stringify(response.data, null, 2));
+    // console.log("API Response:", JSON.stringify(response.data, null, 2));
 
     if (response.status === 200 && response.data?.status === true && Array.isArray(response.data?.data)) {
       return response.data; // ✅ Return full response, not just `data.data`
@@ -1192,7 +1192,7 @@ export const getActiveScholarships = async () => {
     };
 
     const response = await axios.request(config);
-    console.log("API Response:", JSON.stringify(response.data, null, 2));
+    // console.log("API Response:", JSON.stringify(response.data, null, 2));
 
     // Check if response is valid
     if (response.status === 200 && response.data?.status === true && Array.isArray(response.data?.data?.activeScholarship)) {
@@ -1227,7 +1227,7 @@ export const getScholarshipsBySponsor = async () => {
     };
 
     const response = await axios.request(config);
-    console.log("✅ Full API Response:", JSON.stringify(response.data, null, 2));
+    // console.log("✅ Full API Response:", JSON.stringify(response.data, null, 2));
 
     if (response.status === 200 && response.data?.status === true && Array.isArray(response.data?.data)) {
       console.log("📌 Valid response received: Returning data array"); 
@@ -1610,11 +1610,11 @@ export const GetAllSuperAdminStudentsApi = (pageNo, noItems, status) => {
     });
 };
 
-export const getAllActiveScholarships = async () => {
+export const getAllActiveScholarships = async (pageNo, noItems) => {
   try {
     const config = {
       method: "GET",
-      url: `${baseUrl}/super-admin/all-scholarships`,
+      url: `${baseUrl}/super-admin/all-scholarships?pageNo=${pageNo}&noItems=${noItems}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${getToken()}`, // Include token if provided

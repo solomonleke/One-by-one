@@ -34,6 +34,7 @@ import {
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
+  const [TotalTransactions, setTotalTransactions] = useState(0); // ✅ total count across all tabs
   const [status, setStatus] = useState("PENDING");
   const [CurrentPage, setCurrentPage] = useState(1);
   const [PostPerPage, setPostPerPage] = useState(10);
@@ -48,22 +49,35 @@ export default function Transactions() {
     status: "",
   });
 
-  const GetAllTransactions = async (status) => {
+
+  const GetAllTransactions = async (currentStatus) => {
     try {
       const result = await GetAllSuperAdminTransactionsApi(
         CurrentPage,
         PostPerPage,
-        status
+        currentStatus
       );
-      console.log(" Transactions fetched:", result);
+      console.log("GetAllTransactions result:", result);
 
       if (result.status === 200 && result.data.data?.funds) {
         const data = result.data.data;
-        setTransactions(data.funds || []);
+
+        // ✅ Properly store transactions array
+        setTransactions(data.funds);
+
+        // ✅ Update pagination values
         setTotalPage(data.totalPages || 1);
         setCurrentPage(parseInt(data.currentPage) || 1);
         setTotalItems(data.totalItems || data.funds.length || 0);
         setPostPerPage(data.noItemsPerPage || 10);
+
+        // ✅ Track total transactions across all tabs (if API provides it)
+        if (data.totalItems) {
+          setTotalTransactions(data.totalItems);
+        } else {
+          // fallback if not in API — accumulate totals manually
+          setTotalTransactions(data.totalItems || data.funds.length || 0);
+        }
       }
     } catch (e) {
       setShowToast({
@@ -129,15 +143,15 @@ export default function Transactions() {
         />
       )}
 
-      <Box p={6}>
+      <Box p={{ base: 3, sm: 4, md: 6 }}>
         <Text fontSize="21px" fontWeight="600" color="#101828" mb="28px">
           Transactions{" "}
           <span style={{ color: "#667085", fontWeight: "400" }}>
-            ({transactions.length})
+            ({TotalTransactions})
           </span>
         </Text>
 
-        <Box border="1px solid #E7E9EC" py="20px" px="31px" borderRadius="10px">
+        <Box border="1px solid #E7E9EC" py={{ base: "16px", md: "20px" }} px={{ base: "15px", md: "31px" }} borderRadius="10px">
           <Tabs
             index={["PENDING", "APPROVED", "FAILED"].indexOf(status)}
             onChange={(index) =>
@@ -146,15 +160,65 @@ export default function Transactions() {
             isFitted
             variant="unstyled"
           >
-            <Flex justify="space-between" align="center" flexWrap="wrap">
-              <TabList border="1px solid #E7E9EC" rounded="7px">
-                <Tab fontWeight="500" fontSize="13px" py="8.5px" px="12px">
+            <Flex
+              justifyContent={{ base: "center", md: "space-between" }}
+              alignItems="center"
+              flexWrap="wrap"
+              gap={{ base: 3, md: 0 }}
+            >
+              <TabList
+                border="1px solid #E7E9EC"
+                rounded="7px"
+                flexWrap="wrap"
+                mb={{ base: "10px", md: "0" }}
+              >
+                <Tab
+                  fontWeight="500"
+                  fontSize="13px"
+                  py="8.5px"
+                  px="12px"
+                  _hover={{ bg: "#F8FAFC" }}
+                  _selected={{
+                    color: "#027A48", // ✅ green text when active
+                    fontWeight: "600",
+                    bg: "#E6FFF2", // ✅ subtle green background
+                  }}
+                  _focus={{ boxShadow: "none" }} // ✅ removes blue outline
+                >
                   Pending
                 </Tab>
-                <Tab fontWeight="500" fontSize="13px" py="8.5px" px="12px">
+
+                <Tab
+                  fontWeight="500"
+                  fontSize="13px"
+                  py="8.5px"
+                  px="12px"
+                  borderLeft="1px solid rgb(218, 221, 224)"
+                  borderRight="1px solid rgb(218, 221, 224)"
+                  _hover={{ bg: "#F8FAFC" }}
+                  _selected={{
+                    color: "#027A48",
+                    fontWeight: "600",
+                    bg: "#E6FFF2",
+                  }}
+                  _focus={{ boxShadow: "none" }}
+                >
                   Approved
                 </Tab>
-                <Tab fontWeight="500" fontSize="13px" py="8.5px" px="12px">
+
+                <Tab
+                  fontWeight="500"
+                  fontSize="13px"
+                  py="8.5px"
+                  px="12px"
+                  _hover={{ bg: "#F8FAFC" }}
+                  _selected={{
+                    color: "#027A48",
+                    fontWeight: "600",
+                    bg: "#E6FFF2",
+                  }}
+                  _focus={{ boxShadow: "none" }}
+                >
                   Rejected
                 </Tab>
               </TabList>
@@ -166,6 +230,7 @@ export default function Transactions() {
                 display="inline-flex"
                 alignItems="center"
                 justifyContent="center"
+                _hover={{ bg: "#F8FAFC", cursor: "pointer" }}
               >
                 <IoIosSearch fontSize="17px" />
               </Box>
@@ -183,6 +248,7 @@ export default function Transactions() {
                     color="#2F2F2F"
                     fontWeight="500"
                     fontSize="14px"
+                    _hover={{ bg: "#F8FAFC", cursor: "pointer" }}
                   >
                     <IoFilter />
                     <Text>Filter</Text>
@@ -190,6 +256,8 @@ export default function Transactions() {
                 </MenuButton>
               </Menu>
             </Flex>
+
+
 
             <TabPanels>
               {/* === PENDING TRANSACTIONS === */}
