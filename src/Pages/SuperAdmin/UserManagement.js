@@ -39,17 +39,17 @@ export default function UserManagement() {
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
-  const [TotalPage, setTotalPage] = useState("");
+  const [PostPerPage] = useState(configuration.sizePerPage); // Changed to const
+  const [totalItems, setTotalItems] = useState(0); // Renamed TotalPage to totalItems
 
   const [scholarshipAdmins, setScholarshipAdmins] = useState([]);
-  const [fundAdmins, setFundAdmins] = useState([]);
+  // const [fundAdmins, setFundAdmins] = useState([]);
   const [sponsorAdmins, setSponsorAdmins] = useState([]);
-  const [schoolAdmins, setSchoolAdmins] = useState([]);  
+  const [schoolAdmins, setSchoolAdmins] = useState([]);
   const [selectedTab, setSelectedTab] = useState("school"); // Tabs: 'school', 'scholarship', 'sponsor', 'fund'
 
 
-  
+
 
   const handleTabSwitch = (tab) => {
     setSelectedTab(tab);
@@ -63,32 +63,32 @@ export default function UserManagement() {
   // );
 
 
-  
+
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  const fetchAdmins = async (adminType, setState, currentPage , postPerPage) => {
+  const fetchAdmins = async (adminType, setState, currentPage, postPerPage) => {
     try {
       const result = await getAllAdmins(adminType, currentPage, postPerPage);
       console.log(`${adminType.toUpperCase()} Data:`, result);
-  
+
       // only update TotalPage for the selected tab
       if (
         (adminType === "SCHOOL-ADMIN" && selectedTab === "school") ||
         (adminType === "SCHOLARSHIP-ADMIN" && selectedTab === "scholarship") ||
-        (adminType === "FUND-ADMIN" && selectedTab === "fund") ||
+        // (adminType === "FUND-ADMIN" && selectedTab === "fund") ||
         (adminType === "SPONSOR" && selectedTab === "sponsor")
       ) {
-        setTotalPage(result.data.totalPages);
+        setTotalItems(result.data.totalItems || 0); // Set totalItems from API response
       }
-  
+
       const dataToSet =
         adminType === "SCHOOL-ADMIN"
           ? result.data.schools
           : result.data.admins;
-  
+
       setState(dataToSet);
     } catch (err) {
       console.error(`Error fetching ${adminType}:`, err.message);
@@ -97,10 +97,10 @@ export default function UserManagement() {
       setIsLoading(false);
     }
   };
-  
-  
-  
-  
+
+
+
+
 
   useEffect(() => {
     console.log("Selected Tab:", selectedTab);
@@ -108,26 +108,28 @@ export default function UserManagement() {
       fetchAdmins("SCHOOL-ADMIN", setSchoolAdmins, currentPage, PostPerPage);
     } else if (selectedTab === "scholarship") {
       fetchAdmins("SCHOLARSHIP-ADMIN", setScholarshipAdmins, currentPage, PostPerPage);
-    } else if (selectedTab === "fund") {
-      fetchAdmins("FUND-ADMIN", setFundAdmins, currentPage, PostPerPage);
-    } else if (selectedTab === "sponsor") {
+    } 
+    // else if (selectedTab === "fund") {
+    //   fetchAdmins("FUND-ADMIN", setFundAdmins, currentPage, PostPerPage);
+    // }
+     else if (selectedTab === "sponsor") {
       fetchAdmins("SPONSOR", setSponsorAdmins, currentPage, PostPerPage);
     }
   }, [selectedTab, currentPage, PostPerPage]);
-  
-  
-  
-  
+
+
+
+
 
 
   return (
     <MainLayout>
-    {
-            isLoading && <Preloader  />
-          }
-      <Box p={6}>
+      {
+        isLoading && <Preloader />
+      }
+      <Box p={{ base: 3, sm: 4, md: 6 }}>
         <Text fontSize="21px" fontWeight="600" color="#101828" mb="28px">
-          Users <span style={{ color: "#667085", fontWeight: "400" }}>({schoolAdmins.length + scholarshipAdmins.length + fundAdmins.length + sponsorAdmins.length})</span>
+          Users <span style={{ color: "#667085", fontWeight: "400" }}>({totalItems})</span>
         </Text>
 
         <Box border="1px solid #E7E9EC" py="20px" px="31px" borderRadius="10px">
@@ -138,39 +140,39 @@ export default function UserManagement() {
                 variant="ghost"
                 onClick={() => handleTabSwitch("school")}
                 sx={{
-    bg: selectedTab === "school" ? "greenn.greenn100" : "transparent",
-    color: selectedTab === "school" ? "greenn.greenn500" : "#586375",
-    fontWeight: selectedTab === "school" ? "bold" : "normal",
-    _hover: {
-      bg: "greenn.greenn100",
-    },
-    _focus: {
-      outline: "none",
-    },
-    
-  }}
+                  bg: selectedTab === "school" ? "greenn.greenn100" : "transparent",
+                  color: selectedTab === "school" ? "greenn.greenn500" : "#586375",
+                  fontWeight: selectedTab === "school" ? "bold" : "normal",
+                  _hover: {
+                    bg: "greenn.greenn100",
+                  },
+                  _focus: {
+                    outline: "none",
+                  },
+
+                }}
               >
                 School Admins
               </Button>
               <Button
-  size="sm"
-  variant="ghost"
-  onClick={() => handleTabSwitch("scholarship")}
-  sx={{
-    bg: selectedTab === "scholarship" ? "greenn.greenn100" : "transparent",
-    color: selectedTab === "scholarship" ? "greenn.greenn500" : "#586375",
-    fontWeight: selectedTab === "scholarship" ? "bold" : "normal",
-    _hover: {
-      bg: "greenn.greenn100",
-    },
-    _focus: {
-      outline: "none",
-    },
-    
-  }}
->
-  Scholarship
-</Button>
+                size="sm"
+                variant="ghost"
+                onClick={() => handleTabSwitch("scholarship")}
+                sx={{
+                  bg: selectedTab === "scholarship" ? "greenn.greenn100" : "transparent",
+                  color: selectedTab === "scholarship" ? "greenn.greenn500" : "#586375",
+                  fontWeight: selectedTab === "scholarship" ? "bold" : "normal",
+                  _hover: {
+                    bg: "greenn.greenn100",
+                  },
+                  _focus: {
+                    outline: "none",
+                  },
+
+                }}
+              >
+                Scholarship
+              </Button>
 
 
               <Button
@@ -178,39 +180,39 @@ export default function UserManagement() {
                 variant="ghost"
                 onClick={() => handleTabSwitch("sponsor")}
                 sx={{
-    bg: selectedTab === "sponsor" ? "greenn.greenn100" : "transparent",
-    color: selectedTab === "sponsor" ? "greenn.greenn500" : "#586375",
-    fontWeight: selectedTab === "sponsor" ? "bold" : "normal",
-    _hover: {
-      bg: "greenn.greenn100",
-    },
-    _focus: {
-      outline: "none",
-    },
-    
-  }}
+                  bg: selectedTab === "sponsor" ? "greenn.greenn100" : "transparent",
+                  color: selectedTab === "sponsor" ? "greenn.greenn500" : "#586375",
+                  fontWeight: selectedTab === "sponsor" ? "bold" : "normal",
+                  _hover: {
+                    bg: "greenn.greenn100",
+                  },
+                  _focus: {
+                    outline: "none",
+                  },
+
+                }}
               >
                 Sponsors
               </Button>
-              <Button
+              {/* <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => handleTabSwitch("fund")}
                 sx={{
-    bg: selectedTab === "fund" ? "greenn.greenn100" : "transparent",
-    color: selectedTab === "fund" ? "greenn.greenn500" : "#586375",
-    fontWeight: selectedTab === "fund" ? "bold" : "normal",
-    _hover: {
-      bg: "greenn.greenn100",
-    },
-    _focus: {
-      outline: "none",
-    },
-    
-  }}
+                  bg: selectedTab === "fund" ? "greenn.greenn100" : "transparent",
+                  color: selectedTab === "fund" ? "greenn.greenn500" : "#586375",
+                  fontWeight: selectedTab === "fund" ? "bold" : "normal",
+                  _hover: {
+                    bg: "greenn.greenn100",
+                  },
+                  _focus: {
+                    outline: "none",
+                  },
+
+                }}
               >
                 Fund Admins
-              </Button>
+              </Button> */}
             </Flex>
 
 
@@ -366,7 +368,7 @@ export default function UserManagement() {
                 </Tbody>
               )}
 
-              {selectedTab === "fund" && (
+              {/* {selectedTab === "fund" && (
                 <Tbody>
                   {fundAdmins.map((item, index) => (
                     <TableRow
@@ -382,26 +384,26 @@ export default function UserManagement() {
                     />
                   ))}
                 </Tbody>
-              )}
+              )} */}
             </Table>
           </TableContainer>
         </Box>
 
 
-        
+
 
         <Pagination
-  totalPages={TotalPage}   // ✅ clearer and correct
-  currentPage={currentPage}
-  paginate={paginate}
-/>
+          totalPosts={totalItems}
+          postsPerPage={PostPerPage}
+          currentPage={currentPage}
+          paginate={paginate}
+        />
 
 
 
 
-          
+
       </Box>
     </MainLayout>
   );
 };
-

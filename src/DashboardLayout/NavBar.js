@@ -61,7 +61,7 @@ export default function NavBar({ showSearch = true }) {
     //   setLastName(`${storedName.lastName}`);
     // }
     fetchProfile(); // Fetch profile data when the component mounts
-  }, [onlineUser]); // Add onlineUser to dependency array
+  }, []); // Add onlineUser to dependency array
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 

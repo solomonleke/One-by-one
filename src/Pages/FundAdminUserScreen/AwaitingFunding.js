@@ -110,13 +110,13 @@ export default function FundStudent() {
         />
       )}
       <Box p={6}>
-        <Text fontSize="21px" fontWeight="bold" color="#101828">
+      <Text fontSize={{base: "16px", md: "21px"}} fontWeight="bold" color="#101828">
           Awaiting Funding{" "}
           <span style={{ color: "#667085", fontWeight: "400" }}>
             ({FundRequests.length})
           </span>
         </Text>
-        <Text mb={4}>
+        <Text mb={4} fontSize={{base: "14px", md: "18px"}}>
           Explore a diverse pool of students and their academic aspirations.
         </Text>
 
