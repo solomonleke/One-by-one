@@ -58,6 +58,9 @@ import {
 export default function ScholarshipAdmin() {
 
   const router = useNavigate();
+  const [loadingSchoolId, setLoadingSchoolId] = useState(null);
+  const [buttonType, setButtonType] = useState(null); // "APPROVED" | "REJECTED"
+
 
   const schools = [
     {
@@ -242,32 +245,35 @@ export default function ScholarshipAdmin() {
   const { schoolId } = useParams()
   const { student_id } = useParams()
 
-  const ApproveSchool = async (schoolId, status, note) => {
-    setLoading(true);
+  const ApproveSchool = async (school_id, status) => {
     try {
-      const result = await ApproveSchoolApi(schoolId, status, note)
-
-      console.log("approved school", result)
-
+      setLoadingSchoolId(school_id);
+      setButtonType(status);
+  
+      const result = await ApproveStudentApi(school_id, { status, essayPercentage });
+  
       if (result.status === 200) {
         setShowToast({
           show: true,
-          message: "Approved School!!!",
-          status: "success",
+          message: status === "APPROVED" ? "Approved School!" : "Rejected School!",
+          status: status === "APPROVED" ? "success" : "error",
         });
-        GetAllScholarshipSchool();
+        setTimeout(() => setShowToast({ show: false }), 3000);
+        GetAllScholarshipStudent();
       }
     } catch (e) {
       setShowToast({
         show: true,
-        message: e.response?.data?.message || e.message || "Error Approving School!!!",
+        message: e.response?.data?.message || e.message || "Error Approving Student!",
         status: "error",
       });
-      console.log("error", e.message)
+      setTimeout(() => setShowToast({ show: false }), 3000);
     } finally {
-      setLoading(false);
+      setLoadingSchoolId(null);
+      setButtonType(null);
     }
-  }
+  };
+  
 
 
   const ApproveStudent = async (student_id, status) => {
@@ -505,51 +511,125 @@ export default function ScholarshipAdmin() {
 
 
       <Flex mt="15px" mb={4} justifyContent="space-between" flexWrap="wrap">
-        <Box w={{ base: "100%", md: "60%" }} border="1px solid #eaeaea" p={6} borderRadius={"md"}
-          bg="white" boxShadow={"sm"}>
-          <HStack justifyContent="space-between" borderBottomWidth={1} mb={4}>
-            <Text letterSpacing="-3%" color="#3F4956" Weight="600" size="15px" lineHeight={"18.15px"}>Schools Awaiting Approval</Text>
-            <Text color="#39996B" size="14px" weight="600" cursor="pointer" lineHeight={"22px"} letterSpacing="-1%" onClick={() => {
-              router("/scholarship-admin/schools")
-            }}>See All</Text>
-          </HStack>
+        <Box
+          w={{ base: "100%", md: "60%" }}
+          border="1px solid #eaeaea"
+          p={{ base: 4, md: 6 }}
+          borderRadius="md"
+          bg="white"
+          boxShadow="sm"
+        >
+          <Flex justify="space-between" align="center" mb={4} flexWrap="wrap">
+            <Text
+              letterSpacing="-3%"
+              color="#3F4956"
+              fontWeight="600"
+              fontSize={{ base: "14px", md: "15px" }}
+              lineHeight="18px"
+            >
+              Schools Awaiting Approval
+            </Text>
+            <Text
+              color="#39996B"
+              fontSize={{ base: "12px", md: "14px" }}
+              fontWeight="600"
+              cursor="pointer"
+              onClick={() => router("/scholarship-admin/schools")}
+            >
+              See All
+            </Text>
+          </Flex>
 
-          <VStack borderRadius={"10px"} border=" 1px solid #EDEFF2" spacing={4} align="stretch">
-            {SchoolMainData.length > 0 ? (
-              SchoolMainData.map((school, index) => (
-                <Flex
-                  key={index}
-                  justify="space-between"
-                  align="center"
-                  flexWrap={["wrap", "wrap", "nowrap", "nowrap"]}
-                  p={2}
-                  gap="10px"
-                  borderBottomWidth={index !== schools.length - 1 ? 1 : 0}
-                  borderColor={"gray.200"}>
-                  <HStack w={{ Fill: "264px" }} padding={"16px, 30px, 16px, 12px"} h={{ Fixed: "42px" }} gap={"18px"} opacity={"0px"}>
-                    <Avatar name={school.school_name} w={{ Fixed: "42px" }} opacity={"0px"} h={{ Fixed: "42px" }} gap={"0px"} borderRadius={"280px"} />
-                    <Box  >
+          <VStack
+  borderRadius="10px"
+  border="1px solid #EDEFF2"
+  spacing={0} // remove extra spacing between rows
+  align="stretch"
+>
+  {SchoolMainData.length > 0 ? (
+    SchoolMainData.map((school, index) => (
+      <Flex
+        key={school.id}
+        justify="space-between"
+        align={{ base: "flex-start", md: "center" }}
+        flexDirection={{ base: "column", md: "row" }}
+        p={3}
+        borderBottomWidth={index !== SchoolMainData.length - 1 ? 1 : 0}
+        borderColor="gray.200"
+        gap={2}
+      >
+        {/* Left: Avatar + Info */}
+        <HStack w={{ base: "100%", md: "60%" }} spacing={3}>
+          <Avatar
+            name={school.school_name}
+            src={school.school_logo} // use school logo
+            size="sm"
+          />
+          <Box>
+            <Text
+              fontSize={{ base: "12px", md: "13px" }}
+              fontWeight="500"
+              color="#101828"
+              noOfLines={1}
+            >
+              {school.school_name}
+            </Text>
+            <Text
+              fontSize={{ base: "10px", md: "12px" }}
+              fontWeight="400"
+              color="#667085"
+              noOfLines={1}
+            >
+              {school.principal_email}
+            </Text>
+          </Box>
+        </HStack>
 
-                      <Text lineHeight={"20px"} fontFamily={"Inter"} textAlign="left" letterSpacing="-0.02em%" color="#101828" fontWeight="500" size="13px">{school.school_name}</Text>
-                      <Text fontSize="12px" color="#667085" fontWeight={"400"} fontFamily={"Inter"} lineHeight={"20px"} textAlign={"left"} letterSpacing={"-0.02em"} >{school.principal_email}</Text>
-                    </Box>
-                  </HStack>
+        {/* Right: Buttons */}
+        <HStack
+          spacing={2}
+          mt={{ base: 2, md: 0 }}
+          w={{ base: "100%", md: "auto" }}
+          justify={{ base: "flex-start", md: "flex-end" }}
+        >
+          <Button
+            size="sm"
+            flex={1} // buttons fill width on mobile
+            border="1px solid #39996B"
+            px={3}
+            boxShadow="0px 0px 0px 1px #9CA7AD2B"
+            rightIcon={<IoCloseOutline />}
+            onClick={() => ApproveSchool(school.id, "REJECTED")}
+            isLoading={loadingSchoolId === school.id && buttonType === "REJECTED"}
+          >
+            Reject
+          </Button>
 
+          <Button
+            size="sm"
+            flex={1} // buttons fill width on mobile
+            border="1px solid #39996B"
+            px={3}
+            boxShadow="0px 0px 0px 1px #9CA7AD2B"
+            rightIcon={<FaCheck />}
+            onClick={() => ApproveSchool(school.id, "APPROVED")}
+            isLoading={loadingSchoolId === school.id && buttonType === "APPROVED"}
+          >
+            Approve
+          </Button>
+        </HStack>
+      </Flex>
+    ))
+  ) : (
+    <Text textAlign="center" py={5}>
+      No awaiting approval found.
+    </Text>
+  )}
+</VStack>
 
-                  <HStack>
-                    <Button size="7px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<IoCloseOutline />}>Reject</Button>
-                    <Button size="5px" border='1px solid #39996B' px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B" rightIcon={<FaCheck />} onClick={() => { ApproveSchool(school.id, "APPROVED", "Approved after review") }} isLoading={loading}>Approve</Button>
-                  </HStack>
-                </Flex>
-              ))
-            ) : (
-              <Text textAlign="center" py={5} >
-                No Awaiting approval found.
-              </Text>
-            )
-            }
-          </VStack>
         </Box>
+
+
 
         <Box w={{ base: "100%", md: "38%" }} p={6} borderRadius={"md"}
           bg={"white"} boxShadow={"sm"}>

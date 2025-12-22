@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import MainLayout from '../../DashboardLayout';
 import Button from '../../Components/Button';
 import ProfileCard from '../../Components/ProfileCard';
@@ -12,257 +13,441 @@ import { useNavigate } from 'react-router-dom';
 import { IoChevronBackOutline, IoCloseOutline } from 'react-icons/io5';
 import { BsThreeDots } from 'react-icons/bs';
 import { FaSchoolFlag, FaCheck } from "react-icons/fa6";
+import { GetScholarshipStudentProfileApi, ApproveStudentApi, UpdateStudentProfile } from '../../Utils/ApiCall';
+import Preloader from '../../Components/Preloader';
+import ToastNotification from '../../Components/ToastNotification';
+import EssayViewerModal from '../../Components/EssayViewerModal';
+import ShowToast from '../../Components/ToastNotification';
+
 
 export default function StudentProfile() {
   const router = useNavigate();
+  const { studentId } = useParams();
+  const [studentData, setStudentData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isEssayOpen, setIsEssayOpen] = useState(false);
+  const [essayPercentage, setEssayPercentage] = useState(0);
+  const [buttonLoading, setButtonLoading] = useState(null); // 'APPROVED' or 'REJECTED'
+
+
+  // const [activeStudentId, setActiveStudentId] = useState(null);
+
 
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const { isOpen: isRemoveModalOpen, onOpen: onOpenRemove, onClose: onCloseRemove } = useDisclosure();
+  const [editableStudentData, setEditableStudentData] = useState(null);
+  const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
+
+
+  const fetchStudentProfile = async () => {
+    try {
+      const response = await GetScholarshipStudentProfileApi(studentId);
+
+      const data = response?.data || response;
+      console.log("Student Profile Data:", data);
+
+      setStudentData({
+        ...data,
+        subjects: Array.isArray(data.subjects) ? data.subjects : [],
+        leadership_roles: Array.isArray(data.leadership_roles) ? data.leadership_roles : [],
+        extracurricular_activities: Array.isArray(data.extracurricular_activities) ? data.extracurricular_activities : [],
+        field_of_interest: Array.isArray(data.field_of_interest) ? data.field_of_interest : [],
+      });
+      setEditableStudentData(data);
+    } catch (error) {
+      console.error("Failed to fetch student profile", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openEssayModal = () => {
+    setIsEssayOpen(true);
+  };
+
+
+
+
+  const handleApproveReject = async (verification_status) => {
+    try {
+      setButtonLoading(verification_status); 
+  
+      const safeEssayPercentage =
+        Number(String(studentData?.essay_rating ?? "0").replace("%", "")) || 0;
+  
+      const payload = {
+        status: verification_status,
+        essayPercentage: safeEssayPercentage,
+      };
+  
+      console.log("Approve payload →", payload);
+  
+      const result = await ApproveStudentApi(studentId, payload);
+  
+      if (result.status === 200) {
+        setShowToast({
+          show: true,
+          message: `Student ${verification_status === "APPROVED" ? "Approved" : "Rejected"} successfully`,
+          status: verification_status === "REJECTED" ? "error" : "success",
+        });
+  
+        setTimeout(() => setShowToast({ show: false }), 3000);
+      }
+    } catch (e) {
+      setShowToast({
+        show: true,
+        message: e.response?.data?.message || e.message || "Error Approving Student",
+        status: "error",
+      });
+  
+      setTimeout(() => setShowToast({ show: false }), 3000);
+    } finally {
+      setButtonLoading(null);
+    }
+  };
+  
+
+
+
+
+  const handleUpdateStudentProfile = async (updatedFields) => {
+    try {
+      setLoading(true);
+      await UpdateStudentProfile(studentId, updatedFields);
+      ToastNotification("Success", "Student profile updated successfully.", "success");
+      setEditModalOpen(false);
+      fetchStudentProfile(); // Refresh data
+    } catch (error) {
+      console.error("Update student profile failed", error);
+      ToastNotification("Error", error.message || "Failed to update student profile.", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (studentId) fetchStudentProfile();
+  }, [studentId]);
+
+
+  // if (loading) {
+  //   return <Preloader />;
+  // }
+
+  // if (!studentData) {
+  //   return <Text>Student not found.</Text>;
+  // }
+
 
   return (
     <MainLayout>
-      <Flex justifyContent="space-between" flexWrap="wrap" px={{ base: "10px", md: "0" }}>
+      {
+        loading && <Preloader />
+      }
 
-        <HStack fontSize="14px" fontWeight="600" spacing="10px" cursor="pointer" onClick={() => router('/sponsor-admin/discoverstudents')}>
-          <IoChevronBackOutline />
-          <Text>Back</Text>
-        </HStack>
-      </Flex>
-
-      <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py="17px" px={{ base: "10px", md: "18px" }} rounded="10px">
-        <Flex justifyContent="space-between" flexWrap={{ base: "wrap", md: "nowrap" }} gap="10px" flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "center", md: "flex-start" }}>
-          <HStack spacing="14px" w={{ base: "100%", md: "70%" }} flexWrap={{ base: "wrap", sm: "nowrap" }} justifyContent={{ base: "center", sm: "flex-start" }}>
-            <Avatar name="Philip Amakiri" size="lg" src="https://bit.ly/sage-adebayo" />
-            <Stack spacing="10px" textAlign={{ base: "center", sm: "left" }}>
-              <HStack flexWrap={{ base: "wrap", sm: "nowrap" }} justifyContent={{ base: "center", sm: "flex-start" }}>
-                <Text color="#1F2937" fontSize="25px" fontWeight="700">
-                  Philip Amakiri
-                </Text>
-                <Menu isLazy>
-                  <MenuButton as={Box}>
-                    <Flex justifyContent="center" color="#000000" fontSize="16px">
-                      <BsThreeDots />
-                    </Flex>
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem
-                      onClick={() => setEditModalOpen(true)}
-                      textTransform="capitalize"
-                      fontWeight="500"
-                      color="#2F2F2F"
-                      _hover={{ color: '#2F2F2F', fontWeight: '400', bg: '#E8FFF4' }}
-                    >
-                      <HStack fontSize="14px">
-                        <Text>Edit</Text>
-                      </HStack>
-                    </MenuItem>
-                    <MenuItem
-                      onClick={onOpenRemove}
-                      textTransform="capitalize"
-                      fontWeight="500"
-                      color="#FF4040"
-                      _hover={{ color: '#FF4040', fontWeight: '400', bg: '#E8FFF4' }}
-                    >
-                      <HStack fontSize="14px">
-                        <Text>Remove Student</Text>
-                      </HStack>
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
-              </HStack>
-              <Text color="#667085" fontSize="13px" fontWeight="400">
-                Principal's Email: PhilipAmakiri@gmail.com
+      {showToast.show && (
+        <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
+      )}
+      {!loading && studentData && (
+        <>
+          <Flex justifyContent="space-between" flexWrap="wrap" >
+            <HStack spacing="10px">
+              <Text
+                cursor="pointer"
+                _hover={{ fontWeight: '500' }}
+                color="#626974"
+                fontSize="13px"
+                fontWeight="400"
+                onClick={() => {
+                  router('/scholarship-admin/students');
+                }}
+              >
+                Students
               </Text>
-            </Stack>
-          </HStack>
+              <NextArrow />
+              <Text
+                cursor="pointer"
+                color="#1F2937"
+                fontSize="13px"
+                fontWeight="500"
+                onClick={() => {
+                  router('/scholarship-admin/students/student-profile');
+                }}
+              >
+                Student Profile
+              </Text>
+            </HStack>
 
-          <HStack w={{ base: "100%", md: "auto" }} justifyContent={{ base: "center", md: "flex-end" }}>
-                  <Button border='1px solid #222' fontSize="13px" fontWeight="500" fontStyle="italic" background="white" color="#6B7280" px={2} boxShadow="0px, 0px, 0px, 1px #9CA7AD2B">Verified by: Solomon Adeleke</Button>
-                </HStack>
-        </Flex>
-      </Box>
+            <HStack fontSize="14px" fontWeight="600" spacing="10px" cursor="pointer" onClick={() => router('/scholarship-admin/students')}>
+              <IoChevronBackOutline />
+              <Text>Back</Text>
+            </HStack>
+          </Flex>
 
-      <Flex justifyContent={"space-between"} flexWrap="wrap" mt="16px" flexDirection={{ base: "column", md: "row" }}>
-          <Box w={{ base: "100%", md: "40%" }} mb={{ base: "20px", md: "0" }}>
-
-            <Stack spacing="16px">
-
-              <Box borderColor={"#EDEFF2"} py={"20.5px"} px={{ base: "8px", md: "17px" }} borderRadius={"10px"} borderWidth={"1px"}>
-                <ProfileHeading title="Student Details" />
-
-
-
-                <Stack spacing={"14px"} mt="14px">
-
-                  <ProfileCard
-                    title="full name"
-                    value="Adeleke Solomon"
-                  />
-
-                  <ProfileCard
-                    title="date of birth"
-                    value="22/04/2007"
-                  />
-
-                  <ProfileCard
-                    title="Gender"
-                    value="male"
-                  />
-
-
-                  <ProfileCard
-                    title="phone number"
-                    value="+234000000001"
-                  />
-
-                  <ProfileCard
-                    title="Guardian’s Phone number"
-                    value="N/A"
-                  />
-
-                  <ProfileCard
-                    title="address"
-                    value="84 Balogun Road, Ago palace way"
-                  />
-
-                  <ProfileCard
-                    title="city"
-                    value="okota"
-                  />
-
-                  <ProfileCard
-                    title="state"
-                    value="lagos"
-                  />
-
-                  <ProfileCard
-                    title="zip code"
-                    value="100001"
-                  />
-
+          <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py="17px" px={["8px", "8px", "18px", "18px"]} rounded="10px">
+            <Flex justifyContent="space-between" flexWrap="wrap" gap="10px">
+              <HStack   >
+                <Avatar name={studentData.full_name} size="lg" src={studentData.picture} />
+                <Stack >
+                  <HStack>
+                    <Text color="#1F2937" fontSize="25px" fontWeight="700">
+                      {studentData.full_name}
+                    </Text>
+                  </HStack>
+                  <Text color="#667085" fontSize="13px" fontWeight="400">
+                    {studentData.email}
+                  </Text>
                 </Stack>
-              </Box>
+              </HStack>
+
+              <HStack  w={{base:"100%", md: "auto"}} >
+                <Button
+                  size="7px"
+                  border='1px solid #39996B'
+                  px={2}
+                  boxShadow="0px 0px 0px 1px #9CA7AD2B"
+                  rightIcon={<IoCloseOutline />}
+                  onClick={() => handleApproveReject('REJECTED')}
+                  isLoading={buttonLoading  === 'REJECTED'}
+                  loadingText="Rejecting"
+                >
+                  Reject
+                </Button>
+
+                <Button
+                  size="5px"
+                  
+                  border='1px solid #39996B'
+                  px={2}
+                  boxShadow="0px 0px 0px 1px #9CA7AD2B"
+                  rightIcon={<FaCheck />}
+                  onClick={() => handleApproveReject('APPROVED')}
+                  isLoading={buttonLoading  === 'APPROVED'}
+                  loadingText="Approving"
+                >
+                  Approve
+                </Button>
+              </HStack>
+
+            </Flex>
+          </Box>
+
+          <Flex justifyContent={"space-between"} flexWrap="wrap" mt="16px">
+            <Box w={["100%", "100%", "40%", "40%"]} >
+
+              <Stack spacing="16px">
+
+                <Box borderColor={"#EDEFF2"} py={"20.5px"} px={["8px", "8px", "17px", "17px"]} borderRadius={"10px"} borderWidth={"1px"}>
+                  <ProfileHeading title="Student Details" />
 
 
-              <Box borderColor={"#EDEFF2"} py={"20.5px"} px={{ base: "8px", md: "17px" }} borderRadius={"10px"} borderWidth={"1px"}>
-                <ProfileHeading title="Academic background" />
+
+                  <Stack spacing={"14px"} mt="14px">
+
+                    <ProfileCard
+                      title="full name"
+                      value={studentData.full_name}
+                    />
+
+                    <ProfileCard
+                      title="date of birth"
+                      value={studentData.date_of_birth}
+                    />
+
+                    <ProfileCard
+                      title="Gender"
+                      value={studentData.gender}
+                    />
 
 
+                    <ProfileCard
+                      title="phone number"
+                      value={studentData.phone_number}
+                    />
 
-                <Stack spacing={"14px"} mt="14px">
-                  <ProfileCard
-                    title="department"
-                    value="science"
-                  />
-                  <ProfileCard
-                    title="class level"
-                    value="SS2"
-                  />
-                  <ProfileCard
-                    title="department"
-                    value="science"
-                  />
-                  <ProfileCard
-                    title="class performance"
-                    value="98% average score"
-                  />
-                  <ProfileCard
-                    title="subject"
-                    value="Maths, eng, phy, geo, che, biology"
-                  />
-                </Stack>
-              </Box>
-              <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
+                    <ProfileCard
+                      title="Guardian’s Phone number"
+                      value={studentData.guardian_phone_number}
+                    />
 
-              <Text fontSize={"14px"} textTransform={"capitalize"} fontWeight={"500"}>historical term results/average</Text>
+                    <ProfileCard
+                      title="address"
+                      value={studentData.address}
+                    />
 
-              <HStack  borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} mt="10px" borderWidth={"1px"} flexWrap={{ base: "wrap", sm: "nowrap" }}>
-                <HStack>
-                  <Pdf />
-                  <Stack>
-                    <Text color={"#353535"} fontWeight={"500"} fontSize={"13px"} lineHeight={"20px"}>davidafolarin_termresults.pdf</Text>
+                    <ProfileCard
+                      title="city"
+                      value={studentData.city}
+                    />
+
+                    <ProfileCard
+                      title="state"
+                      value={studentData.state}
+                    />
+
+                    <ProfileCard
+                      title="zip code"
+                      value={studentData.zip_code}
+                    />
+
                   </Stack>
-                </HStack>
-              <Spacer/>
-                <Text color={"#39996B"} fontSize={"13px"} fontWeight={"600"} lineHeight={"20px"} cursor={"pointer"}>View</Text>
-              </HStack>
-            </Box>
-            </Stack>
+                </Box>
+
+
+                <Box borderColor={"#EDEFF2"} py={"20.5px"} px={["8px", "8px", "17px", "17px"]} borderRadius={"10px"} borderWidth={"1px"}>
+                  <ProfileHeading title="Academic background" />
 
 
 
-          </Box>
-
-
-          <Box w={{ base: "100%", md: "58%" }}>
-
-
-            <Stack spacing="16px">
-              <HStack background={"linear-gradient(90deg, #39996B 0%, rgba(57, 153, 107, 0) 100%)"} py={"12px"} px={"16px"} borderRadius={"8px"} justifyContent={"space-between"} flexWrap={{ base: "wrap", sm: "nowrap" }}>
-                <Text fontWeight={"600"} fontSize={"16px"} lineHeight={"16.94px"} color={"#FFFFFF"}>Essay Score</Text>
-
-                <Button background='#FFFFFF' w={{ base: "100%", sm: "10%" }} color='#39996B'>86%</Button>
-              </HStack>
-
-              <HStack bg="#fff" border="1px solid #EFEFEF" rounded={"8px"} py={"12px"} px={"16px"} justifyContent={"space-between"} flexWrap={{ base: "wrap", sm: "nowrap" }}>
-                <Text textTransform={"capitalize"} fontWeight={"500"} fontSize={"14px"} color={"#2F2F2F"}>intended field of study</Text>
-                <Text textTransform={"capitalize"} fontWeight={"600"} fontSize={"14px"} color={"#2F2F2F"}>nursing science</Text>
-              </HStack>
-
-              <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
-                <ProfileHeading title="student’s field of interest" />
-
-                <HStack spacing="13px" mt="18px" flexWrap="wrap">
-                  <Text textTransform={"capitalize"} backgroundColor={"#D9FFED"} rounded={"8px"} py={"10px"} px={"16px"} cursor={"pointer"} textColor={"green"} fontWeight={"500"} fontSize={"14px"} letterSpacing={"-1%"} border={"1px solid #39996B7A"}>health and medicine</Text>
-                  <Text textTransform={"capitalize"} backgroundColor={"#D9FFED"} rounded={"8px"} py={"10px"} px={"16px"} cursor={"pointer"} textColor={"green"} fontWeight={"500"} fontSize={"14px"} letterSpacing={"-1%"} border={"1px solid #39996B7A"}>science</Text>
-                  <Text textTransform={"capitalize"} backgroundColor={"#D9FFED"} rounded={"8px"} py={"10px"} px={"16px"} cursor={"pointer"} textColor={"green"} fontWeight={"500"} fontSize={"14px"} letterSpacing={"-1%"} border={"1px solid #39996B7A"}>nursing process</Text>
-                </HStack>
-
-              </Box>
-
-
-              <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
-                <ProfileHeading title="Higher education goals" />
-
-                <Text fontWeight={"400"} mt="18px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>Legacy Scholars Academy, founded in 2005, is a nurturing educational institution dedicated to empowering students from underserved communities. Our mission is to foster academic excellence, leadership skills, and social responsibility.</Text>
-              </Box>
-
-              <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
-                <ProfileHeading title="career goals" />
+                  <Stack spacing={"14px"} mt="14px">
+                    <ProfileCard
+                      title="department"
+                      value={studentData.department}
+                    />
+                    <ProfileCard
+                      title="class level"
+                      value={studentData.class_level}
+                    />
+                    <ProfileCard
+                      title="class performance"
+                      value={studentData.class_performance}
+                    />
+                    <ProfileCard
+                      title="subject"
+                      value={studentData.subjects.join(', ')}
+                    />
+                  </Stack>
+                </Box>
+                <Box borderColor={"#EDEFF2"} py={"20.5px"} px={["8px", "8px", "17px", "17px"]} borderRadius={"10px"} borderWidth={"1px"}>
+                  <ProfileHeading title="Leadership" />
 
 
 
-                <Text fontWeight={"400"} mt="18px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>Legacy Scholars Academy, founded in 2005, is a nurturing educational institution dedicated to empowering students from underserved communities. Our mission is to foster academic excellence, leadership skills, and social responsibility.</Text>
-              </Box>
+                  <Stack spacing={"14px"} mt="14px">
+                    <ProfileCard
+                      title="leadership roles"
+                      value={studentData.leadership_roles.join(', ')}
+                    />
+                    <ProfileCard
+                      title="extracurricular activities"
+                      value={studentData.extracurricular_activities.join(', ')}
+                    />
 
-              <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
 
-              <Text fontSize={"14px"} textTransform={"capitalize"} fontWeight={"500"}>student essay</Text>
+                  </Stack>
+                </Box>
+              </Stack>
 
-              <HStack  borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} mt="10px" borderWidth={"1px"}>
-                <Text fontWeight={"400"} fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>Education is the key to breaking barriers and unlocking opportunities and I have always held this belief close to my heart. My name is Phillip Amakiri, and I am a dedicated and hardworking student who is devoted to making the right decisions that will lead me forward in life.</Text>
-              </HStack>
+
+
             </Box>
 
 
-
-            </Stack>
-
+            <Box w={["100%", "100%", "58%", "58%"]}>
 
 
+              <Stack spacing="16px">
+                <HStack background={"linear-gradient(90deg, #39996B 0%, rgba(57, 153, 107, 0) 100%)"} py={"12px"} px={"16px"} borderRadius={"8px"} justifyContent={"space-between"}>
+                  <Text fontWeight={"600"} fontSize={"16px"} lineHeight={"16.94px"} color={"#FFFFFF"}>Essay Score</Text>
+
+                  <Button background="#FFFFFF" w="10%" color="#39996B">
+                    {studentData.essay_rating ?? 0}
+                  </Button>
+                </HStack>
+
+                <HStack bg="#fff" border="1px solid #EFEFEF" rounded={"8px"} py={"12px"} px={"16px"} justifyContent={"space-between"}>
+                  <Text textTransform={"capitalize"} fontWeight={"500"} fontSize={"14px"} color={"#2F2F2F"}>intended field of study</Text>
+                  <Text textTransform={"capitalize"} fontWeight={"600"} fontSize={"14px"} color={"#2F2F2F"}>{studentData.intended_field_of_study}</Text>
+                </HStack>
+
+                <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
+                  <ProfileHeading title="student’s field of interest" />
+
+                  <HStack spacing="13px" mt="18px">
+                    {studentData.field_of_interest.map((interest, index) => (
+                      <Text key={index} textTransform={"capitalize"} backgroundColor={"#D9FFED"} rounded={"8px"} py={"10px"} px={"16px"} cursor={"pointer"} textColor={"green"} fontWeight={"500"} fontSize={"14px"} letterSpacing={"-1%"} border={"1px solid #39996B7A"}>{interest}</Text>
+                    ))}
+                  </HStack>
+
+                </Box>
 
 
-          
+                <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
+                  <ProfileHeading title="Higher education goals" />
 
-           
+                  <Text fontWeight={"400"} mt="18px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>{studentData.higher_education_goals}</Text>
+                </Box>
 
-          
-          </Box>
-        </Flex>
+                <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
+                  <ProfileHeading title="career goals" />
 
 
-      <RemoveNotification isOpen={isRemoveModalOpen} onClose={onCloseRemove} />
-      <ProfileUpdateNotification isOpen={isEditModalOpen} onClose={() => setEditModalOpen(false)} />
+
+                  <Text fontWeight={"400"} mt="18px" fontSize={"13px"} lineHeight={"27px"} color={"#626974"}>{studentData.career_goals}</Text>
+                </Box>
+
+                <Box borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
+
+                  <Text fontSize={"14px"} textTransform={"capitalize"} fontWeight={"500"}>student essay</Text>
+
+                  <HStack borderColor={"#EDEFF2"} p={"20px"} borderRadius={"10px"} borderWidth={"1px"}>
+                    <HStack>
+                      <Pdf />
+                      <vStack>
+                        <Text color={"#353535"} fontWeight={"500"} fontSize={"13px"} lineHeight={"20px"}>{studentData.full_name}_studentessay.pdf</Text>
+                        <Text color={"#989692"} fontSize="11px" fontWeight="400" lineHeight="20px">200KB</Text>
+                      </vStack>
+                    </HStack>
+                    <Spacer />
+                    <Text
+                      color="#39996B"
+                      fontSize="13px"
+                      fontWeight="600"
+                      cursor="pointer"
+                      onClick={openEssayModal}
+                    >
+                      View
+                    </Text>
+
+                  </HStack>
+                </Box>
+
+
+
+              </Stack>
+
+
+
+
+
+
+
+
+
+
+            </Box>
+          </Flex>
+
+          <EssayViewerModal
+            isOpen={isEssayOpen}
+            onClose={() => setIsEssayOpen(false)}
+            essay={studentData.essay}
+          />
+
+
+
+
+          <RemoveNotification isOpen={isRemoveModalOpen} onClose={onCloseRemove} />
+          {studentData && (
+            <ProfileUpdateNotification
+              isOpen={isEditModalOpen}
+              onClose={() => setEditModalOpen(false)}
+              initialData={studentData}
+              onUpdate={handleUpdateStudentProfile}
+            />
+          )}
+        </>
+      )}
     </MainLayout>
   );
 }

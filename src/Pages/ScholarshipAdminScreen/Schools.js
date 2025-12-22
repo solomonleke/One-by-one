@@ -375,9 +375,10 @@ export default function Schools() {
                                                     pendingSchools.map((item, i) => (
 
                                                         <TableRow
-                                                            key={item.id}
+                                                            schoolId={item.id}
                                                             type={"scholarship-admin-schools"}
                                                             schoolName={item.school_name}
+                                                              school_logo={item.school_logo} // pass the logo here
                                                             email={item.principal_email}
                                                             submissionDate={item.created_at}
                                                             status={item.account_verified}
@@ -440,7 +441,9 @@ export default function Schools() {
 
                                                         <TableRow
                                                             type={"scholarship-admin-schools"}
+                                                            schoolId={item.id}
                                                             schoolName={item.school_name}
+                                                              school_logo={item.school_logo} // pass the logo here
                                                             email={item.principal_email}
                                                             submissionDate={item.created_at}
                                                             status={item.account_verified}
@@ -493,7 +496,9 @@ export default function Schools() {
 
                                                         <TableRow
                                                             type={"scholarship-admin-schools"}
+                                                            schoolId={item.id}
                                                             schoolName={item.school_name}
+                                                              school_logo={item.school_logo} // pass the logo here
                                                             email={item.principal_email}
                                                             submissionDate={item.created_at}
                                                             status={item.account_verified}

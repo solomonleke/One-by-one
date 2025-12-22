@@ -16,7 +16,7 @@ import ReceiptModal from './ReceiptModal';
 
 
 
-export default function TableRow({ type, receiptUrl, stationary, total, name, request, requestId, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools, isLoading, loading, reference, scholarship_cost, scholarship_name, onApprove, onReject, receipt, user }) {
+export default function TableRow({ type, receiptUrl, stationary, studentId, school_logo, schoolId, total, name, request, requestId, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools, isLoading, loading, reference, scholarship_cost, scholarship_name, onApprove, onReject, receipt, user }) {
 
     const router = useNavigate()
 
@@ -226,10 +226,13 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
             {
                 type === "scholarship-admin-schools" && (
                     <>
-                        <Td onClick={() => { router("/scholarship-admin/schools/school-profile") }}>
+                        <Td onClick={() => { router(`/scholarship-admin/schools/school-profile/${schoolId}`) }}>
                             <HStack cursor={"pointer"}>
-                                <Avatar name={schoolName} size='sm' src='https://bit.ly/tioluwani-kolawole' />
-                                <Box>
+                            <Avatar
+                                    name={schoolName}
+                                    size="sm"
+                                    src={school_logo ? school_logo : undefined} // Use school_logo dynamically
+                                    />                                    <Box>
                                     <Text color={"#101828"} fontWeight={"500"} fontSize={"13px"} >{schoolName}</Text>
                                     <Text color={"#667085"} textTransform={"lowercase"} fontWeight={"400"} fontSize={"11px"} >{email}</Text>
 
@@ -254,7 +257,7 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
             {
                 type === "scholarship-admin-students" && (
                     <>
-                        <Td onClick={() => { router("/scholarship-admin/students/student-profile") }}>
+                        <Td onClick={() => { router(`/scholarship-admin/students/student-profile/${studentId}`) }}>
                             <HStack cursor={"pointer"}>
                                 <Avatar name={name} size='sm' src='https://bit.ly/tioluwani-kolawole' />
                                 <Box>
@@ -586,7 +589,7 @@ export default function TableRow({ type, receiptUrl, stationary, total, name, re
             {
                 type === "super-admin-schools" && (
                     <>
-                        <Td onClick={() => { router("/super-admin-schools-profile") }}>
+                        <Td onClick={() => { router("/super-admin/schools/school-profile/:schoolId") }}>
                             <HStack spacing={3}>
                                 <Avatar name={name} size='sm' src='https://bit.ly/tioluwani-kolawole' />
                                 <Box>
