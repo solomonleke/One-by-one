@@ -328,7 +328,7 @@ const FetchRejected = () => {
                         pendingStudents.length > 0 ? (
                           pendingStudents.map((item, i) => (
                             <TableRow
-                              key={i}
+                              studentId={item.id}
                               type={"scholarship-admin-students"}
                               name={item.full_name}
                               email={item.email}
@@ -382,7 +382,7 @@ const FetchRejected = () => {
                         approvedStudents.length > 0 ? (
                           approvedStudents.map((item, i) => (
                             <TableRow
-                              key={i}
+                              studentId={item.id}
                               type={"scholarship-admin-students"}
                               name={item.full_name}
                               email={item.email}
@@ -435,7 +435,7 @@ const FetchRejected = () => {
                         rejectedStudents.length > 0 ? (
                           rejectedStudents.map((item, i) => (
                             <TableRow
-                              key={i}
+                              studentId={item.id}
                               type={"scholarship-admin-students"}
                               name={item.full_name}
                               email={item.email}

@@ -125,7 +125,7 @@ export default function StudentManagement() {
     }
   };
 
-  
+
 
   const handleChange = (e) => {
     setEditedData({ ...editedData, [e.target.name]: e.target.value });
@@ -315,7 +315,7 @@ export default function StudentManagement() {
     try {
       const result = await GetAllStudentApi(CurrentPage, PostPerPage, status);
       console.log("getallStudent", result);
-  
+
       if (result.status == 200) {
         setMainData(result.data.data.students);
         setFilterData(result.data.data.students);
@@ -325,7 +325,7 @@ export default function StudentManagement() {
         const totalPosts = result.data.data.totalPages * PostPerPage;
         setTotalPage(totalPosts);
       }
-  
+
       console.log("students", result.data.data.students);
     } catch (e) {
       console.log("error", e.message);
@@ -347,7 +347,7 @@ export default function StudentManagement() {
 
     setFilterData(MainData);
   };
-  const filterApproved =  () => {
+  const filterApproved = () => {
     setAll(false);
     setApproved(true);
     setPending(false);
@@ -357,9 +357,9 @@ export default function StudentManagement() {
     getallStudent("APPROVED");
 
 
-    
+
   };
-  const filterPending =  ()  => {
+  const filterPending = () => {
     setAll(false);
     setApproved(false);
     setPending(true);
@@ -369,7 +369,7 @@ export default function StudentManagement() {
     getallStudent("PENDING");
 
 
-    
+
   };
   const filterRejected = () => {
     setAll(false);
@@ -381,9 +381,9 @@ export default function StudentManagement() {
     getallStudent("REJECTED");
 
 
-    
+
   };
-  
+
 
   const fetchStudentStats = async () => {
     try {
@@ -416,7 +416,7 @@ export default function StudentManagement() {
       }
     };
 
-    if(All === true){
+    if (All === true) {
       getallStudent(null)
     } else if (Approved === true) {
       getallStudent("APPROVED")
@@ -424,7 +424,7 @@ export default function StudentManagement() {
       getallStudent("PENDING")
     } else if (Rejected === true) {
       getallStudent("REJECTED")
-      
+
     }
 
     loadStats();
@@ -439,13 +439,13 @@ export default function StudentManagement() {
     router(`/school-admin/student-management/student-profile/${student_Id}`);
   };
 
-  
+
   return (
     <MainLayout>
 
-    {
-      isLoading && <Preloader  />
-    }
+      {
+        isLoading && <Preloader />
+      }
       {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
       )}
@@ -741,167 +741,167 @@ export default function StudentManagement() {
           </TableContainer>
 
           <Modal isOpen={isEditModalOpen} onClose={onCloseEdit} scrollBehavior="inside">
-  <ModalOverlay />
-  {showToast.show && (
-    <ShowToast
-      message={showToast.message}
-      status={showToast.status}
-      show={showToast.show}
-      duration={showToast.duration}
-    />
-  )}
-  <ModalContent maxW="80%" height="80vh">
-    <ModalHeader>Edit Student Details</ModalHeader>
-    <ModalCloseButton />
-    <ModalBody>
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-        <FormControl>
-          <FormLabel>Full Name</FormLabel>
-          <Input name="full_name" value={editedData.full_name || ""} onChange={handleChange} />
-        </FormControl>
+            <ModalOverlay />
+            {showToast.show && (
+              <ShowToast
+                message={showToast.message}
+                status={showToast.status}
+                show={showToast.show}
+                duration={showToast.duration}
+              />
+            )}
+            <ModalContent maxW="80%" height="80vh">
+              <ModalHeader>Edit Student Details</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                  <FormControl>
+                    <FormLabel>Full Name</FormLabel>
+                    <Input name="full_name" value={editedData.full_name || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl isInvalid={!!emailError}>
-          <FormLabel>Email</FormLabel>
-          <Input name="email" value={editedData.email || ""} onChange={handleChange} type="email" onBlur={() => validateEmail(editedData.email, setEmailError)} />
-          {emailError ? <FormHelperText color="red.500">{emailError}</FormHelperText> : null}
-        </FormControl>
+                  <FormControl isInvalid={!!emailError}>
+                    <FormLabel>Email</FormLabel>
+                    <Input name="email" value={editedData.email || ""} onChange={handleChange} type="email" onBlur={() => validateEmail(editedData.email, setEmailError)} />
+                    {emailError ? <FormHelperText color="red.500">{emailError}</FormHelperText> : null}
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Date of Birth</FormLabel>
-          <Input name="dob" value={editedData.dob || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>Date of Birth</FormLabel>
+                    <Input name="dob" value={editedData.dob || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Gender</FormLabel>
-          <Input name="gender" value={editedData.gender || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>Gender</FormLabel>
+                    <Input name="gender" value={editedData.gender || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Phone Number</FormLabel>
-          <Input name="phone_number" value={editedData.phone_number || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>Phone Number</FormLabel>
+                    <Input name="phone_number" value={editedData.phone_number || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Guardian Phone Number</FormLabel>
-          <Input name="guardian_phone_number" value={editedData.guardian_phone_number || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>Guardian Phone Number</FormLabel>
+                    <Input name="guardian_phone_number" value={editedData.guardian_phone_number || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Address</FormLabel>
-          <Input name="address" value={editedData.address || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>Address</FormLabel>
+                    <Input name="address" value={editedData.address || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>City</FormLabel>
-          <Input name="city" value={editedData.city || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>City</FormLabel>
+                    <Input name="city" value={editedData.city || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>State</FormLabel>
-          <Input name="state" value={editedData.state || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>State</FormLabel>
+                    <Input name="state" value={editedData.state || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Department</FormLabel>
-          <Input name="department" value={editedData.department || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>Department</FormLabel>
+                    <Input name="department" value={editedData.department || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Class Level</FormLabel>
-          <Input name="class_level" value={editedData.class_level || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>Class Level</FormLabel>
+                    <Input name="class_level" value={editedData.class_level || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Intended Field of Study</FormLabel>
-          <Input name="intended_field_of_study" value={editedData.intended_field_of_study || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>Intended Field of Study</FormLabel>
+                    <Input name="intended_field_of_study" value={editedData.intended_field_of_study || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Class Performance</FormLabel>
-          <Input name="class_performance" value={editedData.class_performance || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>Class Performance</FormLabel>
+                    <Input name="class_performance" value={editedData.class_performance || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Subjects</FormLabel>
-          <Input name="subjects" value={editedData.subjects || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>Subjects</FormLabel>
+                    <Input name="subjects" value={editedData.subjects || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Student Interest</FormLabel>
-          <Input name="student_interest" value={editedData.student_interest || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>Student Interest</FormLabel>
+                    <Input name="student_interest" value={editedData.student_interest || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Scholarship Need</FormLabel>
-          <Input name="scholarship_need" value={editedData.scholarship_need || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>Scholarship Need</FormLabel>
+                    <Input name="scholarship_need" value={editedData.scholarship_need || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Higher Education Goals</FormLabel>
-          <Input name="higher_education_goals" value={editedData.higher_education_goals || ""} onChange={handleChange} />
-        </FormControl>
+                  <FormControl>
+                    <FormLabel>Higher Education Goals</FormLabel>
+                    <Input name="higher_education_goals" value={editedData.higher_education_goals || ""} onChange={handleChange} />
+                  </FormControl>
 
-        <FormControl>
-          <FormLabel>Career Goals</FormLabel>
-          <Input name="career_goals" value={editedData.career_goals || ""} onChange={handleChange} />
-        </FormControl>
-      </SimpleGrid>
-    </ModalBody>
+                  <FormControl>
+                    <FormLabel>Career Goals</FormLabel>
+                    <Input name="career_goals" value={editedData.career_goals || ""} onChange={handleChange} />
+                  </FormControl>
+                </SimpleGrid>
+              </ModalBody>
 
-    <ModalFooter>
-      <Flex
-        direction={{ base: "column", md: "row" }}
-        w="100%"
-        gap={4}
-        justify="flex-end"
-        align="center"
-      >
-        <Button
-        variant="outline"
-        _focus={{ boxShadow: 'none' }}
-  background="#39996B"
-  color="white"
-  border="1px solid #39996B"
-  onClick={handleSave}
-  _hover={{
-    background: "transparent",
-    color: "#39996B",
-    border: "1px solid #39996B",
-  }}
->
-  Save
-</Button>
-
-
-        <Button
-        variant="outline"
-        _focus={{ boxShadow: 'none' }}
-          color="#39996B"
-  background="transparent"
-  border="1px solid #39996B"
-          onClick={onCloseEdit}
-          _hover={{
-    background: "#39996B",
-    color: "white",
-    border: "1px solid #39996B",
-  }}          
-        >
-          Cancel
-        </Button>
-      </Flex>
-    </ModalFooter>
-  </ModalContent>
-</Modal>
+              <ModalFooter>
+                <Flex
+                  direction={{ base: "column", md: "row" }}
+                  w="100%"
+                  gap={4}
+                  justify="flex-end"
+                  align="center"
+                >
+                  <Button
+                    variant="outline"
+                    _focus={{ boxShadow: 'none' }}
+                    background="#39996B"
+                    color="white"
+                    border="1px solid #39996B"
+                    onClick={handleSave}
+                    _hover={{
+                      background: "transparent",
+                      color: "#39996B",
+                      border: "1px solid #39996B",
+                    }}
+                  >
+                    Save
+                  </Button>
 
 
+                  <Button
+                    variant="outline"
+                    _focus={{ boxShadow: 'none' }}
+                    color="#39996B"
+                    background="transparent"
+                    border="1px solid #39996B"
+                    onClick={onCloseEdit}
+                    _hover={{
+                      background: "#39996B",
+                      color: "white",
+                      border: "1px solid #39996B",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Flex>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
 
-<Pagination
-  // totalPosts={TotalPage}
-  totalPosts={isTotalStudents}
-  postsPerPage={PostPerPage}
-  currentPage={CurrentPage}
-  paginate={paginate}
-/>
+
+
+          <Pagination
+            // totalPosts={TotalPage}
+            totalPosts={isTotalStudents}
+            postsPerPage={PostPerPage}
+            currentPage={CurrentPage}
+            paginate={paginate}
+          />
 
         </Box>
       </Box>

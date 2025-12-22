@@ -1816,7 +1816,7 @@ export const UploadProfilePicture = async (file) => {
 export const GetScholarshipSchoolProfileApi = async (schoolId) => {
   const config = {
     method: "GET",
-    url: `${baseUrl}/scholarship-admin/school-profile/${schoolId}`,
+    url: `${baseUrl}/scholarship-admin/school-information/${schoolId}`,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`,
@@ -1863,7 +1863,7 @@ export const UpdateBankDetailsApi = async (payload) => {
 export const GetScholarshipStudentProfileApi = async (studentId) => {
   const config = {
     method: "GET",
-    url: `${baseUrl}/scholarship-admin/student-profile/${studentId}`,
+    url: `${baseUrl}/scholarship-admin/student-information/${studentId}`,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`,

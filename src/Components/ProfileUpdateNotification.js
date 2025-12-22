@@ -1,55 +1,90 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    Text,
-    HStack,
-    Box,
-    Flex,
-    ModalBody,
-    ModalCloseButton,
-} from '@chakra-ui/react'
-import Button from './Button'
-import { useNavigate } from 'react-router-dom';
-import { CiWarning } from "react-icons/ci";
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ModalCloseButton,
+  Text,
+  Stack,
+  FormControl,
+  FormLabel,
+  Input as ChakraInput,
+} from '@chakra-ui/react';
+import Button from './Button';
 
+export default function ProfileUpdateNotification({ isOpen, onClose, initialData, onUpdate }) {
+  const [formData, setFormData] = useState({});
 
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
-export default function ProfileUpdateNotification({ isOpen, onClose }) {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-    const nav = useNavigate()
-    return (
-        <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
-            <ModalOverlay />
-            <ModalContent>
-                <ModalHeader>
-                    <Box>
-                        <HStack>
-                            <CiWarning color="green" size="24px" />
-                            <Text lineSpacing="-2%" fontSize="18px" fontWeight="600" color="#1F2937">Profile Update Notice </Text>
-                        </HStack>
-                        <Text color="#6B7280" lineSpacing="-2%" fontSize="14px" fontWeight="400">Editing this student's information will push it to the bottom of the review queue, which may extend their review timeline.</Text>
-                    </Box>
-                </ModalHeader>
+  const handleSubmit = () => {
+    onUpdate(formData);
+    onClose();
+  };
 
-                <ModalBody>
-                    <Flex justifyContent="flex-end" mb="18px">
-                        <HStack spacing={["100px", "12px", "12px", "12px"]} w={["100%","100%","50%","50%"]}>
+  if (!initialData) return null; // Or render a loading state
 
-                            <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={onClose}>Cancel</Button>
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Edit Student Profile</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody> 
+          <Stack spacing={4}>
+            {Object.keys(initialData).map((key) => {
+              // Exclude complex objects/arrays that are not directly editable via simple input
+              if (
+                typeof initialData[key] === 'object' &&
+                initialData[key] !== null &&
+                !Array.isArray(initialData[key])
+              ) {
+                return null; // Skip nested objects for simple editing
+              }
+              // Skip ID fields or other non-editable fields
+              if (key === '_id' || key === '__v' || key === 'picture' || key === 'status' || key === 'essay' ) {
+                return null;
+              }
 
-                            <Button px="43px" onClick={() => { }}>Proceed</Button>
+              return (
+                <FormControl key={key}>
+                  <FormLabel textTransform="capitalize">{key.replace(/_/g, ' ')}</FormLabel>
+                  <ChakraInput
+                    name={key}
+                    value={formData[key] || ''}
+                    onChange={handleChange}
+                    placeholder={`Enter ${key.replace(/_/g, ' ')}`}
+                  />
+                </FormControl>
+              );
+            })}
+          </Stack>
+        </ModalBody>
 
-                        </HStack>
-                    </Flex>
-
-                </ModalBody>
-
-
-            </ModalContent>
-        </Modal>
-    )
+        <ModalFooter>
+          <Button variant="outline" onClick={onClose} mr={3}>
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit}>
+            Save Changes
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
 }

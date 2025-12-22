@@ -106,8 +106,8 @@ export default function IndexRoutes() {
           <Route path='/scholarship-admin/schools' element={<Schools />} />
           <Route path='/scholarship-admin/students' element={<Students />} />
           <Route path='/scholarship-admin/settings' element={<Settings2 />} />
-          <Route path='/scholarship-admin/students/student-profile' element={<StudentProfile2 />} />
-          <Route path='/scholarship-admin/schools/school-profile' element={<SchoolProfile2 />} />
+          <Route path='/scholarship-admin/students/student-profile/:studentId' element={<StudentProfile2 />} />
+          <Route path='/scholarship-admin/schools/school-profile/:schoolId' element={<SchoolProfile2 />} />
           <Route path='/scholarship-admin/scholarship-admin-leaderboard' element={<ScholarshipAdminLeaderboard />} />
 
            {/* sponsor admin routes */}
@@ -115,6 +115,7 @@ export default function IndexRoutes() {
           <Route path='/sponsor-admin/myscholarships' element={<MyScholarships />} />
           <Route path='/sponsor-admin/discoverstudents' element={<DiscoverStudents />} studentId={studentIdToOpen} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
           <Route path='/sponsor-admin/fundinghistory' element={<FundingHistory />} />
+          <Route path='/scholarship-admin/students/student-profile/:studentId' element={<StudentProfile2 />} />
           <Route path='/sponsor-admin/settings' element={<Settings3 />} />
 
 
@@ -144,7 +145,7 @@ export default function IndexRoutes() {
       <Route path='/super-admin-user-management' element={<SuperAdminUserManagement />} />
       <Route path='/super-admin-transactions' element={<SuperAdminTransactions />} />
       <Route path='/super-admin/funding' element={<FundStudent />} />
-      <Route path='/super-admin-students-profile' element={<StudentProfile3 />} />
+      <Route path='/super-admin/schools/school-profile/:schoolId' element={<SchoolProfile3 />} />
       <Route path='/super-admin-admin-profile' element={<AdminProfile />} />
         </Routes>
       </BrowserRouter> 
