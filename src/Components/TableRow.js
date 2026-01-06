@@ -137,7 +137,7 @@ export default function TableRow({ type, receiptUrl, stationary, studentId, scho
                 type === "sponsor-admin-discoverstudents" && (
                     <>
                         <Td display="flex" gap="10px">
-                            <HStack cursor={"pointer"} onClick={() => { router("/sponsor-admin/discoverstudents/student-profile") }}>
+                            <HStack cursor={"pointer"} onClick={() => { router(`/sponsor-admin/students/student-profile/${studentId}` ) }}>
                                 <Avatar name={name} size='sm' src='https://bit.ly/tioluwani-kolawole' />
                                 <Box>
                                     <Text color={"#101828"} fontWeight={"500"} fontSize={"13px"} >{name}</Text>
@@ -158,7 +158,7 @@ export default function TableRow({ type, receiptUrl, stationary, studentId, scho
                                 </MenuButton>
                                 <MenuList >
 
-                                    <MenuItem onClick={onEdit} textTransform="capitalize" fontWeight={"500"} color='#2F2F2F' _hover={{ color: "#2F2F2F", fontWeight: "400", bg: "#E8FFF4" }}>
+                                    <MenuItem onClick={() => { router(`/sponsor-admin/students/student-profile/${studentId}` ) }} textTransform="capitalize" fontWeight={"500"} color='#2F2F2F' _hover={{ color: "#2F2F2F", fontWeight: "400", bg: "#E8FFF4" }}>
                                         <HStack fontSize="14px">
 
                                             <Text>View Profile</Text>
@@ -196,7 +196,7 @@ export default function TableRow({ type, receiptUrl, stationary, studentId, scho
                                 fontSize="12px"
                                 fontWeight="bold"
                                 bg={
-                                    status === "PEDNDING"
+                                    status === "PENDING"
                                         ? "#FFF7EB"
                                         : status === "FAILED" || status === "FAILED"
                                             ? "#FFE0E0"
@@ -589,7 +589,7 @@ export default function TableRow({ type, receiptUrl, stationary, studentId, scho
             {
                 type === "super-admin-schools" && (
                     <>
-                        <Td onClick={() => { router("/super-admin/schools/school-profile/:schoolId") }}>
+                        <Td onClick={() => { router(`/super-admin/schools/school-profile/${schoolId}`) }}>
                             <HStack spacing={3}>
                                 <Avatar name={name} size='sm' src='https://bit.ly/tioluwani-kolawole' />
                                 <Box>
@@ -636,7 +636,7 @@ export default function TableRow({ type, receiptUrl, stationary, studentId, scho
             {
                 type === "super-admin-students" && (
                     < >
-                        <Td onClick={() => { router("/super-admin-students-profile") }}>
+                        <Td onClick={() => { router(`/super-admin/students/student-profile/${studentId}`) }}>
                             <HStack spacing={4}>
                                 <Avatar fontSize={{base: "10px", md: "13px"}} name={name} size='sm' src='https://bit.ly/tioluwani-kolawole' />
                                 <Box>

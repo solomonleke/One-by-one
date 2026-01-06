@@ -231,7 +231,7 @@ export default function Students() {
                         {pendingStudents.length > 0 ? (
                           pendingStudents.map((item, i) => (
                             <TableRow
-                              key={i}
+                              studentId={item.studentId}
                               type="super-admin-students"
                               name={item.studentFullName}
                               email={item.studentEmail}
@@ -282,7 +282,7 @@ export default function Students() {
                         {approvedStudents.length > 0 ? (
                           approvedStudents.map((item, i) => (
                             <TableRow
-                              key={i}
+                              studentId={item.studentId}
                               type="super-admin-students"
                               name={item.studentFullName}
                               email={item.studentEmail}
@@ -333,7 +333,7 @@ export default function Students() {
                         {rejectedStudents.length > 0 ? (
                           rejectedStudents.map((item, i) => (
                             <TableRow
-                              key={i}
+                              studentId={item.studentId}
                               type="super-admin-students"
                               name={item.studentFullName}
                               email={item.studentEmail}

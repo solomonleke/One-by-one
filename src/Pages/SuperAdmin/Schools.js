@@ -325,7 +325,7 @@ export default function Schools() {
                             pendingSchools.map((item, i) => (
 
                               <TableRow
-                                key={i}
+                                schoolId={item.schoolId}
                                 type="super-admin-schools"
                                 name={item.schoolName}
                                 email={item.schoolEmail}
@@ -377,7 +377,7 @@ export default function Schools() {
                             approvedSchools.map((item, i) => (
 
                               <TableRow
-                                key={i}
+                                schoolId={item.schoolId}
                                 type="super-admin-schools"
                                 name={item.schoolName}
                                 email={item.schoolEmail}
@@ -437,7 +437,7 @@ export default function Schools() {
                             rejectedSchools.map((item, i) => (
 
                               <TableRow
-                                key={i}
+                                schoolId={item.schoolId}
                                 type="super-admin-schools"
                                 name={item.schoolName}
                                 email={item.schoolEmail}

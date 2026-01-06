@@ -383,30 +383,18 @@ export default function DiscoverStudents() {
   }, [sponsorScholarships]);
 
   useEffect(() => {
-    // Step 3: Fetch students when a scholarship is selected or when the page changes
     if (selectedScholarship) {
       getallStudent(selectedScholarship);
     }
-  }, [CurrentPage, selectedScholarship]);
+  }, [CurrentPage, selectedScholarship, searchByLocation]);
+
 
   // 🔁 Re-fetch students whenever the location filter is toggled
+  // ✅ Update filter state ONLY
   useEffect(() => {
-    if (!selectedScholarship) return;
-
-    if (isLocationFiltered) {
-      // ✅ When location filter is ON
-      setSearchByLocation("true");
-      getallStudent(selectedScholarship);
-
-      
-    } else {
-      // 🌍 When filter is OFF
-      setSearchByLocation("false");
-      getallStudent(selectedScholarship);
-
-      
-    }
+    setSearchByLocation(isLocationFiltered ? "true" : "false");
   }, [isLocationFiltered]);
+
 
 
 
@@ -425,10 +413,26 @@ export default function DiscoverStudents() {
       <Box bg="#fff" border="1px solid #EDEFF2" mt="12px" pt='20px' pb="32px" px={["10px", "10px", "18px", "18px"]} rounded='10px'>
         <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px="18px" rounded='10px'>
           <Flex justifyContent="space-between" flexWrap="wrap">
-            <Box bg="#FFF9E6" p="3" border="1px solid #FFA30C80" borderRadius="md" mb="5">
-              <HStack alignItems="center" justifyContent="space-between" flexWrap={["wrap", "nowrap"]} gap="10px">
-                <Icon as={RxInfoCircled} color="orange.500" mr="2" />
-                <Text fontSize="sm" color="gray.700">
+            <Box
+              bg="#FFF9E6"
+              p={{ base: "4", md: "3" }}
+              border="1px solid #FFA30C80"
+              borderRadius="md"
+              mb="3"
+              mt="3"
+            >
+              <HStack
+                alignItems="flex-start"
+                spacing="3"
+              >
+                <Icon
+                  as={RxInfoCircled}
+                  color="orange.500"
+                  boxSize="18px"
+                  flexShrink={0}
+                  mt="2px"
+                />
+                <Text fontSize={{base: "10px", md: "12px"}} color="gray.700">
                   The students displayed are filtered by your location. You can decide to show all students by turning off the location filter.
                 </Text>
                 <Switch
@@ -614,7 +618,7 @@ export default function DiscoverStudents() {
                       )
                       .map((item, i) => (
                         <TableRow
-                          key={item.request_id || i}
+                          studentId={item.student_id}
                           type="sponsor-admin-discoverstudents"
                           name={item.student_full_name}
                           classLevel={item.class_level}
@@ -645,6 +649,36 @@ export default function DiscoverStudents() {
                 <ModalHeader>
                   <Text fontWeight="700" color="#1F2937" >Add Student to Scholarship</Text>
                   <Text fontSize="14px" fontWeight="400" color="#6B7280" >Select a scholarship to add the student to</Text>
+                  <Box
+                    bg="#FFF9E6"
+                    p={{ base: "4", md: "3" }}
+                    border="1px solid #FFA30C80"
+                    borderRadius="md"
+                    mb="3"
+                    mt="3"
+                  >
+                    <HStack
+                      alignItems="flex-start"
+                      spacing="3"
+                    >
+                      <Icon
+                        as={RxInfoCircled}
+                        color="orange.500"
+                        boxSize="18px"
+                        flexShrink={0}
+                        mt="2px"
+                      />
+
+                      <Text
+                        fontSize="sm"
+                        color="gray.700"
+                        lineHeight="1.5"
+                      >
+                        You can add more than one student to a Scholarship
+                      </Text>
+                    </HStack>
+                  </Box>
+
                 </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody borderWidth="1px">

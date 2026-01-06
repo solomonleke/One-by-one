@@ -20,7 +20,7 @@ import EssayViewerModal from '../../Components/EssayViewerModal';
 import ShowToast from '../../Components/ToastNotification';
 
 
-export default function StudentProfile() {
+export default function StudentProfile3() {
   const router = useNavigate();
   const { studentId } = useParams();
   const [studentData, setStudentData] = useState(null);
@@ -142,7 +142,7 @@ export default function StudentProfile() {
   return (
     <MainLayout>
       {
-        loading && <Preloader />
+        loading && <Preloader />  
       }
 
       {showToast.show && (
@@ -159,26 +159,26 @@ export default function StudentProfile() {
                 fontSize="13px"
                 fontWeight="400"
                 onClick={() => {
-                  router('/scholarship-admin/students');
+                  router('/sponsor-admin/discoverstudents');
                 }}
               >
                 Students
               </Text>
               <NextArrow />
               <Text
-                cursor="pointer"
+                // cursor="pointer"
                 color="#1F2937"
                 fontSize="13px"
                 fontWeight="500"
-                onClick={() => {
-                  router('/scholarship-admin/students/student-profile');
-                }}
+                // onClick={() => {
+                //   router('/scholarship-admin/students/student-profile');
+                // }}
               >
                 Student Profile
               </Text>
             </HStack>
 
-            <HStack fontSize="14px" fontWeight="600" spacing="10px" cursor="pointer" onClick={() => router('/scholarship-admin/students')}>
+            <HStack fontSize="14px" fontWeight="600" spacing="10px" cursor="pointer" onClick={() => router('/sponsor-admin/discoverstudents')}>
               <IoChevronBackOutline />
               <Text>Back</Text>
             </HStack>
@@ -195,12 +195,12 @@ export default function StudentProfile() {
                     </Text>
                   </HStack>
                   <Text color="#667085" fontSize="13px" fontWeight="400">
-                    {studentData.email}
+                    {studentData.email} 
                   </Text>
                 </Stack>
               </HStack>
 
-              <HStack  w={{base:"100%", md: "auto"}} >
+              {/* <HStack  w={{base:"100%", md: "auto"}} >
                 <Button
                   size="7px"
                   border='1px solid #39996B'
@@ -227,7 +227,7 @@ export default function StudentProfile() {
                 >
                   Approve
                 </Button>
-              </HStack>
+              </HStack> */}
 
             </Flex>
           </Box>
