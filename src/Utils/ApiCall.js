@@ -1882,6 +1882,28 @@ export const GetScholarshipStudentProfileApi = async (studentId) => {
   }
 };
 
+export const GetSponsorStudentProfileApi = async (requestId) => {
+  const config = {
+    method: "GET",
+    url: `${baseUrl}/scholarship-admin/student-information/${requestId}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+  };
+
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  }
+  catch (error) {
+    console.error("Error fetching student profile:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Something went wrong"
+    );
+  }
+};
+
 export const GetUserProfile = async () => {
   const config = {
     method: "GET",

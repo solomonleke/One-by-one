@@ -118,29 +118,53 @@ export default function MyScholarships() {
 
 
   const handleSubmit = async () => {
+    // ✅ FRONTEND VALIDATION (missing fields)
+    if (
+      !formData.name?.trim() ||
+      !formData.purpose?.trim() ||
+      !formData.motivation?.trim() ||
+      !formData.amount ||
+      Number(formData.amount) <= 0
+    ) {
+      setShowToast({
+        message: "Please fill in all required fields.",
+        status: "warning",
+        show: true,
+      });
+
+      setTimeout(() => {
+        setShowToast((prev) => ({ ...prev, show: false }));
+      }, 3000);
+
+      return; // ⛔ STOP submission
+    }
+
     setIsLoading(true);
+
     try {
       const response = await createScholarshipApi(formData);
       console.log("✅ Scholarship created:", response);
 
-      // ✅ Show custom toast
       setShowToast({
         message: "Scholarship successfully created!",
         status: "success",
         show: true,
       });
 
-      // ✅ Reset form and close modal
-      setFormData({ name: "", purpose: "", motivation: "", amount: "0" });
+      setFormData({
+        name: "",
+        purpose: "",
+        motivation: "",
+        amount: "0",
+      });
+
       closeModal();
-      handleCloseDetails(); // if you have a secondary modal open
+      handleCloseDetails?.(); // safe call
 
-      // Optionally refresh data
-      fetchActiveScholarships();
+      fetchActiveScholarships?.();
 
-      // Auto-hide toast after 3 seconds
       setTimeout(() => {
-        setShowToast({ ...showToast, show: false });
+        setShowToast((prev) => ({ ...prev, show: false }));
       }, 3000);
 
     } catch (error) {
@@ -153,12 +177,14 @@ export default function MyScholarships() {
       });
 
       setTimeout(() => {
-        setShowToast({ ...showToast, show: false });
+        setShowToast((prev) => ({ ...prev, show: false }));
       }, 3000);
+
     } finally {
       setIsLoading(false);
     }
   };
+
 
 
   const fetchActiveScholarships = async () => {
@@ -201,6 +227,18 @@ export default function MyScholarships() {
 
 
   const fundScholarship = async (Id, receiptFile) => {
+    // ✅ Validation FIRST
+    if (!Id || !receiptFile) {
+      setShowToast({
+        show: true,
+        message: "Please upload a receipt before proceeding.",
+        status: "warning",
+      });
+
+      setTimeout(() => setShowToast({ show: false }), 3000);
+      return; // ⛔ stop execution
+    }
+
     try {
       setLoadingId(Id);
 
@@ -213,22 +251,29 @@ export default function MyScholarships() {
           message: data.message || "Scholarship funded successfully!",
           status: "success",
         });
+        setIsDetailsOpen(false); // 🔑 THIS closes the modal
+
         setTimeout(() => setShowToast({ show: false }), 3000);
       } else {
         throw new Error(data.message || "Funding failed.");
       }
+
     } catch (err) {
       console.error("🚨 Funding error:", err);
+
       setShowToast({
         show: true,
         message: err.message || "An error occurred while funding the scholarship.",
         status: "error",
       });
+
       setTimeout(() => setShowToast({ show: false }), 3000);
+
     } finally {
       setLoadingId(null);
     }
   };
+
 
 
 
@@ -336,7 +381,7 @@ export default function MyScholarships() {
                     : "N/A"}
                 </Text>
               </Stack>
-  
+
               {/* Buttons (desktop only) */}
               {type === "active" && (
                 <HStack
@@ -362,7 +407,7 @@ export default function MyScholarships() {
                   </Button>
                 </HStack>
               )}
-  
+
               {type === "awaiting" && (
                 <Button
                   w="200px"
@@ -374,7 +419,7 @@ export default function MyScholarships() {
                 </Button>
               )}
             </HStack>
-  
+
             {/* Students Row + View Funds History (desktop) */}
             <HStack
               flexWrap="wrap"
@@ -398,7 +443,7 @@ export default function MyScholarships() {
                   </Text>
                 )}
               </HStack>
-  
+
               {/* ✅ View Funds History now sits beside students (desktop only) */}
               {type === "active" && (
                 <HStack
@@ -413,7 +458,7 @@ export default function MyScholarships() {
                 </HStack>
               )}
             </HStack>
-  
+
             {/* Mobile-only buttons + link */}
             {type === "active" && (
               <Stack
@@ -439,7 +484,7 @@ export default function MyScholarships() {
                 >
                   Add Student
                 </Button>
-  
+
                 {/* ✅ Mobile version of View Funds History */}
                 <HStack
                   w="100%"
@@ -463,8 +508,8 @@ export default function MyScholarships() {
       )}
     </Stack>
   );
-  
-  
+
+
 
 
 
@@ -490,30 +535,50 @@ export default function MyScholarships() {
         </Box>
       </HStack>
 
-      <Modal isOpen={isOpen} onClose={closeModal} >
-        {showToast.show && (
-          <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
-        )}
+      <Modal isOpen={isOpen} onClose={closeModal}>
         <ModalOverlay />
+
         <ModalContent maxW="537px">
+          {showToast.show && (
+            <ShowToast
+              message={showToast.message}
+              status={showToast.status}
+              show={showToast.show}
+            />
+          )}
           <ModalHeader px="25px" pt="23px">
             <Text fontSize="19px">Create Scholarship</Text>
-            <Text fontSize="14px" color="#6B7280" fontWeight="400" >Fill in the details below to create a scholarship.</Text>
+            <Text fontSize="14px" color="#6B7280" fontWeight="400">
+              Fill in the details below to create a scholarship.
+            </Text>
           </ModalHeader>
+
           <ModalBody>
-            <FormControl mb={4}>
+            {/* Scholarship Name */}
+            <FormControl mb={4} isRequired>
               <FormLabel fontSize="14px">Scholarship Name</FormLabel>
-              <Input name="name" fontSize="13px" color="#ADB4BF" value={formData.name} onChange={handleChange} placeholder="e.g Operation helping students" />
+              <Input
+                name="name"
+                fontSize="13px"
+                color="black"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="e.g Operation helping students"
+                required
+              />
             </FormControl>
-            <FormControl mb={4}>
+
+            {/* Purpose */}
+            <FormControl mb={4} isRequired>
               <FormLabel fontSize="14px">Purpose of Scholarship</FormLabel>
               <Select
                 name="purpose"
                 fontSize="13px"
-                color="#ADB4BF"
+                color="black"
                 value={formData.purpose}
                 onChange={handleChange}
                 placeholder="Select Purpose"
+                required
               >
                 <option value="memorial">Memorial</option>
                 <option value="personal">Personal</option>
@@ -522,22 +587,65 @@ export default function MyScholarships() {
                 <option value="others">Others</option>
               </Select>
             </FormControl>
-            <FormControl mb={4}>
+
+            {/* Motivation */}
+            <FormControl mb={4} isRequired>
               <FormLabel fontSize="14px">Motivation</FormLabel>
-              <Input name="motivation" fontSize="13px" color="#ADB4BF" value={formData.motivation} onChange={handleChange} placeholder="What motivates you to sponsor students?" />
-            </FormControl>
-            <FormControl mb={4}>
-              <FormLabel fontSize="14px">Amount</FormLabel>
-              <Input name="amount" fontSize="13px" color="#ADB4BF" value={formData.amount} onChange={handleChange} placeholder="Amount" />
+              <Input
+                name="motivation"
+                fontSize="13px"
+                color="black"
+                value={formData.motivation}
+                onChange={handleChange}
+                placeholder="What motivates you to sponsor students?"
+                required
+              />
             </FormControl>
 
+            {/* Amount */}
+            <FormControl mb={4} isRequired>
+              <FormLabel fontSize="14px">Amount</FormLabel>
+              <Input
+                name="amount"
+                type="number"
+                fontSize="13px"
+                color="black"
+                value={formData.amount}
+                onChange={handleChange}
+                placeholder="Amount"
+                required
+              />
+            </FormControl>
           </ModalBody>
+
           <ModalFooter gap="10px">
-            <Button onClick={closeModal} w="80px" background="white" color="green" border="1px solid green" mr={3}>Cancel</Button>
-            <Button w="173px" onClick={handleSubmit} isLoading={loading}>Create Scholarship</Button>
+            <Button
+              onClick={closeModal}
+              w="80px"
+              background="white"
+              color="green"
+              border="1px solid green"
+            >
+              Cancel
+            </Button>
+
+            <Button
+              w="173px"
+              onClick={handleSubmit}
+              isLoading={loading}
+              isDisabled={
+                !formData.name ||
+                !formData.purpose ||
+                !formData.motivation ||
+                !formData.amount
+              }
+            >
+              Create Scholarship
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
+
 
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["10px", "10px", "18px", "18px"]} rounded='10px'>
         <Tabs>
@@ -575,7 +683,10 @@ export default function MyScholarships() {
 
         <Modal isOpen={isDetailsOpen} onClose={handleCloseDetails} size="lg" isCentered>
           <ModalOverlay />
-          <ModalContent borderRadius="2xl" boxShadow="xl" overflow="hidden">
+          <ModalContent borderRadius="2xl" boxShadow="xl" overflow="hidden" >
+            {showToast.show && (
+              <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
+            )}
             {/* Header with Close Button */}
             <ModalHeader
               bg="greenn.greenn500"
@@ -762,17 +873,9 @@ export default function MyScholarships() {
                   colorScheme="green"
                   borderRadius="full"
                   onClick={() => {
-                    if (selectedScholarship && receiptFile) {
-                      fundScholarship(selectedScholarship.id, receiptFile);
-                    } else {
-                      setShowToast({
-                        title: "Please upload a receipt before proceeding",
-                        status: "warning",
-                        duration: 3000,
-                        isClosable: true,
-                      });
-                    }
+                    fundScholarship(selectedScholarship?.id, receiptFile);
                   }}
+
                   isLoading={loadingId === selectedScholarship?.id}
                 >
                   Initiate Transfer

@@ -32,6 +32,7 @@ import ScholarshipAdminLeaderboard from '../Pages/ScholarshipAdminScreen/Scholar
 import SponsorAdmin from '../Pages/SponsorAdminScreen/Index'
 import MyScholarships from '../Pages/SponsorAdminScreen/MyScholarships'
 import DiscoverStudents from '../Pages/SponsorAdminScreen/DiscoverStudents'
+import StudentProfile3 from '../Pages/SponsorAdminScreen/StudentProfile'
 import FundingHistory from '../Pages/SponsorAdminScreen/FundingHistory'
 import Settings3 from '../Pages/SponsorAdminScreen/Settings'
 import Dashboard from '../Pages/FundAdminUserScreen/Index'
@@ -51,8 +52,8 @@ import SuperAdminStudents from '../Pages/SuperAdmin/Students'
 import SuperAdminUserManagement from '../Pages/SuperAdmin/UserManagement'
 import SuperAdminTransactions from '../Pages/SuperAdmin/Transactions'
 import SuperAdminSettings from '../Pages/SuperAdmin/Settings'
-import StudentProfile3 from '../Pages/SuperAdmin/StudentProfile'
-import SchoolProfile3 from '../Pages/SuperAdmin/SchoolProfile'
+import StudentProfile4 from '../Pages/SuperAdmin/StudentProfile'
+import SchoolProfile4 from '../Pages/SuperAdmin/SchoolProfile'
 import AdminProfile from '../Pages/SuperAdmin/AdminProfile'
 import ScrollToTop from '../Components/ScrollToTop'
 import ContactUs from '../Pages/LandingPage/ContactUs'
@@ -115,7 +116,7 @@ export default function IndexRoutes() {
           <Route path='/sponsor-admin/myscholarships' element={<MyScholarships />} />
           <Route path='/sponsor-admin/discoverstudents' element={<DiscoverStudents />} studentId={studentIdToOpen} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
           <Route path='/sponsor-admin/fundinghistory' element={<FundingHistory />} />
-          <Route path='/scholarship-admin/students/student-profile/:studentId' element={<StudentProfile2 />} />
+          <Route path='/sponsor-admin/students/student-profile/:studentId' element={<StudentProfile3 />} />
           <Route path='/sponsor-admin/settings' element={<Settings3 />} />
 
 
@@ -145,7 +146,9 @@ export default function IndexRoutes() {
       <Route path='/super-admin-user-management' element={<SuperAdminUserManagement />} />
       <Route path='/super-admin-transactions' element={<SuperAdminTransactions />} />
       <Route path='/super-admin/funding' element={<FundStudent />} />
-      <Route path='/super-admin/schools/school-profile/:schoolId' element={<SchoolProfile3 />} />
+      <Route path='/super-admin/schools/school-profile/:schoolId' element={<SchoolProfile4 />} />
+      <Route path='/super-admin/students/student-profile/:studentId' element={<StudentProfile4 />} />
+
       <Route path='/super-admin-admin-profile' element={<AdminProfile />} />
         </Routes>
       </BrowserRouter> 

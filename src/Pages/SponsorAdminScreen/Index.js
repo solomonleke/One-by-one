@@ -15,6 +15,7 @@ import {
   Grid,
   HStack,
   Stack,
+  Link,
   Box,
   Avatar,
   VStack,
@@ -24,6 +25,8 @@ import Button from "../../Components/Button";
 import Preloader from "../../Components/Preloader";
 import { ReactComponent as Scholarship } from "../../Asset/scholarship.svg";
 import { PiStudent } from "react-icons/pi";
+import { ReactComponent as Warning } from "../../Asset/warning.svg";
+import { Link as RouterLink } from "react-router-dom";
 import { TbCurrencyNaira } from "react-icons/tb";
 import {
   GetSponsorAdminStats,
@@ -153,6 +156,34 @@ export default function Index() {
         Track your impact and manage your scholarships with ease. Monitor
         funding trends and create opportunities to change lives.
       </Text>
+
+      <Box
+    backgroundColor={"#FFF7EB"}
+    py={"14px"}
+    px={"20px"}
+    rounded={"6px"}
+    border={"1px solid #FFA30C80"}
+    id="close"
+  >
+    <HStack justifyContent={"space-between"}>
+      <HStack>
+        <Warning w="16px" />
+        <Text fontSize={"14px"} fontWeight={"400"} color={"#FFA30C"}>
+          In order to sponsor a student, you need to create a Scholarship. Go to{" "}
+          <Link
+            as={RouterLink}
+            to="/sponsor-admin/myscholarships" 
+            fontWeight="500"
+            textDecoration="underline"
+            _hover={{ color: "#FF8A00", textDecoration: "none" }}
+          >
+            My Scholarships
+          </Link>{" "}
+          to create scholarships
+        </Text>
+      </HStack>
+    </HStack>
+  </Box>
 
       {/* Statistic Cards */}
       <Grid

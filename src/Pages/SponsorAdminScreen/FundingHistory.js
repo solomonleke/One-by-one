@@ -56,6 +56,20 @@ export default function FundedHistory() {
         }
     };
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+      
+        return date.toLocaleString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        });
+      };
+      
+
     useEffect(() => {
         fetchFundingHistory();
     }, [CurrentPage, PostPerPage]);
@@ -107,7 +121,7 @@ export default function FundedHistory() {
                                     <TableRow
                                         key={transaction.id || index}
                                         type="sponsor-admin-history"
-                                        date={transaction.trx_date}
+                                        date={formatDate(transaction.trx_date)}
                                         fundedStudents={
                                             transaction.scholarship?.students?.length > 0
                                                 ? transaction.scholarship.students.map((s) => s.full_name).join(", ")

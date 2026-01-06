@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { IoChevronBackOutline, IoCloseOutline } from 'react-icons/io5';
 import { BsThreeDots } from 'react-icons/bs';
 import { FaSchoolFlag, FaCheck } from "react-icons/fa6";
-import { GetScholarshipStudentProfileApi, ApproveStudentApi, UpdateStudentProfile } from '../../Utils/ApiCall';
+import { GetSponsorStudentProfileApi, ApproveStudentApi, UpdateStudentProfile } from '../../Utils/ApiCall';
 import Preloader from '../../Components/Preloader';
 import ToastNotification from '../../Components/ToastNotification';
 import EssayViewerModal from '../../Components/EssayViewerModal';
@@ -41,7 +41,7 @@ export default function StudentProfile() {
 
   const fetchStudentProfile = async () => {
     try {
-      const response = await GetScholarshipStudentProfileApi(studentId);
+      const response = await GetSponsorStudentProfileApi(studentId);
 
       const data = response?.data || response;
       console.log("Student Profile Data:", data);
