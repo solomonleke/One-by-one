@@ -64,7 +64,7 @@ export default function MyScholarships() {
     name: '',
     purpose: '',
     motivation: '',
-    amount: '0',
+    // amount: '0',
   });
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -122,9 +122,9 @@ export default function MyScholarships() {
     if (
       !formData.name?.trim() ||
       !formData.purpose?.trim() ||
-      !formData.motivation?.trim() ||
-      !formData.amount ||
-      Number(formData.amount) <= 0
+      !formData.motivation?.trim()
+      // !formData.amount ||
+      // Number(formData.amount) <= 0
     ) {
       setShowToast({
         message: "Please fill in all required fields.",
@@ -142,7 +142,13 @@ export default function MyScholarships() {
     setIsLoading(true);
 
     try {
-      const response = await createScholarshipApi(formData);
+      const payload = {
+        ...formData,
+        amount: "0", // ✅ backend-safe default
+      };
+
+      const response = await createScholarshipApi(payload);
+
       console.log("✅ Scholarship created:", response);
 
       setShowToast({
@@ -155,7 +161,7 @@ export default function MyScholarships() {
         name: "",
         purpose: "",
         motivation: "",
-        amount: "0",
+        // amount: "0",
       });
 
       closeModal();
@@ -429,7 +435,7 @@ export default function MyScholarships() {
             >
               <HStack spacing="10px" flexWrap="wrap">
                 {scholarship.students?.length > 0 ? (
-                  scholarship.students.slice(0, 2).map((student, idx) => (
+                  scholarship.students.map((student, idx) => (
                     <HStack key={idx} bg="#E8F2ED" p="8px" rounded="31px">
                       <Avatar size="sm" name={student.full_name} />
                       <Text color="#101828" fontSize="13px" fontWeight="500">
@@ -546,7 +552,12 @@ export default function MyScholarships() {
               show={showToast.show}
             />
           )}
-          <ModalHeader px="25px" pt="23px">
+          <ModalHeader
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            textAlign="center"
+          >
             <Text fontSize="19px">Create Scholarship</Text>
             <Text fontSize="14px" color="#6B7280" fontWeight="400">
               Fill in the details below to create a scholarship.
@@ -603,7 +614,7 @@ export default function MyScholarships() {
             </FormControl>
 
             {/* Amount */}
-            <FormControl mb={4} isRequired>
+            {/* <FormControl mb={4} isRequired>
               <FormLabel fontSize="14px">Amount</FormLabel>
               <Input
                 name="amount"
@@ -615,7 +626,7 @@ export default function MyScholarships() {
                 placeholder="Amount"
                 required
               />
-            </FormControl>
+            </FormControl> */}
           </ModalBody>
 
           <ModalFooter gap="10px">
@@ -636,8 +647,8 @@ export default function MyScholarships() {
               isDisabled={
                 !formData.name ||
                 !formData.purpose ||
-                !formData.motivation ||
-                !formData.amount
+                !formData.motivation
+                // !formData.amount
               }
             >
               Create Scholarship

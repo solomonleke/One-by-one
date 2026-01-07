@@ -198,46 +198,46 @@ export default function AddNewStudents() {
         }
     };
 
-    const VerifyBankDetails = async () => {
-        if (payload.guardianAccountNumber.length === 10 && payload.guardianBankCode) {
-            setIsVerifying(true);
-            try {
-                const result = await VerifyBanksApi({
-                    account_number: payload.guardianAccountNumber,
-                    bank_code: payload.guardianBankCode,
-                });
-                if (result.data.status) {
-                    setPayload(prev => ({ ...prev, guardianAccountName: result.data.data.account_name }));
-                    setShowToast({
-                        show: true,
-                        message: "Account verified successfully",
-                        status: "success",
-                    });
+    // const VerifyBankDetails = async () => {
+    //     if (payload.guardianAccountNumber.length === 10 && payload.guardianBankCode) {
+    //         setIsVerifying(true);
+    //         try {
+    //             const result = await VerifyBanksApi({
+    //                 account_number: payload.guardianAccountNumber,
+    //                 bank_code: payload.guardianBankCode,
+    //             });
+    //             if (result.data.status) {
+    //                 setPayload(prev => ({ ...prev, guardianAccountName: result.data.data.account_name }));
+    //                 setShowToast({
+    //                     show: true,
+    //                     message: "Account verified successfully",
+    //                     status: "success",
+    //                 });
 
-                    setTimeout(() => {
-                        setShowToast({ show: false });
-                    }, 3000);
-                } else {
-                    setShowToast({
-                        show: true,
-                        message: result.data.message,
-                        status: "error",
-                    });
+    //                 setTimeout(() => {
+    //                     setShowToast({ show: false });
+    //                 }, 3000);
+    //             } else {
+    //                 setShowToast({
+    //                     show: true,
+    //                     message: result.data.message,
+    //                     status: "error",
+    //                 });
 
-                    setTimeout(() => {
-                        setShowToast({ show: false });
-                    }, 3000);
-                }
-            } catch (e) {
-                setShowToast({ show: true, message: e.message, status: "error" });
-                setTimeout(() => {
-                    setShowToast({ show: false });
-                }, 3000);
-            } finally {
-                setIsVerifying(false);
-            }
-        }
-    };
+    //                 setTimeout(() => {
+    //                     setShowToast({ show: false });
+    //                 }, 3000);
+    //             }
+    //         } catch (e) {
+    //             setShowToast({ show: true, message: e.message, status: "error" });
+    //             setTimeout(() => {
+    //                 setShowToast({ show: false });
+    //             }, 3000);
+    //         } finally {
+    //             setIsVerifying(false);
+    //         }
+    //     }
+    // };
 
     // for loading all states
     const loadStates = async () => {
@@ -272,16 +272,16 @@ export default function AddNewStudents() {
     const handleStateChange = async (e) => {
         const selectedStateCode = e.target.value;
         const selectedState = states.find((s) => s.state_code === selectedStateCode);
-    
+
         setPayload((prev) => ({
-          ...prev,
-          state_code: selectedStateCode,
-          state: selectedState?.state_name || "",
-          localGovernment: "",
+            ...prev,
+            state_code: selectedStateCode,
+            state: selectedState?.state_name || "",
+            localGovernment: "",
         }));
-    
+
         await loadLgas(selectedStateCode);
-      };
+    };
 
     useEffect(() => {
         GetAllBanks();
@@ -290,7 +290,7 @@ export default function AddNewStudents() {
     }, []);
 
     useEffect(() => {
-        VerifyBankDetails();
+        // VerifyBankDetails();
     }, [payload.guardianAccountNumber, payload.guardianBankCode]);
 
     const [StudentDetails, setStudentDetails] = useState({
@@ -327,8 +327,17 @@ export default function AddNewStudents() {
                 )
             }
 
-            <Flex justifyContent="space-between" flexWrap="wrap" pl={["0", "0", "0", "128px"]}>
-                <Box w={["100%", "100%", "25%", "25%",]} zIndex="0" pos="relative" left="0">
+            <Flex
+                justifyContent="space-between"
+                flexWrap="wrap"
+                px={{ base:"0" }}
+                pl={{ base: "0", md: "128px" }}
+                overflowX="hidden"
+            >
+
+                <Box w="100%"
+                    maxW={{ md: "65%" }}
+                    zIndex="0" pos="relative" left="0">
                     <VStack spacing="15px" alignItems="start" mt="80px">
                         <HStack spacing={"20px"} >
                             <Box w="30px">
@@ -413,10 +422,10 @@ export default function AddNewStudents() {
                         </HStack>
                     </VStack>
                 </Box>
-                <Box w={["100%", "100%", "75%", "75%",]}>
+                <Box w="100%" maxW={{ md: "75%" }}>
                     {
                         StudentDetails.view && (
-                            <Stack spacing="52px" alignItems="start" w={["100%", "100%", "65%", "65%",]}>
+                            <Stack spacing="52px" alignItems="start" w="100%" maxW={{ md: "65%" }}>
 
                                 <Stack >
                                     <Text
@@ -479,7 +488,7 @@ export default function AddNewStudents() {
                                     placeholder="Search for a bank"
                                 />
                                 <Input label='Guardian’s / Parent’s Account Number' placeholder='Enter Guardians Account Number' onChange={handlePayload} value={payload.guardianAccountNumber} id='guardianAccountNumber' />
-                                <Input label='Guardian’s / Parent’s Account Name' placeholder='Enter Guardians Account Name' onChange={handlePayload} value={payload.guardianAccountName} id='guardianAccountName' disabled={isVerifying || payload.guardianAccountName} />
+                                <Input label='Guardian’s / Parent’s Account Name' placeholder='Enter Guardians Account Name' onChange={handlePayload} value={payload.guardianAccountName} id='guardianAccountName' />
 
                                 <Box w="full">
                                     <Input
@@ -553,7 +562,12 @@ export default function AddNewStudents() {
                                 <Input label='Residential Address' placeholder="Enter the student's current address (street, city, state)." onChange={handlePayload} value={payload.address} id='address' />
 
 
-                                <Flex justifyContent="space-between" w="100%" >
+                                <Flex
+                                    w="100%"
+                                    gap={4}
+                                    flexDir={{ base: "column", md: "row" }}
+                                    justify="space-between"
+                                >
                                     <Flex justifyContent="flex-start" >
 
                                         <Button background="transparent" color="green" px="43px" onClick={() => setOpenModal(true)}>Cancel</Button>
@@ -640,8 +654,12 @@ export default function AddNewStudents() {
                                 <TextArea label='class performance' placeholder="Briefly describe how this student is performing in your current classes (e.g., overall grades, key subjects)." onChange={handlePayload} value={payload.performance} id='performance'></TextArea>
                                 <TextArea label='subject' placeholder="List the main subjects this student is studying this session" onChange={handlePayload} value={payload.subjects} id='subjects'></TextArea>
 
-                                <Flex justifyContent="space-between" w="100%" flexWrap='wrap'>
-
+                                <Flex
+                                    w="100%"
+                                    gap={4}
+                                    flexDir={{ base: "column", md: "row" }}
+                                    justify="space-between"
+                                >
                                     <Flex justifyContent="flex-start" >
 
                                         <Button background="transparent" color="green" px="43px" onClick={() => setOpenModal(true)}>Cancel</Button>
@@ -650,7 +668,11 @@ export default function AddNewStudents() {
 
                                     <Flex justifyContent="flex-end" >
 
-                                        <HStack spacing={["100px", "12px", "12px", "12px"]}>
+                                        <HStack
+                                            spacing={3}
+                                            w={{ base: "100%", md: "auto" }}
+                                            justifyContent={{ base: "space-between", md: "flex-end" }}
+                                        >
 
                                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={() => {
                                                 setStudentDetails({
@@ -824,8 +846,12 @@ export default function AddNewStudents() {
                                     </Select>
                                 </Stack>
 
-                                <Flex justifyContent="space-between" w="100%" flexWrap={"wrap"}>
-
+                                <Flex
+                                    w="100%"
+                                    gap={4}
+                                    flexDir={{ base: "column", md: "row" }}
+                                    justify="space-between"
+                                >
                                     <Flex justifyContent="flex-start" >
 
                                         <Button background="transparent" color="green" px="43px" onClick={() => setOpenModal(true)}>Cancel</Button>
@@ -833,7 +859,11 @@ export default function AddNewStudents() {
 
                                     <Flex justifyContent="flex-end" >
 
-                                        <HStack spacing={["100px", "12px", "12px", "12px"]}>
+                                        <HStack
+                                            spacing={3}
+                                            w={{ base: "100%", md: "auto" }}
+                                            justifyContent={{ base: "space-between", md: "flex-end" }}
+                                        >
                                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={() => {
                                                 setAcademicBackground({
                                                     view: true,
@@ -895,7 +925,14 @@ export default function AddNewStudents() {
 
                                 <TextArea label='Student Essay ' placeholder="Enter the student’s essay" onChange={handlePayload} value={payload.essay} id='essay' />
 
-                                <Flex justifyContent="space-between" w="100%" flexWrap="wrap" >
+                                <Flex
+                                    w="100%"
+                                    gap={3}
+                                    flexDirection={{ base: "column", md: "row" }}
+                                    justifyContent="space-between"
+                                    alignItems="stretch"
+                                >
+
 
                                     <Flex justifyContent="flex-start" >
 
@@ -904,7 +941,11 @@ export default function AddNewStudents() {
 
                                     <Flex justifyContent="flex-end" >
 
-                                        <HStack spacing={["100px", "12px", "12px", "12px"]}>
+                                        <HStack
+                                            spacing={3}
+                                            w={{ base: "100%", md: "auto" }}
+                                            justifyContent={{ base: "space-between", md: "flex-end" }}
+                                        >
 
                                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={() => {
                                                 setAspiration({
@@ -1136,7 +1177,11 @@ export default function AddNewStudents() {
 
                                     <Flex justifyContent="flex-end" >
 
-                                        <HStack spacing={["100px", "12px", "12px", "12px"]}>
+                                        <HStack
+                                            spacing={3}
+                                            w={{ base: "100%", md: "auto" }}
+                                            justifyContent={{ base: "space-between", md: "flex-end" }}
+                                        >
 
                                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={() => {
                                                 setReview({

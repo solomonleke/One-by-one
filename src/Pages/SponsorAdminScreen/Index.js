@@ -460,7 +460,7 @@ export default function Index() {
           </VStack>
         </Box>
       </Grid>
-        <Box
+        {/* <Box
           mt={{ base: "16px", md: "24px" }}
           borderWidth="1px"
           rounded="10px"
@@ -502,7 +502,7 @@ export default function Index() {
               <Bar dataKey="amount" fill="#799E91" radius={[6, 6, 0, 0]} barSize={25} />
             </BarChart>
           </ResponsiveContainer>
-        </Box>
+        </Box> */}
     </MainLayout>
   );
 }

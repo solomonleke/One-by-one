@@ -716,6 +716,14 @@ export default function RequestFunds() {
                       placeholder="Select a student"
                       options={options}
                       value={selectedStudent || null}
+                      menuPortalTarget={document.body}     // ✅ KEY FIX
+                      menuPosition="fixed"                 // ✅ prevents clipping
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 9999,                     // ✅ above modal footer
+                        }),
+                      }}
                       onChange={(selectedOption) => {
                         handleChange({
                           target: {
@@ -725,6 +733,7 @@ export default function RequestFunds() {
                         });
                       }}
                     />
+
                   </FormControl>
 
                   {/* Scholarship Type */}
