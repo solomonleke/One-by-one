@@ -95,7 +95,9 @@ export default function DiscoverStudents() {
   const [sponsorStudents, setSponsorStudents] = useState([]);
   const [searchByLocation, setSearchByLocation] = useState("true");
   const [searchByBudgetRange, setSearchByBudgetRange] = useState("false");
-  const [searchByAspiration, setSearchByAspiration] = useState("false");
+  const [searchByAspiration, setSearchByAspiration] = useState("true");
+  const [isAspirationFiltered, setIsAspirationFiltered] = useState(true);
+
 
   //get current post
   //change page
@@ -281,7 +283,11 @@ export default function DiscoverStudents() {
           message: "Student successfully added!",
           status: "success",
         });
-        setTimeout(() => setShowToast({ show: false }), 3000);
+        setTimeout(() => {
+          setShowToast({ show: false });
+          router("/sponsor-admin/myscholarships");
+        }, 2000);
+
         handleCloseModal();
 
 
@@ -386,14 +392,15 @@ export default function DiscoverStudents() {
     if (selectedScholarship) {
       getallStudent(selectedScholarship);
     }
-  }, [CurrentPage, selectedScholarship, searchByLocation]);
+  }, [CurrentPage, selectedScholarship, searchByLocation, searchByAspiration]);
 
 
   // 🔁 Re-fetch students whenever the location filter is toggled
   // ✅ Update filter state ONLY
   useEffect(() => {
     setSearchByLocation(isLocationFiltered ? "true" : "false");
-  }, [isLocationFiltered]);
+    setSearchByAspiration(isAspirationFiltered ? "true" : "false")
+  }, [isLocationFiltered, isAspirationFiltered]);
 
 
 
@@ -420,10 +427,12 @@ export default function DiscoverStudents() {
               borderRadius="md"
               mb="3"
               mt="3"
+              w="100%"
             >
               <HStack
                 alignItems="flex-start"
                 spacing="3"
+                w="100%"
               >
                 <Icon
                   as={RxInfoCircled}
@@ -432,11 +441,12 @@ export default function DiscoverStudents() {
                   flexShrink={0}
                   mt="2px"
                 />
-                <Text fontSize={{base: "10px", md: "12px"}} color="gray.700">
+                <Text fontSize={{ base: "10px", md: "12px" }} color="gray.700" flex="1"  >
                   The students displayed are filtered by your location. You can decide to show all students by turning off the location filter.
                 </Text>
                 <Switch
                   size="sm"
+                  ml="auto"
                   isChecked={isLocationFiltered}
                   onChange={() => setIsLocationFiltered((prev) => !prev)}
                   _focus={{ boxShadow: "none" }}
@@ -453,6 +463,49 @@ export default function DiscoverStudents() {
 
               </HStack>
             </Box>
+
+            <Box
+              bg="#F0F9FF"
+              p={{ base: "4", md: "3" }}
+              border="1px solid #0EA5E980"
+              borderRadius="md"
+              mb="3"
+              w="100%"
+            >
+              <HStack alignItems="flex-start" spacing="3" w="100%">
+                <Icon
+                  as={RxInfoCircled}
+                  color="blue.500"
+                  boxSize="18px"
+                  flexShrink={0}
+                  mt="2px"
+                />
+
+                <Text
+                  fontSize={{ base: "10px", md: "12px" }}
+                  color="gray.700"
+                  flex="1"           // ✅ allows text to wrap properly
+                >
+                  Filter students based on their academic aspirations. Turn this off to include all students regardless of aspiration.
+                </Text>
+
+                <Switch
+                  size="sm"
+                  ml="auto"          // ✅ locks toggle to the right edge
+                  isChecked={isAspirationFiltered}
+                  onChange={() => setIsAspirationFiltered((prev) => !prev)}
+                  _focus={{ boxShadow: "none" }}
+                  _focusVisible={{ boxShadow: "none" }}
+                  sx={{
+                    ".chakra-switch__track": {
+                      backgroundColor: isAspirationFiltered ? "#48BB78" : "#48BB78", // green.400 or red.500
+
+                    },
+                  }}
+                />
+              </HStack>
+            </Box>
+
             <HStack alignItems="center" justifyContent="space-between" flexWrap="wrap" w="100%">
               <HStack>
                 <Text color="#1F2937" fontWeight="600" fontSize="19x">Students</Text>
@@ -646,9 +699,18 @@ export default function DiscoverStudents() {
                 {showToast.show && (
                   <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
                 )}
-                <ModalHeader>
-                  <Text fontWeight="700" color="#1F2937" >Add Student to Scholarship</Text>
-                  <Text fontSize="14px" fontWeight="400" color="#6B7280" >Select a scholarship to add the student to</Text>
+                <ModalHeader
+
+                >
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    textAlign="center"
+                  >
+                    <Text fontWeight="700" color="#1F2937" >Add Student to Scholarship</Text>
+                    <Text fontSize="14px" fontWeight="400" color="#6B7280" >Select a scholarship to add the student to</Text>
+                  </Box>
                   <Box
                     bg="#FFF9E6"
                     p={{ base: "4", md: "3" }}
@@ -745,7 +807,7 @@ export default function DiscoverStudents() {
 
                         <HStack flexWrap="wrap">
                           {scholarship.students.length > 0 ? (
-                            scholarship.students.slice(0, 2).map((student, idx) => (
+                            scholarship.students.map((student, idx) => (
                               <HStack key={idx} bg="#E8F2ED" p="8px" rounded="31px">
                                 <Avatar size="sm" name={student.full_name} />
                                 <Text color="#101828" fontSize="13px" fontWeight="500">
