@@ -213,6 +213,8 @@ export default function MyScholarships() {
   const fetchPaidScholarships = async () => {
     try {
       const res = await getActiveScholarships(); // This might return global ones
+
+      console.log("Fetched Active Scholarships:", res);
       if (res.status && Array.isArray(res.data.activeScholarship)) {
         // You can filter by payment flag
         const paid = res.data.activeScholarship.filter(sch => sch.isFunded);
@@ -855,7 +857,7 @@ export default function MyScholarships() {
             </ModalBody>
 
             {/* Footer */}
-            <ModalFooter justifyContent="space-between" gap="10px" bg="gray.50" py={4}>
+            <ModalFooter  gap="10px" bg="gray.50" py={4}>
               <Button
                 variant="outline"
                 background="transparent"
@@ -879,7 +881,7 @@ export default function MyScholarships() {
                 </Flex>
               </Button>
 
-              <HStack spacing={3}>
+             
                 <Button
                   colorScheme="green"
                   borderRadius="full"
@@ -889,9 +891,9 @@ export default function MyScholarships() {
 
                   isLoading={loadingId === selectedScholarship?.id}
                 >
-                  Initiate Transfer
+                Complete Transaction
                 </Button>
-              </HStack>
+         
             </ModalFooter>
           </ModalContent>
         </Modal>

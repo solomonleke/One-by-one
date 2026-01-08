@@ -454,7 +454,7 @@ export default function DiscoverStudents() {
                   sx={{
                     // ✅ Use custom styles to override Chakra’s default gray
                     ".chakra-switch__track": {
-                      backgroundColor: isLocationFiltered ? "#48BB78" : "#48BB78", // green.400 or red.500
+                      backgroundColor: isLocationFiltered ? "#0dd553ff" : "#bcbebdff", // green.400 or red.500
                     },
                   }}
                 />
@@ -498,7 +498,7 @@ export default function DiscoverStudents() {
                   _focusVisible={{ boxShadow: "none" }}
                   sx={{
                     ".chakra-switch__track": {
-                      backgroundColor: isAspirationFiltered ? "#48BB78" : "#48BB78", // green.400 or red.500
+                      backgroundColor: isAspirationFiltered ? "#0dd553ff" : "#bcbebdff", // green.400 or red.500
 
                     },
                   }}
@@ -649,7 +649,7 @@ export default function DiscoverStudents() {
                     <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">Essay score</Th>
                     <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">Request Purpose</Th>
                     <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">Amount</Th>
-                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">actions</Th>
+                    <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">Add To Scholarship</Th>
 
                   </Tr>
                 </Thead>
