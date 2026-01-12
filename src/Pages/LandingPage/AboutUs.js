@@ -38,6 +38,7 @@ import { PiShootingStar } from "react-icons/pi";
 import studentImg from "../../Asset/studentImg.png"
 import { FaArrowRightLong } from "react-icons/fa6";
 import WhoWeAre from '../../LandingPageComponents/WhoWeAre';
+import TeamMembers from '../../LandingPageComponents/Team';
 
 
 export default function AboutUs() {
@@ -128,6 +129,7 @@ export default function AboutUs() {
             </Grid>
 
           </Box>
+          <TeamMembers />
         </MainLayout>
     );
 };
