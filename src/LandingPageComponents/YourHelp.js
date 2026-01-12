@@ -54,7 +54,7 @@ export default function YourHelp() {
                     <Image src={ChildrenImage} zIndex="1001" w={{ base: "100%", smd: "400px", md: "auto" }} h="auto" borderRadius="10.41px" />
                 </Box>
                 <VStack flex="1" w="100%" maxW={{ base: "100%", md: "350px", lg: "500px" }} align={{ base: "center", md: "left" }} textAlign="left" >
-                    <Text fontSize={{ base: "30px", md: "40px", lg: "50px" }} fontWeight="700"  >
+                    <Text color="#ffff" fontSize={{ base: "30px", md: "40px", lg: "50px" }} fontWeight="700"  >
                         Your Help{" "}
                         <Text as="span" color="#8C9492">
                             Matters
