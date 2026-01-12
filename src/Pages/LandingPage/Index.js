@@ -186,15 +186,15 @@ export default function LandingPage() {
               <Box >
                 <Box  display={["block", "block","flex","flex","flex"]} alignItems="center" justifyContent="center" gap="10px">
                   <Box  borderRadius="15px" mb={{ base: "20px", md: "none" }}  borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p={{ base: "20px", md: "30px" }}  >
-                    <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">100+</Text>
-                    <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >students mentored</Text>
+                    <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">4+</Text>
+                    <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >Sponsors</Text>
                   </Box>
                   <Box borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p="30px"  >
-                    <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">50+</Text>
-                    <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >partnered schools</Text>
+                    <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">1</Text>
+                    <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >partnered school</Text>
                   </Box>
                   <Box borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p="30px"  >
-                    <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">160+</Text>
+                    <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">1</Text>
                     <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >sponsored students</Text>
                   </Box>
                 </Box>
