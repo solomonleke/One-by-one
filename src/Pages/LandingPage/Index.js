@@ -34,11 +34,13 @@ import fingerPrint from "../../Asset/fingerPrint.png"
 import greenBackground from "../../Asset/greenBackground.png"
 import ChildrenImage from "../../Asset/ChildrenImage.png"
 import studentImg from "../../Asset/studentImg.png"
+import LaunchCountdown from "../../Components/LaunchCountdown"
 import { FaArrowRightLong } from "react-icons/fa6";
 import AboutOneByOne from '../../LandingPageComponents/AboutOneByOne';
 import Values from '../../LandingPageComponents/ValuesComponent';
 import YourHelp from '../../LandingPageComponents/YourHelp';
 import BeTheChange from '../../LandingPageComponents/BeTheChange';
+import { useState } from 'react';
 
 
 const Feature = ({ title, text, icon }) => (
@@ -52,6 +54,8 @@ const Feature = ({ title, text, icon }) => (
 
 
 export default function LandingPage() {
+
+ const [showCountDown, setShowCountDown] = useState(true);
 
 
   const navigate = useNavigate();
@@ -117,7 +121,14 @@ export default function LandingPage() {
   ];
 
   return (
-    <MainLayout>
+
+   
+
+   showCountDown === true ?  (
+
+      <LaunchCountdown onClick={()=>setShowCountDown(false)}/>
+    ):(
+       <MainLayout>
       <Box>
         {/* Hero Section */}
         <Flex
@@ -359,6 +370,9 @@ export default function LandingPage() {
         </Box>
       </Box>
     </MainLayout>
+    )
+
+   
   );
 };
 

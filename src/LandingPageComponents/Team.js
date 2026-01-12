@@ -10,7 +10,7 @@ import {
     Link,
     VStack,
 } from "@chakra-ui/react";
-import { FaLinkedinIn } from "react-icons/fa";
+import { SlSocialLinkedin } from "react-icons/sl";
 import { FaXTwitter } from "react-icons/fa6";
 import Ope from "../Asset/TeamMembers/ope.png";
 import solomon from "../Asset/TeamMembers/solomon.png";
@@ -45,7 +45,7 @@ const teamData = {
 
     development: [
         {
-            name: "Muyinwa Adeleke",
+            name: "Solomon Adeleke",
             image: solomon,
             // linkedin: "https://linkedin.com/in/muyinwa",
         },
@@ -84,9 +84,10 @@ const TeamCard = ({ name, image, linkedin, twitter }) => (
     <Box
         w="280px"
         h="241px"
-        bg="green.200"          // ✅ green background
-        borderRadius="2xl"
-        p="6px"                 // ✅ 6px spacing INSIDE the card
+        bg="#B7EED4" 
+        border=  "1px solid #A3C8B6"     
+        borderRadius="2xl"  
+        p="6px"                
         mx="auto"
         // border="2px solid black"
     >
@@ -129,14 +130,22 @@ const TeamCard = ({ name, image, linkedin, twitter }) => (
 
                     <HStack spacing={2}>
                         <IconButton
+                            border="1px solid #CCCCCC"
+                            bg="#fff"
+                            borderRadius={"100%"}
+                            color="#091C13"
                             aria-label="LinkedIn"
-                            icon={<FaLinkedinIn />}
+                            icon={<SlSocialLinkedin />}
                             size="xs"
                             variant="ghost"
                             cursor="default"
                         />
 
                         <IconButton
+                            border="1px solid #CCCCCC"
+                            bg="#fff"
+                            borderRadius={"100%"}
+                             color="#091C13"
                             aria-label="Twitter"
                             icon={<FaXTwitter />}
                             size="xs"
@@ -190,7 +199,7 @@ export default function TeamMembers() {
                     Team <Box as="span" color="gray.400">Members</Box>
                 </Heading>
                 <Text color="gray.500" textAlign="center">
-                    Lorem ipsum dolor sit amet consectetur adipisicing.
+                    Meet the minds behind the magic .
                 </Text>
             </VStack>
 
