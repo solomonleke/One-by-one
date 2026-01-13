@@ -8,7 +8,10 @@ import {
   VStack,
   HStack,
   Flex,
+  Image
 } from '@chakra-ui/react';
+import logo from "../Asset/whiteLogo.svg"
+
 
 export default function LaunchCountdown({ onClick }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -56,9 +59,8 @@ export default function LaunchCountdown({ onClick }) {
           
           {/* Status Header */}
           <HStack w="full" justify="space-between" borderBottom="1px solid" borderColor="whiteAlpha.300" pb={4}>
-            <Text fontWeight="black" fontSize="md" color="yellow.400" letterSpacing="widest">
-              ONEBYONE
-            </Text>
+           
+             <Image   src={logo} width="120px" />
             <HStack spacing={2}>
               <Box w={2} h={2} bg="orange.400" borderRadius="full" />
               <Text fontSize="md" fontWeight="bold">
@@ -130,9 +132,7 @@ export default function LaunchCountdown({ onClick }) {
             </Button>
             
             <VStack align={{ base: 'center', md: 'end' }} spacing={1}>
-              <Text fontSize="xl" fontWeight="black" color="yellow.400" letterSpacing="tight">
-                onebyone.ng
-              </Text>
+             <Image   src={logo} width="120px" />
               <HStack spacing={4} fontSize="sm" color="green.200">
                 <Text>✓ Follow our page</Text>
                 <Text>✓ Join the countdown</Text>
