@@ -80,7 +80,7 @@ export default function LaunchCountdown({ onClick }) {
            
             <Text fontSize={{ base: 'lg', md: 'xl' }} color="green.50" maxW="2xl" lineHeight="tall">
               Brilliant students carry big dreams—but lack support. 
-              OneByOne connects them to those willing to stand with them.
+              OneByOne aims to connect them to those willing to stand with them.
             </Text>
           </VStack>
 

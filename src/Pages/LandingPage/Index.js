@@ -177,7 +177,7 @@ export default function LandingPage() {
           <Values />
           <Box bg="#091C13" align="center" justifyContent="center" py="80px"   >
             <Box align="center"  justifyContent="center" px={{ base: "20px", lg: "30px" }} display={{ base: "block", md: "flex" }} alignItems="center">
-              <Text fontSize={{ base: "20px", md: "30px", lg: "50px" }} fontWeight="700" textAlign="center" mr={{ base: "none", md: "50px", lg: "150px" }} mb={{ base: "20px", md: "none" }}>
+              <Text color="white" fontSize={{ base: "20px", md: "30px", lg: "50px" }} fontWeight="700" textAlign="center" mr={{ base: "none", md: "50px", lg: "150px" }} mb={{ base: "20px", md: "none" }}>
                 Our{" "}
                 <Text as="span" color="#8C9492">
                   Impact
@@ -191,11 +191,11 @@ export default function LandingPage() {
                   </Box>
                   <Box borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p="30px"  >
                     <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">1</Text>
-                    <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >partnered school</Text>
+                    <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >Partnered school</Text>
                   </Box>
                   <Box borderRadius="15px" mb={{ base: "20px", md: "none" }} borderLeftWidth="3px" borderLeftStyle="solid" borderLeftColor="#39996B29" p="30px"  >
                     <Text fontSize={{ base: "30px", md: "35px", lg: "48px" }} fontWeight="600" color="#98ACA3">1</Text>
-                    <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >sponsored students</Text>
+                    <Text fontSize={{ base: "13px", md: "15px", lg: "17px" }} fontWeight="400" color="white" >Sponsored students</Text>
                   </Box>
                 </Box>
               </Box>
