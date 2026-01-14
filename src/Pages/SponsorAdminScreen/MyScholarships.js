@@ -382,6 +382,51 @@ export default function MyScholarships() {
                 <Text color="#1F2937" fontSize="14px" fontWeight="600">
                   {scholarship.name ?? "Unnamed Scholarship"}
                 </Text>
+                <HStack
+                  spacing="6px"
+                  px="10px"
+                  py="4px"
+                  rounded="full"
+                  bg={
+                    scholarship.lock_payment === "APPROVED"
+                      ? "#ECFDF3"
+                      : scholarship.lock_payment === "false"
+                        ? "#FEF3F2"
+                        : "#FFF7E6"
+                  }
+                  w="fit-content"
+                >
+                  <Box
+                    w="8px"
+                    h="8px"
+                    rounded="full"
+                    bg={
+                      scholarship.lock_payment === "APPROVED"
+                        ? "#027A48"
+                        : scholarship.lock_payment === "false"
+                          ? "#FD4739FFA30C"
+                          : "#FFA30C"
+                    }
+                  />
+                  <Text
+                    fontWeight="500"
+                    fontSize="12px"
+                    color={
+                      scholarship.lock_payment === "APPROVED"
+                        ? "#027A48"
+                        : scholarship.lock_payment === "false"
+                          ? "#FD4739"
+                          : "#FFA30C"
+                    }
+                    textTransform="capitalize"
+                  >
+                    {scholarship.lock_payment === "APPROVED"
+                      ? "Approved"
+                      : scholarship.lock_payment === "false"
+                        ? "Pending"
+                        : "Awaiting"}
+                  </Text>
+                </HStack>
                 <Text color="#767F8E" fontSize="12px">
                   Date Created:{" "}
                   {scholarship.created_at
@@ -857,7 +902,7 @@ export default function MyScholarships() {
             </ModalBody>
 
             {/* Footer */}
-            <ModalFooter  gap="10px" bg="gray.50" py={4}>
+            <ModalFooter gap="10px" bg="gray.50" py={4}>
               <Button
                 variant="outline"
                 background="transparent"
@@ -881,19 +926,19 @@ export default function MyScholarships() {
                 </Flex>
               </Button>
 
-             
-                <Button
-                  colorScheme="green"
-                  borderRadius="full"
-                  onClick={() => {
-                    fundScholarship(selectedScholarship?.id, receiptFile);
-                  }}
 
-                  isLoading={loadingId === selectedScholarship?.id}
-                >
+              <Button
+                colorScheme="green"
+                borderRadius="full"
+                onClick={() => {
+                  fundScholarship(selectedScholarship?.id, receiptFile);
+                }}
+
+                isLoading={loadingId === selectedScholarship?.id}
+              >
                 Complete Transaction
-                </Button>
-         
+              </Button>
+
             </ModalFooter>
           </ModalContent>
         </Modal>

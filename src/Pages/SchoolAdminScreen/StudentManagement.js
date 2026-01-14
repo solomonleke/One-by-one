@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../DashboardLayout'
-import { Text, Flex, HStack, Box, useDisclosure, FormHelperText } from '@chakra-ui/react'
+import { Text, Flex, Stack, HStack, Box, useDisclosure, FormHelperText } from '@chakra-ui/react'
 import TableRow from "../../Components/TableRow"
 import Button from "../../Components/Button"
 import Input from "../../Components/Input"
@@ -16,12 +16,14 @@ import { HiOutlineDocumentArrowUp } from "react-icons/hi2";
 import { BiSearch } from "react-icons/bi";
 import Pagination from "../../Components/Pagination";
 import { configuration } from "../../Utils/Helpers";
-import { GetAllStudentApi, GetStudentStatsApi, UpdateStudentProfile, DeleteStudentProfile } from "../../Utils/ApiCall";
+import { GetAllStudentApi, BulkUploadStudentApi, GetStudentStatsApi, UpdateStudentProfile, DeleteStudentProfile } from "../../Utils/ApiCall";
 import moment from "moment";
+// import * as XLSX from "xlsx";
+
 import { useParams } from 'react-router-dom';
 
 import {
-  Stack,
+  VStack,
   Table,
   Thead,
   Tbody,
@@ -50,6 +52,10 @@ export default function StudentManagement() {
   const [Approved, setApproved] = useState(false)
   const [Pending, setPending] = useState(false)
   const [Rejected, setRejected] = useState(false)
+  const [file, setFile] = useState(null); // 👈 Added for bulk upload
+  const [isUploading, setIsUploading] = useState(false);
+
+
 
 
   const [OpenModal, setOpenModal] = useState(false)
@@ -73,6 +79,12 @@ export default function StudentManagement() {
   const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
   const [TotalPage, setTotalPage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const {
+    isOpen: isBulkUploadOpen,
+    onOpen: onOpenBulkUpload,
+    onClose: onCloseBulkUpload,
+  } = useDisclosure();
+
 
   //get current post
   //change page
@@ -219,6 +231,67 @@ export default function StudentManagement() {
       }
     }
   };
+
+  const handleBulkUpload = async () => {
+    if (!file) {
+      setShowToast({
+        show: true,
+        message: "No file selected",
+        status: "error",
+      });
+      setTimeout(() => setShowToast({ show: false }), 3000);
+      return;
+    }
+
+    try {
+      setIsUploading(true);  // ✅ start button loading
+
+      const result = await BulkUploadStudentApi(file);
+
+      if (result.failedStudents && result.failedStudents.length > 0) {
+        const failedList = result.failedStudents
+          .map(f => `${f.name} (${f.email}): ${f.reason}`)
+          .join("\n");
+
+        setShowToast({
+          show: true,
+          message: `Bulk upload partially failed:\n${failedList}`,
+          status: "error",
+        });
+
+      } else if (result.status === true) {
+        setShowToast({
+          show: true,
+          message: result.message || "Students uploaded successfully",
+          status: "success",
+        });
+      } else {
+        throw new Error(result.message || "Bulk upload failed");
+      }
+
+      setTimeout(() => setShowToast({ show: false }), 6000);
+
+      await getallStudent();
+      onCloseBulkUpload();
+      setFile(null);
+
+    } catch (error) {
+      console.error("Bulk upload failed:", error);
+
+      setShowToast({
+        show: true,
+        message: error.message || "Bulk upload failed",
+        status: "error",
+      });
+      setTimeout(() => setShowToast({ show: false }), 3000);
+
+    } finally {
+      setIsUploading(false);  // ✅ stop button loading
+    }
+  };
+
+
+
 
 
   const deleteStudentProfileBtn = async (student_Id) => {
@@ -663,15 +736,33 @@ export default function StudentManagement() {
         </Flex>
 
         <Flex
-          justifyContent="space-between"
-          flexWrap="wrap"
-          mt={["10px", "10px", "10px", "10px"]}
-          w={["100%", "100%", "50%", "37%"]}
+          direction={{ base: "column", sm: "row", md: "row" }} // column on small screens only
+          gap={3} // spacing between buttons
+          mt={4}
+          w="100%"
+          justify={{ base: "flex-start", md: "flex-start" }} // left on mobile, right on desktop
+          align={{ base: "stretch", md: "center" }} // stretch full width on mobile
         >
-          <Button w="159px" size="sm" onClick={() => {
-            router("/AddStudents")
-          }}>Add student</Button>
+          <Button
+            w={{ base: "100%", md: "159px" }} // full width only on mobile
+            size="sm"
+            colorScheme="green"
+            onClick={() => router("/AddStudents")}
+          >
+            Add student
+          </Button>
+
+          <Button
+            w={{ base: "100%", md: "159px" }}
+            size="sm"
+            colorScheme="green"
+            onClick={onOpenBulkUpload}
+          >
+            Bulk upload
+          </Button>
         </Flex>
+
+
 
         <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='15px' px="15px" rounded='10px' overflowX="auto">
 
@@ -892,6 +983,146 @@ export default function StudentManagement() {
               </ModalFooter>
             </ModalContent>
           </Modal>
+
+          <Modal isOpen={isBulkUploadOpen} onClose={onCloseBulkUpload} isCentered size="md">
+            <ModalOverlay bg="blackAlpha.600" />
+            <ModalContent borderRadius="16px" px={1}>
+              {showToast.show && (
+                <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} duration={showToast.duration} />
+              )}
+              {/* Header */}
+              <ModalHeader fontSize="lg" fontWeight="600" pb={2}>
+                Bulk Upload Students
+              </ModalHeader>
+              <ModalCloseButton />
+
+              {/* Body */}
+              <ModalBody pt={0} pb={6}>
+                <Stack spacing={5}>
+                  <Text fontSize="sm" color="gray.600">
+                    Download the Excel template, fill it in correctly, then upload the completed file.
+                  </Text>
+
+                  {/* Download Template */}
+                  <Button
+                    size="md"
+                    w="100%"
+                    h="48px"
+                    colorScheme="green"
+                    leftIcon={<HiOutlineDocumentArrowUp />}
+                    fontWeight="500"
+                    onClick={() => {
+                      const link = document.createElement("a");
+                      link.href =
+                        "https://res.cloudinary.com/djmbo2b4e/raw/upload/v1768193745/student_bulk_upload_template_t67hof.xlsx";
+                      link.download = "student_bulk_upload_template.xlsx";
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
+                  >
+                    Download Excel Template
+                  </Button>
+
+                  {/* Upload Section */}
+                  <FormControl>
+                    <FormLabel fontSize="sm" fontWeight="500" mb={2}>
+                      Upload Completed Excel File
+                    </FormLabel>
+
+                    <Box
+                      p={8}
+                      border="2px dashed"
+                      borderColor={file ? "green.400" : "gray.300"}
+                      borderRadius="12px"
+                      textAlign="center"
+                      cursor="pointer"
+                      transition="all 0.2s ease"
+                      _hover={{
+                        borderColor: "green.400",
+                        bg: "green.50",
+                      }}
+                      onClick={() => document.getElementById("bulkFileInput").click()}
+                    >
+                      <Text fontSize="sm" color="gray.500">
+                        {file ? (
+                          <>
+                            <strong>{file.name}</strong>
+                          </>
+                        ) : (
+                          "Click or drag file here"
+                        )}
+                      </Text>
+                      <Text fontSize="xs" color="gray.400" mt={1}>
+                        .xlsx or .xls only
+                      </Text>
+                    </Box>
+
+                    <Input
+                      id="bulkFileInput"
+                      type="file"
+                      accept=".xlsx, .xls"
+                      display="none"
+                      onChange={(e) => {
+                        const selectedFile = e.target.files[0];
+                        if (selectedFile) {
+                          setFile(selectedFile);
+                          setShowToast({
+                            show: true,
+                            message: `Selected file: ${selectedFile.name}`,
+                            status: "success",
+                          });
+                          setTimeout(() => setShowToast({ show: false }), 3000);
+                        }
+                      }}
+                    />
+                  </FormControl>
+                </Stack>
+              </ModalBody>
+
+              {/* Footer (FIXED) */}
+              <ModalFooter
+                borderTop="1px solid"
+                borderColor="gray.100"
+                px={6}
+                py={4}
+              >
+                <Stack
+                  direction={{ base: "column", sm: "row" }}
+                  spacing={3}
+                  w="100%"
+                >
+                  <Button
+                    variant="outline"
+                    w="100%"
+                    h="44px"
+                    colorScheme="green"
+                    onClick={onCloseBulkUpload}
+                  >
+                    Close
+                  </Button>
+
+                  <Button
+                    type="button"
+                    w="100%"
+                    h="44px"
+                    colorScheme="green"
+                    isDisabled={!file}
+                    isLoading={isUploading}       // ✅ show loading
+                    loadingText="Uploading..."     // ✅ text on button
+                    onClick={handleBulkUpload}
+                  >
+                    Upload
+                  </Button>
+
+                </Stack>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+
+
+
+
 
 
 

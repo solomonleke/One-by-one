@@ -74,6 +74,48 @@ export const CreateStudentApi = (Payload) => {
     });
 };
 
+export const BulkUploadStudentApi = (file) => {
+  console.log("BulkUploadStudentAPI~file", file);
+
+  let formData = new FormData();
+  formData.append("file", file); // key expected by server
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/school-admin/bulk-upload-student`,
+    headers: {
+      "Content-Type": "multipart/form-data",
+      "Authorization": `Bearer ${getToken()}`,
+    },
+    data: formData,
+  };
+
+  return axios
+    .request(config)
+    .then((response) => {
+      console.log("Bulk upload response:", JSON.stringify(response.data));
+      return response.data;
+    })
+    .catch((error) => {
+      console.log("Bulk upload error", error.response);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response?.data) {
+        throw new Error(JSON.stringify(error.response.data));
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
+
+
+
+
+
+
 export const ResendVerificationApi = (Payload) => {
   // console.log("ResendVerificationApi", Payload);
 
