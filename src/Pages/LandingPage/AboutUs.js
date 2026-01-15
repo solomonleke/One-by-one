@@ -85,7 +85,7 @@ export default function AboutUs() {
                 </Text>
             </Box>
 
-            <Box align="center"  justifyContent="center" bg="#E5FFF3" py={{base:"100px", md: "135px"}} px={{ base: "20px", lg: "30px" }} >
+            {/* <Box align="center"  justifyContent="center" bg="#E5FFF3" py={{base:"100px", md: "135px"}} px={{ base: "20px", lg: "30px" }} >
 
             <Text  fontSize={{base:"23px", md:"50px"}} fontWeight="700" textAlign="center" mb={{base:"30px", md:"50px"}} >
             OneByOne’s{" "}
@@ -128,7 +128,7 @@ export default function AboutUs() {
               </Box>
             </Grid>
 
-          </Box>
+          </Box> */}
           <TeamMembers />
         </MainLayout>
     );

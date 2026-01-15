@@ -1292,13 +1292,13 @@ export const getScholarshipsBySponsor = async () => {
   }
 };
 
-export const GetSponsorHistory = (pageNo, noItems, status) => {
+export const GetSponsorHistory = (pageNo, noItems, status, scholarshipId) => {
  
  
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
-    url: `${baseUrl}/sponsor-admin/funding-history?pageNo=${pageNo}&noItems=${noItems}&status=${status}`,
+    url: `${baseUrl}/sponsor-admin/funding-history?pageNo=${pageNo}&noItems=${noItems}&status=${status}&scholarshipId=${scholarshipId}`,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
@@ -1325,6 +1325,28 @@ export const GetSponsorHistory = (pageNo, noItems, status) => {
       }
     });
 };
+
+export const GetIndividualSponsorHistory = (
+  pageNo,
+  noItems,
+  status,
+  scholarshipId // 👈 NEW
+) => {
+  let config = {
+    method: "GET",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/sponsor-admin/funding-history?pageNo=${pageNo}&noItems=${noItems}&status=${status}&scholarshipId=${scholarshipId}`, // 👈 include scholarshipId
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`
+    },
+    
+  };
+
+
+  return axios.request(config).then(res => res);
+};
+
 
 // apiCall.js
 export const fundScholarshipApi = async (Id, receiptFile) => {

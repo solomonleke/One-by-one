@@ -106,7 +106,7 @@ export default function Transactions() {
       await ApproveTransactionApi(transactionId, newStatus);
       setShowToast({
         show: true,
-        title: `Transaction ${newStatus.toLowerCase()} successfully`,
+        message: `Transaction ${newStatus.toLowerCase()} successfully`,
         status: "success",
         duration: 3000,
       });

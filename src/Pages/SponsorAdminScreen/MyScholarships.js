@@ -195,20 +195,39 @@ export default function MyScholarships() {
 
   const fetchActiveScholarships = async () => {
     try {
-      const res = await getScholarshipsBySponsor(); // sponsor-specific
-      if (res.status && Array.isArray(res.data)) {
-        // Filter active scholarships
-        const active = res.data.filter(sch => sch.status === "active");
-        setActiveScholarships(active);
+      const res = await getActiveScholarships();
+      console.log("Fetched Active Scholarships:", res);
 
-        // Filter awaiting funding
-        const awaiting = res.data.filter(sch => sch.status === "inactive");
-        setAwaitingFundingScholarships(awaiting);
+      if (res?.status && Array.isArray(res?.data?.activeScholarship)) {
+        setActiveScholarships(res.data.activeScholarship);
+      } else {
+        setActiveScholarships([]);
       }
     } catch (error) {
-      console.error("Error fetching sponsor scholarships:", error);
+      console.error("Error fetching active scholarships:", error);
+      setActiveScholarships([]);
     }
   };
+
+  const fetchAwaitingFundingScholarships = async () => {
+    try {
+      const res = await getScholarshipsBySponsor();
+
+      if (res?.status && Array.isArray(res?.data)) {
+        const awaiting = res.data.filter(
+          (sch) => sch.status === "inactive"
+        );
+
+        setAwaitingFundingScholarships(awaiting);
+      } else {
+        setAwaitingFundingScholarships([]);
+      }
+    } catch (error) {
+      console.error("Error fetching awaiting funding scholarships:", error);
+      setAwaitingFundingScholarships([]);
+    }
+  };
+
 
   const fetchPaidScholarships = async () => {
     try {
@@ -357,10 +376,11 @@ export default function MyScholarships() {
 
 
   useEffect(() => {
-    fetchPaidScholarships();
-    fetchActiveScholarships();
-    fetchData();
+    fetchActiveScholarships();              // Active tab
+    fetchAwaitingFundingScholarships();     // Awaiting Funding tab
+    fetchData();                            // Dashboard stats
   }, [isOpen]);
+
 
   const ScholarshipList = ({ scholarships, type }) => (
     <Stack spacing="20px">
@@ -382,51 +402,48 @@ export default function MyScholarships() {
                 <Text color="#1F2937" fontSize="14px" fontWeight="600">
                   {scholarship.name ?? "Unnamed Scholarship"}
                 </Text>
-                <HStack
-                  spacing="6px"
-                  px="10px"
-                  py="4px"
-                  rounded="full"
-                  bg={
-                    scholarship.lock_payment === "APPROVED"
-                      ? "#ECFDF3"
-                      : scholarship.lock_payment === "false"
-                        ? "#FEF3F2"
-                        : "#FFF7E6"
-                  }
-                  w="fit-content"
-                >
-                  <Box
-                    w="8px"
-                    h="8px"
+                {type === "active" && (
+                  <HStack
+                    spacing="6px"
+                    px="10px"
+                    py="4px"
                     rounded="full"
                     bg={
-                      scholarship.lock_payment === "APPROVED"
-                        ? "#027A48"
-                        : scholarship.lock_payment === "false"
-                          ? "#FD4739FFA30C"
-                          : "#FFA30C"
+                      scholarship.transaction_status === "APPROVED"
+                        ? "#ECFDF3"
+                        : "#FFF7E6"
                     }
-                  />
-                  <Text
-                    fontWeight="500"
-                    fontSize="12px"
-                    color={
-                      scholarship.lock_payment === "APPROVED"
-                        ? "#027A48"
-                        : scholarship.lock_payment === "false"
-                          ? "#FD4739"
-                          : "#FFA30C"
-                    }
-                    textTransform="capitalize"
+                    w="fit-content"
                   >
-                    {scholarship.lock_payment === "APPROVED"
-                      ? "Approved"
-                      : scholarship.lock_payment === "false"
-                        ? "Pending"
-                        : "Awaiting"}
-                  </Text>
-                </HStack>
+                    <Box
+                      w="8px"
+                      h="8px"
+                      rounded="full"
+                      bg={
+                        scholarship.transaction_status === "APPROVED"
+                          ? "#027A48"
+                          : "#FFA30C"
+                      }
+                    />
+
+                    <Text
+                      fontWeight="500"
+                      fontSize="12px"
+                      color={
+                        scholarship.transaction_status === "APPROVED"
+                          ? "#027A48"
+                          : "#FFA30C"
+                      }
+                    >
+                      {scholarship.transaction_status === "APPROVED"
+                        ? "Active"
+                        : "Awaiting admin approval"}
+                    </Text>
+                  </HStack>
+                )}
+
+
+
                 <Text color="#767F8E" fontSize="12px">
                   Date Created:{" "}
                   {scholarship.created_at
@@ -501,7 +518,9 @@ export default function MyScholarships() {
               {type === "active" && (
                 <HStack
                   cursor="pointer"
-                  onClick={() => router("/sponsor-admin/fundinghistory")}
+                  onClick={() =>
+                    router(`/sponsor-admin/fundinghistory?scholarshipId=${scholarship.id}`)
+                  }
                   display={{ base: "none", md: "flex" }}
                 >
                   <Text fontSize="12px" fontWeight="500" color="#39996B">
@@ -903,7 +922,7 @@ export default function MyScholarships() {
 
             {/* Footer */}
             <ModalFooter gap="10px" bg="gray.50" py={4}>
-              <Button
+              {/* <Button
                 variant="outline"
                 background="transparent"
                 color="greenn.greenn500"
@@ -924,7 +943,7 @@ export default function MyScholarships() {
                   <Text>Print </Text>
                   <IoPrintOutline size={18} />
                 </Flex>
-              </Button>
+              </Button> */}
 
 
               <Button

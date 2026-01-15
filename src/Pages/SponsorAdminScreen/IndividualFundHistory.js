@@ -13,14 +13,14 @@ import {
 import MainLayout from "../../DashboardLayout";
 import TableRow from "../../Components/TableRow";
 import { configuration } from "../../Utils/Helpers";
-import { GetSponsorHistory } from "../../Utils/ApiCall";
+import { GetIndividualSponsorHistory } from "../../Utils/ApiCall";
 import Pagination from "../../Components/Pagination";
 import Preloader from "../../Components/Preloader";
 import ShowToast from "../../Components/ToastNotification";
 import { useSearchParams } from "react-router-dom";
 
 
-export default function FundedHistory() {
+export default function IndividualFundHistory() {
     const [history, setHistory] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
@@ -37,10 +37,11 @@ export default function FundedHistory() {
     const [searchParams] = useSearchParams();
 const scholarshipId = searchParams.get("scholarshipId");
 
+
     const fetchFundingHistory = async () => {
         setError("");
         try {
-            const response = await GetSponsorHistory(CurrentPage, PostPerPage, scholarshipId);
+            const response = await GetIndividualSponsorHistory(CurrentPage, PostPerPage, scholarshipId );
             console.log("API funding history response:", response);
 
             // ✅ Go one level deeper into response.data.data
