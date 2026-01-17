@@ -17,13 +17,15 @@ import { GetIndividualSponsorHistory } from "../../Utils/ApiCall";
 import Pagination from "../../Components/Pagination";
 import Preloader from "../../Components/Preloader";
 import ShowToast from "../../Components/ToastNotification";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
 
 
 export default function IndividualFundHistory() {
     const [history, setHistory] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+    const [status, setStatus] = useState("");
     const [CurrentPage, setCurrentPage] = useState(1);
     const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
     const [TotalPage, setTotalPage] = useState(1);
@@ -34,8 +36,7 @@ export default function IndividualFundHistory() {
     });
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
-    const [searchParams] = useSearchParams();
-const scholarshipId = searchParams.get("scholarshipId");
+    const { scholarshipId } = useParams();
 
 
     const fetchFundingHistory = async () => {

@@ -25,6 +25,7 @@ export default function FundedHistory() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
     const [CurrentPage, setCurrentPage] = useState(1);
+    const [status, setStatus] = useState(1);
     const [PostPerPage, setPostPerPage] = useState(configuration.sizePerPage);
     const [TotalPage, setTotalPage] = useState(1);
     const [showToast, setShowToast] = useState({
@@ -40,7 +41,7 @@ const scholarshipId = searchParams.get("scholarshipId");
     const fetchFundingHistory = async () => {
         setError("");
         try {
-            const response = await GetSponsorHistory(CurrentPage, PostPerPage, scholarshipId);
+            const response = await GetSponsorHistory(CurrentPage, PostPerPage, status, scholarshipId);
             console.log("API funding history response:", response);
 
             // ✅ Go one level deeper into response.data.data
