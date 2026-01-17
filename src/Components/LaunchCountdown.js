@@ -8,6 +8,7 @@ import {
   VStack,
   HStack,
   Flex,
+  Link
   Image
 } from '@chakra-ui/react';
 import logo from "../Asset/whiteLogo.svg"
@@ -23,7 +24,7 @@ export default function LaunchCountdown({ onClick }) {
     const calculateTimeLeft = () => {
       const now = new Date().getTime();
       const difference = launchDate - now;
-      
+
       if (difference > 0) {
         setTimeLeft({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -33,7 +34,7 @@ export default function LaunchCountdown({ onClick }) {
         });
       }
     };
-    
+
     calculateTimeLeft();
     const timer = setInterval(calculateTimeLeft, 1000);
     return () => clearInterval(timer);
@@ -47,16 +48,16 @@ export default function LaunchCountdown({ onClick }) {
   ];
 
   return (
-    <Box 
-      minH="100vh" 
-      bgGradient="linear(to-br, #1a4d2e, #2d5f4a, #1e5a3f)" 
-      color="white" 
-      display="flex" 
+    <Box
+      minH="100vh"
+      bgGradient="linear(to-br, #1a4d2e, #2d5f4a, #1e5a3f)"
+      color="white"
+      display="flex"
       alignItems="center"
     >
       <Container maxW="4xl" py={10}>
         <VStack spacing={12} textAlign="center">
-          
+
           {/* Status Header */}
           <HStack w="full" justify="space-between" borderBottom="1px solid" borderColor="whiteAlpha.300" pb={4}>
            
@@ -77,9 +78,9 @@ export default function LaunchCountdown({ onClick }) {
                 Opportunity is not."
               </Text>
             </Heading>
-           
+
             <Text fontSize={{ base: 'lg', md: 'xl' }} color="green.50" maxW="2xl" lineHeight="tall">
-              Brilliant students carry big dreams—but lack support. 
+              Brilliant students carry big dreams—but lack support.
               OneByOne aims to connect them to those willing to stand with them.
             </Text>
           </VStack>
@@ -105,17 +106,37 @@ export default function LaunchCountdown({ onClick }) {
                   {unit.label}
                 </Text>
               </VStack>
+
             ))}
+
           </HStack>
 
+          <Link
+            href="https://meet.google.com/fgi-cmyc-vsi"
+            isExternal
+            _hover={{ textDecoration: "none" }}
+            _focus={{ boxShadow: "none" }}
+          >
+            <Text
+              color="white"
+              fontSize="lg"
+              fontWeight="500"
+              cursor="pointer"
+              transition="color 0.2s ease"
+              _hover={{ color: "yellow.400" }}
+            >
+              Join live event
+            </Text>
+          </Link>
           {/* Footer Actions */}
-          <Flex 
-            w="full" 
-            direction={{ base: 'column', md: 'row' }} 
-            align="center" 
-            justify="space-between" 
+          <Flex
+            w="full"
+            direction={{ base: 'column', md: 'row' }}
+            align="center"
+            justify="space-between"
             gap={6}
           >
+
             <Button
               size="lg"
               h="60px"
@@ -130,7 +151,7 @@ export default function LaunchCountdown({ onClick }) {
             >
               Explore
             </Button>
-            
+
             <VStack align={{ base: 'center', md: 'end' }} spacing={1}>
              <Image   src={logo} width="120px" />
               <HStack spacing={4} fontSize="sm" color="green.200">

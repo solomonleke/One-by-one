@@ -31,17 +31,37 @@ import { useParams } from 'react-router-dom';
 export default function StudentProfile() {
   const router = useNavigate();
   const { student_Id } = useParams(); // Get student ID from URL params
-  const [studentData, setStudentData] = useState(() => {
-    const storedData = localStorage.getItem("studentData");
-    return storedData ? JSON.parse(storedData) : { full_name: "", email: "", profileImage: "", dob: "", gender: "", phone_number: "", guardian_phone_number: "", address: "", city: "", state: "", student_interest: [], class_level: "", department: "", class_performance: "", subjects: "", scholarship_need: "", higher_education_goals: "", career_goals: "" };
-  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const initialStudentState = {
+    full_name: "",
+    email: "",
+    profileImage: "",
+    dob: "",
+    gender: "",
+    phone_number: "",
+    guardian_phone_number: "",
+    address: "",
+    city: "",
+    state: "",
+    student_interest: [],
+    class_level: "",
+    department: "",
+    class_performance: "",
+    subjects: "",
+    scholarship_need: "",
+    higher_education_goals: "",
+    career_goals: "",
+  };
+  
+  const [studentData, setStudentData] = useState(initialStudentState);
+  
   const [editedData, setEditedData] = useState(studentData);
   const { isOpen: isEditModalOpen, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [data, setData] = useState({})
+  
 
   const [showToast, setShowToast] = useState({
     show: false,

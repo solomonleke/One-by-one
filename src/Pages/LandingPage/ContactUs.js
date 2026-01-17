@@ -100,7 +100,7 @@ export default function ContactUs() {
                                     </Box>
                                     <Box>
                                         <Text fontSize={{ base: "13px", md: "14px", lg: "16px" }} color="#A1A1AACC" letterSpacing="-1px">Email</Text>
-                                        <Text fontSize={{ base: "12px", md: "13px", lg: "15px" }} color="#7F7F85" letterSpacing="-1px">contact@email.com</Text>
+                                        <Text fontSize={{ base: "12px", md: "13px", lg: "15px" }} color="#7F7F85" letterSpacing="-1px">support@onebyone.ng</Text>
                                     </Box>
                                 </Flex>
 
@@ -120,7 +120,7 @@ export default function ContactUs() {
                                     </Box>
                                     <Box>
                                         <Text fontSize={{ base: "13px", md: "14px", lg: "16px" }} color="#A1A1AACC" letterSpacing="-1px">Phone</Text>
-                                        <Text fontSize={{ base: "12px", md: "13px", lg: "15px" }} color="#7F7F85" letterSpacing="-1px">(234) 564 - 6788</Text>
+                                        <Text fontSize={{ base: "12px", md: "13px", lg: "15px" }} color="#7F7F85" letterSpacing="-1px">(234) 806-884-0125</Text>
                                     </Box>
                                 </Flex>
                             </Flex>

@@ -1292,13 +1292,13 @@ export const getScholarshipsBySponsor = async () => {
   }
 };
 
-export const GetSponsorHistory = (pageNo, noItems, status, scholarshipId) => {
+export const GetSponsorHistory = (pageNo, noItems, status) => {
  
  
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
-    url: `${baseUrl}/sponsor-admin/funding-history?pageNo=${pageNo}&noItems=${noItems}&status=${status}&scholarshipId=${scholarshipId}`,
+    url: `${baseUrl}/sponsor-admin/funding-history?pageNo=${pageNo}&noItems=${noItems}&status=${status}`,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
@@ -1329,13 +1329,12 @@ export const GetSponsorHistory = (pageNo, noItems, status, scholarshipId) => {
 export const GetIndividualSponsorHistory = (
   pageNo,
   noItems,
-  status,
-  scholarshipId // 👈 NEW
+  scholarshipId 
 ) => {
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
-    url: `${baseUrl}/sponsor-admin/funding-history?pageNo=${pageNo}&noItems=${noItems}&status=${status}&scholarshipId=${scholarshipId}`, // 👈 include scholarshipId
+    url: `${baseUrl}/sponsor-admin/funding-history?pageNo=${pageNo}&noItems=${noItems}&scholarshipId=${scholarshipId}`, // 👈 include scholarshipId
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`

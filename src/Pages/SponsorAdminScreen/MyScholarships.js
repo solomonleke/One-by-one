@@ -519,7 +519,7 @@ export default function MyScholarships() {
                 <HStack
                   cursor="pointer"
                   onClick={() =>
-                    router(`/sponsor-admin/fundinghistory?scholarshipId=${scholarship.id}`)
+                    router(`/sponsor-admin/funding-history/${scholarship.id}`)
                   }
                   display={{ base: "none", md: "flex" }}
                 >
@@ -562,7 +562,7 @@ export default function MyScholarships() {
                   w="100%"
                   justify="flex-start"
                   cursor="pointer"
-                  onClick={() => router("/sponsor-admin/fundinghistory")}
+                  onClick={() => router(`/sponsor-admin/funding-history/${scholarship.id}`)}
                 >
                   <Text fontSize="12px" fontWeight="500" color="#39996B">
                     View Funds History

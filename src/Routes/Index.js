@@ -34,6 +34,7 @@ import MyScholarships from '../Pages/SponsorAdminScreen/MyScholarships'
 import DiscoverStudents from '../Pages/SponsorAdminScreen/DiscoverStudents'
 import StudentProfile3 from '../Pages/SponsorAdminScreen/StudentProfile'
 import FundingHistory from '../Pages/SponsorAdminScreen/FundingHistory'
+import IndividualFundHistory from '../Pages/SponsorAdminScreen/IndividualFundHistory'
 import Settings3 from '../Pages/SponsorAdminScreen/Settings'
 import Dashboard from '../Pages/FundAdminUserScreen/Index'
 import AwaitingFunding from '../Pages/FundAdminUserScreen/AwaitingFunding'
@@ -116,6 +117,7 @@ export default function IndexRoutes() {
           <Route path='/sponsor-admin/myscholarships' element={<MyScholarships />} />
           <Route path='/sponsor-admin/discoverstudents' element={<DiscoverStudents />} studentId={studentIdToOpen} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
           <Route path='/sponsor-admin/fundinghistory' element={<FundingHistory />} />
+          <Route path='/sponsor-admin/funding-history/:scholarshipId' element={<IndividualFundHistory />} />
           <Route path='/sponsor-admin/students/student-profile/:studentId' element={<StudentProfile3 />} />
           <Route path='/sponsor-admin/settings' element={<Settings3 />} />
 

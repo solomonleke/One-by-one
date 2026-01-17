@@ -648,21 +648,14 @@ export default function ScholarshipAdmin() {
                     key={index}
                     p={"12px"} border=" 1px solid #EDEFF2"
                     gap="0px"
-                    cursor="pointer"
                     align="center"
                     opacity="0px"
                     w={{ Fill: "396px" }}
                     justify="space-between" borderRadius="10px" height={{ Fixed: "68px" }}
                     borderBottomWidth={index !== schools.length - 1 ? 1 : 0}
                     borderColor={"gray.200"}
-                    onClick={() => {
-                      router("/scholarship-admin/students")
-                    }}>
-                    <HStack onClick={() => {
-                      router("/scholarship-admin/students/student-profile")
-                    }}>
-
-
+                    >
+                    <HStack >
                       <Avatar size="sm" name={student.full_name} />
                       <Box >
                         <Text fontWeight="500" fontSize="13px" lineHeight="20px" textAlign="left" letterSpacing={"-0.02em"}>{student.full_name}</Text>

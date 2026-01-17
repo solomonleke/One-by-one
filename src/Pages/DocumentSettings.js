@@ -17,7 +17,7 @@ export default function DocumentSettings() {
   const isMobile = useBreakpointValue({ base: "100%", md: "500px", lg: "528px" });
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
-  
+
   const initialFiles = {
     certificate: null,
     tin: null,
@@ -123,7 +123,7 @@ export default function DocumentSettings() {
           if (
             !latestDocs[doc.document_type] ||
             new Date(doc.created_at) >
-              new Date(latestDocs[doc.document_type].created_at)
+            new Date(latestDocs[doc.document_type].created_at)
           ) {
             latestDocs[doc.document_type] = doc;
           }
@@ -158,7 +158,7 @@ export default function DocumentSettings() {
       {showToast.show && (
         <ShowToast message={showToast.message} status={showToast.status} show={showToast.show} />
       )}
-      
+
       <Stack spacing={"24px"}>
         <Stack mt={"10px"}>
           <Text fontSize={"17px"} fontWeight={"600"} color={"#1F2937"}>Verification Documents</Text>
@@ -167,13 +167,44 @@ export default function DocumentSettings() {
 
         {showVerificationWarning && !areAllDocumentsUploaded() && (
           <Box backgroundColor={"#FFF7EB"} py={"14px"} px={{ base: "10px", md: "20px" }} rounded={"6px"} border={"1px solid #FFA30C80"} id='close'>
-            <HStack justifyContent={"space-between"} flexWrap={{ base: "wrap", md: "nowrap" }}>
-              <HStack flexWrap={{ base: "wrap", md: "nowrap" }}>
-                <Warning />
-                <Text fontSize={"14px"} fontWeight={"400"} color={"#FFA30C"}>Your school cannot be verified until all required documents are uploaded. Ensure the following documents below are uploaded</Text>
+            <HStack
+              w="100%"
+              justify="space-between"
+              align="flex-start"
+              spacing={3}
+            >
+              {/* Left: Warning icon + text */}
+              <HStack
+                spacing={3}
+                align="flex-start"
+                flex="1"
+                minW="0"        // 🔥 allows text to wrap instead of pushing icons
+              >
+                <Box flexShrink={0}>
+                  <Warning />
+                </Box>
+
+                <Text
+                  fontSize={{ base: "12px", sm: "13px", md: "14px" }}
+                  fontWeight="400"
+                  color="#FFA30C"
+                  lineHeight="1.5"
+                  wordBreak="break-word"
+                >
+                  Your school cannot be verified until all required documents are uploaded.
+                  Ensure the following documents below are uploaded.
+                </Text>
               </HStack>
-              <Close cursor={"pointer"} id='closer' onClick={handleCloseVerificationWarning} />
+
+              {/* Right: Close icon */}
+              <Close
+                cursor="pointer"
+                id="closer"
+                onClick={handleCloseVerificationWarning}
+                flexShrink={0}
+              />
             </HStack>
+
           </Box>
         )}
 
@@ -193,38 +224,31 @@ export default function DocumentSettings() {
                     h="76px"
                     borderWidth={1}
                     borderRadius="lg"
-                    borderColor="#D7E8E0"
+                    // borderColor="#D7E8E0"
                     p={4}
                     justifyContent="space-between"
-                    flexWrap={{ base: "wrap", sm: "nowrap" }}
                     spacing={{ base: 2, sm: 4 }}
                   >
-                    <HStack flex="1" spacing={4}>
-                      <HStack>
-                        <TbFileMinus size="30px" color="#96C3AD" />
-                        <Box>
-                          <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
-                            {files.certificate?.name}
-                          </Text>
-                          <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
-                            {files.certificate?.size
-                              ? `${(files.certificate.size / 1024).toFixed(2)} KB`
-                              : ""}
-                          </Text>
-                        </Box>
-                      </HStack>
-                      <Spacer />
-                      <Text
-                        align="end"
-                        fontSize={{ base: "10px", sm: "13px" }}
-                        color="#39996B"
-                        cursor="pointer"
-                        fontWeight="600"
-                        onClick={() => certificateInputRef.current.click()}
-                      >
-                        Update
-                      </Text>
+                    <HStack flex="1" w="100%" spacing={4} >
+                      <TbFileMinus size="30px" color="#96C3AD" />
+                      <Box>
+                        <Text
+                          color="#353535"
+                          fontSize={{ base: "10px", sm: "13px" }}
+                          fontWeight="500"
+                          isTruncated
+                        >
+                          {files.certificate?.name}
+                        </Text>
+                        <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
+                          {files.certificate?.size
+                            ? `${(files.certificate.size / 1024).toFixed(2)} KB`
+                            : ""}
+                        </Text>
+                      </Box>
                     </HStack>
+
+                    {/* Hidden File Input */}
                     <Input
                       ref={certificateInputRef}
                       id="certificateInput"
@@ -233,6 +257,18 @@ export default function DocumentSettings() {
                       display="none"
                       onChange={(e) => handleFileChange(e, "certificate")}
                     />
+                    {/* Update Button */}
+                    <Text
+                      fontSize={{ base: "10px", sm: "13px" }}
+                      color="#39996B"
+                      align="end"
+                      cursor="pointer"
+                      fontWeight="600"
+                      onClick={() => certificateInputRef.current.click()}
+                    >
+                      Update
+                    </Text>
+
                   </HStack>
                 ) : (
                   <Box
@@ -274,6 +310,7 @@ export default function DocumentSettings() {
                   </Box>
                 )}
               </Box>
+
             </VStack>
 
             <VStack align="start" w="100%">
@@ -285,38 +322,27 @@ export default function DocumentSettings() {
                   h="76px"
                   borderWidth={1}
                   borderRadius="lg"
-                  borderColor="#D7E8E0"
+                  // borderColor="#D7E8E0"
                   p={4}
                   justifyContent="space-between"
-                  flexWrap={{ base: "wrap", sm: "nowrap" }}
+                  // flexWrap={{ base: "wrap", sm: "nowrap" }}
                   spacing={{ base: 2, sm: 4 }}
                 >
-                  <HStack flex="1" spacing={4}>
-                    <HStack>
-                      <TbFileMinus size="30px" color="#96C3AD" />
-                      <Box>
-                        <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
-                          {files.tin?.name}
-                        </Text>
-                        <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
-                          {files.tin?.size
-                            ? `${(files.tin.size / 1024).toFixed(2)} KB`
-                            : ""}
-                        </Text>
-                      </Box>
-                    </HStack>
-                    <Spacer />
-                    <Text
-                      align="end"
-                      fontSize={{ base: "10px", sm: "13px" }}
-                      color="#39996B"
-                      cursor="pointer"
-                      fontWeight="600"
-                      onClick={() => tinInputRef.current.click()}
-                    >
-                      Update
-                    </Text>
+
+                  <HStack spacing={4}>
+                    <TbFileMinus size="30px" color="#96C3AD" />
+                    <Box>
+                      <Text fontSize="13px" fontWeight="500" isTruncated>
+                        {files.certificate?.name}
+                      </Text>
+                      <Text fontSize="11px" color="#989692">
+                        {files.certificate?.size
+                          ? `${(files.certificate.size / 1024).toFixed(2)} KB`
+                          : ""}
+                      </Text>
+                    </Box>
                   </HStack>
+
                   <Input
                     ref={tinInputRef}
                     id="tinInput"
@@ -325,6 +351,18 @@ export default function DocumentSettings() {
                     display="none"
                     onChange={(e) => handleFileChange(e, "tin")}
                   />
+                  <Text
+                    ml="auto"               // ✅ THIS is the key
+                    fontSize="13px"
+                    color="#39996B"
+                    cursor="pointer"
+                    fontWeight="600"
+                    onClick={() => certificateInputRef.current.click()}
+                  >
+                    Update
+                  </Text>
+
+
                 </HStack>
               ) : (
                 <Box
@@ -379,38 +417,27 @@ export default function DocumentSettings() {
                     h="76px"
                     borderWidth={1}
                     borderRadius="lg"
-                    borderColor="#D7E8E0"
+                    // borderColor="#D7E8E0"
                     p={4}
                     justifyContent="space-between"
-                    flexWrap={{ base: "wrap", sm: "nowrap" }}
+                    // flexWrap={{ base: "wrap", sm: "nowrap" }}
                     spacing={{ base: 2, sm: 4 }}
                   >
-                    <HStack flex="1" spacing={4}>
-                      <HStack>
-                        <TbFileMinus size="30px" color="#96C3AD" />
-                        <Box>
-                          <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
-                            {files.educationApproval?.name}
-                          </Text>
-                          <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
-                            {files.educationApproval?.size
-                              ? `${(files.educationApproval.size / 1024).toFixed(2)} KB`
-                              : ""}
-                          </Text>
-                        </Box>
-                      </HStack>
-                      <Spacer />
-                      <Text
-                        align="end"
-                        fontSize={{ base: "10px", sm: "13px" }}
-                        color="#39996B"
-                        cursor="pointer"
-                        fontWeight="600"
-                        onClick={() => educationApprovalInputRef.current.click()}
-                      >
-                        Update
-                      </Text>
+
+                    <HStack spacing={4}>
+                      <TbFileMinus size="30px" color="#96C3AD" />
+                      <Box>
+                        <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
+                          {files.educationApproval?.name}
+                        </Text>
+                        <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
+                          {files.educationApproval?.size
+                            ? `${(files.educationApproval.size / 1024).toFixed(2)} KB`
+                            : ""}
+                        </Text>
+                      </Box>
                     </HStack>
+
                     <Input
                       ref={educationApprovalInputRef}
                       id="educationApprovalInput"
@@ -419,6 +446,16 @@ export default function DocumentSettings() {
                       display="none"
                       onChange={(e) => handleFileChange(e, "educationApproval")}
                     />
+                    <Text
+                      align="end"
+                      fontSize={{ base: "10px", sm: "13px" }}
+                      color="#39996B"
+                      cursor="pointer"
+                      fontWeight="600"
+                      onClick={() => educationApprovalInputRef.current.click()}
+                    >
+                      Update
+                    </Text>
                   </HStack>
                 ) : (
                   <Box
@@ -471,38 +508,27 @@ export default function DocumentSettings() {
                   h="76px"
                   borderWidth={1}
                   borderRadius="lg"
-                  borderColor="#D7E8E0"
+                  // borderColor="#D7E8E0"
                   p={4}
                   justifyContent="space-between"
-                  flexWrap={{ base: "wrap", sm: "nowrap" }}
+                  // flexWrap={{ base: "wrap", sm: "nowrap" }}
                   spacing={{ base: 2, sm: 4 }}
                 >
-                  <HStack flex="1" spacing={4}>
-                    <HStack>
-                      <TbFileMinus size="30px" color="#96C3AD" />
-                      <Box>
-                        <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
-                          {files.schoolCert?.name}
-                        </Text>
-                        <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
-                          {files.schoolCert?.size
-                            ? `${(files.schoolCert.size / 1024).toFixed(2)} KB`
-                            : ""}
-                        </Text>
-                      </Box>
-                    </HStack>
-                    <Spacer />
-                    <Text
-                      align="end"
-                      fontSize={{ base: "10px", sm: "13px" }}
-                      color="#39996B"
-                      cursor="pointer"
-                      fontWeight="600"
-                      onClick={() => schoolCertInputRef.current.click()}
-                    >
-                      Update
-                    </Text>
+
+                  <HStack spacing={4}>
+                    <TbFileMinus size="30px" color="#96C3AD" />
+                    <Box>
+                      <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
+                        {files.schoolCert?.name}
+                      </Text>
+                      <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
+                        {files.schoolCert?.size
+                          ? `${(files.schoolCert.size / 1024).toFixed(2)} KB`
+                          : ""}
+                      </Text>
+                    </Box>
                   </HStack>
+
                   <Input
                     ref={schoolCertInputRef}
                     id="schoolCertInput"
@@ -511,6 +537,16 @@ export default function DocumentSettings() {
                     display="none"
                     onChange={(e) => handleFileChange(e, "schoolCert")}
                   />
+                  <Text
+                    align="end"
+                    fontSize={{ base: "10px", sm: "13px" }}
+                    color="#39996B"
+                    cursor="pointer"
+                    fontWeight="600"
+                    onClick={() => schoolCertInputRef.current.click()}
+                  >
+                    Update
+                  </Text>
                 </HStack>
               ) : (
                 <Box
@@ -574,13 +610,13 @@ export default function DocumentSettings() {
                     h="76px"
                     borderWidth={1}
                     borderRadius="lg"
-                    borderColor="#D7E8E0"
+                    // borderColor="#D7E8E0"
                     p={4}
                     justifyContent="space-between"
-                    flexWrap={{ base: "wrap", sm: "nowrap" }}
+                    // flexWrap={{ base: "wrap", sm: "nowrap" }}
                     spacing={{ base: 2, sm: 4 }}
                   >
-                    <HStack flex="1" spacing={4}>
+                    <HStack flex="1" w="100%" spacing={4}>
                       <HStack>
                         <TbFileMinus size="30px" color="#96C3AD" />
                         <Box>
@@ -594,7 +630,15 @@ export default function DocumentSettings() {
                           </Text>
                         </Box>
                       </HStack>
-                      <Spacer />
+
+                      <Input
+                        ref={idFrontInputRef}
+                        id="idFrontInput"
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        display="none"
+                        onChange={(e) => handleFileChange(e, "idFront")}
+                      />
                       <Text
                         align="end"
                         fontSize={{ base: "10px", sm: "13px" }}
@@ -606,14 +650,6 @@ export default function DocumentSettings() {
                         Update
                       </Text>
                     </HStack>
-                    <Input
-                      ref={idFrontInputRef}
-                      id="idFrontInput"
-                      type="file"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      display="none"
-                      onChange={(e) => handleFileChange(e, "idFront")}
-                    />
                   </HStack>
                 ) : (
                   <Box
@@ -666,38 +702,27 @@ export default function DocumentSettings() {
                   h="76px"
                   borderWidth={1}
                   borderRadius="lg"
-                  borderColor="#D7E8E0"
+                  // borderColor="#D7E8E0"
                   p={4}
                   justifyContent="space-between"
-                  flexWrap={{ base: "wrap", sm: "nowrap" }}
+                  // flexWrap={{ base: "wrap", sm: "nowrap" }}
                   spacing={{ base: 2, sm: 4 }}
                 >
-                  <HStack flex="1" spacing={4}>
-                    <HStack>
-                      <TbFileMinus size="30px" color="#96C3AD" />
-                      <Box>
-                        <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
-                          {files.idBack?.name}
-                        </Text>
-                        <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
-                          {files.idBack?.size
-                            ? `${(files.idBack.size / 1024).toFixed(2)} KB`
-                            : ""}
-                        </Text>
-                      </Box>
-                    </HStack>
-                    <Spacer />
-                    <Text
-                      align="end"
-                      fontSize={{ base: "10px", sm: "13px" }}
-                      color="#39996B"
-                      cursor="pointer"
-                      fontWeight="600"
-                      onClick={() => idBackInputRef.current.click()}
-                    >
-                      Update
-                    </Text>
+
+                  <HStack spacing={4}>
+                    <TbFileMinus size="30px" color="#96C3AD" />
+                    <Box>
+                      <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
+                        {files.idBack?.name}
+                      </Text>
+                      <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
+                        {files.idBack?.size
+                          ? `${(files.idBack.size / 1024).toFixed(2)} KB`
+                          : ""}
+                      </Text>
+                    </Box>
                   </HStack>
+
                   <Input
                     ref={idBackInputRef}
                     id="idBackInput"
@@ -706,6 +731,17 @@ export default function DocumentSettings() {
                     display="none"
                     onChange={(e) => handleFileChange(e, "idBack")}
                   />
+                  <Text
+                    align="end"
+                    fontSize={{ base: "10px", sm: "13px" }}
+                    color="#39996B"
+                    cursor="pointer"
+                    fontWeight="600"
+                    onClick={() => idBackInputRef.current.click()}
+                  >
+                    Update
+                  </Text>
+
                 </HStack>
               ) : (
                 <Box
@@ -750,7 +786,7 @@ export default function DocumentSettings() {
           </Grid>
 
           <Box align="end" w="100%">
-            <Button  fontSize='8px' w="16px" colorScheme="green" isLoading={loading} onClick={handleSubmit}>Save Changes</Button>
+            <Button fontSize='8px' w="16px" colorScheme="green" isLoading={loading} onClick={handleSubmit}>Save Changes</Button>
           </Box>
         </VStack>
       </Stack>
