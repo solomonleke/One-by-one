@@ -123,12 +123,7 @@ export default function LandingPage() {
   return (
 
    
-
-   showCountDown === true ?  (
-
-      <LaunchCountdown onClick={()=>setShowCountDown(false)}/>
-    ):(
-       <MainLayout>
+ <MainLayout>
       <Box>
         {/* Hero Section */}
         <Flex
@@ -370,8 +365,6 @@ export default function LandingPage() {
         </Box>
       </Box>
     </MainLayout>
-    )
-
    
   );
 };
