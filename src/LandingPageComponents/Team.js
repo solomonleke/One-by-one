@@ -37,7 +37,7 @@ const teamData = {
             // linkedin: "https://linkedin.com/in/segun",
         },
         {
-            name: "Iyata Adekpe",
+            name: "Iyata Adikpe",
             image: iyata,
             // twitter: "https://twitter.com/iyata",
         },

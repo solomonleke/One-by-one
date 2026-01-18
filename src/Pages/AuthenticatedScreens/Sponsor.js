@@ -307,7 +307,7 @@ const Sponsor = () => {
                     color="#6B7280"
                     lineHeight="24px"
                   >
-                    Please provide your location details.
+                    Please provide location of target students (this is used to provide you students within this location).
                   </Text>
                 </VStack>
 

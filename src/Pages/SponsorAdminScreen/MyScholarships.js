@@ -59,6 +59,7 @@ import { BsThreeDots } from 'react-icons/bs';
 
 export default function MyScholarships() {
   const router = useNavigate();
+  const [tabIndex, setTabIndex] = useState(0)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -156,6 +157,7 @@ export default function MyScholarships() {
         status: "success",
         show: true,
       });
+      setTabIndex(1); // Switch to Active Scholarships tab
 
       setFormData({
         name: "",
@@ -725,7 +727,7 @@ export default function MyScholarships() {
 
 
       <Box bg="#fff" border="1px solid #EFEFEF" mt="12px" py='17px' px={["10px", "10px", "18px", "18px"]} rounded='10px'>
-        <Tabs>
+        <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)} >
           <TabList overflowX="auto" overflowY="hidden" _focus={{ outline: "none" }}>
             {/* <Tab _selected={{ color: "green", borderColor: "green", fontWeight: "500" }} fontSize="13px">
               Paid Scholarships ({paidScholarships.length})

@@ -8,7 +8,7 @@ import {
   VStack,
   HStack,
   Flex,
-  Link
+  Link,
   Image
 } from '@chakra-ui/react';
 import logo from "../Asset/whiteLogo.svg"
@@ -17,13 +17,15 @@ import logo from "../Asset/whiteLogo.svg"
 export default function LaunchCountdown({ onClick }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-  // Your updated launch date: January 19, 2026
-  const launchDate = new Date(2026, 0, 19, 0, 0, 0).getTime();
+  // Your updated launch date: January 18, 2026
+  const launchDate = new Date(2026, 0, 18, 17, 0, 0).getTime();
 
   useEffect(() => {
     const calculateTimeLeft = () => {
       const now = new Date().getTime();
       const difference = launchDate - now;
+
+      console.log("diff", difference)
 
       if (difference > 0) {
         setTimeLeft({
@@ -117,16 +119,20 @@ export default function LaunchCountdown({ onClick }) {
             _hover={{ textDecoration: "none" }}
             _focus={{ boxShadow: "none" }}
           >
-            <Text
+            <Button
+              size="lg"
+              h="60px"
+              px={12}
+              bgGradient="linear(to-r, orange.400, yellow.400)"
               color="white"
-              fontSize="lg"
-              fontWeight="500"
-              cursor="pointer"
-              transition="color 0.2s ease"
-              _hover={{ color: "yellow.400" }}
+              fontSize="md"
+              borderRadius="full"
+              shadow="lg"
+              _hover={{ transform: 'scale(1.05)', shadow: '2xl' }}
+            
             >
               Join live event
-            </Text>
+            </Button>
           </Link>
           {/* Footer Actions */}
           <Flex
