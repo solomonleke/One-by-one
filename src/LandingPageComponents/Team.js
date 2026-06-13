@@ -15,6 +15,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import Ope from "../Asset/TeamMembers/ope.png";
 import solomon from "../Asset/TeamMembers/solomon.png";
 import ezeh from "../Asset/TeamMembers/ezeh.png";
+import Legal from "../Asset/TeamMembers/Legal.jpg";
 import obinna from "../Asset/TeamMembers/obinna.png";
 import oruaro from "../Asset/TeamMembers/oruaro.png";
 import ikenna from "../Asset/TeamMembers/ikenna.png";
@@ -72,6 +73,14 @@ const teamData = {
         {
             name: "Ezinne Ezeh",
             image: ezeh,
+            // linkedin: "https://linkedin.com/in/ezinne",
+            // twitter: "https://twitter.com/ezinne",
+        },
+    ],
+    legal: [
+        {
+            name: "Isiaka Hudu",
+            image: Legal,
             // linkedin: "https://linkedin.com/in/ezinne",
             // twitter: "https://twitter.com/ezinne",
         },
@@ -206,6 +215,7 @@ export default function TeamMembers() {
             <Section title="Co Founders" members={teamData.cofounders} />
             <Section title="Development Team" members={teamData.development} />
             <Section title="Communications Team" members={teamData.communications} />
+            <Section title="Legal Team" members={teamData.legal} />
         </Container>
     );
 }

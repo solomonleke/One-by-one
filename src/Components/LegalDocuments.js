@@ -38,6 +38,7 @@ const DOCUMENT_NAME_MAP = {
   schoolCert: "School Registration Certificate",
   idFront: "Principal's Verification ID Front",
   idBack: "Principal's Verification ID Back",
+  personalId: "Personal ID",
 };
 
 export default function DocumentSection() {
