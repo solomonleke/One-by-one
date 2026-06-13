@@ -800,7 +800,7 @@ export default function RequestFunds() {
                   </FormControl>
 
                   <FormControl>
-                    <FormLabel fontWeight="600">Upload Document</FormLabel>
+                    <FormLabel fontWeight="600">Upload Document (Term Result or Invoice)</FormLabel>
                     <Box
                       border="2px dashed #39996B"
                       borderRadius="10px"

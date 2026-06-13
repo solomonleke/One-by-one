@@ -7,6 +7,7 @@ import { TbFileMinus } from "react-icons/tb";
 import Button from "../Components/Button"
 import Input from "../Components/Input"
 import ShowToast from '../Components/ToastNotification';
+import { isScholarshipAdmin, isSponsorAdmin } from "../Authentication/Index";
 
 import {
   UploadDocumentApi,
@@ -18,14 +19,18 @@ export default function DocumentSettings() {
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState({ show: false, message: '', status: '' });
 
-  const initialFiles = {
-    certificate: null,
-    tin: null,
-    educationApproval: null,
-    schoolCert: null,
-    idFront: null,
-    idBack: null,
-  };
+  const isScholarshipOrSponsor = isScholarshipAdmin() || isSponsorAdmin();
+
+  const initialFiles = isScholarshipOrSponsor
+    ? { personalId: null }
+    : {
+        certificate: null,
+        tin: null,
+        educationApproval: null,
+        schoolCert: null,
+        idFront: null,
+        idBack: null,
+      };
 
   const [files, setFiles] = useState(initialFiles);
   const [documents, setDocuments] = useState([]);
@@ -37,6 +42,7 @@ export default function DocumentSettings() {
   const schoolCertInputRef = useRef(null);
   const idFrontInputRef = useRef(null);
   const idBackInputRef = useRef(null);
+  const personalIdInputRef = useRef(null);
 
   const handleFileChange = (e, field) => {
     const file = e.target.files[0];
@@ -54,7 +60,9 @@ export default function DocumentSettings() {
   };
 
   const areAllDocumentsUploaded = () => {
-    const requiredDocuments = ['certificate', 'tin', 'educationApproval', 'schoolCert', 'idFront', 'idBack'];
+    const requiredDocuments = isScholarshipOrSponsor
+      ? ['personalId']
+      : ['certificate', 'tin', 'educationApproval', 'schoolCert', 'idFront', 'idBack'];
     return requiredDocuments.every(docType => files[docType] !== null);
   };
 
@@ -162,7 +170,11 @@ export default function DocumentSettings() {
       <Stack spacing={"24px"}>
         <Stack mt={"10px"}>
           <Text fontSize={"17px"} fontWeight={"600"} color={"#1F2937"}>Verification Documents</Text>
-          <Text fontSize={"13px"} fontWeight={"400"} color={"#626974"}>Manage and upload the required documents to complete your school's verification process.</Text>
+          <Text fontSize={"13px"} fontWeight={"400"} color={"#626974"}>
+            {isScholarshipOrSponsor
+              ? "Manage and upload the required documents to complete your verification process."
+              : "Manage and upload the required documents to complete your school's verification process."}
+          </Text>
         </Stack>
 
         {showVerificationWarning && !areAllDocumentsUploaded() && (
@@ -191,8 +203,9 @@ export default function DocumentSettings() {
                   lineHeight="1.5"
                   wordBreak="break-word"
                 >
-                  Your school cannot be verified until all required documents are uploaded.
-                  Ensure the following documents below are uploaded.
+                  {isScholarshipOrSponsor
+                    ? "Your account cannot be verified until all required documents are uploaded. Ensure the document below is uploaded."
+                    : "Your school cannot be verified until all required documents are uploaded. Ensure the following documents below are uploaded."}
                 </Text>
               </HStack>
 
@@ -211,433 +224,433 @@ export default function DocumentSettings() {
         <hr className="remove" />
 
         <VStack spacing={4} p={{ base: "10px", md: "23px" }} w="100%" borderWidth={1} borderRadius="lg">
+          {isScholarshipOrSponsor ? (
+            /* Personal ID for Scholarship & Sponsor Admins */
+            <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} w="100%">
+              <VStack align="start" w="100%">
+                <Text fontWeight="bold" fontSize="13px" color="#626974">Personal ID</Text>
 
-          {/* Certificate of Incorporation */}
-          <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} w="100%">
-            <VStack align="start" w="100%">
-              <Text fontWeight="bold" fontSize="13px" color="#626974">Certificate of Incorporation</Text>
-
-              <Box w="100%">
-                {files.certificate ? (
-                  <HStack
-                    w="100%"
-                    h="76px"
-                    borderWidth={1}
-                    borderRadius="lg"
-                    // borderColor="#D7E8E0"
-                    p={4}
-                    justifyContent="space-between"
-                    spacing={{ base: 2, sm: 4 }}
-                  >
-                    <HStack flex="1" w="100%" spacing={4} >
-                      <TbFileMinus size="30px" color="#96C3AD" />
-                      <Box>
-                        <Text
-                          color="#353535"
-                          fontSize={{ base: "10px", sm: "13px" }}
-                          fontWeight="500"
-                          isTruncated
-                        >
-                          {files.certificate?.name}
-                        </Text>
-                        <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
-                          {files.certificate?.size
-                            ? `${(files.certificate.size / 1024).toFixed(2)} KB`
-                            : ""}
-                        </Text>
-                      </Box>
-                    </HStack>
-
-                    {/* Hidden File Input */}
-                    <Input
-                      ref={certificateInputRef}
-                      id="certificateInput"
-                      type="file"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      display="none"
-                      onChange={(e) => handleFileChange(e, "certificate")}
-                    />
-                    {/* Update Button */}
-                    <Text
-                      fontSize={{ base: "10px", sm: "13px" }}
-                      color="#39996B"
-                      align="end"
-                      cursor="pointer"
-                      fontWeight="600"
-                      onClick={() => certificateInputRef.current.click()}
+                <Box w="100%">
+                  {files.personalId ? (
+                    <HStack
+                      w="100%"
+                      h="76px"
+                      borderWidth={1}
+                      borderRadius="lg"
+                      p={4}
+                      justifyContent="space-between"
+                      spacing={{ base: 2, sm: 4 }}
                     >
-                      Update
-                    </Text>
-
-                  </HStack>
-                ) : (
-                  <Box
-                    w="100%"
-                    h="76px"
-                    borderWidth={1}
-                    borderStyle="dashed"
-                    borderRadius="lg"
-                    borderColor="#BECED7"
-                    display="flex"
-                    flexDirection="column"
-                    p={4}
-                    spacing={{ base: 2, sm: 4 }}
-                    alignItems="center"
-                    justifyContent="center"
-                    bg="#E9F8F0"
-                    cursor="pointer"
-                    textAlign="center"
-                    onClick={() => certificateInputRef.current.click()}
-                  >
-                    <HStack alignText="center">
-                      <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
-                      <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
-                        Click to Upload
-                      </Text>
-                      <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
-                    </HStack>
-                    <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
-                      PDF, JPG, JPEG, PNG less than 10MB
-                    </Text>
-                    <Input
-                      ref={certificateInputRef}
-                      id="certificateInput"
-                      type="file"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      display="none"
-                      onChange={(e) => handleFileChange(e, "certificate")}
-                    />
-                  </Box>
-                )}
-              </Box>
-
-            </VStack>
-
-            <VStack align="start" w="100%">
-              <Text fontWeight="bold" fontSize="13px" color="#626974">Tax Identification Number</Text>
-
-              {files.tin ? (
-                <HStack
-                  w="100%"
-                  h="76px"
-                  borderWidth={1}
-                  borderRadius="lg"
-                  // borderColor="#D7E8E0"
-                  p={4}
-                  justifyContent="space-between"
-                  // flexWrap={{ base: "wrap", sm: "nowrap" }}
-                  spacing={{ base: 2, sm: 4 }}
-                >
-
-                  <HStack spacing={4}>
-                    <TbFileMinus size="30px" color="#96C3AD" />
-                    <Box>
-                      <Text fontSize="13px" fontWeight="500" isTruncated>
-                        {files.certificate?.name}
-                      </Text>
-                      <Text fontSize="11px" color="#989692">
-                        {files.certificate?.size
-                          ? `${(files.certificate.size / 1024).toFixed(2)} KB`
-                          : ""}
-                      </Text>
-                    </Box>
-                  </HStack>
-
-                  <Input
-                    ref={tinInputRef}
-                    id="tinInput"
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    display="none"
-                    onChange={(e) => handleFileChange(e, "tin")}
-                  />
-                  <Text
-                    ml="auto"               // ✅ THIS is the key
-                    fontSize="13px"
-                    color="#39996B"
-                    cursor="pointer"
-                    fontWeight="600"
-                    onClick={() => certificateInputRef.current.click()}
-                  >
-                    Update
-                  </Text>
-
-
-                </HStack>
-              ) : (
-                <Box
-                  w="100%"
-                  h="76px"
-                  borderWidth={1}
-                  borderStyle="dashed"
-                  borderRadius="lg"
-                  borderColor="#BECED7"
-                  display="flex"
-                  flexDirection="column"
-                  p={4}
-                  spacing={{ base: 2, sm: 4 }}
-                  alignItems="center"
-                  justifyContent="center"
-                  bg="#E9F8F0"
-                  cursor="pointer"
-                  textAlign="center"
-                  onClick={() => tinInputRef.current.click()}
-                >
-                  <HStack alignText="center">
-                    <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
-                    <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
-                      Click to Upload
-                    </Text>
-                    <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
-                  </HStack>
-                  <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
-                    PDF, JPG, JPEG, PNG less than 10MB
-                  </Text>
-                  <Input
-                    ref={tinInputRef}
-                    id="tinInput"
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    display="none"
-                    onChange={(e) => handleFileChange(e, "tin")}
-                  />
-                </Box>
-              )}
-            </VStack>
-          </Grid>
-
-          <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} w="100%">
-            <VStack align="start" w="100%">
-              <Text fontWeight="bold" fontSize="13px" color="#626974">Ministry of Education Approval Letter</Text>
-
-              <Box w="100%">
-                {files.educationApproval ? (
-                  <HStack
-                    w="100%"
-                    h="76px"
-                    borderWidth={1}
-                    borderRadius="lg"
-                    // borderColor="#D7E8E0"
-                    p={4}
-                    justifyContent="space-between"
-                    // flexWrap={{ base: "wrap", sm: "nowrap" }}
-                    spacing={{ base: 2, sm: 4 }}
-                  >
-
-                    <HStack spacing={4}>
-                      <TbFileMinus size="30px" color="#96C3AD" />
-                      <Box>
-                        <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
-                          {files.educationApproval?.name}
-                        </Text>
-                        <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
-                          {files.educationApproval?.size
-                            ? `${(files.educationApproval.size / 1024).toFixed(2)} KB`
-                            : ""}
-                        </Text>
-                      </Box>
-                    </HStack>
-
-                    <Input
-                      ref={educationApprovalInputRef}
-                      id="educationApprovalInput"
-                      type="file"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      display="none"
-                      onChange={(e) => handleFileChange(e, "educationApproval")}
-                    />
-                    <Text
-                      align="end"
-                      fontSize={{ base: "10px", sm: "13px" }}
-                      color="#39996B"
-                      cursor="pointer"
-                      fontWeight="600"
-                      onClick={() => educationApprovalInputRef.current.click()}
-                    >
-                      Update
-                    </Text>
-                  </HStack>
-                ) : (
-                  <Box
-                    w="100%"
-                    h="76px"
-                    borderWidth={1}
-                    borderStyle="dashed"
-                    borderRadius="lg"
-                    borderColor="#BECED7"
-                    display="flex"
-                    flexDirection="column"
-                    p={4}
-                    spacing={{ base: 2, sm: 4 }}
-                    alignItems="center"
-                    justifyContent="center"
-                    bg="#E9F8F0"
-                    cursor="pointer"
-                    textAlign="center"
-                    onClick={() => educationApprovalInputRef.current.click()}
-                  >
-                    <HStack alignText="center">
-                      <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
-                      <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
-                        Click to Upload
-                      </Text>
-                      <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
-                    </HStack>
-                    <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
-                      PDF, JPG, JPEG, PNG less than 10MB
-                    </Text>
-                    <Input
-                      ref={educationApprovalInputRef}
-                      id="educationApprovalInput"
-                      type="file"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      display="none"
-                      onChange={(e) => handleFileChange(e, "educationApproval")}
-                    />
-                  </Box>
-                )}
-              </Box>
-            </VStack>
-
-            <VStack align="start" w="100%">
-              <Text fontWeight="bold" fontSize="13px" color="#626974">School Registration Certificate</Text>
-
-              {files.schoolCert ? (
-                <HStack
-                  w="100%"
-                  h="76px"
-                  borderWidth={1}
-                  borderRadius="lg"
-                  // borderColor="#D7E8E0"
-                  p={4}
-                  justifyContent="space-between"
-                  // flexWrap={{ base: "wrap", sm: "nowrap" }}
-                  spacing={{ base: 2, sm: 4 }}
-                >
-
-                  <HStack spacing={4}>
-                    <TbFileMinus size="30px" color="#96C3AD" />
-                    <Box>
-                      <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
-                        {files.schoolCert?.name}
-                      </Text>
-                      <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
-                        {files.schoolCert?.size
-                          ? `${(files.schoolCert.size / 1024).toFixed(2)} KB`
-                          : ""}
-                      </Text>
-                    </Box>
-                  </HStack>
-
-                  <Input
-                    ref={schoolCertInputRef}
-                    id="schoolCertInput"
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    display="none"
-                    onChange={(e) => handleFileChange(e, "schoolCert")}
-                  />
-                  <Text
-                    align="end"
-                    fontSize={{ base: "10px", sm: "13px" }}
-                    color="#39996B"
-                    cursor="pointer"
-                    fontWeight="600"
-                    onClick={() => schoolCertInputRef.current.click()}
-                  >
-                    Update
-                  </Text>
-                </HStack>
-              ) : (
-                <Box
-                  w="100%"
-                  h="76px"
-                  borderWidth={1}
-                  borderStyle="dashed"
-                  borderRadius="lg"
-                  borderColor="#BECED7"
-                  display="flex"
-                  flexDirection="column"
-                  p={4}
-                  spacing={{ base: 2, sm: 4 }}
-                  alignItems="center"
-                  justifyContent="center"
-                  bg="#E9F8F0"
-                  cursor="pointer"
-                  textAlign="center"
-                  onClick={() => schoolCertInputRef.current.click()}
-                >
-                  <HStack alignText="center">
-                    <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
-                    <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
-                      Click to Upload
-                    </Text>
-                    <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
-                  </HStack>
-                  <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
-                    PDF, JPG, JPEG, PNG less than 10MB
-                  </Text>
-                  <Input
-                    ref={schoolCertInputRef}
-                    id="schoolCertInput"
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    display="none"
-                    onChange={(e) => handleFileChange(e, "schoolCert")}
-                  />
-                </Box>
-              )}
-            </VStack>
-          </Grid>
-
-          <Divider />
-
-          <Box alignSelf="start">
-            <Text fontSize="15px" fontWeight="700" color="#1F2937">Principal's Verification ID</Text>
-            <Text fontSize="13px" color="#6B7280">Upload a valid ID for legitimacy verification (e.g., national ID, passport).</Text>
-          </Box>
-
-          <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} w="100%">
-            <VStack align="start" w="100%">
-              <Text fontWeight="bold" fontSize="13px" color="#626974">
-                <Text>Front Side</Text>
-              </Text>
-
-              <Box w="100%">
-                {files.idFront ? (
-                  <HStack
-                    w="100%"
-                    h="76px"
-                    borderWidth={1}
-                    borderRadius="lg"
-                    // borderColor="#D7E8E0"
-                    p={4}
-                    justifyContent="space-between"
-                    // flexWrap={{ base: "wrap", sm: "nowrap" }}
-                    spacing={{ base: 2, sm: 4 }}
-                  >
-                    <HStack flex="1" w="100%" spacing={4}>
-                      <HStack>
+                      <HStack flex="1" w="100%" spacing={4}>
                         <TbFileMinus size="30px" color="#96C3AD" />
                         <Box>
-                          <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
-                            {files.idFront?.name}
+                          <Text
+                            color="#353535"
+                            fontSize={{ base: "10px", sm: "13px" }}
+                            fontWeight="500"
+                            isTruncated
+                          >
+                            {files.personalId?.name}
                           </Text>
                           <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
-                            {files.idFront?.size
-                              ? `${(files.idFront.size / 1024).toFixed(2)} KB`
+                            {files.personalId?.size
+                              ? `${(files.personalId.size / 1024).toFixed(2)} KB`
+                              : ""}
+                          </Text>
+                        </Box>
+                      </HStack>
+
+                      {/* Hidden File Input */}
+                      <Input
+                        ref={personalIdInputRef}
+                        id="personalIdInput"
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        display="none"
+                        onChange={(e) => handleFileChange(e, "personalId")}
+                      />
+                      {/* Update Button */}
+                      <Text
+                        fontSize={{ base: "10px", sm: "13px" }}
+                        color="#39996B"
+                        align="end"
+                        cursor="pointer"
+                        fontWeight="600"
+                        onClick={() => personalIdInputRef.current.click()}
+                      >
+                        Update
+                      </Text>
+
+                    </HStack>
+                  ) : (
+                    <Box
+                      w="100%"
+                      h="76px"
+                      borderWidth={1}
+                      borderStyle="dashed"
+                      borderRadius="lg"
+                      borderColor="#BECED7"
+                      display="flex"
+                      flexDirection="column"
+                      p={4}
+                      spacing={{ base: 2, sm: 4 }}
+                      alignItems="center"
+                      justifyContent="center"
+                      bg="#E9F8F0"
+                      cursor="pointer"
+                      textAlign="center"
+                      onClick={() => personalIdInputRef.current.click()}
+                    >
+                      <HStack alignText="center">
+                        <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
+                        <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
+                          Click to Upload
+                        </Text>
+                        <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
+                      </HStack>
+                      <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
+                        PDF, JPG, JPEG, PNG less than 10MB
+                      </Text>
+                      <Input
+                        ref={personalIdInputRef}
+                        id="personalIdInput"
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        display="none"
+                        onChange={(e) => handleFileChange(e, "personalId")}
+                      />
+                    </Box>
+                  )}
+                </Box>
+              </VStack>
+            </Grid>
+          ) : (
+            /* Original document fields for other users (School Admin, etc.) */
+            <>
+              {/* Certificate of Incorporation */}
+              <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} w="100%">
+                <VStack align="start" w="100%">
+                  <Text fontWeight="bold" fontSize="13px" color="#626974">Certificate of Incorporation</Text>
+
+                  <Box w="100%">
+                    {files.certificate ? (
+                      <HStack
+                        w="100%"
+                        h="76px"
+                        borderWidth={1}
+                        borderRadius="lg"
+                        // borderColor="#D7E8E0"
+                        p={4}
+                        justifyContent="space-between"
+                        spacing={{ base: 2, sm: 4 }}
+                      >
+                        <HStack flex="1" w="100%" spacing={4} >
+                          <TbFileMinus size="30px" color="#96C3AD" />
+                          <Box>
+                            <Text
+                              color="#353535"
+                              fontSize={{ base: "10px", sm: "13px" }}
+                              fontWeight="500"
+                              isTruncated
+                            >
+                              {files.certificate?.name}
+                            </Text>
+                            <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
+                              {files.certificate?.size
+                                ? `${(files.certificate.size / 1024).toFixed(2)} KB`
+                                : ""}
+                            </Text>
+                          </Box>
+                        </HStack>
+
+                        {/* Hidden File Input */}
+                        <Input
+                          ref={certificateInputRef}
+                          id="certificateInput"
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          display="none"
+                          onChange={(e) => handleFileChange(e, "certificate")}
+                        />
+                        {/* Update Button */}
+                        <Text
+                          fontSize={{ base: "10px", sm: "13px" }}
+                          color="#39996B"
+                          align="end"
+                          cursor="pointer"
+                          fontWeight="600"
+                          onClick={() => certificateInputRef.current.click()}
+                        >
+                          Update
+                        </Text>
+
+                      </HStack>
+                    ) : (
+                      <Box
+                        w="100%"
+                        h="76px"
+                        borderWidth={1}
+                        borderStyle="dashed"
+                        borderRadius="lg"
+                        borderColor="#BECED7"
+                        display="flex"
+                        flexDirection="column"
+                        p={4}
+                        spacing={{ base: 2, sm: 4 }}
+                        alignItems="center"
+                        justifyContent="center"
+                        bg="#E9F8F0"
+                        cursor="pointer"
+                        textAlign="center"
+                        onClick={() => certificateInputRef.current.click()}
+                      >
+                        <HStack alignText="center">
+                          <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
+                          <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
+                            Click to Upload
+                          </Text>
+                          <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
+                        </HStack>
+                        <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
+                          PDF, JPG, JPEG, PNG less than 10MB
+                        </Text>
+                        <Input
+                          ref={certificateInputRef}
+                          id="certificateInput"
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          display="none"
+                          onChange={(e) => handleFileChange(e, "certificate")}
+                        />
+                      </Box>
+                    )}
+                  </Box>
+
+                </VStack>
+
+                <VStack align="start" w="100%">
+                  <Text fontWeight="bold" fontSize="13px" color="#626974">Tax Identification Number</Text>
+
+                  {files.tin ? (
+                    <HStack
+                      w="100%"
+                      h="76px"
+                      borderWidth={1}
+                      borderRadius="lg"
+                      // borderColor="#D7E8E0"
+                      p={4}
+                      justifyContent="space-between"
+                      // flexWrap={{ base: "wrap", sm: "nowrap" }}
+                      spacing={{ base: 2, sm: 4 }}
+                    >
+
+                      <HStack spacing={4}>
+                        <TbFileMinus size="30px" color="#96C3AD" />
+                        <Box>
+                          <Text fontSize="13px" fontWeight="500" isTruncated>
+                            {files.certificate?.name}
+                          </Text>
+                          <Text fontSize="11px" color="#989692">
+                            {files.certificate?.size
+                              ? `${(files.certificate.size / 1024).toFixed(2)} KB`
                               : ""}
                           </Text>
                         </Box>
                       </HStack>
 
                       <Input
-                        ref={idFrontInputRef}
-                        id="idFrontInput"
+                        ref={tinInputRef}
+                        id="tinInput"
                         type="file"
                         accept=".pdf,.jpg,.jpeg,.png"
                         display="none"
-                        onChange={(e) => handleFileChange(e, "idFront")}
+                        onChange={(e) => handleFileChange(e, "tin")}
+                      />
+                      <Text
+                        ml="auto"               // ✅ THIS is the key
+                        fontSize="13px"
+                        color="#39996B"
+                        cursor="pointer"
+                        fontWeight="600"
+                        onClick={() => certificateInputRef.current.click()}
+                      >
+                        Update
+                      </Text>
+
+
+                    </HStack>
+                  ) : (
+                    <Box
+                      w="100%"
+                      h="76px"
+                      borderWidth={1}
+                      borderStyle="dashed"
+                      borderRadius="lg"
+                      borderColor="#BECED7"
+                      display="flex"
+                      flexDirection="column"
+                      p={4}
+                      spacing={{ base: 2, sm: 4 }}
+                      alignItems="center"
+                      justifyContent="center"
+                      bg="#E9F8F0"
+                      cursor="pointer"
+                      textAlign="center"
+                      onClick={() => tinInputRef.current.click()}
+                    >
+                      <HStack alignText="center">
+                        <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
+                        <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
+                          Click to Upload
+                        </Text>
+                        <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
+                      </HStack>
+                      <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
+                        PDF, JPG, JPEG, PNG less than 10MB
+                      </Text>
+                      <Input
+                        ref={tinInputRef}
+                        id="tinInput"
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        display="none"
+                        onChange={(e) => handleFileChange(e, "tin")}
+                      />
+                    </Box>
+                  )}
+                </VStack>
+              </Grid>
+
+              <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} w="100%">
+                <VStack align="start" w="100%">
+                  <Text fontWeight="bold" fontSize="13px" color="#626974">Ministry of Education Approval Letter</Text>
+
+                  <Box w="100%">
+                    {files.educationApproval ? (
+                      <HStack
+                        w="100%"
+                        h="76px"
+                        borderWidth={1}
+                        borderRadius="lg"
+                        // borderColor="#D7E8E0"
+                        p={4}
+                        justifyContent="space-between"
+                        // flexWrap={{ base: "wrap", sm: "nowrap" }}
+                        spacing={{ base: 2, sm: 4 }}
+                      >
+
+                        <HStack spacing={4}>
+                          <TbFileMinus size="30px" color="#96C3AD" />
+                          <Box>
+                            <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
+                              {files.educationApproval?.name}
+                            </Text>
+                            <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
+                              {files.educationApproval?.size
+                                ? `${(files.educationApproval.size / 1024).toFixed(2)} KB`
+                                : ""}
+                            </Text>
+                          </Box>
+                        </HStack>
+
+                        <Input
+                          ref={educationApprovalInputRef}
+                          id="educationApprovalInput"
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          display="none"
+                          onChange={(e) => handleFileChange(e, "educationApproval")}
+                        />
+                        <Text
+                          align="end"
+                          fontSize={{ base: "10px", sm: "13px" }}
+                          color="#39996B"
+                          cursor="pointer"
+                          fontWeight="600"
+                          onClick={() => educationApprovalInputRef.current.click()}
+                        >
+                          Update
+                        </Text>
+                      </HStack>
+                    ) : (
+                      <Box
+                        w="100%"
+                        h="76px"
+                        borderWidth={1}
+                        borderStyle="dashed"
+                        borderRadius="lg"
+                        borderColor="#BECED7"
+                        display="flex"
+                        flexDirection="column"
+                        p={4}
+                        spacing={{ base: 2, sm: 4 }}
+                        alignItems="center"
+                        justifyContent="center"
+                        bg="#E9F8F0"
+                        cursor="pointer"
+                        textAlign="center"
+                        onClick={() => educationApprovalInputRef.current.click()}
+                      >
+                        <HStack alignText="center">
+                          <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
+                          <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
+                            Click to Upload
+                          </Text>
+                          <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
+                        </HStack>
+                        <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
+                          PDF, JPG, JPEG, PNG less than 10MB
+                        </Text>
+                        <Input
+                          ref={educationApprovalInputRef}
+                          id="educationApprovalInput"
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          display="none"
+                          onChange={(e) => handleFileChange(e, "educationApproval")}
+                        />
+                      </Box>
+                    )}
+                  </Box>
+                </VStack>
+
+                <VStack align="start" w="100%">
+                  <Text fontWeight="bold" fontSize="13px" color="#626974">School Registration Certificate</Text>
+
+                  {files.schoolCert ? (
+                    <HStack
+                      w="100%"
+                      h="76px"
+                      borderWidth={1}
+                      borderRadius="lg"
+                      // borderColor="#D7E8E0"
+                      p={4}
+                      justifyContent="space-between"
+                      // flexWrap={{ base: "wrap", sm: "nowrap" }}
+                      spacing={{ base: 2, sm: 4 }}
+                    >
+
+                      <HStack spacing={4}>
+                        <TbFileMinus size="30px" color="#96C3AD" />
+                        <Box>
+                          <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
+                            {files.schoolCert?.name}
+                          </Text>
+                          <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
+                            {files.schoolCert?.size
+                              ? `${(files.schoolCert.size / 1024).toFixed(2)} KB`
+                              : ""}
+                          </Text>
+                        </Box>
+                      </HStack>
+
+                      <Input
+                        ref={schoolCertInputRef}
+                        id="schoolCertInput"
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        display="none"
+                        onChange={(e) => handleFileChange(e, "schoolCert")}
                       />
                       <Text
                         align="end"
@@ -645,145 +658,249 @@ export default function DocumentSettings() {
                         color="#39996B"
                         cursor="pointer"
                         fontWeight="600"
-                        onClick={() => idFrontInputRef.current.click()}
+                        onClick={() => schoolCertInputRef.current.click()}
                       >
                         Update
                       </Text>
                     </HStack>
-                  </HStack>
-                ) : (
-                  <Box
-                    w="100%"
-                    h="76px"
-                    borderWidth={1}
-                    borderStyle="dashed"
-                    borderRadius="lg"
-                    borderColor="#BECED7"
-                    display="flex"
-                    flexDirection="column"
-                    p={4}
-                    spacing={{ base: 2, sm: 4 }}
-                    alignItems="center"
-                    justifyContent="center"
-                    bg="#E9F8F0"
-                    cursor="pointer"
-                    textAlign="center"
-                    onClick={() => idFrontInputRef.current.click()}
-                  >
-                    <HStack alignText="center">
-                      <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
-                      <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
-                        Click to Upload
+                  ) : (
+                    <Box
+                      w="100%"
+                      h="76px"
+                      borderWidth={1}
+                      borderStyle="dashed"
+                      borderRadius="lg"
+                      borderColor="#BECED7"
+                      display="flex"
+                      flexDirection="column"
+                      p={4}
+                      spacing={{ base: 2, sm: 4 }}
+                      alignItems="center"
+                      justifyContent="center"
+                      bg="#E9F8F0"
+                      cursor="pointer"
+                      textAlign="center"
+                      onClick={() => schoolCertInputRef.current.click()}
+                    >
+                      <HStack alignText="center">
+                        <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
+                        <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
+                          Click to Upload
+                        </Text>
+                        <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
+                      </HStack>
+                      <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
+                        PDF, JPG, JPEG, PNG less than 10MB
                       </Text>
-                      <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
-                    </HStack>
-                    <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
-                      PDF, JPG, JPEG, PNG less than 10MB
-                    </Text>
-                    <Input
-                      ref={idFrontInputRef}
-                      id="idFrontInput"
-                      type="file"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      display="none"
-                      onChange={(e) => handleFileChange(e, "idFront")}
-                    />
-                  </Box>
-                )}
-              </Box>
-            </VStack>
-
-            <VStack align="start" w="100%">
-              <Text fontWeight="bold" fontSize="13px" color="#626974">Back Side</Text>
-
-              {files.idBack ? (
-                <HStack
-                  w="100%"
-                  h="76px"
-                  borderWidth={1}
-                  borderRadius="lg"
-                  // borderColor="#D7E8E0"
-                  p={4}
-                  justifyContent="space-between"
-                  // flexWrap={{ base: "wrap", sm: "nowrap" }}
-                  spacing={{ base: 2, sm: 4 }}
-                >
-
-                  <HStack spacing={4}>
-                    <TbFileMinus size="30px" color="#96C3AD" />
-                    <Box>
-                      <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
-                        {files.idBack?.name}
-                      </Text>
-                      <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
-                        {files.idBack?.size
-                          ? `${(files.idBack.size / 1024).toFixed(2)} KB`
-                          : ""}
-                      </Text>
+                      <Input
+                        ref={schoolCertInputRef}
+                        id="schoolCertInput"
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        display="none"
+                        onChange={(e) => handleFileChange(e, "schoolCert")}
+                      />
                     </Box>
-                  </HStack>
+                  )}
+                </VStack>
+              </Grid>
 
-                  <Input
-                    ref={idBackInputRef}
-                    id="idBackInput"
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    display="none"
-                    onChange={(e) => handleFileChange(e, "idBack")}
-                  />
-                  <Text
-                    align="end"
-                    fontSize={{ base: "10px", sm: "13px" }}
-                    color="#39996B"
-                    cursor="pointer"
-                    fontWeight="600"
-                    onClick={() => idBackInputRef.current.click()}
-                  >
-                    Update
+              <Divider />
+
+              <Box alignSelf="start">
+                <Text fontSize="15px" fontWeight="700" color="#1F2937">Principal's Verification ID</Text>
+                <Text fontSize="13px" color="#6B7280">Upload a valid ID for legitimacy verification (e.g., national ID, passport).</Text>
+              </Box>
+
+              <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} w="100%">
+                <VStack align="start" w="100%">
+                  <Text fontWeight="bold" fontSize="13px" color="#626974">
+                    <Text>Front Side</Text>
                   </Text>
 
-                </HStack>
-              ) : (
-                <Box
-                  w="100%"
-                  h="76px"
-                  borderWidth={1}
-                  borderStyle="dashed"
-                  borderRadius="lg"
-                  borderColor="#BECED7"
-                  display="flex"
-                  flexDirection="column"
-                  p={4}
-                  spacing={{ base: 2, sm: 4 }}
-                  alignItems="center"
-                  justifyContent="center"
-                  bg="#E9F8F0"
-                  cursor="pointer"
-                  textAlign="center"
-                  onClick={() => idBackInputRef.current.click()}
-                >
-                  <HStack alignText="center">
-                    <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
-                    <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
-                      Click to Upload
-                    </Text>
-                    <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
-                  </HStack>
-                  <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
-                    PDF, JPG, JPEG, PNG less than 10MB
-                  </Text>
-                  <Input
-                    ref={idBackInputRef}
-                    id="idBackInput"
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    display="none"
-                    onChange={(e) => handleFileChange(e, "idBack")}
-                  />
-                </Box>
-              )}
-            </VStack>
-          </Grid>
+                  <Box w="100%">
+                    {files.idFront ? (
+                      <HStack
+                        w="100%"
+                        h="76px"
+                        borderWidth={1}
+                        borderRadius="lg"
+                        // borderColor="#D7E8E0"
+                        p={4}
+                        justifyContent="space-between"
+                        // flexWrap={{ base: "wrap", sm: "nowrap" }}
+                        spacing={{ base: 2, sm: 4 }}
+                      >
+                        <HStack flex="1" w="100%" spacing={4}>
+                          <HStack>
+                            <TbFileMinus size="30px" color="#96C3AD" />
+                            <Box>
+                              <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
+                                {files.idFront?.name}
+                              </Text>
+                              <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
+                                {files.idFront?.size
+                                  ? `${(files.idFront.size / 1024).toFixed(2)} KB`
+                                  : ""}
+                              </Text>
+                            </Box>
+                          </HStack>
+
+                          <Input
+                            ref={idFrontInputRef}
+                            id="idFrontInput"
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            display="none"
+                            onChange={(e) => handleFileChange(e, "idFront")}
+                          />
+                          <Text
+                            align="end"
+                            fontSize={{ base: "10px", sm: "13px" }}
+                            color="#39996B"
+                            cursor="pointer"
+                            fontWeight="600"
+                            onClick={() => idFrontInputRef.current.click()}
+                          >
+                            Update
+                          </Text>
+                        </HStack>
+                      </HStack>
+                    ) : (
+                      <Box
+                        w="100%"
+                        h="76px"
+                        borderWidth={1}
+                        borderStyle="dashed"
+                        borderRadius="lg"
+                        borderColor="#BECED7"
+                        display="flex"
+                        flexDirection="column"
+                        p={4}
+                        spacing={{ base: 2, sm: 4 }}
+                        alignItems="center"
+                        justifyContent="center"
+                        bg="#E9F8F0"
+                        cursor="pointer"
+                        textAlign="center"
+                        onClick={() => idFrontInputRef.current.click()}
+                      >
+                        <HStack alignText="center">
+                          <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
+                          <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
+                            Click to Upload
+                          </Text>
+                          <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
+                        </HStack>
+                        <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
+                          PDF, JPG, JPEG, PNG less than 10MB
+                        </Text>
+                        <Input
+                          ref={idFrontInputRef}
+                          id="idFrontInput"
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          display="none"
+                          onChange={(e) => handleFileChange(e, "idFront")}
+                        />
+                      </Box>
+                    )}
+                  </Box>
+                </VStack>
+
+                <VStack align="start" w="100%">
+                  <Text fontWeight="bold" fontSize="13px" color="#626974">Back Side</Text>
+
+                  {files.idBack ? (
+                    <HStack
+                      w="100%"
+                      h="76px"
+                      borderWidth={1}
+                      borderRadius="lg"
+                      // borderColor="#D7E8E0"
+                      p={4}
+                      justifyContent="space-between"
+                      // flexWrap={{ base: "wrap", sm: "nowrap" }}
+                      spacing={{ base: 2, sm: 4 }}
+                    >
+
+                      <HStack spacing={4}>
+                        <TbFileMinus size="30px" color="#96C3AD" />
+                        <Box>
+                          <Text color="#353535" fontSize={{ base: "10px", sm: "13px" }} fontWeight="450000" isTruncated>
+                            {files.idBack?.name}
+                          </Text>
+                          <Text fontSize={{ base: "9px", sm: "11px" }} color="#989692">
+                            {files.idBack?.size
+                              ? `${(files.idBack.size / 1024).toFixed(2)} KB`
+                              : ""}
+                          </Text>
+                        </Box>
+                      </HStack>
+
+                      <Input
+                        ref={idBackInputRef}
+                        id="idBackInput"
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        display="none"
+                        onChange={(e) => handleFileChange(e, "idBack")}
+                      />
+                      <Text
+                        align="end"
+                        fontSize={{ base: "10px", sm: "13px" }}
+                        color="#39996B"
+                        cursor="pointer"
+                        fontWeight="600"
+                        onClick={() => idBackInputRef.current.click()}
+                      >
+                        Update
+                      </Text>
+
+                    </HStack>
+                  ) : (
+                    <Box
+                      w="100%"
+                      h="76px"
+                      borderWidth={1}
+                      borderStyle="dashed"
+                      borderRadius="lg"
+                      borderColor="#BECED7"
+                      display="flex"
+                      flexDirection="column"
+                      p={4}
+                      spacing={{ base: 2, sm: 4 }}
+                      alignItems="center"
+                      justifyContent="center"
+                      bg="#E9F8F0"
+                      cursor="pointer"
+                      textAlign="center"
+                      onClick={() => idBackInputRef.current.click()}
+                    >
+                      <HStack alignText="center">
+                        <Icon as={VscCloudUpload} boxSize={6} color="#39996B" />
+                        <Text color="#39996B" fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>
+                          Click to Upload
+                        </Text>
+                        <Text fontWeight="500" fontSize={{ base: "10px", sm: "13px" }}>or drag and drop</Text>
+                      </HStack>
+                      <Text fontSize={{ base: "9px", sm: "12px" }} color="#98A0B0" fontWeight="400">
+                        PDF, JPG, JPEG, PNG less than 10MB
+                      </Text>
+                      <Input
+                        ref={idBackInputRef}
+                        id="idBackInput"
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        display="none"
+                        onChange={(e) => handleFileChange(e, "idBack")}
+                      />
+                    </Box>
+                  )}
+                </VStack>
+              </Grid>
+            </>
+          )}
 
           <Box align="end" w="100%">
             <Button fontSize='8px' w="16px" colorScheme="green" isLoading={loading} onClick={handleSubmit}>Save Changes</Button>

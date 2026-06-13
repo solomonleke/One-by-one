@@ -43,6 +43,7 @@ const DOCUMENT_NAME_MAP = {
   tin: "Tax Identification Number (TIN)",
   idFront: "Principal ID (Front)",
   idBack: "Principal ID (Back)",
+  personalId: "Personal ID",
 };
 
 export default function ScholarshipSchoolDocuments({ documents = [] }) {
