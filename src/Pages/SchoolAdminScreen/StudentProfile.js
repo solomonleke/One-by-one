@@ -18,6 +18,8 @@ import {
   ModalBody,
   ModalFooter,
   ModalCloseButton,
+  FormControl,
+  FormHelperText,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { IoChevronBackOutline } from 'react-icons/io5';
@@ -61,6 +63,7 @@ export default function StudentProfile() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [data, setData] = useState({})
+  const [isSaving, setIsSaving] = useState(false);
   
 
   const [showToast, setShowToast] = useState({
@@ -68,6 +71,21 @@ export default function StudentProfile() {
     message: "",
     status: ""
   })
+  
+  const [emailError, setEmailError] = useState("");
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const validateEmail = (email, setEmailError) => {
+    if (!email) {
+      setEmailError("Email is required");
+      return false;
+    } else if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    } else {
+      setEmailError("");
+      return true;
+    }
+  };
 
   useEffect(() => {
     localStorage.setItem("studentData", JSON.stringify(studentData));
@@ -83,9 +101,15 @@ export default function StudentProfile() {
   // When opening the modal (e.g. in a useEffect or a handler)
   const handleOpenEditModal = (studentData) => {
     console.log("Student data before opening modal: ", studentData);
-    setEditedData(studentData);      // Prefill form
-    setOriginalData(studentData);    // Save original for comparison
-    console.log("Edited Data on Modal Open: ", studentData);
+    const normalizedStudent = {
+      ...studentData,
+      student_interest: Array.isArray(studentData.student_interest)
+        ? studentData.student_interest.join(", ")
+        : studentData.student_interest || "",
+    };
+    setEditedData(normalizedStudent);      // Prefill form
+    setOriginalData(normalizedStudent);    // Save original for comparison
+    console.log("Edited Data on Modal Open: ", normalizedStudent);
     onOpenEdit();                // Chakra modal handler
   };
 
@@ -107,26 +131,54 @@ export default function StudentProfile() {
   // };
 
   const handleSave = async () => {
+    // Validate email first
+    const isEmailValid = validateEmail(editedData.email, setEmailError);
+    if (!isEmailValid) {
+      return;
+    }
+
+    setIsSaving(true);
     try {
       const updatedFields = {};
 
+      const fieldMapping = {
+        full_name: "fullName",
+        dob: "dob",
+        gender: "gender",
+        phone_number: "studentPhone",
+        email: "email",
+        guardian_phone_number: "guardianPhone",
+        guardian_name: "guardianName",
+        guardian_account_name: "guardianAccountName",
+        guardian_account_number: "guardianAccountNumber",
+        guardian_bank_name: "guardianBankName",
+        guardian_bank_code: "guardianBankCode",
+        state: "state",
+        local_government: "localGovernment",
+        city: "city",
+        zip_code: "zipCode",
+        address: "address",
+        department: "department",
+        class_level: "classLevel",
+        class_performance: "performance",
+        subjects: "subjects",
+        essay: "essay",
+        intended_field_of_study: "intendedFieldOfStudy",
+        student_interest: "studentInterest",
+        higher_education_goals: "higherEducationGoals",
+        career_goals: "careerGoals",
+        scholarship_need: "scholarshipNeed"
+      };
+
       for (const key in editedData) {
-        if (
-          editedData[key] !== originalData[key] &&
-          editedData[key] !== "" &&
-          editedData[key] !== null
-        ) {
-          if (key === "student_interest") {
-            // Convert string to array
-            updatedFields[key] = Array.isArray(editedData[key])
-              ? editedData[key]
-              : editedData[key]
-                .split(",")
-                .map((item) => item.trim())
-                .filter((item) => item !== "");
-          } else {
-            updatedFields[key] = editedData[key];
-          }
+        if (["id", "createdAt", "updatedAt", "created_at", "updated_at", "verification_status", "school_admin_id", "school_admin", "documents"].includes(key)) {
+          continue;
+        }
+
+        const apiKey = fieldMapping[key] || key;
+
+        if (editedData[key] !== originalData[key]) {
+          updatedFields[apiKey] = editedData[key];
         }
       }
 
@@ -134,45 +186,53 @@ export default function StudentProfile() {
 
       if (Object.keys(updatedFields).length === 0) {
         setShowToast({
-          title: "No changes",
-          description: "You haven't made any changes.",
+          show: true,
+          message: "You haven't made any changes.",
           status: "info",
-          duration: 3000,
-          isClosable: true,
         });
+        setTimeout(() => setShowToast({ show: false }), 3000);
+        setIsSaving(false);
         return;
       }
 
       const res = await UpdateStudentProfile(student_Id, updatedFields);
       console.log("API Response: ", res);
 
-      // Ensure returned data is array
-      setStudentData({
-        ...res.student,
-        student_interest: Array.isArray(res.student.student_interest)
-          ? res.student.student_interest
-          : res.student.student_interest
-            ? res.student.student_interest.split(",").map((s) => s.trim())
-            : [],
-      });
+      if (res.status === true) {
+        const updatedStudent = { ...editedData };
+        const mergedStudent = res.student ? { ...updatedStudent, ...res.student } : updatedStudent;
 
-      onCloseEdit();
-      setShowToast({
-        title: "Success",
-        description: res.message || "Student updated successfully",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
+        const finalStudent = {
+          ...mergedStudent,
+          student_interest: Array.isArray(mergedStudent.student_interest)
+            ? mergedStudent.student_interest
+            : mergedStudent.student_interest
+              ? mergedStudent.student_interest.split(",").map((s) => s.trim())
+              : [],
+        };
+
+        setStudentData(finalStudent);
+
+        onCloseEdit();
+        setShowToast({
+          show: true,
+          message: res.message || "Student updated successfully",
+          status: "success",
+        });
+        setTimeout(() => setShowToast({ show: false }), 3000);
+      } else {
+        throw new Error(res.message || "Failed to update student profile");
+      }
     } catch (error) {
       console.error("Error during save:", error);
       setShowToast({
-        title: "Update Failed",
-        description: error.message || "Something went wrong",
+        show: true,
+        message: error.message || "Something went wrong",
         status: "error",
-        duration: 3000,
-        isClosable: true,
       });
+      setTimeout(() => setShowToast({ show: false }), 3000);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -358,13 +418,17 @@ export default function StudentProfile() {
                     value={editedData.full_name}
                     onChange={handleChange}
                   />
+                  <FormControl isInvalid={!!emailError}>
                     <Input
-                    name="email"
-                    placeholder="Email"
-                    value={editedData.email}
-                    onChange={handleChange}
-                    type="email"
-                  />
+                      name="email"
+                      placeholder="Email"
+                      value={editedData.email}
+                      onChange={handleChange}
+                      type="email"
+                      onBlur={() => validateEmail(editedData.email, setEmailError)}
+                    />
+                    {emailError && <FormHelperText color="red.500">{emailError}</FormHelperText>}
+                  </FormControl>
                   <Input
                     name="dob"
                     placeholder="Date of birth"
@@ -464,7 +528,7 @@ export default function StudentProfile() {
                 </Stack>
               </ModalBody>
               <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={handleSave}>
+                <Button colorScheme="blue" mr={3} onClick={handleSave} isLoading={isSaving}>
                   Save
                 </Button>
                 <Button onClick={onCloseEdit}>Cancel</Button>

@@ -49,6 +49,8 @@ import {
   ModalBody,
   ModalFooter,
   ModalCloseButton,
+  FormControl,
+  FormHelperText,
 } from '@chakra-ui/react'
 
 
@@ -81,11 +83,27 @@ export default function Index() {
     const [error, setError] = useState('');
       const [isLoading, setIsLoading] = useState(true);
       const [editedData, setEditedData] = useState("");
+      const [isSaving, setIsSaving] = useState(false);
+      const [isDeleting, setIsDeleting] = useState(false);
       const { isOpen: isRemoveModalOpen, onOpen: onOpenRemove, onClose: onCloseRemove } = useDisclosure();
       const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [originalData, setOriginalData] = useState(null);
   const [studentId, setStudentId] = useState(null);
+  const [emailError, setEmailError] = useState("");
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const validateEmail = (email, setEmailError) => {
+    if (!email) {
+      setEmailError("Email is required");
+      return false;
+    } else if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    } else {
+      setEmailError("");
+      return true;
+    }
+  };
   const { isOpen: isEditModalOpen, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
   const [showToast, setShowToast] = useState({
     show: false,
@@ -254,8 +272,14 @@ export default function Index() {
   };
 
   const handleOpenEditModal = (student) => {
-    setEditedData(student);
-    setOriginalData(student);
+    const normalizedStudent = {
+      ...student,
+      student_interest: Array.isArray(student.student_interest)
+        ? student.student_interest.join(", ")
+        : student.student_interest || "",
+    };
+    setEditedData(normalizedStudent);
+    setOriginalData(normalizedStudent);
     setStudentId(student.id); // 👈 store the ID here
     onOpenEdit();
   };
@@ -272,16 +296,53 @@ setIsOpenModal(false);
 };
 
 const handleSave = async () => {
+  const isEmailValid = validateEmail(editedData.email, setEmailError);
+  if (!isEmailValid) {
+    return;
+  }
+
+  setIsSaving(true);
   try {
     const updatedFields = {};
 
+    const fieldMapping = {
+      full_name: "fullName",
+      dob: "dob",
+      gender: "gender",
+      phone_number: "studentPhone",
+      email: "email",
+      guardian_phone_number: "guardianPhone",
+      guardian_name: "guardianName",
+      guardian_account_name: "guardianAccountName",
+      guardian_account_number: "guardianAccountNumber",
+      guardian_bank_name: "guardianBankName",
+      guardian_bank_code: "guardianBankCode",
+      state: "state",
+      local_government: "localGovernment",
+      city: "city",
+      zip_code: "zipCode",
+      address: "address",
+      department: "department",
+      class_level: "classLevel",
+      class_performance: "performance",
+      subjects: "subjects",
+      essay: "essay",
+      intended_field_of_study: "intendedFieldOfStudy",
+      student_interest: "studentInterest",
+      higher_education_goals: "higherEducationGoals",
+      career_goals: "careerGoals",
+      scholarship_need: "scholarshipNeed"
+    };
+
     for (const key in editedData) {
-      if (
-        editedData[key] !== originalData[key] &&
-        editedData[key] !== "" &&
-        editedData[key] !== null
-      ) {
-        updatedFields[key] = editedData[key];
+      if (["id", "createdAt", "updatedAt", "created_at", "updated_at", "verification_status", "school_admin_id", "school_admin", "documents"].includes(key)) {
+        continue;
+      }
+
+      const apiKey = fieldMapping[key] || key;
+
+      if (editedData[key] !== originalData[key]) {
+        updatedFields[apiKey] = editedData[key];
       }
     }
 
@@ -290,68 +351,88 @@ const handleSave = async () => {
     if (Object.keys(updatedFields).length === 0) {
       setShowToast({
         show: true,
-        title: "No changes",
         message: "You haven't made any changes.",
         status: "info",
       });
       setTimeout(() => setShowToast({ show: false }), 3000);
+      setIsSaving(false);
       return;
     }
 
     const res = await UpdateStudentProfile(studentId, updatedFields);
 
     if (res.status === true) {
-    setShowToast({
-      show: true,
-      message:res.message || "Student updated successfully",
-      status: "success",
-    });
-    setTimeout(() => setShowToast({ show: false }), 3000);
-  }
+      setShowToast({
+        show: true,
+        message: res.message || "Student updated successfully",
+        status: "success",
+      });
+      setTimeout(() => setShowToast({ show: false }), 3000);
 
-    setEditedData(res.student);
-    setOriginalData(res.student);
+      const updatedStudent = { ...editedData };
+      const mergedStudent = res.student ? { ...updatedStudent, ...res.student } : updatedStudent;
 
-    await getallStudent(); // ✅ REFRESH list
-    onCloseEdit();         // ✅ Close modal afterwards
+      setMainData((prevData) =>
+        prevData.map((s) => (s.id === studentId ? { ...s, ...mergedStudent } : s))
+      );
+      setFilterData((prevData) =>
+        prevData.map((s) => (s.id === studentId ? { ...s, ...mergedStudent } : s))
+      );
+      setFilteredData((prevData) =>
+        prevData ? prevData.map((s) => (s.id === studentId ? { ...s, ...mergedStudent } : s)) : null
+      );
+
+      onCloseEdit(); // Close modal afterwards
+    } else {
+      throw new Error(res.message || "Failed to update student profile");
+    }
 
   } catch (error) {
     console.error("Error during save:", error);
-    if (error.status === true) {
     setShowToast({
-      title: "Update Failed",
-      description: error.message || "Something went wrong",
+      show: true,
+      message: error.message || "Something went wrong",
       status: "error",
     });
     setTimeout(() => setShowToast({ show: false }), 3000);
-  }
+  } finally {
+    setIsSaving(false);
   }
 };
 
 const deleteStudentProfileBtn = async (student_Id) => {
   console.log("student_Id", student_Id);
 
+  setIsDeleting(true);
   try {
     const response = await DeleteStudentProfile(student_Id);
     console.log("response", response);
     console.log("Deleting student with ID:", student_Id);
 
-
     if (response.status === true) {
       setShowToast({
         show: true,
-        message: response.message,
+        message: response.message || "Student removed successfully",
         status: "success",
-        duration: 3000,
-
       })
-
-     
-
+      setTimeout(() => setShowToast({ show: false }), 3000);
+      await getallStudent();
+      return true;
+    } else {
+      throw new Error(response.message || "Failed to delete student profile");
     }
 
   } catch (err) {
     setError(err.message || 'Failed to delete student profile');
+    setShowToast({
+      show: true,
+      message: err.message || "Failed to delete student profile",
+      status: "error",
+    });
+    setTimeout(() => setShowToast({ show: false }), 3000);
+    return false;
+  } finally {
+    setIsDeleting(false);
   }
 };
 
@@ -887,12 +968,17 @@ const deleteStudentProfileBtn = async (student_Id) => {
           value={editedData.full_name}
           onChange={handleChange}
         />
-        <Input
-          name="email"
-          placeholder="Email"
-          value={editedData.email}
-          onChange={handleChange}
-        />
+        <FormControl isInvalid={!!emailError}>
+          <Input
+            name="email"
+            placeholder="Email"
+            value={editedData.email}
+            onChange={handleChange}
+            type="email"
+            onBlur={() => validateEmail(editedData.email, setEmailError)}
+          />
+          {emailError && <FormHelperText color="red.500">{emailError}</FormHelperText>}
+        </FormControl>
         <Input
           name="dob"
           placeholder="Date of birth"
@@ -972,7 +1058,7 @@ const deleteStudentProfileBtn = async (student_Id) => {
           onChange={handleChange}
         />
         <Input
-          name="interest"
+          name="student_interest"
           placeholder="Student Interest"
           value={editedData.student_interest}
           onChange={handleChange}
@@ -992,7 +1078,7 @@ const deleteStudentProfileBtn = async (student_Id) => {
       </Stack>
     </ModalBody>
     <ModalFooter>
-      <Button colorScheme="blue" mr={3} onClick={handleSave}>
+      <Button colorScheme="blue" mr={3} onClick={handleSave} isLoading={isSaving}>
         Save
       </Button>
       <Button onClick={onCloseEdit}>Cancel</Button>
@@ -1002,9 +1088,17 @@ const deleteStudentProfileBtn = async (student_Id) => {
 
         </Box>
       </Box>
-      <RemoveNotification isOpen={isOpenModal} onClose={()=> closeRemoveModal()} onClick={() => {
-    deleteStudentProfileBtn(selectedStudentId);
-    closeRemoveModal();}} />
+      <RemoveNotification
+        isOpen={isOpenModal}
+        onClose={()=> closeRemoveModal()}
+        isLoading={isDeleting}
+        onClick={async () => {
+          const success = await deleteStudentProfileBtn(selectedStudentId);
+          if (success) {
+            closeRemoveModal();
+          }
+        }}
+      />
 
     </MainLayout>
 

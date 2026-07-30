@@ -43,15 +43,7 @@ export default function ForgotPassword() {
 
     // Function to send the password reset link
     const sendResetLink = async () => {
-        if (!email) {
-            setShowToast({
-                show: true,
-                message: "Please enter your email address.",
-                status: "error"
-            });
-            setTimeout(() => {
-                setShowToast({ show: false });
-            }, 3000);
+        if (!validateEmail(email, setEmailError)) {
             return;
         }
     

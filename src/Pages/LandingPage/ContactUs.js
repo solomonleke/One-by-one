@@ -14,6 +14,7 @@ import {
     FormControl,
     FormLabel,
     Divider,
+    FormHelperText,
 } from '@chakra-ui/react';
 import { MdEmail } from "react-icons/md";
 import { FaPhone, FaFacebookF, FaInstagram, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
@@ -29,7 +30,27 @@ export default function ContactUs() {
         status: ""
       })
 
+    const [email, setEmail] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const validateEmail = (val) => {
+        if (!val) {
+            setEmailError("Email is required");
+            return false;
+        } else if (!emailRegex.test(val)) {
+            setEmailError("Please enter a valid email address");
+            return false;
+        } else {
+            setEmailError("");
+            return true;
+        }
+    };
+
     const EmailSubmit = () => {
+        if (!validateEmail(email)) {
+            return;
+        }
         setShowToast({
             show: true,
             title: "No changes",
@@ -161,9 +182,20 @@ export default function ContactUs() {
                         </FormControl>
                     </SimpleGrid>
 
-                    <FormControl mb={4}>
+                    <FormControl mb={4} isInvalid={!!emailError}>
                         <FormLabel fontSize={{ base: "13px", md: "14px", lg: "16px" }}>Email</FormLabel>
-                        <Input fontSize={{ base: "13px", md: "14px", lg: "16px" }} placeholder="your@email.com" type="email" />
+                        <Input 
+                            fontSize={{ base: "13px", md: "14px", lg: "16px" }} 
+                            placeholder="your@email.com" 
+                            type="email" 
+                            value={email}
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+                                if (emailError) setEmailError("");
+                            }}
+                            onBlur={() => validateEmail(email)}
+                        />
+                        {emailError && <FormHelperText color="red.500">{emailError}</FormHelperText>}
                     </FormControl>
 
                     <FormControl mb={4}>

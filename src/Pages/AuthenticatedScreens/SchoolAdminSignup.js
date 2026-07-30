@@ -117,6 +117,11 @@ export default function SchoolAdminSignup() {
 
     const tempToken = localStorage.getItem("tempToken")
     const Submit = async () => {
+        const isSchoolEmailValid = validateEmail(Payload.schoolEmail, setSchoolEmailError);
+        const isPrincipalEmailValid = validateEmail(Payload.principalEmail, setPrincipalEmailError);
+        if (!isSchoolEmailValid || !isPrincipalEmailValid) {
+            return;
+        }
 
         setLoading(true)
         try {
@@ -417,7 +422,12 @@ export default function SchoolAdminSignup() {
                                     </HStack>
                                     <HStack spacing="4">
                                         <Button px="30px" disabled="true">Back</Button>
-                                        <Button px="30px" onClick={secondPage}
+                                        <Button px="30px" onClick={() => {
+                                            if (!validateEmail(Payload.schoolEmail, setSchoolEmailError)) {
+                                                return;
+                                            }
+                                            secondPage();
+                                        }}
                                             disabled={Payload.schoolName !== "" && Payload.schoolBankName !== "" && Payload.schoolAccountNumber !== "" && Payload.schoolAccountName !== "" && Payload.schoolBankCode !== "" && Payload.state !== "" && Payload.address !== "" && Payload.city !== "" &&
                                                 Payload.zipCode !== "" && Payload.classCapacity !== "" && Payload.aboutSchool !== "" && Payload.reason !== "" && Payload.schoolEmail !== "" ? false : true
                                             }>Next</Button>
@@ -511,7 +521,10 @@ export default function SchoolAdminSignup() {
                                 <Stack mt="62px" spacing={"52px"}>
                                     <Input label="Title" type="text" onChange={handlePayload} placeholder="e.g Mr." value={Payload.principalTitle} id="principalTitle" />
                                     <Input label="Full Name" type="text" onChange={handlePayload} placeholder="e.g John Doe" value={Payload.principalName} id="principalName" />
-                                    <Input label="Email" type="email" onChange={handlePayload} value={Payload.principalEmail} id="principalEmail" onBlur={() => validateEmail(Payload.principalEmail, setPrincipalEmailError)} />
+                                    <FormControl isInvalid={!!principalEmailError}>
+                                        <Input label="Email" type="email" onChange={handlePayload} value={Payload.principalEmail} id="principalEmail" onBlur={() => validateEmail(Payload.principalEmail, setPrincipalEmailError)} />
+                                        {principalEmailError && <FormHelperText color="red.500">{principalEmailError}</FormHelperText>}
+                                    </FormControl>
                                     <Input
                                         label="Phone Number"
                                         type="text" onChange={handlePayload}

@@ -57,6 +57,9 @@ export default function Signup() {
 
 
   const register = async () => {
+    if (!validateEmail(Payload.email, setEmailError)) {
+      return;
+    }
 
     localStorage.setItem("emailUsed", Payload.email)
 

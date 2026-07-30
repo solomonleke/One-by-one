@@ -15,7 +15,7 @@ import {
 import Button from './Button'
 
 
-export default function RemoveNotification({ isOpen, onClose, onClick }) {
+export default function RemoveNotification({ isOpen, onClose, onClick, isLoading }) {
     return (
         <Modal isOpen={isOpen} onClose={onClose}  isCentered size="lg">
             <ModalOverlay />
@@ -33,7 +33,7 @@ export default function RemoveNotification({ isOpen, onClose, onClick }) {
 
                             <Button background="transparent" color="green" border="1px solid green" px="43px" onClick={()=>onClose()}>Cancel</Button>
 
-                            <Button px="43px" onClick={onClick}>Remove</Button>
+                            <Button px="43px" onClick={onClick} isLoading={isLoading}>Remove</Button>
 
                         </HStack>
                     </Flex>

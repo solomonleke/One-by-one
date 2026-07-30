@@ -38,7 +38,11 @@ export default function SignIn() {
   };
 
   const handleSignIn = async () => {
-    if (!email || !password) {
+    const isEmailValid = validateEmail(email, setEmailError);
+    if (!isEmailValid) {
+      return;
+    }
+    if (!password) {
       setShowToast({ show: true, message: "Please fill in all fields.", status: "error" });
       setTimeout(() => setShowToast({ show: false }), 3000);
       return;

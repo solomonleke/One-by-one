@@ -120,10 +120,15 @@ export default function AddNewStudents() {
 
     const validateEmail = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (payload.email && !emailRegex.test(payload.email)) {
+        if (!payload.email) {
+            setEmailError("Email is required");
+            return false;
+        } else if (!emailRegex.test(payload.email)) {
             setEmailError("Please enter a valid email address");
+            return false;
         } else {
             setEmailError("");
+            return true;
         }
     };
 
@@ -135,6 +140,10 @@ export default function AddNewStudents() {
     }
 
     const Submit = async () => {
+        const isEmailValid = validateEmail();
+        if (!isEmailValid) {
+            return;
+        }
 
         setLoading(true)
 
@@ -576,6 +585,10 @@ export default function AddNewStudents() {
                                     <Flex justifyContent="flex-end" >
 
                                         <Button px="43px" onClick={() => {
+                                            const isEmailValid = validateEmail();
+                                            if (!isEmailValid) {
+                                                return;
+                                            }
                                             setStudentDetails({
                                                 view: false,
                                                 completed: true
