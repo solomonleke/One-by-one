@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { HStack, Text, VStack, Flex, Switch, Box } from '@chakra-ui/react'
 import Button from "../Components/Button"
 import ShowToast from '../Components/ToastNotification';
+import { UpdateTwoFactorApi } from '../Utils/ApiCall';
 
 export default function SecuritySettings() {
   const [loading, setLoading] = useState(false);
@@ -10,6 +11,20 @@ export default function SecuritySettings() {
   // Security settings states
   const [twoFactorAuth, setTwoFactorAuth] = useState(false);
   const [loginNotifications, setLoginNotifications] = useState(false);
+
+  useEffect(() => {
+    const userStr = localStorage.getItem("onlineUser");
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        if (user && user.twoFaActive !== undefined) {
+          setTwoFactorAuth(user.twoFaActive);
+        }
+      } catch (error) {
+        console.error("Error reading onlineUser from localStorage", error);
+      }
+    }
+  }, []);
 
   const handleChangePassword = () => {
     // Logic for password change would go here
@@ -20,16 +35,23 @@ export default function SecuritySettings() {
   const handleUpdate = async () => {
     setLoading(true);
     try {
-      // API call to update security settings would go here
-      // await UpdateSecuritySettings({
-      //   twoFactorAuth,
-      //   loginNotifications
-      // });
+      const response = await UpdateTwoFactorApi({ enabled: twoFactorAuth });
 
-      setShowToast({ show: true, message: "Security settings updated!", status: "success" });
+      const userStr = localStorage.getItem("onlineUser");
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          user.twoFaActive = twoFactorAuth;
+          localStorage.setItem("onlineUser", JSON.stringify(user));
+        } catch (e) {
+          console.error("Error updating onlineUser in localStorage", e);
+        }
+      }
+
+      setShowToast({ show: true, message: response.message || "Security settings updated!", status: "success" });
     } catch (error) {
       console.error(error.message);
-      setShowToast({ show: true, message: "Update failed", status: "error" });
+      setShowToast({ show: true, message: error.message || "Update failed", status: "error" });
     } finally {
       setLoading(false);
       setTimeout(() => setShowToast({ show: false }), 3000);

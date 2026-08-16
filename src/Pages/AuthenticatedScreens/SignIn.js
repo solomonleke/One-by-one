@@ -54,7 +54,27 @@ export default function SignIn() {
       const payload = { email, password };
       const result = await SignInApi(payload);
 
-      console.log("login result".result)
+      console.log("login result", result)
+
+      if (result.twoFaActive || result.user?.twoFaActive) {
+        setShowToast({
+          show: true,
+          message: "2FA Verification required. Redirecting to OTP...",
+          status: "info",
+        });
+        setTimeout(() => {
+          setShowToast({ show: false });
+          router("/verify-2fa", {
+            state: {
+              email: email,
+              user: result.user,
+              accessToken: result.accessToken,
+              role: result.user?.role
+            }
+          });
+        }, 2000);
+        return;
+      }
 
       if (result.accessToken) {
 
@@ -112,7 +132,26 @@ export default function SignIn() {
       const result = await GoogleSignInApi({ accessToken: token });
       console.log("Google Sign-In response:", result);
 
-    
+      if (result.twoFaActive || result.user?.twoFaActive) {
+        setShowToast({
+          show: true,
+          message: "2FA Verification required. Redirecting to OTP...",
+          status: "info",
+        });
+        setTimeout(() => {
+          setShowToast({ show: false });
+          router("/verify-2fa", {
+            state: {
+              email: result.user?.email || result.email || email,
+              user: result.user,
+              accessToken: result.accessToken,
+              role: result.user?.role
+            }
+          });
+        }, 2000);
+        return;
+      }
+
        if (result?.accessToken) {
 
         if (result.user.role !== null) {

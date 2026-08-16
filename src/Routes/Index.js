@@ -22,6 +22,7 @@ import ProfileSetupComplete from '../Pages/AuthenticatedScreens/ProfileSetupComp
 import ForgotPassword from '../Pages/AuthenticatedScreens/ForgotPassword'
 import ForgottenPasswordEmail from '../Pages/AuthenticatedScreens/ForgottenPasswordEmail'
 import ResetPassword from '../Pages/AuthenticatedScreens/ResetPassword'
+import VerifyTwoFactor from '../Pages/AuthenticatedScreens/VerifyTwoFactor'
 import ScholarshipAdmin from '../Pages/ScholarshipAdminScreen/Index'
 import Schools from '../Pages/ScholarshipAdminScreen/Schools'
 import Settings2 from '../Pages/ScholarshipAdminScreen/Settings'
@@ -99,6 +100,7 @@ export default function IndexRoutes() {
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/forgotten-password-email' element={<ForgottenPasswordEmail />} />
           <Route path='/reset-password/:token' element={<ResetPassword />} />
+          <Route path='/verify-2fa' element={<VerifyTwoFactor />} />
 
 
 

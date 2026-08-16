@@ -2005,3 +2005,47 @@ export const UploadAdminProfilePicture = async (file) => {
   const response = await axios.request(config);
   return response.data; // should return uploaded file URL or success message
 };
+
+export const UpdateTwoFactorApi = async (payload) => {
+  const config = {
+    method: "PATCH",
+    url: `${baseUrl}/users/two-factor`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+    data: JSON.stringify(payload),
+  };
+
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating 2FA settings:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Failed to update 2FA settings"
+    );
+  }
+};
+
+export const VerifyTwoFactorApi = async (payload) => {
+  const config = {
+    method: "POST",
+    url: `${baseUrl}/auth/verify-2fa`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify(payload),
+  };
+
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    console.error("Error verifying 2FA OTP:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Failed to verify 2FA OTP"
+    );
+  }
+};
+
