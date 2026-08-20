@@ -151,9 +151,9 @@ export const ResendVerificationApi = (Payload) => {
 };
 
 
-export const CreateAdminApi = (Payload,tempToken) => {
+export const CreateAdminApi = (Payload, tempToken) => {
   console.log("CreateAdminApi", Payload);
-  
+
 
   let data = JSON.stringify(Payload);
   let config = {
@@ -319,8 +319,8 @@ export const fetchDataWithToken = async () => {
 };
 
 export const GetAllStudentApi = (pageNo, postPerPage, status) => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -329,13 +329,13 @@ export const GetAllStudentApi = (pageNo, postPerPage, status) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -353,8 +353,8 @@ export const GetAllStudentApi = (pageNo, postPerPage, status) => {
 };
 
 export const GetAllSponsorStudentApi = (pageNo, postPerPage, searchByLocation = "", searchByBudgetRange = "", searchByAspiration = "") => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -363,13 +363,13 @@ export const GetAllSponsorStudentApi = (pageNo, postPerPage, searchByLocation = 
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -388,8 +388,8 @@ export const GetAllSponsorStudentApi = (pageNo, postPerPage, searchByLocation = 
 
 
 export const GetAllScholarshipStudentsApi = (pageNo, noItems, status, search) => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -398,13 +398,13 @@ export const GetAllScholarshipStudentsApi = (pageNo, noItems, status, search) =>
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -421,8 +421,8 @@ export const GetAllScholarshipStudentsApi = (pageNo, noItems, status, search) =>
     });
 };
 export const GetAllBanksApi = () => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -431,13 +431,13 @@ export const GetAllBanksApi = () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -454,8 +454,8 @@ export const GetAllBanksApi = () => {
     });
 };
 export const VerifyBanksApi = (payload) => {
- let data= JSON.stringify(payload)
- 
+  let data = JSON.stringify(payload)
+
   let config = {
     method: "POST",
     maxBodyLength: Infinity,
@@ -465,13 +465,13 @@ export const VerifyBanksApi = (payload) => {
       Authorization: `Bearer ${getToken()}`
     },
     data: data
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -544,8 +544,8 @@ export const fetchLgasByState = async (state_code) => {
 
 
 export const GetAllScholarshipSchoolsApi = (pageNo, noItems, status) => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -554,13 +554,13 @@ export const GetAllScholarshipSchoolsApi = (pageNo, noItems, status) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -604,8 +604,8 @@ export const ApproveSchoolApi = async (schoolId, status, note) => {
 };
 
 
-export const ApproveStudentApi = (id,payload) => {
- 
+export const ApproveStudentApi = (id, payload) => {
+
   let config = {
     method: "PATCH",
     maxBodyLength: Infinity,
@@ -615,13 +615,13 @@ export const ApproveStudentApi = (id,payload) => {
       Authorization: `Bearer ${getToken()}`
     },
     data: JSON.stringify(payload)
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -639,8 +639,8 @@ export const ApproveStudentApi = (id,payload) => {
 };
 
 export const GetScholarshipDashboardDetailsApi = () => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -649,13 +649,13 @@ export const GetScholarshipDashboardDetailsApi = () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -674,8 +674,8 @@ export const GetScholarshipDashboardDetailsApi = () => {
 
 
 export const GetSuperAdminDashboardDetailsApi = () => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -684,13 +684,13 @@ export const GetSuperAdminDashboardDetailsApi = () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -708,8 +708,8 @@ export const GetSuperAdminDashboardDetailsApi = () => {
 };
 
 export const GetSuperAdminFinancialReportsApi = () => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -718,13 +718,13 @@ export const GetSuperAdminFinancialReportsApi = () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -742,8 +742,8 @@ export const GetSuperAdminFinancialReportsApi = () => {
 };
 
 export const GetPlatformOverviewApi = () => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -752,13 +752,13 @@ export const GetPlatformOverviewApi = () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -776,8 +776,8 @@ export const GetPlatformOverviewApi = () => {
 };
 
 export const GetScholarshipDashboardGraphDataApi = () => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -786,13 +786,13 @@ export const GetScholarshipDashboardGraphDataApi = () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -810,8 +810,8 @@ export const GetScholarshipDashboardGraphDataApi = () => {
 };
 
 export const GetAdminProfile = () => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -820,13 +820,13 @@ export const GetAdminProfile = () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -978,7 +978,7 @@ export const UploadDocumentApi = async (file, name, ownerType, studentEmail = nu
   }
   formData.append("file", file);
 
- 
+
   console.log("Sending FormData:");
   for (const [key, value] of formData.entries()) {
     console.log(`${key}:`, value);
@@ -986,8 +986,8 @@ export const UploadDocumentApi = async (file, name, ownerType, studentEmail = nu
 
   try {
     const response = await axios.post(
-      `${baseUrl}/document-uploader/upload`, 
-      formData, 
+      `${baseUrl}/document-uploader/upload`,
+      formData,
       {
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -1054,8 +1054,8 @@ export const GetAdminStats = async () => {
 };
 
 export const GetSchoolAdminDashboardGraphDataApi = (status) => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -1064,13 +1064,13 @@ export const GetSchoolAdminDashboardGraphDataApi = (status) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -1272,7 +1272,7 @@ export const getScholarshipsBySponsor = async () => {
     // console.log("✅ Full API Response:", JSON.stringify(response.data, null, 2));
 
     if (response.status === 200 && response.data?.status === true && Array.isArray(response.data?.data)) {
-      console.log("📌 Valid response received: Returning data array"); 
+      console.log("📌 Valid response received: Returning data array");
       return response.data;  // ✅ Return full response with `data` as an array
     } else {
       throw new Error("Unexpected API response format");
@@ -1293,8 +1293,8 @@ export const getScholarshipsBySponsor = async () => {
 };
 
 export const GetSponsorHistory = (pageNo, noItems, status) => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -1303,13 +1303,13 @@ export const GetSponsorHistory = (pageNo, noItems, status) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -1329,7 +1329,7 @@ export const GetSponsorHistory = (pageNo, noItems, status) => {
 export const GetIndividualSponsorHistory = (
   pageNo,
   noItems,
-  scholarshipId 
+  scholarshipId
 ) => {
   let config = {
     method: "GET",
@@ -1339,7 +1339,7 @@ export const GetIndividualSponsorHistory = (
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
 
@@ -1348,20 +1348,16 @@ export const GetIndividualSponsorHistory = (
 
 
 // apiCall.js
-export const fundScholarshipApi = async (Id, receiptFile) => {
+export const fundScholarshipApi = async (Id) => {
   try {
-    const formData = new FormData();
-    formData.append("receipt", receiptFile); // must match "receipt"
-
     const response = await axios.post(
       `${baseUrl}/sponsor-admin/fund-scholarship/${Id}`,
-      formData,
+      {},
       {
         headers: {
-          Authorization: `Bearer ${getToken()}`, // your token
-          // ❌ no need to set Content-Type; axios sets multipart/form-data automatically
-        },
-        maxBodyLength: Infinity,
+          Authorization: `Bearer ${getToken()}`,
+          "Content-Type": "application/json"
+        }
       }
     );
 
@@ -1606,8 +1602,8 @@ export const GetFundAdminMetricsApi = () => {
 
 
 export const GetAllSuperAdminSchoolsApi = (pageNo, noItems, status) => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -1616,13 +1612,13 @@ export const GetAllSuperAdminSchoolsApi = (pageNo, noItems, status) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -1640,8 +1636,8 @@ export const GetAllSuperAdminSchoolsApi = (pageNo, noItems, status) => {
 };
 
 export const GetAllSuperAdminStudentsApi = (pageNo, noItems, status) => {
- 
- 
+
+
   let config = {
     method: "GET",
     maxBodyLength: Infinity,
@@ -1650,13 +1646,13 @@ export const GetAllSuperAdminStudentsApi = (pageNo, noItems, status) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`
     },
-    
+
   };
 
   return axios
     .request(config)
     .then((response) => {
-     
+
       return response;
     })
     .catch((error) => {
@@ -1688,7 +1684,7 @@ export const getAllActiveScholarships = async (pageNo, noItems) => {
     console.log("getAllActiveScholarships raw response:", response); // Add this
 
     // Check if response is valid
-    if (response.status === 200 ) {
+    if (response.status === 200) {
       return response.data; // ✅ Return full response, including metadata
     } else {
       throw new Error("Unexpected API response format");
@@ -1911,7 +1907,7 @@ export const UpdateBankDetailsApi = async (payload) => {
   try {
     const response = await axios.request(config);
 
-    console.log("UpdateBankDetailsApi",response)
+    console.log("UpdateBankDetailsApi", response)
 
 
     return response;
@@ -2048,4 +2044,48 @@ export const VerifyTwoFactorApi = async (payload) => {
     );
   }
 };
+
+export const GetSuperAdminConfigApi = async () => {
+  const config = {
+    method: "GET",
+    url: `${baseUrl}/super-admin/config-data`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+  };
+
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching super admin config:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Failed to fetch config"
+    );
+  }
+};
+
+export const UpdateSuperAdminConfigApi = async (payload) => {
+  const config = {
+    method: "PATCH",
+    url: `${baseUrl}/super-admin/config`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+    data: JSON.stringify(payload),
+  };
+
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating super admin config:", error);
+    throw new Error(
+      error.response?.data?.message || error.message || "Failed to update config"
+    );
+  }
+};
+
 

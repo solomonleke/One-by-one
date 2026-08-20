@@ -250,58 +250,47 @@ export default function MyScholarships() {
   // Component
   // Component
   const [loadingId, setLoadingId] = React.useState(null);
-  const [receiptFile, setReceiptFile] = useState(null);
-  const [uploadedReceiptFile, setUploadedReceiptFile] = useState(null);
 
-
-
-  const fundScholarship = async (Id, receiptFile) => {
-    // ✅ Validation FIRST
-    if (!Id || !receiptFile) {
+  const initiatePaystackPayment = async (scholarship) => {
+    if (!scholarship || !scholarship.id) {
       setShowToast({
         show: true,
-        message: "Please upload a receipt before proceeding.",
+        message: "Invalid scholarship selected.",
         status: "warning",
       });
-
-      setTimeout(() => setShowToast({ show: false }), 3000);
-      return; // ⛔ stop execution
+      return;
     }
 
     try {
-      setLoadingId(Id);
+      setLoadingId(scholarship.id);
+      const response = await fundScholarshipApi(scholarship.id);
+      console.log("Backend payment initiation response:", response);
 
-      const data = await fundScholarshipApi(Id, receiptFile);
-      console.log("✅ Backend Response:", data);
-
-      if (data.status === true) {
+      if (response && response.status === true && response.data && response.data.authorization_url) {
         setShowToast({
           show: true,
-          message: data.message || "Scholarship funded successfully!",
+          message: "Redirecting to Paystack payment gateway...",
           status: "success",
         });
-        setIsDetailsOpen(false); // 🔑 THIS closes the modal
 
-        setTimeout(() => setShowToast({ show: false }), 3000);
+        // Redirect the user to the authorization url from the response
+        window.location.href = response.data.authorization_url;
       } else {
-        throw new Error(data.message || "Funding failed.");
+        throw new Error(response.message || "Failed to initiate payment.");
       }
-
     } catch (err) {
-      console.error("🚨 Funding error:", err);
-
+      console.error("🚨 Paystack initiation error:", err);
       setShowToast({
         show: true,
-        message: err.message || "An error occurred while funding the scholarship.",
+        message: err.response?.data?.message || err.message || "Failed to initiate Paystack payment.",
         status: "error",
       });
-
       setTimeout(() => setShowToast({ show: false }), 3000);
-
     } finally {
       setLoadingId(null);
     }
   };
+
 
 
 
@@ -803,36 +792,14 @@ export default function MyScholarships() {
 
                   <Divider my={2} />
 
-                  <VStack align="center" spacing={2} w="full">
-                    <Text fontWeight="700" fontSize="20px">
-                      To be paid to:
+                  <Box w="full">
+                    <Text fontWeight="semibold" mb={2}>
+                      Scholarship:
                     </Text>
-
-                    <VStack spacing={1} align="center">
-                      <HStack>
-                        <Text fontWeight="600">Account Name:</Text>
-                        <Text fontSize="18px">OneByOne</Text>
-                      </HStack>
-
-                      <HStack>
-                        <Text fontWeight="600">Account Number:</Text>
-                        <Text fontSize="18px">2209343074</Text>
-                      </HStack>
-
-                      <HStack>
-                        <Text fontWeight="600">Bank Name:</Text>
-                        <Text fontSize="18px">Zenith Bank</Text>
-                      </HStack>
-
-                      <HStack>
-                        <Text fontWeight="600">Date:</Text>
-                        <Text>
-                          {new Date().toLocaleDateString()}
-                        </Text>
-                      </HStack>
-                    </VStack>
-                  </VStack>
-
+                    <Text fontSize="md" fontWeight="500" color="gray.850">
+                      {selectedScholarship.name || "Unnamed Scholarship"}
+                    </Text>
+                  </Box>
 
                   <Divider my={2} />
 
@@ -840,12 +807,12 @@ export default function MyScholarships() {
                     <Text fontWeight="semibold" mb={2}>
                       Students:
                     </Text>
-                    {selectedScholarship.students.length > 0 ? (
+                    {selectedScholarship.students && selectedScholarship.students.length > 0 ? (
                       <VStack align="start" spacing={2}>
                         {selectedScholarship.students.map((student, idx) => (
                           <HStack key={idx} spacing={3}>
                             <Avatar size="sm" name={student.full_name} />
-                            <Text>{student.full_name}</Text>
+                            <Text fontWeight="500">{student.full_name}</Text>
                           </HStack>
                         ))}
                       </VStack>
@@ -853,66 +820,14 @@ export default function MyScholarships() {
                       <Text color="gray.500">No students added yet</Text>
                     )}
                   </Box>
-                  <FormControl mb={5}>
-                    <FormLabel fontSize="sm" fontWeight="600" color="gray.700">
-                      Upload Receipt
-                    </FormLabel>
 
-                    <Box
-                      position="relative"
-                      border="2px dashed"
-                      borderColor={receiptFile ? "green.400" : "gray.300"}
-                      borderRadius="xl"
-                      p={6}
-                      textAlign="center"
-                      bg={receiptFile ? "green.50" : "gray.50"}
-                      _hover={{
-                        borderColor: "green.400",
-                        bg: "green.50",
-                      }}
-                      transition="all 0.25s ease"
-                    >
-                      {/* Hidden input */}
-                      <Input
-                        id="receipt-upload"
-                        type="file"
-                        accept=".jpg,.jpeg,.png,.pdf"
-                        display="none"
-                        onChange={(e) => setReceiptFile(e.target.files[0])}
-                      />
+                  <Divider my={2} />
 
-                      {/* Label acts as clickable area */}
-                      <FormLabel
-                        htmlFor="receipt-upload"
-                        cursor="pointer"
-                        m={0}
-                        fontSize="sm"
-                        color="gray.600"
-                        _hover={{ color: "green.500" }}
-                      >
-                        {!receiptFile ? (
-                          <>
-                            <Text fontWeight="600" fontSize="md" mb={1}>
-                              Click to upload or drag & drop
-                            </Text>
-                            <Text fontSize="xs" color="gray.500">
-                              JPG, PNG or PDF (max 5MB)
-                            </Text>
-                          </>
-                        ) : (
-                          <Flex direction="column" align="center">
-                            <Text fontWeight="600" color="green.600" fontSize="sm">
-                              {receiptFile.name}
-                            </Text>
-
-                          </Flex>
-                        )}
-                      </FormLabel>
-                    </Box>
-                  </FormControl>
-
-
-
+                  <Box w="full" bg="green.50" p={4} borderRadius="xl" border="1px solid" borderColor="green.200">
+                    <Text fontSize="xs" color="green.800" fontWeight="500" lineHeight="1.6">
+                      Secure payment via Paystack: You will be redirected to the secure Paystack portal to complete the transaction. Once payment is successful, your scholarship funding will update automatically.
+                    </Text>
+                  </Box>
 
                 </VStack>
               ) : (
@@ -924,43 +839,19 @@ export default function MyScholarships() {
 
             {/* Footer */}
             <ModalFooter gap="10px" bg="gray.50" py={4}>
-              {/* <Button
-                variant="outline"
-                background="transparent"
-                color="greenn.greenn500"
-                borderRadius="full"
-                borderColor="greenn.greenn500"
-                transition="all 0.2s ease"
-                _hover={{
-                  background: "greenn.greenn500",
-                  color: "white",
-                  transform: "scale(1.05)",
-                  boxShadow: "0 4px 10px rgba(0, 128, 0, 0.2)",
-                }}
-                onClick={() => {
-                  if (selectedScholarship) window.print();
-                }}
-              >
-                <Flex align="center" justify="center" gap="8px">
-                  <Text>Print </Text>
-                  <IoPrintOutline size={18} />
-                </Flex>
-              </Button> */}
-
-
               <Button
                 colorScheme="green"
                 borderRadius="full"
+                w="full"
                 onClick={() => {
-                  fundScholarship(selectedScholarship?.id, receiptFile);
+                  initiatePaystackPayment(selectedScholarship);
                 }}
-
                 isLoading={loadingId === selectedScholarship?.id}
               >
-                Complete Transaction
+                Pay via Paystack
               </Button>
-
             </ModalFooter>
+
           </ModalContent>
         </Modal>
       </Box>

@@ -128,12 +128,33 @@ const scholarshipId = searchParams.get("scholarshipId");
                                         type="sponsor-admin-history"
                                         date={formatDate(transaction.trx_date)}
                                         fundedStudents={
-                                            transaction.scholarship?.students?.length > 0
-                                                ? transaction.scholarship.students.map((s) => s.full_name).join(", ")
-                                                : "—"
+                                            (() => {
+                                                if (transaction.students?.length > 0) {
+                                                    return transaction.students.map((s) => s.full_name).join(", ");
+                                                }
+                                                if (transaction.scholarship?.students?.length > 0) {
+                                                    return transaction.scholarship.students.map((s) => s.full_name).join(", ");
+                                                }
+                                                if (transaction.scholarship?.fund_requests?.length > 0) {
+                                                    const names = transaction.scholarship.fund_requests
+                                                        .map((fr) => fr.student?.full_name)
+                                                        .filter(Boolean);
+                                                    const uniqueNames = [...new Set(names)];
+                                                    if (uniqueNames.length > 0) {
+                                                        return uniqueNames.join(", ");
+                                                    }
+                                                }
+                                                return "—";
+                                            })()
                                         }
 
-                                        amount={transaction.amount}
+                                        amount={
+                                            transaction.amount
+                                                ? (typeof transaction.amount === "number" || !isNaN(transaction.amount)
+                                                    ? `₦${Number(transaction.amount).toLocaleString()}`
+                                                    : transaction.amount)
+                                                : "—"
+                                        }
                                         paymentMethod={transaction.payment_method || "—"}
                                         status={transaction.status || transaction.type}
                                         transactionId={transaction.reference || transaction.id}

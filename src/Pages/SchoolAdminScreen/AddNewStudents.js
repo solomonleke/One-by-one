@@ -207,46 +207,46 @@ export default function AddNewStudents() {
         }
     };
 
-    // const VerifyBankDetails = async () => {
-    //     if (payload.guardianAccountNumber.length === 10 && payload.guardianBankCode) {
-    //         setIsVerifying(true);
-    //         try {
-    //             const result = await VerifyBanksApi({
-    //                 account_number: payload.guardianAccountNumber,
-    //                 bank_code: payload.guardianBankCode,
-    //             });
-    //             if (result.data.status) {
-    //                 setPayload(prev => ({ ...prev, guardianAccountName: result.data.data.account_name }));
-    //                 setShowToast({
-    //                     show: true,
-    //                     message: "Account verified successfully",
-    //                     status: "success",
-    //                 });
+    const VerifyBankDetails = async () => {
+        if (payload.guardianAccountNumber.length === 10 && payload.guardianBankCode) {
+            setIsVerifying(true);
+            try {
+                const result = await VerifyBanksApi({
+                    account_number: payload.guardianAccountNumber,
+                    bank_code: payload.guardianBankCode,
+                });
+                if (result.data.status) {
+                    setPayload(prev => ({ ...prev, guardianAccountName: result.data.data.account_name }));
+                    setShowToast({
+                        show: true,
+                        message: "Account verified successfully",
+                        status: "success",
+                    });
 
-    //                 setTimeout(() => {
-    //                     setShowToast({ show: false });
-    //                 }, 3000);
-    //             } else {
-    //                 setShowToast({
-    //                     show: true,
-    //                     message: result.data.message,
-    //                     status: "error",
-    //                 });
+                    setTimeout(() => {
+                        setShowToast({ show: false });
+                    }, 3000);
+                } else {
+                    setShowToast({
+                        show: true,
+                        message: result.data.message,
+                        status: "error",
+                    });
 
-    //                 setTimeout(() => {
-    //                     setShowToast({ show: false });
-    //                 }, 3000);
-    //             }
-    //         } catch (e) {
-    //             setShowToast({ show: true, message: e.message, status: "error" });
-    //             setTimeout(() => {
-    //                 setShowToast({ show: false });
-    //             }, 3000);
-    //         } finally {
-    //             setIsVerifying(false);
-    //         }
-    //     }
-    // };
+                    setTimeout(() => {
+                        setShowToast({ show: false });
+                    }, 3000);
+                }
+            } catch (e) {
+                setShowToast({ show: true, message: e.message, status: "error" });
+                setTimeout(() => {
+                    setShowToast({ show: false });
+                }, 3000);
+            } finally {
+                setIsVerifying(false);
+            }
+        }
+    };
 
     // for loading all states
     const loadStates = async () => {
@@ -299,7 +299,7 @@ export default function AddNewStudents() {
     }, []);
 
     useEffect(() => {
-        // VerifyBankDetails();
+        VerifyBankDetails();
     }, [payload.guardianAccountNumber, payload.guardianBankCode]);
 
     const [StudentDetails, setStudentDetails] = useState({

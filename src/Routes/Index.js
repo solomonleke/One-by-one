@@ -37,6 +37,7 @@ import StudentProfile3 from '../Pages/SponsorAdminScreen/StudentProfile'
 import FundingHistory from '../Pages/SponsorAdminScreen/FundingHistory'
 import IndividualFundHistory from '../Pages/SponsorAdminScreen/IndividualFundHistory'
 import Settings3 from '../Pages/SponsorAdminScreen/Settings'
+import PaymentConfirmation from '../Pages/SponsorAdminScreen/PaymentConfirmation'
 import Dashboard from '../Pages/FundAdminUserScreen/Index'
 import AwaitingFunding from '../Pages/FundAdminUserScreen/AwaitingFunding'
 import FundStudent from '../Pages/FundAdminUserScreen/AwaitingFunding'
@@ -122,6 +123,8 @@ export default function IndexRoutes() {
           <Route path='/sponsor-admin/funding-history/:scholarshipId' element={<IndividualFundHistory />} />
           <Route path='/sponsor-admin/students/student-profile/:studentId' element={<StudentProfile3 />} />
           <Route path='/sponsor-admin/settings' element={<Settings3 />} />
+          <Route path='/sponsor-admin/payment-confirmation' element={<PaymentConfirmation />} />
+          <Route path='/payment-confirmation' element={<PaymentConfirmation />} />
 
 
 
@@ -154,6 +157,7 @@ export default function IndexRoutes() {
       <Route path='/super-admin/students/student-profile/:studentId' element={<StudentProfile4 />} />
 
       <Route path='/super-admin-admin-profile' element={<AdminProfile />} />
+      <Route path='/super-admin-settings' element={<SuperAdminSettings />} />
         </Routes>
       </BrowserRouter> 
     </StudentProvider>

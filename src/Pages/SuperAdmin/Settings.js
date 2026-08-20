@@ -7,6 +7,7 @@ import YourProfileSettings from '../YourProfileSettings'
 import NotificationSettings from '../NotificationSettings'
 import SecuritySettings from '../SecuritySettings'
 import DocumentSettings from '../DocumentSettings'
+import ConfigSettings from './ConfigSettings'
 
 import {
   GetAdminStats,
@@ -52,6 +53,7 @@ export default function Settings() {
             <Tab _focus={{ outline: "none" }} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Notifications</Tab>
             <Tab _focus={{ outline: "none" }} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>Securities</Tab>
             <Tab _focus={{ outline: "none" }} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>My Documents</Tab>
+            <Tab _focus={{ outline: "none" }} _selected={{ color: "green", borderColor: "green" }} fontSize={"14px"} fontWeight={"600"} lineHeight={"20px"}>System Configuration</Tab>
           </TabList>
 
           <TabIndicator mt='-1.5px' height='2px' bg='green' borderRadius='1px' />
@@ -71,6 +73,10 @@ export default function Settings() {
 
             <TabPanel>
               <DocumentSettings />
+            </TabPanel>
+
+            <TabPanel>
+              <ConfigSettings />
             </TabPanel>
           </TabPanels>
         </Tabs>
