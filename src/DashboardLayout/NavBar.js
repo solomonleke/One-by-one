@@ -74,6 +74,11 @@ export default function NavBar({ showSearch = true }) {
     return (
         <Flex borderLeft="1px solid #EDEFF2"  pos="sticky" top="0" bgColor={"white"} alignItems={"center"} justifyContent={"space-between"} zIndex={"100"} px="24px" py="15.6px" borderBottom={"1px solid #EDEFF2"}>
 
+            {/* Hamburger Menu — visible below xl breakpoint */}
+            <Box display={["block", "block", "block", "block", "none"]} color="green" fontSize="30px" cursor="pointer" onClick={onOpen}>
+                <CgMenuLeft />
+            </Box>
+
             {
                 showSearch === false && (
                     <Box  w="40%" display={["none", "none", "block", "block"]} >
@@ -92,10 +97,6 @@ export default function NavBar({ showSearch = true }) {
 
             <Box visibility={showSearch ? "visible" : "hidden"} w="40%" display={["none", "none", "block", "block"]} >
                 <SearchInput leftIcon={<CiSearch />} label='search' />
-            </Box>
-
-            <Box w="20%" display={["block", "block", "none", "none"]} color="green" fontSize="30px" onClick={onOpen}>
-                <CgMenuLeft />
             </Box>
             <Flex justifyContent="flex-end" w={["65%", "45%", "45%", "25%"]} cursor={"pointer"}>
 
