@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
-  HStack,
   Text,
-  Spacer,
   Stack,
   useDisclosure,
+  useBreakpointValue,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -41,7 +40,8 @@ const DOCUMENT_NAME_MAP = {
   personalId: "Personal ID",
 };
 
-export default function DocumentSection() {
+// bare = true -> no card border/padding/heading (use when the parent already provides them)
+export default function DocumentSection({ bare = false }) {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDoc, setSelectedDoc] = useState(null);
@@ -51,8 +51,11 @@ export default function DocumentSection() {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pdfError, setPdfError] = useState(null);
   const [scale, setScale] = useState(1.0);
+  const [containerWidth, setContainerWidth] = useState(600);
 
+  const pdfContainerRef = useRef(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const modalSize = useBreakpointValue({ base: "full", md: "4xl" });
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -85,6 +88,24 @@ export default function DocumentSection() {
     fetchDocuments();
   }, []);
 
+  // fit the PDF page to the modal width (so it never overflows on mobile)
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const measure = () => {
+      if (pdfContainerRef.current) {
+        setContainerWidth(pdfContainerRef.current.clientWidth);
+      }
+    };
+
+    const t = setTimeout(measure, 100); // wait for modal animation/mount
+    window.addEventListener("resize", measure);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", measure);
+    };
+  }, [isOpen, selectedDoc]);
+
   const handlePreview = (doc) => {
     setSelectedDoc(doc);
     setNumPages(null);
@@ -102,9 +123,9 @@ export default function DocumentSection() {
   };
 
   const onDocumentLoadError = (error) => {
-    console.error('PDF load error:', error);
+    console.error("PDF load error:", error);
     setPdfLoading(false);
-    setPdfError('Failed to load PDF. The document might be corrupted or inaccessible.');
+    setPdfError("Failed to load PDF. The document might be corrupted or inaccessible.");
   };
 
   const onDocumentLoadStart = () => {
@@ -112,21 +133,10 @@ export default function DocumentSection() {
     setPdfError(null);
   };
 
-  const goToPreviousPage = () => {
-    setCurrentPage(prev => Math.max(prev - 1, 1));
-  };
-
-  const goToNextPage = () => {
-    setCurrentPage(prev => Math.min(prev + 1, numPages || 1));
-  };
-
-  const zoomIn = () => {
-    setScale(prev => Math.min(prev + 0.2, 2.0));
-  };
-
-  const zoomOut = () => {
-    setScale(prev => Math.max(prev - 0.2, 0.5));
-  };
+  const goToPreviousPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const goToNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, numPages || 1));
+  const zoomIn = () => setScale((prev) => Math.min(prev + 0.2, 2.0));
+  const zoomOut = () => setScale((prev) => Math.max(prev - 0.2, 0.5));
 
   const handleDownload = async (url) => {
     try {
@@ -137,8 +147,7 @@ export default function DocumentSection() {
 
       const link = document.createElement("a");
       link.href = blobUrl;
-      const fileName = url.split("/").pop() || "document";
-      link.download = fileName;
+      link.download = url.split("/").pop() || "document";
 
       document.body.appendChild(link);
       link.click();
@@ -154,17 +163,237 @@ export default function DocumentSection() {
 
   if (loading) return <Spinner size="lg" />;
 
+  const renderPreview = () => {
+    const url = selectedDoc?.document_front_url;
+
+    if (!url) {
+      return (
+        <Center py={10}>
+          <Text color="gray.500" fontSize="sm">
+            No file available for this document.
+          </Text>
+        </Center>
+      );
+    }
+
+    const lowerUrl = url.toLowerCase();
+
+    if (lowerUrl.endsWith(".pdf")) {
+      return (
+        <Box>
+          {/* PDF Controls */}
+          {(numPages > 1 || pdfError) && (
+            <Flex
+              justify="space-between"
+              align="center"
+              mb={4}
+              p={2}
+              bg="gray.50"
+              borderRadius="md"
+              flexWrap="wrap"
+              gap={2}
+            >
+              <Flex align="center" gap={2}>
+                <IconButton
+                  icon={<MdNavigateBefore />}
+                  onClick={goToPreviousPage}
+                  isDisabled={currentPage <= 1 || pdfLoading}
+                  size="sm"
+                  aria-label="Previous page"
+                />
+                <Text fontSize="sm">
+                  Page {currentPage} of {numPages || "?"}
+                </Text>
+                <IconButton
+                  icon={<MdNavigateNext />}
+                  onClick={goToNextPage}
+                  isDisabled={currentPage >= (numPages || 1) || pdfLoading}
+                  size="sm"
+                  aria-label="Next page"
+                />
+              </Flex>
+
+              <Flex align="center" gap={2}>
+                <IconButton
+                  icon={<MdZoomOut />}
+                  onClick={zoomOut}
+                  isDisabled={scale <= 0.5 || pdfLoading}
+                  size="sm"
+                  aria-label="Zoom out"
+                />
+                <Text fontSize="sm">{Math.round(scale * 100)}%</Text>
+                <IconButton
+                  icon={<MdZoomIn />}
+                  onClick={zoomIn}
+                  isDisabled={scale >= 2.0 || pdfLoading}
+                  size="sm"
+                  aria-label="Zoom in"
+                />
+              </Flex>
+            </Flex>
+          )}
+
+          {/* PDF Content - scrolls only if zoomed in past the screen width */}
+          <Box ref={pdfContainerRef} w="100%" overflowX="auto">
+            <Center flexDirection="column" minH="300px">
+              {pdfLoading && (
+                <Box textAlign="center">
+                  <Spinner size="lg" color="green.500" />
+                  <Text mt={2} fontSize="sm" color="gray.600">
+                    Loading PDF document...
+                  </Text>
+                </Box>
+              )}
+
+              {pdfError && (
+                <Alert status="error" borderRadius="md" maxW="500px">
+                  <AlertIcon />
+                  <Box>
+                    <AlertTitle>PDF Load Failed!</AlertTitle>
+                    <AlertDescription fontSize="sm">
+                      {pdfError}
+                      <br />
+                      <Button
+                        as="a"
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        size="sm"
+                        mt={2}
+                        colorScheme="blue"
+                        variant="outline"
+                      >
+                        Open in New Tab
+                      </Button>
+                    </AlertDescription>
+                  </Box>
+                </Alert>
+              )}
+
+              {!pdfError && (
+                <PdfDocument
+                  file={url}
+                  key={url}
+                  onLoadStart={onDocumentLoadStart}
+                  onLoadSuccess={onDocumentLoadSuccess}
+                  onLoadError={onDocumentLoadError}
+                  loading={
+                    <Box textAlign="center">
+                      <Spinner size="lg" color="green.500" />
+                      <Text mt={2} fontSize="sm" color="gray.600">
+                        Loading PDF document...
+                      </Text>
+                    </Box>
+                  }
+                  options={{
+                    cMapUrl: "https://unpkg.com/pdfjs-dist@5.4.54/cmaps/",
+                    cMapPacked: true,
+                  }}
+                >
+                  <Page
+                    pageNumber={currentPage}
+                    width={Math.max(containerWidth - 8, 200) * scale}
+                    loading={
+                      <Box textAlign="center" p={8}>
+                        <Spinner size="md" color="green.500" />
+                        <Text mt={2} fontSize="sm" color="gray.600">
+                          Rendering page...
+                        </Text>
+                      </Box>
+                    }
+                  />
+                </PdfDocument>
+              )}
+            </Center>
+          </Box>
+        </Box>
+      );
+    }
+
+    if (lowerUrl.endsWith(".doc") || lowerUrl.endsWith(".docx")) {
+      return (
+        <Box>
+          <iframe
+            src={`https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`}
+            width="100%"
+            height="500px"
+            style={{ maxWidth: "100%" }}
+            title="Word Document Preview"
+          />
+          <Text fontSize="xs" color="gray.500" mt={2} textAlign="center">
+            If the document doesn't load, try{" "}
+            <Button
+              as="a"
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              size="xs"
+              variant="link"
+              colorScheme="blue"
+            >
+              opening it in a new tab
+            </Button>
+          </Text>
+        </Box>
+      );
+    }
+
+    return (
+      <Center flexDirection="column">
+        <Image
+          src={url}
+          alt={selectedDoc.document_type}
+          maxW="100%"
+          maxH={["70vh", "600px"]}
+          objectFit="contain"
+          loading="lazy"
+          onError={(e) => {
+            e.target.style.display = "none";
+            if (e.target.nextSibling) e.target.nextSibling.style.display = "block";
+          }}
+        />
+        <Box display="none" textAlign="center">
+          <Alert status="warning" borderRadius="md" maxW="400px">
+            <AlertIcon />
+            <Box>
+              <AlertTitle>Image Load Failed!</AlertTitle>
+              <AlertDescription fontSize="sm">
+                Unable to preview this image.{" "}
+                <Button
+                  as="a"
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  size="sm"
+                  colorScheme="blue"
+                  variant="link"
+                >
+                  View Original
+                </Button>
+              </AlertDescription>
+            </Box>
+          </Alert>
+        </Box>
+      </Center>
+    );
+  };
+
   return (
     <Box
       borderColor="#EDEFF2"
-      p="20px"
+      p={bare ? 0 : ["14px", "16px", "20px"]}
       borderRadius="10px"
-      borderWidth="1px"
+      borderWidth={bare ? 0 : "1px"}
       backgroundColor="#fff"
+      w="100%"
+      maxW="100%"
+      overflow="hidden"
     >
-      <Text fontSize="lg" fontWeight="bold" mb={4}>
-        Legal Documents
-      </Text>
+      {!bare && (
+        <Text fontSize="lg" fontWeight="bold" mb={4}>
+          Legal Documents
+        </Text>
+      )}
 
       {documents.length === 0 ? (
         <Center py={10}>
@@ -173,285 +402,105 @@ export default function DocumentSection() {
           </Text>
         </Center>
       ) : (
-        <Stack mt="18px" spacing="17px">
+        <Stack mt={bare ? 0 : "18px"} spacing={["10px", "17px"]}>
           {documents.map((doc) => (
-            <HStack
-  key={doc.id}
-  p={2}
-  borderRadius="md"
-  _hover={{ bg: "#F9FAFB" }}
->
-  <Text fontSize="13px" fontWeight="400" color="#626974">
-    {DOCUMENT_NAME_MAP[doc.document_type] || doc.document_type}
-  </Text>
-  <Spacer />
-  <Button
-    size="sm"
-    background="transparent"
-    color="greenn.greenn500"
-    border="1px solid green"
-    _hover={{
+            <Flex
+              key={doc.id}
+              direction={{ base: "column", md: "row" }}
+              align={{ base: "flex-start", md: "center" }}
+              justify="space-between"
+              gap={{ base: "8px", sm: "12px" }}
+              p={2}
+              borderRadius="md"
+              _hover={{ bg: "#F9FAFB" }}
+              w="100%"
+            >
+              <Text
+                flex="1"
+                minW="0"
+                fontSize="13px"
+                fontWeight="400"
+                color="#626974"
+                wordBreak="break-word"
+              >
+                {DOCUMENT_NAME_MAP[doc.document_type] || doc.document_type}
+              </Text>
+
+              <Flex align="center" gap="10px" flexShrink={0}>
+                <Button
+                  size="sm"
+                  background="transparent"
+                  color="greenn.greenn500"
+                  border="1px solid green"
+                  _hover={{
                     background: "greenn.greenn500",
                     color: "white",
                   }}
-    onClick={() => handlePreview(doc)}
-  >
-    Preview
-  </Button>
-  <Text
-    fontWeight="500"
-    color={doc.status === "verified" ? "#027A48" : "#FF0000"}
-    bg={doc.status === "verified" ? "#ECFDF3" : "#FFE5E5"}
-    borderRadius="20px"
-    py="5px"
-    px="12px"
-    fontSize="12px"
-  >
-    {doc.status}
-  </Text>
-</HStack>
-
+                  onClick={() => handlePreview(doc)}
+                >
+                  Preview
+                </Button>
+                <Text
+                  fontWeight="500"
+                  color={doc.status === "verified" ? "#027A48" : "#FF0000"}
+                  bg={doc.status === "verified" ? "#ECFDF3" : "#FFE5E5"}
+                  borderRadius="20px"
+                  py="5px"
+                  px="12px"
+                  fontSize="12px"
+                  whiteSpace="nowrap"
+                >
+                  {doc.status}
+                </Text>
+              </Flex>
+            </Flex>
           ))}
         </Stack>
       )}
 
-      {/* Enhanced Modal for preview */}
-      <Modal isOpen={isOpen} onClose={onClose} size="4xl">
+      {/* Preview modal: full-screen on mobile */}
+      <Modal isOpen={isOpen} onClose={onClose} size={modalSize} scrollBehavior="inside">
         <ModalOverlay />
-        <ModalContent maxW="90vw" maxH="90vh">
-          <ModalHeader>
+        <ModalContent maxW={{ base: "100%", md: "90vw" }} maxH={{ base: "100%", md: "90vh" }} m={{ base: 0, md: "auto" }}>
+          <ModalHeader pr="48px">
             <Text fontSize="lg">Document Preview</Text>
             {selectedDoc && (
-              <Text fontSize="sm" color="gray.600" mt={1}>
+              <Text fontSize="sm" color="gray.600" mt={1} noOfLines={2}>
                 {DOCUMENT_NAME_MAP[selectedDoc.document_type] || selectedDoc.document_type}
               </Text>
             )}
           </ModalHeader>
           <ModalCloseButton />
-          
-          <ModalBody 
-            display="flex" 
-            flexDirection="column"
-            p={4}
-            overflowY="auto"
-          >
-            {selectedDoc &&
-              (() => {
-                const url = selectedDoc.document_front_url;
-                const lowerUrl = url.toLowerCase();
 
-                if (lowerUrl.endsWith(".pdf")) {
-                  return (
-                    <Box overflowX="auto">
-                      {/* PDF Controls */}
-                      {(numPages > 1 || pdfError) && (
-                        <Flex justify="space-between" align="center" mb={4} p={2} bg="gray.50" borderRadius="md">
-                          <Flex align="center" gap={2}>
-                            <IconButton
-                              icon={<MdNavigateBefore />}
-                              onClick={goToPreviousPage}
-                              isDisabled={currentPage <= 1 || pdfLoading}
-                              size="sm"
-                              aria-label="Previous page"
-                            />
-                            <Text fontSize="sm">
-                              Page {currentPage} of {numPages || '?'}
-                            </Text>
-                            <IconButton
-                              icon={<MdNavigateNext />}
-                              onClick={goToNextPage}
-                              isDisabled={currentPage >= (numPages || 1) || pdfLoading}
-                              size="sm"
-                              aria-label="Next page"
-                            />
-                          </Flex>
-                          
-                          <Flex align="center" gap={2}>
-                            <IconButton
-                              icon={<MdZoomOut />}
-                              onClick={zoomOut}
-                              isDisabled={scale <= 0.5 || pdfLoading}
-                              size="sm"
-                              aria-label="Zoom out"
-                            />
-                            <Text fontSize="sm">{Math.round(scale * 100)}%</Text>
-                            <IconButton
-                              icon={<MdZoomIn />}
-                              onClick={zoomIn}
-                              isDisabled={scale >= 2.0 || pdfLoading}
-                              size="sm"
-                              aria-label="Zoom in"
-                            />
-                          </Flex>
-                        </Flex>
-                      )}
-
-                      {/* PDF Content */}
-                      <Center flexDirection="column" minH="400px">
-                        {pdfLoading && (
-                          <Box textAlign="center">
-                            <Spinner size="lg" color="green.500" />
-                            <Text mt={2} fontSize="sm" color="gray.600">
-                              Loading PDF document...
-                            </Text>
-                          </Box>
-                        )}
-
-                        {pdfError && (
-                          <Alert status="error" borderRadius="md" maxW="500px">
-                            <AlertIcon />
-                            <Box>
-                              <AlertTitle>PDF Load Failed!</AlertTitle>
-                              <AlertDescription fontSize="sm">
-                                {pdfError}
-                                <br />
-                                <Button 
-                                  as="a" 
-                                  href={url} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  size="sm" 
-                                  mt={2} 
-                                  colorScheme="blue"
-                                  variant="outline"
-                                >
-                                  Open in New Tab
-                                </Button>
-                              </AlertDescription>
-                            </Box>
-                          </Alert>
-                        )}
-
-                        {!pdfError && (
-                          <PdfDocument
-                            file={url}
-                            key={url}
-                            onLoadStart={onDocumentLoadStart}
-                            onLoadSuccess={onDocumentLoadSuccess}
-                            onLoadError={onDocumentLoadError}
-                            loading={
-                              <Box textAlign="center">
-                                <Spinner size="lg" color="green.500" />
-                                <Text mt={2} fontSize="sm" color="gray.600">
-                                  Loading PDF document...
-                                </Text>
-                              </Box>
-                            }
-                            options={{
-                              cMapUrl: 'https://unpkg.com/pdfjs-dist@5.4.54/cmaps/',
-                              cMapPacked: true,
-                            }}
-                          >
-                            <Page 
-                              pageNumber={currentPage} 
-                              scale={scale}
-                              loading={
-                                <Box textAlign="center" p={8}>
-                                  <Spinner size="md" color="green.500" />
-                                  <Text mt={2} fontSize="sm" color="gray.600">
-                                    Rendering page...
-                                  </Text>
-                                </Box>
-                              }
-                            />
-                          </PdfDocument>
-                        )}
-                      </Center>
-                    </Box>
-                  );
-                } else if (lowerUrl.endsWith(".doc") || lowerUrl.endsWith(".docx")) {
-                  return (
-                    <Box>
-                      <iframe
-                        src={`https://docs.google.com/gview?url=${encodeURIComponent(
-                          url
-                        )}&embedded=true`}
-                        width="100%"
-                        height="600px"
-                        title="Word Document Preview"
-                        onError={() => {
-                          // Fallback for iframe errors
-                        }}
-                      />
-                      <Text fontSize="xs" color="gray.500" mt={2} textAlign="center">
-                        If the document doesn't load, try{" "}
-                        <Button
-                          as="a"
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          size="xs"
-                          variant="link"
-                          colorScheme="blue"
-                        >
-                          opening it in a new tab
-                        </Button>
-                      </Text>
-                    </Box>
-                  );
-                } else {
-                  return (
-                    <Center>
-                      <Image
-                        src={url}
-                        alt={selectedDoc.document_type}
-                        maxW="100%"
-                        maxH="600px"
-                        objectFit="contain"
-                        loading="lazy"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'block';
-                        }}
-                      />
-                      <Box display="none" textAlign="center">
-                        <Alert status="warning" borderRadius="md" maxW="400px">
-                          <AlertIcon />
-                          <Box>
-                            <AlertTitle>Image Load Failed!</AlertTitle>
-                            <AlertDescription fontSize="sm">
-                              Unable to preview this image.{" "}
-                              <Button
-                                as="a"
-                                href={url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                size="sm"
-                                colorScheme="blue"
-                                variant="link"
-                              >
-                                View Original
-                              </Button>
-                            </AlertDescription>
-                          </Box>
-                        </Alert>
-                      </Box>
-                    </Center>
-                  );
-                }
-              })()}
+          <ModalBody display="flex" flexDirection="column" p={[3, 4]} overflowY="auto">
+            {selectedDoc && renderPreview()}
           </ModalBody>
 
           {selectedDoc && (
-            <ModalFooter borderTop="1px solid" borderColor="gray.200">
+            <ModalFooter
+              borderTop="1px solid"
+              borderColor="gray.200"
+              flexDirection={{ base: "column", sm: "row" }}
+              gap={3}
+            >
               <Button
                 color="#fff"
                 leftIcon={<MdOutlineFileDownload />}
                 background="green.500"
                 _hover={{
                   background: "green.600",
-                  transform: "scale(1.05)",
                   boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
                 }}
                 transition="all 0.2s ease-in-out"
                 isLoading={downloading}
                 loadingText="Downloading..."
                 onClick={() => handleDownload(selectedDoc.document_front_url)}
-                mr={3}
+                isDisabled={!selectedDoc.document_front_url}
+                w={{ base: "100%", sm: "auto" }}
               >
                 Download
               </Button>
-              <Button variant="outline" onClick={onClose}>
+              <Button variant="outline" onClick={onClose} w={{ base: "100%", sm: "auto" }}>
                 Close
               </Button>
             </ModalFooter>

@@ -168,13 +168,13 @@ export default function SchoolProfile() {
               </Text>
               <NextArrow />
               <Text
-                cursor="pointer"
+                // cursor="pointer"
                 color="#1F2937"
                 fontSize="13px"
                 fontWeight="500"
-                onClick={() => {
-                  router('/scholarship-admin/schools/school-profile');
-                }}
+                // onClick={() => {
+                //   router('/scholarship-admin/schools/school-profile');
+                // }}
               >
                 School Details
               </Text>
