@@ -88,7 +88,7 @@ export default function SchoolProfile() {
         if (
           !latestDocs[doc.document_type] ||
           new Date(doc.created_at) >
-            new Date(latestDocs[doc.document_type].created_at)
+          new Date(latestDocs[doc.document_type].created_at)
         ) {
           latestDocs[doc.document_type] = doc;
         }
@@ -453,7 +453,7 @@ export default function SchoolProfile() {
               borderRadius={"16px"}
               p={"16px"}
             >
-              
+
 
               <Box
                 borderColor={"#EDEFF2"}
@@ -516,49 +516,49 @@ export default function SchoolProfile() {
 
               <Box
                 borderColor={"#EDEFF2"}
-                p={"20px"}
+                p={["14px", "16px", "20px"]}
                 borderRadius={"10px"}
                 borderWidth={"1px"}
                 backgroundColor={"#fff"}
               >
                 <ProfileHeading title="legal documents" />
-               
-
-{documents.length === 0 ? (
-  <Box
-    backgroundColor={"#FFF7EB"}
-    py={"14px"}
-    px={"20px"}
-    rounded={"6px"}
-    border={"1px solid #FFA30C80"}
-    id="close"
-  >
-    <HStack justifyContent={"space-between"}>
-      <HStack>
-        <Warning w="16px" />
-        <Text fontSize={"14px"} fontWeight={"400"} color={"#FFA30C"}>
-          Your school cannot be verified until all required documents are
-          uploaded. Go to{" "}
-          <Link
-            as={RouterLink}
-            to="/school-admin/settings" 
-            fontWeight="500"
-            textDecoration="underline"
-            _hover={{ color: "#FF8A00", textDecoration: "none" }}
-          >
-            Settings/My documents
-          </Link>{" "}
-          to upload documents
-        </Text>
-      </HStack>
-    </HStack>
-  </Box>
-) : (
-  <Text></Text>
-)}
 
 
-                <Stack mt="18px" spacing={"17px"}>
+                {documents.length === 0 ? (
+                  <Box
+                    backgroundColor={"#FFF7EB"}
+                    py={"14px"}
+                    px={"20px"}
+                    rounded={"6px"}
+                    border={"1px solid #FFA30C80"}
+                    id="close"
+                  >
+                    <HStack justifyContent={"space-between"}>
+                      <HStack>
+                        <Warning w="16px" />
+                        <Text fontSize={"14px"} fontWeight={"400"} color={"#FFA30C"}>
+                          Your school cannot be verified until all required documents are
+                          uploaded. Go to{" "}
+                          <Link
+                            as={RouterLink}
+                            to="/school-admin/settings"
+                            fontWeight="500"
+                            textDecoration="underline"
+                            _hover={{ color: "#FF8A00", textDecoration: "none" }}
+                          >
+                            Settings/My documents
+                          </Link>{" "}
+                          to upload documents
+                        </Text>
+                      </HStack>
+                    </HStack>
+                  </Box>
+                ) : (
+                  <Text></Text>
+                )}
+
+
+                <Stack mt="18px" spacing={"17px"} w="100%">
                   <LegalDocuments documents={adminData?.documents} />
 
                 </Stack>
