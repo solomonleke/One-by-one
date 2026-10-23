@@ -13,7 +13,7 @@ import { IoArrowBackSharp } from "react-icons/io5";
 import {
 
     GetUserProfile,
-  } from "../Utils/ApiCall";
+} from "../Utils/ApiCall";
 import { logout } from '../Authentication/Index'; // Import the logout function
 
 import SideBar from './SideBar'
@@ -39,29 +39,30 @@ export default function NavBar({ showSearch = true }) {
     const [lastName, setLastName] = useState('');
     const [onlineUser, setOnlineUser] = useState({});
     const [loading, setLoading] = useState(true); // State to manage loading
+    const [searchReadOnly, setSearchReadOnly] = useState(true);
 
     const fetchProfile = async () => {
         try {
-          const data = await GetUserProfile(); // directly gets the data object
-        //   console.log("Profile Data:", data);
-          setOnlineUser(data)
-            
-    
+            const data = await GetUserProfile(); // directly gets the data object
+            //   console.log("Profile Data:", data);
+            setOnlineUser(data)
+
+
         } catch (error) {
-          console.error("Failed to fetch profile", error);
-        } 
-      };
+            console.error("Failed to fetch profile", error);
+        }
+    };
 
-  useEffect(() => {
-  
+    useEffect(() => {
 
-    // const storedName = JSON.parse(localStorage.getItem('onlineUser'));
-    // if (storedName) {
-    //   setUserName(`${storedName.firstName}`);
-    //   setLastName(`${storedName.lastName}`);
-    // }
-    fetchProfile(); // Fetch profile data when the component mounts
-  }, []); // Add onlineUser to dependency array
+
+        // const storedName = JSON.parse(localStorage.getItem('onlineUser'));
+        // if (storedName) {
+        //   setUserName(`${storedName.firstName}`);
+        //   setLastName(`${storedName.lastName}`);
+        // }
+        fetchProfile(); // Fetch profile data when the component mounts
+    }, []); // Add onlineUser to dependency array
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -72,7 +73,7 @@ export default function NavBar({ showSearch = true }) {
 
     const nav = useNavigate()
     return (
-        <Flex borderLeft="1px solid #EDEFF2"  pos="sticky" top="0" bgColor={"white"} alignItems={"center"} justifyContent={"space-between"} zIndex={"100"} px="24px" py="15.6px" borderBottom={"1px solid #EDEFF2"}>
+        <Flex borderLeft="1px solid #EDEFF2" pos="sticky" top="0" bgColor={"white"} alignItems={"center"} justifyContent={"space-between"} zIndex={"100"} px="24px" py="15.6px" borderBottom={"1px solid #EDEFF2"}>
 
             {/* Hamburger Menu — visible below xl breakpoint */}
             <Box display={["block", "block", "block", "block", "none"]} color="green" fontSize="30px" cursor="pointer" onClick={onOpen}>
@@ -81,22 +82,30 @@ export default function NavBar({ showSearch = true }) {
 
             {
                 showSearch === false && (
-                    <Box  w="40%" display={["none", "none", "block", "block"]} >
-                <HStack spacing="30px">
-                    <Image onClick={()=>nav("/")} pl="-20px" src={logo} width={"30%"} borderRight={"1px solid #EDEFF2"} pr="20px"/>
-                    <HStack  cursor="pointer" w='80px' onClick={() => setOpenModal(true)}>
-                        <IoArrowBackSharp />
-                        <Text>Exit</Text>
-                    </HStack>
-                </HStack>
+                    <Box w="40%" display={["none", "none", "block", "block"]} >
+                        <HStack spacing="30px">
+                            <Image onClick={() => nav("/")} pl="-20px" src={logo} width={"30%"} borderRight={"1px solid #EDEFF2"} pr="20px" />
+                            <HStack cursor="pointer" w='80px' onClick={() => setOpenModal(true)}>
+                                <IoArrowBackSharp />
+                                <Text>Exit</Text>
+                            </HStack>
+                        </HStack>
 
-            </Box>
+                    </Box>
                 )
             }
-           
+
 
             <Box visibility={showSearch ? "visible" : "hidden"} w="40%" display={["none", "none", "block", "block"]} >
-                <SearchInput leftIcon={<CiSearch />} label='search' />
+                <SearchInput
+                    leftIcon={<CiSearch />}
+                    label='search'
+                    type="search"
+                    name="global-search"
+                    autoComplete="off"
+                    readOnly={searchReadOnly}
+                    onFocus={() => setSearchReadOnly(false)}
+                />
             </Box>
             <Flex justifyContent="flex-end" w={["65%", "45%", "45%", "25%"]} cursor={"pointer"}>
 
@@ -172,8 +181,8 @@ export default function NavBar({ showSearch = true }) {
                             <MenuButton as={Box}>
 
                                 <HStack cursor={"pointer"}>
-                                <Avatar  name={`${onlineUser.first_name} ${onlineUser.last_name}`} size="sm" src={`${onlineUser.picture}`} />
-                                <Text textTransform="capitalize" color={"#2E2E2E"} fontWeight={"500"} fontSize={"14px"} >{onlineUser.first_name} {onlineUser.last_name}</Text>
+                                    <Avatar name={`${onlineUser.first_name} ${onlineUser.last_name}`} size="sm" src={`${onlineUser.picture}`} />
+                                    <Text textTransform="capitalize" color={"#2E2E2E"} fontWeight={"500"} fontSize={"14px"} >{onlineUser.first_name} {onlineUser.last_name}</Text>
                                     <IoIosArrowDown size={"18px"} color='#000000' />
 
                                 </HStack>
@@ -187,9 +196,9 @@ export default function NavBar({ showSearch = true }) {
                                     </HStack>
                                 </MenuItem>
                                 <MenuItem textTransform="capitalize" fontWeight={"400"} color='#586375' _hover={{ color: "green", fontWeight: "600", bg: "#E8FFF4" }} onClick={() => {
-                                            logout(); // Call the logout function
-                                            nav("/sign-in")
-                                        }}>
+                                    logout(); // Call the logout function
+                                    nav("/sign-in")
+                                }}>
                                     <HStack fontSize="14px">
                                         <MdLogout />
                                         <Text>log out</Text>
@@ -225,7 +234,7 @@ export default function NavBar({ showSearch = true }) {
 
 
 
-            <BackNotification isOpen={OpenModal} onClose={()=>setOpenModal(false)} />
+            <BackNotification isOpen={OpenModal} onClose={() => setOpenModal(false)} />
         </Flex>
     )
 }

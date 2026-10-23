@@ -2088,4 +2088,34 @@ export const UpdateSuperAdminConfigApi = async (payload) => {
   }
 };
 
+export const ChangePasswordApi = (Payload) => {
+  let data = JSON.stringify(Payload);
+  let config = {
+    method: "patch",
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/users/change-password`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+    data: data,
+  };
 
+  return axios
+    .request(config)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log("error", error.response);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response?.data) {
+        throw new Error(JSON.stringify(error.response.data));
+      } else if (error.request) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(error.message);
+      }
+    });
+};
