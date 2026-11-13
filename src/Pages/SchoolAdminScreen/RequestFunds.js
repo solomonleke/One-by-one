@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../DashboardLayout'
-import { Text, Flex, HStack, Box, useDisclosure, VStack, Icon, Image } from '@chakra-ui/react'
+import { Text, Flex, HStack, Box, useDisclosure, VStack, Icon, Image, FormErrorMessage } from '@chakra-ui/react'
 import TableRow from "../../Components/TableRow"
 import Button from "../../Components/Button"
 import Input from "../../Components/Input"
@@ -77,14 +77,37 @@ export default function RequestFunds() {
   const [TotalPage, setTotalPage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [students, setStudents] = useState([]);
-  const [formData, setFormData] = useState({
+  // const [formData, setFormData] = useState({
+  //   student: "",
+  //   scholarship: "",
+  //   studentClass: "",
+  //   term: "",
+  //   amount: "",
+  //   result: null, // ✅ store image file here
+  // });
+
+  const FIELD_ORDER = ["student", "scholarship", "studentClass", "term", "amount", "result"];
+
+  const FIELD_ERRORS = {
+    student: "Please select a student",
+    scholarship: "Please select a scholarship type",
+    studentClass: "Please select a class",
+    term: "Please select a term",
+    amount: "Please enter a valid amount",
+    result: "Please upload a document",
+  };
+
+  const INITIAL_FORM = {
     student: "",
     scholarship: "",
     studentClass: "",
     term: "",
     amount: "",
-    result: null, // ✅ store image file here
-  });
+    result: null,
+  };
+
+  const [formData, setFormData] = useState(INITIAL_FORM);
+  const [touched, setTouched] = useState({});
 
 
 
@@ -302,29 +325,52 @@ export default function RequestFunds() {
     }
   };
 
-  const handleSave = async () => {
-    // Validate fields
-    if (
-      !formData.student ||
-      !formData.scholarship ||
-      !formData.amount ||
-      !formData.studentClass ||
-      !formData.term
-    ) {
-      setShowToast({
-        show: true,
-        message: "Please fill all required fields.",
-        status: "warning",
-        duration: 3000,
-      });
-
-      // ⏱️ hide after duration
-      setTimeout(() => {
-        setShowToast((prev) => ({ ...prev, show: false }));
-      }, 3000);
-
-      return; // exit here
+  const validateField = (name, value) => {
+    if (name === "amount") {
+      return value !== "" && Number(value) > 0 ? "" : FIELD_ERRORS.amount;
     }
+    return value ? "" : FIELD_ERRORS[name];
+  };
+
+  const errors = FIELD_ORDER.reduce((acc, name) => {
+    acc[name] = validateField(name, formData[name]);
+    return acc;
+  }, {});
+
+  const isFormValid = FIELD_ORDER.every((name) => !errors[name]);
+
+  // Show the error only once the field has been touched
+  const showError = (name) => touched[name] && errors[name];
+
+  // Marks the given field as touched
+  const touchField = (name) =>
+    setTouched((prev) => ({ ...prev, [name]: true }));
+
+  // When the user focuses field N, every field BEFORE it counts as touched.
+  // This is what makes "skip field 2, go to 3" show the error under field 2.
+  const touchFieldsBefore = (name) => {
+    const index = FIELD_ORDER.indexOf(name);
+    setTouched((prev) => {
+      const next = { ...prev };
+      FIELD_ORDER.slice(0, index).forEach((f) => {
+        next[f] = true;
+      });
+      return next;
+    });
+  };
+
+  const closeFundModal = () => {
+    setFormData(INITIAL_FORM);
+    setTouched({});
+    onCloseEdit();
+  };
+
+  const handleSave = async () => {
+    if (!isFormValid) {
+      setTouched(FIELD_ORDER.reduce((acc, f) => ({ ...acc, [f]: true }), {}));
+      return;
+    }
+    
 
     const payload = {
       studentId: formData.student,
@@ -337,7 +383,6 @@ export default function RequestFunds() {
 
     try {
       setLoading(true);
-
       await requestFundApi(payload);
 
       setShowToast({
@@ -346,23 +391,12 @@ export default function RequestFunds() {
         status: "success",
         duration: 3000,
       });
-
       setTimeout(() => {
         setShowToast((prev) => ({ ...prev, show: false }));
       }, 3000);
 
-      onCloseEdit(); // 👈 add this line
-
-      // Optional: reset form
-      setFormData({
-        student: "",
-        scholarship: "",
-        amount: "",
-        studentClass: "",
-        term: "",
-        result: "",
-      });
-
+      closeFundModal(); // 👈 closes and resets form + touched
+      fetchFundRequests(); // 👈 optional: refresh the table with the new request
     } catch (error) {
       setShowToast({
         show: true,
@@ -370,7 +404,6 @@ export default function RequestFunds() {
         status: "error",
         duration: 3000,
       });
-
       setTimeout(() => {
         setShowToast((prev) => ({ ...prev, show: false }));
       }, 3000);
@@ -658,6 +691,7 @@ export default function RequestFunds() {
               <Thead bg="#F9FAFB">
                 <Tr >
                   <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">name</Th>
+                  <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">Type</Th>
                   <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">Amount</Th>
                   <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">Stationay</Th>
                   <Th fontSize="13px" textTransform="capitalize" color='#2F2F2F' fontWeight="600">Total Amount</Th>
@@ -673,6 +707,7 @@ export default function RequestFunds() {
                   <TableRow
                     key={i}
                     type="fund-request"
+                    student={item.student.full_name}
                     name={item.name}
                     amount={`₦${item.amount?.toLocaleString()}`}
                     stationary={`₦${item.stationery_fund?.toLocaleString()}`}
@@ -689,7 +724,7 @@ export default function RequestFunds() {
             </Table>
           </TableContainer>
 
-          <Modal isOpen={isEditModalOpen} onClose={onCloseEdit} scrollBehavior="inside">
+          <Modal isOpen={isEditModalOpen} onClose={closeFundModal} scrollBehavior="inside">
             <ModalOverlay />
             <ModalContent maxW={{ base: "90%", md: "600px" }} borderRadius="2xl" py={2}>
               {showToast.show && (
@@ -709,59 +744,65 @@ export default function RequestFunds() {
               <ModalBody>
                 <Stack spacing={4}>
                   {/* Student */}
-                  <FormControl>
+                  <FormControl isRequired isInvalid={!!showError("student")}>
                     <FormLabel>Student</FormLabel>
                     <ReactSelect
                       name="student"
                       placeholder="Select a student"
                       options={options}
                       value={selectedStudent || null}
-                      menuPortalTarget={document.body}     // ✅ KEY FIX
-                      menuPosition="fixed"                 // ✅ prevents clipping
+                      menuPortalTarget={document.body}
+                      menuPosition="fixed"
+                      onFocus={() => touchFieldsBefore("student")}
+                      onBlur={() => touchField("student")}
                       styles={{
-                        menuPortal: (base) => ({
+                        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                        control: (base) => ({
                           ...base,
-                          zIndex: 9999,                     // ✅ above modal footer
+                          borderColor: showError("student") ? "#E53E3E" : base.borderColor,
+                          boxShadow: showError("student") ? "0 0 0 1px #E53E3E" : base.boxShadow,
+                          "&:hover": {
+                            borderColor: showError("student") ? "#E53E3E" : base.borderColor,
+                          },
                         }),
                       }}
                       onChange={(selectedOption) => {
                         handleChange({
-                          target: {
-                            name: "student",
-                            value: selectedOption?.value || "",
-                          },
+                          target: { name: "student", value: selectedOption?.value || "" },
                         });
+                        touchField("student");
                       }}
                     />
-
+                    <FormErrorMessage>{errors.student}</FormErrorMessage>
                   </FormControl>
 
                   {/* Scholarship Type */}
-                  <FormControl>
+                  <FormControl isRequired isInvalid={!!showError("scholarship")}>
                     <FormLabel>Scholarship Type</FormLabel>
                     <Select
                       name="scholarship"
                       placeholder="Select type"
                       onChange={handleChange}
+                      onFocus={() => touchFieldsBefore("scholarship")}
+                      onBlur={() => touchField("scholarship")}
                       value={formData.scholarship}
                     >
                       <option value="SCHOOL FEES">School Fees</option>
                       <option value="EXAMINATION FEES">Examination Fees</option>
                     </Select>
+                    <FormErrorMessage>{errors.scholarship}</FormErrorMessage>
                   </FormControl>
 
-                  {/* Class and Term — Responsive layout */}
-                  <Stack
-                    direction={{ base: "column", md: "row" }}
-                    spacing={4}
-                    w="100%"
-                  >
-                    <FormControl flex={1}>
+                  {/* Class and Term */}
+                  <Stack direction={{ base: "column", md: "row" }} spacing={4} w="100%" align="flex-start">
+                    <FormControl flex={1} isRequired isInvalid={!!showError("studentClass")}>
                       <FormLabel>Class</FormLabel>
                       <Select
                         name="studentClass"
                         placeholder="Select class"
                         onChange={handleChange}
+                        onFocus={() => touchFieldsBefore("studentClass")}
+                        onBlur={() => touchField("studentClass")}
                         value={formData.studentClass}
                       >
                         <option value="jss1">JSS 1</option>
@@ -771,45 +812,58 @@ export default function RequestFunds() {
                         <option value="ss2">SS 2</option>
                         <option value="ss3">SS 3</option>
                       </Select>
+                      <FormErrorMessage>{errors.studentClass}</FormErrorMessage>
                     </FormControl>
 
-                    <FormControl flex={1}>
+                    <FormControl flex={1} isRequired isInvalid={!!showError("term")}>
                       <FormLabel>Term</FormLabel>
                       <Select
                         name="term"
                         placeholder="Select term"
                         onChange={handleChange}
+                        onFocus={() => touchFieldsBefore("term")}
+                        onBlur={() => touchField("term")}
                         value={formData.term}
                       >
                         <option value="first term">First Term</option>
                         <option value="second term">Second Term</option>
                         <option value="third term">Third Term</option>
                       </Select>
+                      <FormErrorMessage>{errors.term}</FormErrorMessage>
                     </FormControl>
                   </Stack>
 
                   {/* Amount */}
-                  <FormControl>
+                  <FormControl isRequired isInvalid={!!showError("amount")}>
                     <FormLabel>Amount</FormLabel>
                     <Input
                       name="amount"
+                      type="number"
                       onChange={handleChange}
+                      onFocus={() => touchFieldsBefore("amount")}
+                      onBlur={() => touchField("amount")}
                       value={formData.amount}
                       placeholder="Enter amount"
                     />
+                    <FormErrorMessage>{errors.amount}</FormErrorMessage>
                   </FormControl>
 
-                  <FormControl>
+                  {/* Upload */}
+                  <FormControl isRequired isInvalid={!!showError("result")}>
                     <FormLabel fontWeight="600">Upload Document (Term Result or Invoice)</FormLabel>
                     <Box
-                      border="2px dashed #39996B"
+                      border="2px dashed"
+                      borderColor={showError("result") ? "red.500" : "#39996B"}
                       borderRadius="10px"
                       p="4"
                       textAlign="center"
                       cursor="pointer"
                       bg="gray.50"
                       _hover={{ bg: "gray.100" }}
-                      onClick={() => document.getElementById("fileInput").click()}
+                      onClick={() => {
+                        touchFieldsBefore("result");
+                        document.getElementById("fileInput").click();
+                      }}
                     >
                       {formData.result ? (
                         <Text color="green.600" fontWeight="600">
@@ -826,17 +880,13 @@ export default function RequestFunds() {
                       display="none"
                       accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
                       onChange={(e) => {
-                        const file = e.target.files[0];
-                        setFormData((prev) => ({
-                          ...prev,
-                          result: file,
-                        }));
+                        const file = e.target.files[0] || null;
+                        setFormData((prev) => ({ ...prev, result: file }));
+                        touchField("result");
                       }}
                     />
+                    <FormErrorMessage>{errors.result}</FormErrorMessage>
                   </FormControl>
-
-
-
                 </Stack>
               </ModalBody>
 
@@ -854,11 +904,8 @@ export default function RequestFunds() {
                     background="transparent"
                     border="1px solid #39996B"
                     _focus={{ boxShadow: "none" }}
-                    _hover={{
-                      background: "#39996B",
-                      color: "white",
-                    }}
-                    onClick={onCloseEdit}
+                    _hover={{ background: "#39996B", color: "white" }}
+                    onClick={closeFundModal}
                   >
                     Cancel
                   </Button>
@@ -872,21 +919,17 @@ export default function RequestFunds() {
                       color: "#111e18ff",
                       border: "1px solid #39996B",
                     }}
+                    _disabled={{ opacity: 0.5, cursor: "not-allowed" }}
+                    isDisabled={!isFormValid || loading}
                     isLoading={loading}
                     onClick={handleSave}
                   >
                     Request Fund
                   </Button>
-
                 </Flex>
               </ModalFooter>
             </ModalContent>
           </Modal>
-
-
-
-
-
 
           <Pagination
             totalPosts={TotalPage}

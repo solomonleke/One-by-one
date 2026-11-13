@@ -17,7 +17,7 @@ import { FaPlusCircle } from "react-icons/fa";
 
 
 
-export default function TableRow({ type, receiptUrl, stationary, studentId, school_logo, schoolId, total, name, request, requestId, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools, isLoading, loading, reference, scholarship_cost, scholarship_name, onApprove, onReject, receipt, user }) {
+export default function TableRow({ type, receiptUrl, stationary, studentId, school_logo, schoolId, total, name, student, request, requestId, email, studentIds, department, classLevel, onDelete, onClick, onOpen, fieldOfStudy, status, submissionDate, onButtonClick, onEdit, onRemove, school, schoolName, buttonText, guardian, schoolBank, BankAcc, guardianBank, GuardianBankAcc, tuition, fundedStudents, amount, transactionId, date, paymentMethod, sponsor, fee, essayScore, principal, approvedStudents, state, city, scholarshipsCreated, fundedScholarships, studentsFunded, approvedSchools, isLoading, loading, reference, scholarship_cost, scholarship_name, onApprove, onReject, receipt, user }) {
 
     const router = useNavigate()
 
@@ -152,7 +152,7 @@ export default function TableRow({ type, receiptUrl, stationary, studentId, scho
                         <Td><Text fontWeight="400" fontSize={"13px"} textTransform={"capitalize"}>{request}</Text></Td>
                         <Td><Text fontWeight="400" fontSize={"13px"}>{amount}</Text></Td>
                         <Td>
-                            <Flex  onClick={() => onOpen(requestId)} textTransform="capitalize" fontWeight={"500"} color="green">
+                            <Flex onClick={() => onOpen(requestId)} textTransform="capitalize" fontWeight={"500"} color="green">
 
                                 <FaPlusCircle />
                             </Flex>
@@ -535,6 +535,7 @@ export default function TableRow({ type, receiptUrl, stationary, studentId, scho
             {
                 type === "fund-request" && (
                     <>
+                        <Td><Text color={"#101828"} fontWeight={"500"} fontSize={"13px"} >{student}</Text></Td>
                         <Td><Text color={"#101828"} fontWeight={"500"} fontSize={"13px"} >{name}</Text></Td>
                         <Td><Text color={"#101828"} textTransform={"capitalize"} fontWeight={"500"} fontSize={"13px"}>{amount}</Text></Td>
 

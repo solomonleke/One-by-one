@@ -1436,17 +1436,22 @@ export const requestFundApi = async ({ studentId, type, amount, studentClass, te
       throw new Error("Unexpected API response format");
     }
   } catch (error) {
-    console.error("❌ Failed to request fund:", error);
+    console.error("❌ Fund Request Failed:", error?.response?.data || error.message);
 
-    if (error.response) {
-      const { data, status } = error.response;
-      console.error(`Server Error [${status}]:`, data);
-      throw error;
-    } else if (error.request) {
-      throw new Error("No response from server. Please check your internet connection.");
-    } else {
-      throw new Error(error.message);
+    // Backend error (axios error with a response): keep the server's message
+    if (error?.response?.data) {
+      const data = error.response.data;
+      const message = Array.isArray(data.message)
+        ? data.message.join(", ")
+        : data.message || data.error || error.message;
+
+      const apiError = new Error(message);
+      apiError.response = error.response; // keep status/data for the caller
+      throw apiError;
     }
+
+    // Network error or the manual "Unexpected response" error above
+    throw error;
   }
 };
 
